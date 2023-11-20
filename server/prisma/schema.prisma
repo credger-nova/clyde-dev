@@ -252,7 +252,7 @@ model Unit {
   financeRegion          String?   @map("finance_region")
   unitProfileUpdateDate  DateTime? @map("unit_profile_update_date") @db.Timestamp(6)
   financialSku           String?   @map("financial_sku")
-  oemHPTrance            String?   @map("oem_hp_tranche")
+  oemHPTranche           String?   @map("oem_hp_tranche")
   bdComments             String?   @map("bd_comments")
   opsComments            String?   @map("ops_comments")
   setWeek                String?   @map("set_week")

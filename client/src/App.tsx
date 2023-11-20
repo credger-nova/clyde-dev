@@ -1,6 +1,7 @@
+import './App.css'
 import { Route, Routes } from 'react-router-dom'
 import Units from './pages/units'
-import './App.css'
+import Home from './pages/home'
 
 function App() {
 
@@ -8,6 +9,7 @@ function App() {
     <>
       <div>
         <Routes>
+          <Route path="/" element={<Home />} />
           <Route path="/units" element={<Units />} />
         </Routes>
       </div>

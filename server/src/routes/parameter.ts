@@ -1,12 +1,21 @@
 import { FastifyInstance, FastifyRequest } from "fastify"
 import { prisma } from "../prisma-client"
 
+// This helper function performs a groupby type action on a list with a given key
+const groupBy = <T, K extends keyof any>(arr: T[], key: (i: T) => K) =>
+    arr.reduce((groups, item) => {
+        (groups[key(item)] ||= []).push(item);
+        return groups;
+    }, {} as Record<K, T[]>)
+
 async function routes(fastify: FastifyInstance) {
     // Get all unit parameters
     fastify.get("/", async (req, res) => {
         const allParameters = await prisma.parameter.findMany()
 
-        return allParameters
+        let result = groupBy(allParameters, i => i.unitNumber)
+
+        return result
     })
 
     // Get all parameters for a single unit by unit number

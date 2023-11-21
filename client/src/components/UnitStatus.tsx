@@ -5,15 +5,15 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-import { Unit } from "../types/types";
+import { Parameter } from "../types/types";
 
 interface Props {
-    units: Array<Unit>
+    parameters: Record<string, Array<Parameter>> | null
 }
 
 export default function UnitStatus(props: Props) {
     return (
-        <TableContainer component={Paper} sx={{maxHeight: 500}}>
+        <TableContainer component={Paper} sx={{ maxHeight: 500 }}>
             <Table sx={{}} size="small" aria-label="Unit Status" stickyHeader>
                 <TableHead>
                     <TableRow>
@@ -29,20 +29,20 @@ export default function UnitStatus(props: Props) {
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {props.units.map((row: Unit) => (
+                    {Object.entries(props.parameters ? props.parameters : []).map(([key, value]) => (
                         <TableRow
-                            key={row.unitNumber}
+                            key={key}
                             sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                         >
-                            <TableCell component="th" scope="row">{row.unitNumber}</TableCell>
-                            <TableCell>{row.engine}</TableCell>
-                            <TableCell>{row.oemHP}</TableCell>
-                            <TableCell>{row.compressorFrame}</TableCell>
-                            <TableCell>{row.status}</TableCell>
-                            <TableCell>{row.customer}</TableCell>
-                            <TableCell>{row.location}</TableCell>
-                            <TableCell>{row.operationalRegion}</TableCell>
-                            <TableCell>{row.telemetry}</TableCell>
+                            <TableCell component="th" scope="row">{key}</TableCell>
+                            <TableCell>{}</TableCell>
+                            <TableCell>{}</TableCell>
+                            <TableCell>{}</TableCell>
+                            <TableCell>{}</TableCell>
+                            <TableCell>{}</TableCell>
+                            <TableCell>{}</TableCell>
+                            <TableCell>{}</TableCell>
+                            <TableCell>{}</TableCell>
                         </TableRow>
                     ))}
                 </TableBody>

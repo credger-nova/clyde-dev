@@ -5,10 +5,10 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-import { Parameter } from "../types/types";
+import { UnitSatus } from "../types/types";
 
 interface Props {
-    parameters: Record<string, Array<Parameter>> | null
+    parameters: Array<UnitSatus> | null
 }
 
 export default function UnitStatus(props: Props) {
@@ -18,31 +18,21 @@ export default function UnitStatus(props: Props) {
                 <TableHead>
                     <TableRow>
                         <TableCell>Unit Number</TableCell>
-                        <TableCell>Engine</TableCell>
-                        <TableCell>OEM HP</TableCell>
-                        <TableCell>Compressor Name</TableCell>
                         <TableCell>Status</TableCell>
-                        <TableCell>Customer Name</TableCell>
-                        <TableCell>Lease Name</TableCell>
-                        <TableCell>Operational Region</TableCell>
-                        <TableCell>Telemetry</TableCell>
+                        <TableCell>Status Message</TableCell>
+                        <TableCell>Last Updated</TableCell>
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {Object.entries(props.parameters ? props.parameters : []).map(([key, value]) => (
+                    {props.parameters?.map((param: UnitSatus) => (
                         <TableRow
-                            key={key}
+                            key={param.unitNumber}
                             sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                         >
-                            <TableCell component="th" scope="row">{key}</TableCell>
-                            <TableCell>{}</TableCell>
-                            <TableCell>{}</TableCell>
-                            <TableCell>{}</TableCell>
-                            <TableCell>{}</TableCell>
-                            <TableCell>{}</TableCell>
-                            <TableCell>{}</TableCell>
-                            <TableCell>{}</TableCell>
-                            <TableCell>{}</TableCell>
+                            <TableCell component="th" scope="row">{param.unitNumber}</TableCell>
+                            <TableCell scope="row">{param.status}</TableCell>
+                            <TableCell scope="row">{param.statusMessage}</TableCell>
+                            <TableCell scope="row">{new Date(param.timestamp).toLocaleString()}</TableCell>
                         </TableRow>
                     ))}
                 </TableBody>

@@ -64,3 +64,10 @@ export interface Unit {
     setWeek: string,
     releaseWeek: string
 }
+
+export interface UnitSatus {
+    unitNumber: string,
+    status: string,
+    statusMessage: string,
+    timestamp: Date
+}

@@ -1,6 +1,6 @@
 import { FastifyInstance, FastifyRequest } from "fastify"
 import { prisma } from "../prisma-client"
-import { UnitStatus, Parameter } from "../models/types"
+import { UnitStatus } from "../models/types"
 
 const OIL_PRES_UNITS = ["N11073"]
 const VOLTAGE_UNITS = ["HC15153", "HC11077", "HC90014"]
@@ -72,6 +72,10 @@ async function routes(fastify: FastifyInstance) {
 
             const rpm = value.find(i => RPM.includes(i.name))
             unitStatus.timestamp = rpm!.timestamp!
+
+            if (((new Date().valueOf() - unitStatus.timestamp.valueOf()) / (1000 * 24 * 60 * 60)) > 1) {
+                unitStatus.status = "Cold"
+            }
 
             result.push(unitStatus)
         })

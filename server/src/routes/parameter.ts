@@ -7,6 +7,7 @@ const VOLTAGE_UNITS = ["HC15153", "HC11077", "HC90014"]
 const RPM = ["Engine Speed", "Driver RPM", "Engine Speed from EICS"]
 const STATUS_MESSAGE = ["Fault code"]
 
+const SORT_ORDER = ["Stopped", "Cold", "Running"]
 
 // This helper function performs a groupby type action on a list with a given key
 const groupBy = <T, K extends keyof any>(arr: T[], key: (i: T) => K) =>
@@ -79,6 +80,8 @@ async function routes(fastify: FastifyInstance) {
 
             result.push(unitStatus)
         })
+
+        result.sort((a, b) => SORT_ORDER.indexOf(a.status) - SORT_ORDER.indexOf(b.status))
 
         return result
     })

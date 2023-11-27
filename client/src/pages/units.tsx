@@ -3,7 +3,6 @@ import UnitStatus from "../components/UnitStatus"
 
 function Units() {
     const { data: unitParameters, loading } = useFetch(`${import.meta.env.VITE_API_BASE}/parameter/status`)
-    console.log(unitParameters)
 
     return (
         <>

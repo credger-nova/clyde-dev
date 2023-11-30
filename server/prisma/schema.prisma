@@ -7,196 +7,14 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
-model cfl {
-  STATUS                                     String?
-  UNIT                                       String?
-  CUSTOMER_NAME                              String?   @map("CUSTOMER NAME")
-  LOCATION_NAME                              String?   @map("LOCATION NAME")
-  COUNTY                                     String?
-  STATE                                      String?
-  ENGINE                                     String?
-  ENGINE_FAMILY                              String?   @map("ENGINE FAMILY")
-  ENGINE_SERIAL_NUMBER                       String?   @map("ENGINE SERIAL NUMBER")
-  AIR_FUEL_RATIO__AFR_                       String?   @map("AIR FUEL RATIO (AFR)")
-  CATALYST                                   String?
-  CATALYST__MAKE_MODEL_                      String?   @map("CATALYST (MAKE/MODEL)")
-  OEM_HP                                     Float?    @map("OEM HP")
-  NOVA_HP__DERATED_                          Float?    @map("NOVA HP (DERATED)")
-  ENGINE_RPM                                 Float?    @map("ENGINE RPM")
-  FRAME_RPM                                  Float?    @map("FRAME RPM")
-  COMPRESSOR_FRAME                           String?   @map("COMPRESSOR FRAME")
-  COMPRESSOR_FRAME_FAMILY                    String?   @map("COMPRESSOR FRAME FAMILY")
-  COMPRESSOR_FRAME_SERIAL_NUMBER             String?   @map("COMPRESSOR FRAME SERIAL NUMBER")
-  STAGES                                     String?
-  CYLINDER_SIZE                              String?   @map("CYLINDER SIZE")
-  PACKAGE_MFG__DATE__YYYY_                   DateTime? @map("PACKAGE MFG. DATE (YYYY)") @db.Timestamp(6)
-  ENGINE_MFG__DATE__YYYY_                    String?   @map("ENGINE MFG. DATE (YYYY)")
-  ZERO_HOUR_DATE__YYYY_                      DateTime? @map("ZERO HOUR DATE (YYYY)") @db.Timestamp(6)
-  COMPRESSOR_FRAME_REBUILD__YYYY_            DateTime? @map("COMPRESSOR FRAME REBUILD (YYYY)") @db.Timestamp(6)
-  TOP_END__YYYY_                             DateTime? @map("TOP END (YYYY)") @db.Timestamp(6)
-  OIL_PROVIDER                               String?   @map("OIL PROVIDER")
-  TELEMETRY                                  String?
-  UNIT_LAT_LONG_COORDINATES                  String?   @map("UNIT LAT/LONG COORDINATES")
-  TRAILER_UNIT                               String?   @map("TRAILER UNIT")
-  UNIT_SET_DATE__OPERATIONS_                 DateTime? @map("UNIT SET DATE (OPERATIONS)") @db.Timestamp(6)
-  BILLING_CONTRACT_START_DATE                DateTime? @map("BILLING CONTRACT START DATE") @db.Timestamp(6)
-  BILLING_CONTRACT_END_DATE                  String?   @map("BILLING CONTRACT END DATE")
-  LAST_BILLING_DATE                          DateTime? @map("LAST BILLING DATE") @db.Timestamp(6)
-  ON_OFF_CONTRACT                            String?   @map("ON/OFF CONTRACT")
-  MTM_LAST_PRICE_INCREASE                    String?   @map("MTM LAST PRICE INCREASE")
-  SALESPERSON                                String?
-  CONTRACT_TYPE___TAX                        String?   @map("CONTRACT TYPE - TAX")
-  CONTRACT_TYPE___OIL                        String?   @map("CONTRACT TYPE - OIL")
-  CURRENT_MONTHLY_RATE                       Float?    @map("CURRENT MONTHLY RATE")
-  RECURRING_DISCOUNT                         Float?    @map("RECURRING DISCOUNT")
-  SALES_TAX__INCLUDED_IN_RENTAL_RATE_        BigInt?   @map("SALES TAX (INCLUDED IN RENTAL RATE)")
-  AD_VALOREM__HEIT__INCLUDED_IN_RENTAL_RATE_ Float?    @map("AD VALOREM/ HEIT (INCLUDED IN RENTAL RATE)")
-  NET_REVENUE                                Float?    @map("NET REVENUE")
-  DAY_RATE                                   String?   @map("DAY RATE")
-  UNIT_ORIGIN                                String?   @map("UNIT ORIGIN")
-  ACQUISITION_EFFECTIVE_DATE                 DateTime? @map("ACQUISITION EFFECTIVE DATE") @db.Timestamp(6)
-  OWNED_VS__LEASED                           String?   @map("OWNED VS. LEASED")
-  OPERATIONAL_REGION                         String?   @map("OPERATIONAL REGION")
-  FINANCE_REGION                             String?   @map("FINANCE REGION")
-  UNIT_PROFILE_SHEET_UPDATE_DATE             DateTime? @map("UNIT PROFILE SHEET UPDATE DATE") @db.Timestamp(6)
-  FINANCIAL_MODEL_SKU                        String?   @map("FINANCIAL MODEL SKU")
-  OEM_HP_TRANCHE                             String?   @map("OEM HP TRANCHE")
-  BUSINESS_DEVELOPMENT_COMMENTS              String?   @map("BUSINESS DEVELOPMENT COMMENTS")
-  OPERATIONS_COMMENTS                        String?   @map("OPERATIONS COMMENTS")
-  SET_WEEK                                   String?   @map("SET WEEK")
-  RELEASE_WEEK                               String?   @map("RELEASE WEEK")
+model Parameter {
+  unitNumber String    @map("unit_number") @db.VarChar(20)
+  name       String    @db.VarChar(100)
+  value      String?   @db.VarChar(100)
+  timestamp  DateTime? @db.Timestamptz(6)
 
-  @@ignore
-}
-
-model offline_archive {
-  id                 String  @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  unit_number        String  @db.VarChar(100)
-  engine             String? @db.VarChar(100)
-  oem_hp             Float?  @db.Real
-  compressor_name    String? @db.VarChar(100)
-  status             String? @db.VarChar(25)
-  customer_name      String? @db.VarChar(100)
-  lease_name         String? @db.VarChar(100)
-  operational_region String? @db.VarChar(50)
-  source             String  @db.VarChar(20)
-  shutdown_code      String? @db.VarChar(100)
-  timestamp          String  @db.VarChar(100)
-  online_timestamp   String  @db.VarChar(100)
-  observer           String  @db.VarChar(100)
-}
-
-model offline_units {
-  id                 String  @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  unit_number        String  @db.VarChar(100)
-  engine             String? @db.VarChar(100)
-  oem_hp             Float?  @db.Real
-  compressor_name    String? @db.VarChar(100)
-  status             String? @db.VarChar(25)
-  customer_name      String? @db.VarChar(100)
-  lease_name         String? @db.VarChar(100)
-  operational_region String? @db.VarChar(50)
-  source             String  @db.VarChar(20)
-  shutdown_code      String? @db.VarChar(100)
-  days_offline       Float   @default(0) @db.Real
-  timestamp          String  @db.VarChar(50)
-}
-
-/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
-model power_app_dt {
-  device_name        String?
-  source             String?
-  unit_number        String?
-  lease_name         String?
-  ma_W16_23          Float?  @map("ma_W16-23")
-  dt_hours_W16_23    Float?  @map("dt_hours_W16-23")
-  ma_W17_23          Float?  @map("ma_W17-23")
-  dt_hours_W17_23    Float?  @map("dt_hours_W17-23")
-  ma_W18_23          Float?  @map("ma_W18-23")
-  dt_hours_W18_23    Float?  @map("dt_hours_W18-23")
-  ma_W19_23          Float?  @map("ma_W19-23")
-  dt_hours_W19_23    Float?  @map("dt_hours_W19-23")
-  ma_W20_23          Float?  @map("ma_W20-23")
-  dt_hours_W20_23    Float?  @map("dt_hours_W20-23")
-  ma_W21_23          Float?  @map("ma_W21-23")
-  dt_hours_W21_23    Float?  @map("dt_hours_W21-23")
-  ma_W22_23          Float?  @map("ma_W22-23")
-  dt_hours_W22_23    Float?  @map("dt_hours_W22-23")
-  ma_W23_23          Float?  @map("ma_W23-23")
-  dt_hours_W23_23    Float?  @map("dt_hours_W23-23")
-  ma_W24_23          Float?  @map("ma_W24-23")
-  dt_hours_W24_23    Float?  @map("dt_hours_W24-23")
-  ma_W25_23          Float?  @map("ma_W25-23")
-  dt_hours_W25_23    Float?  @map("dt_hours_W25-23")
-  ma_W26_23          Float?  @map("ma_W26-23")
-  dt_hours_W26_23    Float?  @map("dt_hours_W26-23")
-  ma_W27_23          Float?  @map("ma_W27-23")
-  dt_hours_W27_23    Float?  @map("dt_hours_W27-23")
-  ma_W28_23          Float?  @map("ma_W28-23")
-  dt_hours_W28_23    Float?  @map("dt_hours_W28-23")
-  ma_W29_23          Float?  @map("ma_W29-23")
-  dt_hours_W29_23    Float?  @map("dt_hours_W29-23")
-  ma_W30_23          Float?  @map("ma_W30-23")
-  dt_hours_W30_23    Float?  @map("dt_hours_W30-23")
-  ma_W31_23          Float?  @map("ma_W31-23")
-  dt_hours_W31_23    Float?  @map("dt_hours_W31-23")
-  ma_W32_23          Float?  @map("ma_W32-23")
-  dt_hours_W32_23    Float?  @map("dt_hours_W32-23")
-  ma_W33_23          Float?  @map("ma_W33-23")
-  dt_hours_W33_23    Float?  @map("dt_hours_W33-23")
-  ma_W34_23          Float?  @map("ma_W34-23")
-  dt_hours_W34_23    Float?  @map("dt_hours_W34-23")
-  ma_W35_23          Float?  @map("ma_W35-23")
-  dt_hours_W35_23    Float?  @map("dt_hours_W35-23")
-  ma_W36_23          Float?  @map("ma_W36-23")
-  dt_hours_W36_23    Float?  @map("dt_hours_W36-23")
-  ma_W37_23          Float?  @map("ma_W37-23")
-  dt_hours_W37_23    Float?  @map("dt_hours_W37-23")
-  ma_W38_23          Float?  @map("ma_W38-23")
-  dt_hours_W38_23    Float?  @map("dt_hours_W38-23")
-  ma_W39_23          Float?  @map("ma_W39-23")
-  dt_hours_W39_23    Float?  @map("dt_hours_W39-23")
-  ma_W40_23          Float?  @map("ma_W40-23")
-  dt_hours_W40_23    Float?  @map("dt_hours_W40-23")
-  ma_W41_23          Float?  @map("ma_W41-23")
-  dt_hours_W41_23    Float?  @map("dt_hours_W41-23")
-  ma_W42_23          Float?  @map("ma_W42-23")
-  dt_hours_W42_23    Float?  @map("dt_hours_W42-23")
-  ma_W43_23          Float?  @map("ma_W43-23")
-  dt_hours_W43_23    Float?  @map("dt_hours_W43-23")
-  ma_W44_23          Float?  @map("ma_W44-23")
-  dt_hours_W44_23    Float?  @map("dt_hours_W44-23")
-  ma_W45_23          Float?  @map("ma_W45-23")
-  dt_hours_W45_23    Float?  @map("dt_hours_W45-23")
-  ma_W46_23          Float?  @map("ma_W46-23")
-  dt_hours_W46_23    Float?  @map("dt_hours_W46-23")
-  status             String?
-  customer_name      String?
-  engine             String?
-  oem_hp             Float?
-  compressor_name    String?
-  operational_region String?
-
-  @@ignore
-}
-
-model units {
-  unit_id         String            @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  device_name     String?           @unique(map: "units_unique") @db.VarChar(100)
-  source          String            @db.VarChar(20)
-  unit_number     String?           @db.VarChar(100)
-  lease_name      String?           @db.VarChar(100)
-  weekly_downtime weekly_downtime[]
-}
-
-model weekly_downtime {
-  week_id     String @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  device_name String @db.VarChar(100)
-  week        String @db.VarChar(20)
-  ma          Float  @db.Real
-  dt_hours    Float  @db.Real
-  units       units  @relation(fields: [device_name], references: [device_name], onDelete: NoAction, onUpdate: NoAction, map: "weekly_downtime_fkey")
+  @@id([unitNumber, name])
+  @@map("parameter")
 }
 
 model Unit {
@@ -261,12 +79,12 @@ model Unit {
   @@map("unit")
 }
 
-model Parameter {
-  unitNumber String    @map("unit_number") @db.VarChar(20)
-  name       String    @db.VarChar(100)
-  value      String?   @db.VarChar(100)
-  timestamp  DateTime? @db.Timestamptz(6)
+model WeeklyDowntime {
+  id         String @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  unitNumber String @map("unit_number") @db.VarChar(100)
+  week       String @db.VarChar(20)
+  ma         Float  @db.Real
+  dtHours    Float  @map("dt_hours") @db.Real
 
-  @@id([unitNumber, name])
-  @@map("parameter")
+  @@map("weekly_downtime")
 }

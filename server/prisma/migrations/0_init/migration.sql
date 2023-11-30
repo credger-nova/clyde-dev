@@ -1,201 +1,11 @@
-CREATE EXTENSION "uuid-ossp";
-
 -- CreateTable
-CREATE TABLE "cfl" (
-    "STATUS" TEXT,
-    "UNIT" TEXT,
-    "CUSTOMER NAME" TEXT,
-    "LOCATION NAME" TEXT,
-    "COUNTY" TEXT,
-    "STATE" TEXT,
-    "ENGINE" TEXT,
-    "ENGINE FAMILY" TEXT,
-    "ENGINE SERIAL NUMBER" TEXT,
-    "AIR FUEL RATIO (AFR)" TEXT,
-    "CATALYST" TEXT,
-    "CATALYST (MAKE/MODEL)" TEXT,
-    "OEM HP" DOUBLE PRECISION,
-    "NOVA HP (DERATED)" DOUBLE PRECISION,
-    "ENGINE RPM" DOUBLE PRECISION,
-    "FRAME RPM" DOUBLE PRECISION,
-    "COMPRESSOR FRAME" TEXT,
-    "COMPRESSOR FRAME FAMILY" TEXT,
-    "COMPRESSOR FRAME SERIAL NUMBER" TEXT,
-    "STAGES" TEXT,
-    "CYLINDER SIZE" TEXT,
-    "PACKAGE MFG. DATE (YYYY)" TIMESTAMP(6),
-    "ENGINE MFG. DATE (YYYY)" TEXT,
-    "ZERO HOUR DATE (YYYY)" TIMESTAMP(6),
-    "COMPRESSOR FRAME REBUILD (YYYY)" TIMESTAMP(6),
-    "TOP END (YYYY)" TIMESTAMP(6),
-    "OIL PROVIDER" TEXT,
-    "TELEMETRY" TEXT,
-    "UNIT LAT/LONG COORDINATES" TEXT,
-    "TRAILER UNIT" TEXT,
-    "UNIT SET DATE (OPERATIONS)" TIMESTAMP(6),
-    "BILLING CONTRACT START DATE" TIMESTAMP(6),
-    "BILLING CONTRACT END DATE" TEXT,
-    "LAST BILLING DATE" TIMESTAMP(6),
-    "ON/OFF CONTRACT" TEXT,
-    "MTM LAST PRICE INCREASE" TEXT,
-    "SALESPERSON" TEXT,
-    "CONTRACT TYPE - TAX" TEXT,
-    "CONTRACT TYPE - OIL" TEXT,
-    "CURRENT MONTHLY RATE" DOUBLE PRECISION,
-    "RECURRING DISCOUNT" DOUBLE PRECISION,
-    "SALES TAX (INCLUDED IN RENTAL RATE)" BIGINT,
-    "AD VALOREM/ HEIT (INCLUDED IN RENTAL RATE)" DOUBLE PRECISION,
-    "NET REVENUE" DOUBLE PRECISION,
-    "DAY RATE" TEXT,
-    "UNIT ORIGIN" TEXT,
-    "ACQUISITION EFFECTIVE DATE" TIMESTAMP(6),
-    "OWNED VS. LEASED" TEXT,
-    "OPERATIONAL REGION" TEXT,
-    "FINANCE REGION" TEXT,
-    "UNIT PROFILE SHEET UPDATE DATE" TIMESTAMP(6),
-    "FINANCIAL MODEL SKU" TEXT,
-    "OEM HP TRANCHE" TEXT,
-    "BUSINESS DEVELOPMENT COMMENTS" TEXT,
-    "OPERATIONS COMMENTS" TEXT,
-    "SET WEEK" TEXT,
-    "RELEASE WEEK" TEXT
-);
+CREATE TABLE "parameter" (
+    "unit_number" VARCHAR(20) NOT NULL,
+    "name" VARCHAR(100) NOT NULL,
+    "value" VARCHAR(100),
+    "timestamp" TIMESTAMPTZ(6),
 
--- CreateTable
-CREATE TABLE "offline_archive" (
-    "id" UUID NOT NULL DEFAULT uuid_generate_v4(),
-    "unit_number" VARCHAR(100) NOT NULL,
-    "engine" VARCHAR(100),
-    "oem_hp" REAL,
-    "compressor_name" VARCHAR(100),
-    "status" VARCHAR(25),
-    "customer_name" VARCHAR(100),
-    "lease_name" VARCHAR(100),
-    "operational_region" VARCHAR(50),
-    "source" VARCHAR(20) NOT NULL,
-    "shutdown_code" VARCHAR(100),
-    "timestamp" VARCHAR(100) NOT NULL,
-    "online_timestamp" VARCHAR(100) NOT NULL,
-    "observer" VARCHAR(100) NOT NULL,
-
-    CONSTRAINT "offline_archive_pkey" PRIMARY KEY ("id")
-);
-
--- CreateTable
-CREATE TABLE "offline_units" (
-    "id" UUID NOT NULL DEFAULT uuid_generate_v4(),
-    "unit_number" VARCHAR(100) NOT NULL,
-    "engine" VARCHAR(100),
-    "oem_hp" REAL,
-    "compressor_name" VARCHAR(100),
-    "status" VARCHAR(25),
-    "customer_name" VARCHAR(100),
-    "lease_name" VARCHAR(100),
-    "operational_region" VARCHAR(50),
-    "source" VARCHAR(20) NOT NULL,
-    "shutdown_code" VARCHAR(100),
-    "days_offline" REAL NOT NULL DEFAULT 0,
-    "timestamp" VARCHAR(50) NOT NULL,
-
-    CONSTRAINT "offline_units_pkey" PRIMARY KEY ("id")
-);
-
--- CreateTable
-CREATE TABLE "power_app_dt" (
-    "device_name" TEXT,
-    "source" TEXT,
-    "unit_number" TEXT,
-    "lease_name" TEXT,
-    "ma_W16-23" DOUBLE PRECISION,
-    "dt_hours_W16-23" DOUBLE PRECISION,
-    "ma_W17-23" DOUBLE PRECISION,
-    "dt_hours_W17-23" DOUBLE PRECISION,
-    "ma_W18-23" DOUBLE PRECISION,
-    "dt_hours_W18-23" DOUBLE PRECISION,
-    "ma_W19-23" DOUBLE PRECISION,
-    "dt_hours_W19-23" DOUBLE PRECISION,
-    "ma_W20-23" DOUBLE PRECISION,
-    "dt_hours_W20-23" DOUBLE PRECISION,
-    "ma_W21-23" DOUBLE PRECISION,
-    "dt_hours_W21-23" DOUBLE PRECISION,
-    "ma_W22-23" DOUBLE PRECISION,
-    "dt_hours_W22-23" DOUBLE PRECISION,
-    "ma_W23-23" DOUBLE PRECISION,
-    "dt_hours_W23-23" DOUBLE PRECISION,
-    "ma_W24-23" DOUBLE PRECISION,
-    "dt_hours_W24-23" DOUBLE PRECISION,
-    "ma_W25-23" DOUBLE PRECISION,
-    "dt_hours_W25-23" DOUBLE PRECISION,
-    "ma_W26-23" DOUBLE PRECISION,
-    "dt_hours_W26-23" DOUBLE PRECISION,
-    "ma_W27-23" DOUBLE PRECISION,
-    "dt_hours_W27-23" DOUBLE PRECISION,
-    "ma_W28-23" DOUBLE PRECISION,
-    "dt_hours_W28-23" DOUBLE PRECISION,
-    "ma_W29-23" DOUBLE PRECISION,
-    "dt_hours_W29-23" DOUBLE PRECISION,
-    "ma_W30-23" DOUBLE PRECISION,
-    "dt_hours_W30-23" DOUBLE PRECISION,
-    "ma_W31-23" DOUBLE PRECISION,
-    "dt_hours_W31-23" DOUBLE PRECISION,
-    "ma_W32-23" DOUBLE PRECISION,
-    "dt_hours_W32-23" DOUBLE PRECISION,
-    "ma_W33-23" DOUBLE PRECISION,
-    "dt_hours_W33-23" DOUBLE PRECISION,
-    "ma_W34-23" DOUBLE PRECISION,
-    "dt_hours_W34-23" DOUBLE PRECISION,
-    "ma_W35-23" DOUBLE PRECISION,
-    "dt_hours_W35-23" DOUBLE PRECISION,
-    "ma_W36-23" DOUBLE PRECISION,
-    "dt_hours_W36-23" DOUBLE PRECISION,
-    "ma_W37-23" DOUBLE PRECISION,
-    "dt_hours_W37-23" DOUBLE PRECISION,
-    "ma_W38-23" DOUBLE PRECISION,
-    "dt_hours_W38-23" DOUBLE PRECISION,
-    "ma_W39-23" DOUBLE PRECISION,
-    "dt_hours_W39-23" DOUBLE PRECISION,
-    "ma_W40-23" DOUBLE PRECISION,
-    "dt_hours_W40-23" DOUBLE PRECISION,
-    "ma_W41-23" DOUBLE PRECISION,
-    "dt_hours_W41-23" DOUBLE PRECISION,
-    "ma_W42-23" DOUBLE PRECISION,
-    "dt_hours_W42-23" DOUBLE PRECISION,
-    "ma_W43-23" DOUBLE PRECISION,
-    "dt_hours_W43-23" DOUBLE PRECISION,
-    "ma_W44-23" DOUBLE PRECISION,
-    "dt_hours_W44-23" DOUBLE PRECISION,
-    "ma_W45-23" DOUBLE PRECISION,
-    "dt_hours_W45-23" DOUBLE PRECISION,
-    "ma_W46-23" DOUBLE PRECISION,
-    "dt_hours_W46-23" DOUBLE PRECISION,
-    "status" TEXT,
-    "customer_name" TEXT,
-    "engine" TEXT,
-    "oem_hp" DOUBLE PRECISION,
-    "compressor_name" TEXT,
-    "operational_region" TEXT
-);
-
--- CreateTable
-CREATE TABLE "units" (
-    "unit_id" UUID NOT NULL DEFAULT uuid_generate_v4(),
-    "device_name" VARCHAR(100),
-    "source" VARCHAR(20) NOT NULL,
-    "unit_number" VARCHAR(100),
-    "lease_name" VARCHAR(100),
-
-    CONSTRAINT "units_pkey" PRIMARY KEY ("unit_id")
-);
-
--- CreateTable
-CREATE TABLE "weekly_downtime" (
-    "week_id" UUID NOT NULL DEFAULT uuid_generate_v4(),
-    "device_name" VARCHAR(100) NOT NULL,
-    "week" VARCHAR(20) NOT NULL,
-    "ma" REAL NOT NULL,
-    "dt_hours" REAL NOT NULL,
-
-    CONSTRAINT "weekly_downtime_pkey" PRIMARY KEY ("week_id")
+    CONSTRAINT "parameter_pkey" PRIMARY KEY ("unit_number","name")
 );
 
 -- CreateTable
@@ -208,7 +18,7 @@ CREATE TABLE "unit" (
     "state" TEXT,
     "engine" TEXT,
     "engine_family" TEXT,
-    "engineSerialNum" TEXT,
+    "engine_serial_num" TEXT,
     "afr" TEXT,
     "catalyst" TEXT,
     "catalyst_mm" TEXT,
@@ -262,18 +72,13 @@ CREATE TABLE "unit" (
 );
 
 -- CreateTable
-CREATE TABLE "parameter" (
-    "unit_number" VARCHAR(20) NOT NULL,
-    "name" VARCHAR(100) NOT NULL,
-    "value" VARCHAR(100),
-    "timestamp" TIMESTAMPTZ(6),
+CREATE TABLE "weekly_downtime" (
+    "id" UUID NOT NULL DEFAULT uuid_generate_v4(),
+    "unit_number" VARCHAR(100) NOT NULL,
+    "week" VARCHAR(20) NOT NULL,
+    "ma" REAL NOT NULL,
+    "dt_hours" REAL NOT NULL,
 
-    CONSTRAINT "parameter_pkey" PRIMARY KEY ("unit_number","name")
+    CONSTRAINT "weekly_downtime_pkey" PRIMARY KEY ("id")
 );
-
--- CreateIndex
-CREATE UNIQUE INDEX "units_unique" ON "units"("device_name");
-
--- AddForeignKey
-ALTER TABLE "weekly_downtime" ADD CONSTRAINT "weekly_downtime_fkey" FOREIGN KEY ("device_name") REFERENCES "units"("device_name") ON DELETE NO ACTION ON UPDATE NO ACTION;
 

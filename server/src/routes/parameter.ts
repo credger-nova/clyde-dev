@@ -2,7 +2,7 @@ import { FastifyInstance, FastifyRequest } from "fastify"
 import { prisma } from "../prisma-client"
 import { UnitStatus } from "../models/types"
 
-const OIL_PRES_UNITS = ["N11073"]
+const OIL_PRES_UNITS = ["N11073", "HC90128"]
 const VOLTAGE_UNITS = ["HC15153", "HC11077", "HC90014"]
 const RPM = ["Engine Speed", "Driver RPM", "Engine Speed from EICS"]
 const STATUS_MESSAGE = ["Fault code"]
@@ -47,7 +47,7 @@ async function routes(fastify: FastifyInstance) {
             let unitStatus: UnitStatus = { unitNumber: key } as UnitStatus
 
             if (OIL_PRES_UNITS.includes(key)) {
-                if (Number(value.find(i => i.name === "Comp Oil Pres")!.value) >= 40) {
+                if (Number(value.find(i => i.name === "Comp Oil Pres")!.value) >= 30) {
                     unitStatus.status = "Running"
                 } else {
                     unitStatus.status = "Stopped"

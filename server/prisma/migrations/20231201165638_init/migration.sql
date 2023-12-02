@@ -1,14 +1,4 @@
 -- CreateTable
-CREATE TABLE "parameter" (
-    "unit_number" VARCHAR(20) NOT NULL,
-    "name" VARCHAR(100) NOT NULL,
-    "value" VARCHAR(100),
-    "timestamp" TIMESTAMPTZ(6),
-
-    CONSTRAINT "parameter_pkey" PRIMARY KEY ("unit_number","name")
-);
-
--- CreateTable
 CREATE TABLE "unit" (
     "status" TEXT,
     "unit_number" TEXT NOT NULL,
@@ -32,7 +22,7 @@ CREATE TABLE "unit" (
     "stages" TEXT,
     "cylinder_size" TEXT,
     "package_mfg_date" TIMESTAMP(6),
-    "engine_mfg_date" TEXT,
+    "engine_mfg_date" TIMESTAMP(6),
     "zero_hour_date" TIMESTAMP(6),
     "compressor_frame_rebuild" TIMESTAMP(6),
     "top_end" TIMESTAMP(6),
@@ -42,7 +32,7 @@ CREATE TABLE "unit" (
     "trailer_unit" TEXT,
     "unit_set_date" TIMESTAMP(6),
     "billing_start_date" TIMESTAMP(6),
-    "billing_end_date" TEXT,
+    "billing_end_date" TIMESTAMP(6),
     "last_billing_date" TIMESTAMP(6),
     "on_off_contract" TEXT,
     "mtm_last_price_increase" TEXT,
@@ -72,13 +62,27 @@ CREATE TABLE "unit" (
 );
 
 -- CreateTable
+CREATE TABLE "parameter" (
+    "unit_number" VARCHAR(20) NOT NULL,
+    "name" VARCHAR(100) NOT NULL,
+    "value" VARCHAR(100),
+    "timestamp" TIMESTAMPTZ(6),
+
+    CONSTRAINT "parameter_pkey" PRIMARY KEY ("unit_number","name")
+);
+
+-- CreateTable
 CREATE TABLE "weekly_downtime" (
-    "id" UUID NOT NULL DEFAULT uuid_generate_v4(),
     "unit_number" VARCHAR(100) NOT NULL,
     "week" VARCHAR(20) NOT NULL,
     "ma" REAL NOT NULL,
     "dt_hours" REAL NOT NULL,
 
-    CONSTRAINT "weekly_downtime_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "weekly_downtime_pkey" PRIMARY KEY ("unit_number","week")
 );
 
+-- AddForeignKey
+ALTER TABLE "parameter" ADD CONSTRAINT "parameter_unit_number_fkey" FOREIGN KEY ("unit_number") REFERENCES "unit"("unit_number") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "weekly_downtime" ADD CONSTRAINT "weekly_downtime_unit_number_fkey" FOREIGN KEY ("unit_number") REFERENCES "unit"("unit_number") ON DELETE RESTRICT ON UPDATE CASCADE;

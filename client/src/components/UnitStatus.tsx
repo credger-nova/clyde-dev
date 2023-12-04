@@ -7,7 +7,7 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import CircleIcon from '@mui/icons-material/Circle';
-import { UnitSatus } from "../types/types";
+import { UnitStatus as IUnitStatus } from "../types/types";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -30,7 +30,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 }));
 
 interface Props {
-    parameters: Array<UnitSatus> | null
+    parameters: Array<IUnitStatus> | null
 }
 
 export default function UnitStatus(props: Props) {
@@ -41,13 +41,17 @@ export default function UnitStatus(props: Props) {
                     <StyledTableRow>
                         <StyledTableCell></StyledTableCell>
                         <StyledTableCell>Unit Number</StyledTableCell>
+                        <StyledTableCell>Location</StyledTableCell>
+                        <StyledTableCell>Customer</StyledTableCell>
+                        <StyledTableCell>Engine Family</StyledTableCell>
                         <StyledTableCell>Status</StyledTableCell>
                         <StyledTableCell>Status Message</StyledTableCell>
+                        <StyledTableCell>Telemetry</StyledTableCell>
                         <StyledTableCell>Last Updated</StyledTableCell>
                     </StyledTableRow>
                 </TableHead>
                 <TableBody>
-                    {props.parameters?.map((param: UnitSatus) => (
+                    {props.parameters?.map((param: IUnitStatus) => (
                         <StyledTableRow
                             key={param.unitNumber}
                             sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
@@ -56,8 +60,12 @@ export default function UnitStatus(props: Props) {
                                 <CircleIcon sx={{ color: param.status === "Stopped" ? "red" : param.status === "Cold" ? "deepskyblue" : "green", fontSize: "1.25rem" }} />
                             </StyledTableCell>
                             <StyledTableCell>{param.unitNumber}</StyledTableCell>
+                            <StyledTableCell>{param.location}</StyledTableCell>
+                            <StyledTableCell>{param.customer}</StyledTableCell>
+                            <StyledTableCell>{param.engineFamily}</StyledTableCell>
                             <StyledTableCell>{param.status}</StyledTableCell>
                             <StyledTableCell>{param.statusMessage}</StyledTableCell>
+                            <StyledTableCell>{param.telemetry}</StyledTableCell>
                             <StyledTableCell>{new Date(param.timestamp).toLocaleString()}</StyledTableCell>
                         </StyledTableRow>
                     ))}

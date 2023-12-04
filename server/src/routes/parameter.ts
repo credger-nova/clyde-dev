@@ -2,7 +2,7 @@ import { FastifyInstance, FastifyRequest } from "fastify"
 import { prisma } from "../prisma-client"
 import { UnitStatus } from "../models/types"
 
-const OIL_PRES_UNITS = ["N11073", "HC90128"]
+const OIL_PRES_UNITS = ["N11073", "N90128"]
 const VOLTAGE_UNITS = ["HC15153", "HC11077", "HC90014"]
 const RPM = ["Engine Speed", "Driver RPM", "Engine Speed from EICS"]
 const STATUS_MESSAGE = ["Fault code"]

@@ -36,6 +36,16 @@ async function routes(fastify: FastifyInstance) {
                     { name: "Comp Oil Pres" },
                     { name: "External DC Voltage" }
                 ]
+            },
+            include: {
+                Unit: {
+                    select: {
+                        telemetry: true,
+                        location: true,
+                        customer: true,
+                        engineFamily: true
+                    }
+                }
             }
         })
 
@@ -71,8 +81,12 @@ async function routes(fastify: FastifyInstance) {
             const message = value.find(i => STATUS_MESSAGE.includes(i.name))
             unitStatus.statusMessage = message ? message.value! : ""
 
-            const rpm = value.find(i => RPM.includes(i.name))
-            unitStatus.timestamp = rpm!.timestamp!
+            const unit = value.find(i => i.unitNumber === key)
+            unitStatus.timestamp = unit?.timestamp!
+            unitStatus.location = unit?.Unit?.location!
+            unitStatus.customer = unit?.Unit?.customer!
+            unitStatus.engineFamily = unit?.Unit?.engineFamily!
+            unitStatus.telemetry = unit?.Unit?.telemetry!
 
             if (((new Date().valueOf() - unitStatus.timestamp.valueOf()) / (1000 * 24 * 60 * 60)) > 1) {
                 unitStatus.status = "Cold"

@@ -124,15 +124,10 @@ async function main() {
             console.error(error)
         }
 
-        const json = JSON.stringify(result)
-        fs.writeFile('unit.json', json, "utf-8", () => {
-
-        })
-
         for (const unit of result) {
             const createdUnit = await prisma.unit.upsert({
                 where: { unitNumber: unit.unitNumber },
-                update: {},
+                update: unit,
                 create: unit
             })
         }
@@ -176,11 +171,6 @@ async function main() {
             console.error(error)
         }
 
-        const json = JSON.stringify(result)
-        fs.writeFile('parameter.json', json, "utf-8", () => {
-
-        })
-
         for (const parameter of result) {
             const createdParameter = await prisma.parameter.upsert({
                 where: {
@@ -189,7 +179,7 @@ async function main() {
                         name: parameter.name
                     }
                 },
-                update: {},
+                update: parameter,
                 create: parameter
             })
         }
@@ -233,11 +223,6 @@ async function main() {
             console.error(error)
         }
 
-        const json = JSON.stringify(result)
-        fs.writeFile('downtime.json', json, "utf-8", () => {
-
-        })
-
         for (const weeklyDowntime of result) {
             const createdWeeklyDowntime = await prisma.weeklyDowntime.upsert({
                 where: {
@@ -246,7 +231,7 @@ async function main() {
                         week: weeklyDowntime.week
                     }
                 },
-                update: {},
+                update: weeklyDowntime,
                 create: weeklyDowntime
             })
         }

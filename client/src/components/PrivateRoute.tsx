@@ -14,7 +14,7 @@ const Route = ({ children }: Props) => {
     return user ? <Layout>{children}</Layout> : <Navigate to="/login" /> // TODO: Create page to redirect to login
 }
 
-const PrivateRoute = withAuthenticationRequired(Route as React.FunctionComponent, {
+const PrivateRoute = withAuthenticationRequired(Route, {
     onRedirecting: () => <Loader />
 })
 

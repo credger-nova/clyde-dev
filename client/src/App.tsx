@@ -10,20 +10,19 @@ const Home = React.lazy(() => import("./pages/home"))
 const Units = React.lazy(() => import("./pages/units"))
 
 function App() {
-  const MyPrivateRoute = PrivateRoute
 
   return (
     <React.Suspense fallback={<Loader />}>
       <Routes>
         <Route path="/" element={
-          <MyPrivateRoute>
+          <PrivateRoute>
             <Home />
-          </MyPrivateRoute>
+          </PrivateRoute>
         } />
         <Route path="/units" element={
-          <MyPrivateRoute>
+          <PrivateRoute>
             <Units />
-          </MyPrivateRoute>
+          </PrivateRoute>
         } />
       </Routes>
     </React.Suspense>

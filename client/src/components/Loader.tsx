@@ -18,10 +18,9 @@ function NovaCircularLoad(props: CircularProgressProps) {
             />
             <CircularProgress
                 variant="indeterminate"
-                disableShrink
                 sx={{
                     color: "white",
-                    animationDuration: '1000ms',
+                    animationDuration: '1500ms',
                     left: 0,
                     [`& .${circularProgressClasses.circle}`]: {
                         strokeLinecap: "round",

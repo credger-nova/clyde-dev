@@ -1,15 +1,32 @@
-import { Route, Routes } from 'react-router-dom'
-import Units from './pages/units'
-import Home from './pages/home'
+import * as React from "react"
+
+import { Route, Routes } from "react-router-dom"
+import Loader from "./components/Loader"
+import PrivateRoute from "./components/PrivateRoute"
+
 import './css/app.css'
 
+const Home = React.lazy(() => import("./pages/home"))
+const Units = React.lazy(() => import("./pages/units"))
+
 function App() {
+  const MyPrivateRoute = PrivateRoute
 
   return (
-    <Routes>
-      <Route path="/" element={<Home />} />
-      <Route path="/units" element={<Units />} />
-    </Routes>
+    <React.Suspense fallback={<Loader />}>
+      <Routes>
+        <Route path="/" element={
+          <MyPrivateRoute>
+            <Home />
+          </MyPrivateRoute>
+        } />
+        <Route path="/units" element={
+          <MyPrivateRoute>
+            <Units />
+          </MyPrivateRoute>
+        } />
+      </Routes>
+    </React.Suspense>
   )
 }
 

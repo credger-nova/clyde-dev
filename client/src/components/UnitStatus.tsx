@@ -42,10 +42,10 @@ export default function UnitStatus(props: Props) {
                         <StyledTableCell></StyledTableCell>
                         <StyledTableCell>Unit Number</StyledTableCell>
                         <StyledTableCell>Location</StyledTableCell>
-                        <StyledTableCell>Customer</StyledTableCell>
-                        <StyledTableCell>Engine Family</StyledTableCell>
                         <StyledTableCell>Status</StyledTableCell>
                         <StyledTableCell>Status Message</StyledTableCell>
+                        <StyledTableCell>Customer</StyledTableCell>
+                        <StyledTableCell>Engine Family</StyledTableCell>
                         <StyledTableCell>Telemetry</StyledTableCell>
                         <StyledTableCell>Last Updated</StyledTableCell>
                     </StyledTableRow>
@@ -61,10 +61,10 @@ export default function UnitStatus(props: Props) {
                             </StyledTableCell>
                             <StyledTableCell>{param.unitNumber}</StyledTableCell>
                             <StyledTableCell>{param.location}</StyledTableCell>
-                            <StyledTableCell>{param.customer}</StyledTableCell>
-                            <StyledTableCell>{param.engineFamily}</StyledTableCell>
                             <StyledTableCell>{param.status}</StyledTableCell>
                             <StyledTableCell>{param.statusMessage}</StyledTableCell>
+                            <StyledTableCell>{param.customer}</StyledTableCell>
+                            <StyledTableCell>{param.engineFamily}</StyledTableCell>
                             <StyledTableCell>{param.telemetry}</StyledTableCell>
                             <StyledTableCell>{new Date(param.timestamp).toLocaleString()}</StyledTableCell>
                         </StyledTableRow>

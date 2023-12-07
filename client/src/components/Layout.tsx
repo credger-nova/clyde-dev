@@ -1,24 +1,25 @@
 import * as React from "react"
 import { styled } from "@mui/material/styles"
 
-import { useAuth0 } from "@auth0/auth0-react"
 import { useUIState } from "../hooks/utils"
 
 import AppBar from "@mui/material/AppBar"
 import Box from "@mui/material/Box"
 import Drawer from "@mui/material/Drawer"
 import Divider from "@mui/material/Divider"
-import IconButton from "@mui/material/IconButton";
-import MenuIcon from "@mui/icons-material/Menu";
+import IconButton from "@mui/material/IconButton"
+import MenuIcon from "@mui/icons-material/Menu"
 import Toolbar from "@mui/material/Toolbar"
-import Link from "@mui/material/Link";
-import List from "@mui/material/List";
-import ListItemButton from "@mui/material/ListItem";
-import ListItemIcon from "@mui/material/ListItemIcon";
-import ListItemText from "@mui/material/ListItemText";
-import HomeIcon from '@mui/icons-material/Home';
-import SensorsIcon from '@mui/icons-material/Sensors';
+import Link from "@mui/material/Link"
+import List from "@mui/material/List"
+import ListItemButton from "@mui/material/ListItem"
+import ListItemIcon from "@mui/material/ListItemIcon"
+import ListItemText from "@mui/material/ListItemText"
+import HomeIcon from '@mui/icons-material/Home'
+import SensorsIcon from '@mui/icons-material/Sensors'
+import AssignmentOutlinedIcon from '@mui/icons-material/AssignmentOutlined'
 import { Link as RouterLink, Outlet } from "react-router-dom"
+import ProfileMenu from "./ProfileMenu"
 
 const drawerWidth = 240
 
@@ -55,10 +56,7 @@ type Props = {
 }
 
 export default function Layout({ children }: Props) {
-    const { logout, user } = useAuth0()
     const { state, dispatch } = useUIState()
-
-    const onLogout = () => logout({ returnTo: window.location.origin })
 
     const onDrawerToggle = () => {
         dispatch({ type: "TOGGLE_DRAWER", payload: !state.isDrawerOpen })
@@ -89,8 +87,15 @@ export default function Layout({ children }: Props) {
                             component={RouterLink}
                             to="/"
                         >
-                            <img src="https://res.cloudinary.com/dvdturlak/image/upload/v1701810257/Kepler/nova-simple_yrdti4.svg" alt="Nova Compression" style={{ height: "3.5em", marginLeft: "5px" }} />
+                            <img
+                                src="https://res.cloudinary.com/dvdturlak/image/upload/v1701810257/Kepler/nova-simple_yrdti4.svg"
+                                alt="Nova Compression"
+                                style={{ height: "3.5em", marginLeft: "5px" }}
+                            />
                         </Link>
+                    </div>
+                    <div style={{ display: "flex", alignItems: "center" }}>
+                        <ProfileMenu />
                     </div>
                 </Toolbar>
             </AppBar>
@@ -138,6 +143,21 @@ export default function Layout({ children }: Props) {
                                 <SensorsIcon />
                             </ListItemIcon>
                             <ListItemText primary="Unit Status" />
+                        </ListItemButton>
+                    </Link>
+                    <Divider />
+                    <Link
+                        color="textPrimary"
+                        component={RouterLink}
+                        sx={{ display: "flex", width: "100%" }}
+                        to="/forms"
+                        underline="hover"
+                    >
+                        <ListItemButton>
+                            <ListItemIcon>
+                                <AssignmentOutlinedIcon />
+                            </ListItemIcon>
+                            <ListItemText primary="Forms" />
                         </ListItemButton>
                     </Link>
                     <Divider />

@@ -1,6 +1,6 @@
 import { createTheme, Theme } from "@mui/material/styles";
 
-export const PRIMARY_MAIN = "#F57422";
+export const PRIMARY_MAIN = "#FFFFFF";
 export const PRIMARY_LIGHT = "#FCBB93";
 export const PRIMARY_DARK = "#CE4A0B";
 export const SECONDARY_MAIN = "#043C5C";
@@ -57,6 +57,10 @@ const theme: Theme = createTheme({
         h6: {
             fontWeight: 600,
         },
+        button: {
+            textTransform: "none",
+            fontWeight: "400"
+        }
     },
 
 });

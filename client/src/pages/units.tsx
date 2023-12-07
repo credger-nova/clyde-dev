@@ -1,7 +1,7 @@
 import useFetch from "../hooks/useFetch"
 import UnitStatus from "../components/UnitStatus"
 
-function Units() {
+export default function Units() {
     const { data: unitParameters } = useFetch(`${import.meta.env.VITE_API_BASE}/parameter/status`)
 
     return (
@@ -12,5 +12,3 @@ function Units() {
         </div>
     )
 }
-
-export default Units

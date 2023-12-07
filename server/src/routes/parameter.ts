@@ -70,7 +70,7 @@ async function routes(fastify: FastifyInstance) {
                 }
             } else {
                 if (value.find(i => RPM.includes(i.name))) {
-                    if (Number(value.find(i => RPM.includes(i.name))!.value) > 0) {
+                    if (Number(value.find(i => RPM.includes(i.name))!.value) >= 10) {
                         unitStatus.status = "Running"
                     } else {
                         unitStatus.status = "Stopped"
@@ -82,7 +82,8 @@ async function routes(fastify: FastifyInstance) {
             unitStatus.statusMessage = message ? message.value! : ""
 
             const unit = value.find(i => i.unitNumber === key)
-            unitStatus.timestamp = unit?.timestamp!
+
+            unitStatus.timestamp = value.reduce((a, b) => a.timestamp! > b.timestamp! ? a : b).timestamp!
             unitStatus.location = unit?.Unit?.location!
             unitStatus.customer = unit?.Unit?.customer!
             unitStatus.engineFamily = unit?.Unit?.engineFamily!

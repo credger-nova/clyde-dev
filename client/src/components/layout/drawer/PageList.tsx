@@ -53,6 +53,7 @@ export default function PageList(props: Props) {
                         sx={{ display: "flex", width: "100%" }}
                         to={`/${page.url}`}
                         underline="none"
+                        key={page.url}
                     >
                         <StyledListItemButton
                             selected={selectedPage === page.url}

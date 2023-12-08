@@ -1,8 +1,8 @@
 import * as React from "react"
 
 import { Route, Routes } from "react-router-dom"
-import Loader from "./components/Loader"
-import PrivateRoute from "./components/PrivateRoute"
+import Loader from "./components/common/Loader"
+import PrivateRoute from "./components/common/PrivateRoute"
 
 import './css/app.css'
 

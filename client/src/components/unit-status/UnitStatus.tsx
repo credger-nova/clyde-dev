@@ -7,7 +7,7 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import CircleIcon from '@mui/icons-material/Circle';
-import { UnitStatus as IUnitStatus } from "../types/types";
+import { UnitStatus as IUnitStatus } from "../../types/types";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -39,11 +39,10 @@ export default function UnitStatus(props: Props) {
             <Table size="small" aria-label="Unit Status" stickyHeader>
                 <TableHead>
                     <StyledTableRow>
-                        <StyledTableCell></StyledTableCell>
                         <StyledTableCell>Unit Number</StyledTableCell>
-                        <StyledTableCell>Location</StyledTableCell>
                         <StyledTableCell>Status</StyledTableCell>
                         <StyledTableCell>Status Message</StyledTableCell>
+                        <StyledTableCell>Location</StyledTableCell>
                         <StyledTableCell>Customer</StyledTableCell>
                         <StyledTableCell>Engine Family</StyledTableCell>
                         <StyledTableCell>Telemetry</StyledTableCell>
@@ -56,13 +55,19 @@ export default function UnitStatus(props: Props) {
                             key={param.unitNumber}
                             sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                         >
-                            <StyledTableCell align='center'>
-                                <CircleIcon sx={{ color: param.status === "Stopped" ? "red" : param.status === "Cold" ? "deepskyblue" : "green", fontSize: "1.25rem" }} />
+                            <StyledTableCell>
+                                <div style={{ display: "flex", alignItems: "center" }}>
+                                    <CircleIcon sx={{
+                                        color: param.status === "Stopped" ? "red" : param.status === "Cold" ? "deepskyblue" : "green",
+                                        fontSize: "1.25rem",
+                                        marginRight: "5px"
+                                    }} />
+                                    {param.unitNumber}
+                                </div>
                             </StyledTableCell>
-                            <StyledTableCell>{param.unitNumber}</StyledTableCell>
-                            <StyledTableCell>{param.location}</StyledTableCell>
                             <StyledTableCell>{param.status}</StyledTableCell>
                             <StyledTableCell>{param.statusMessage}</StyledTableCell>
+                            <StyledTableCell>{param.location}</StyledTableCell>
                             <StyledTableCell>{param.customer}</StyledTableCell>
                             <StyledTableCell>{param.engineFamily}</StyledTableCell>
                             <StyledTableCell>{param.telemetry}</StyledTableCell>

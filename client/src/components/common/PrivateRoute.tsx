@@ -1,7 +1,7 @@
 import { useAuth0, withAuthenticationRequired } from "@auth0/auth0-react"
 import { ReactNode } from "react"
 import { Navigate } from "react-router-dom"
-import Layout from "./Layout"
+import Layout from "../layout/Layout"
 import Loader from "./Loader"
 
 interface Props {

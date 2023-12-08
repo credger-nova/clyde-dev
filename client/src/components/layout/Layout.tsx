@@ -10,8 +10,8 @@ import MenuIcon from "@mui/icons-material/Menu"
 import Toolbar from "@mui/material/Toolbar"
 import Link from "@mui/material/Link"
 import { Link as RouterLink, Outlet } from "react-router-dom"
-import ProfileMenu from "../ProfileMenu"
-import Drawer from "./Drawer"
+import ProfileMenu from "../profile/ProfileMenu"
+import Drawer from "./drawer/Drawer"
 
 const drawerWidth = 240
 

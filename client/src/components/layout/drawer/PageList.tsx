@@ -26,6 +26,7 @@ const StyledListItemButton = styled(ListItemButton)({
     },
     "&.Mui-selected": {
         color: "white",
+        borderLeft: "4px solid white",
         backgroundColor: "transparent",
         ".MuiListItemIcon-root": {
             color: "white"
@@ -47,13 +48,14 @@ export default function PageList(props: Props) {
             sx={{ padding: 0 }}
         >
             {props.pages.map((page) => (
-                <React.Fragment>
+                <React.Fragment
+                    key={page.url}
+                >
                     <Link
                         component={RouterLink}
                         sx={{ display: "flex", width: "100%" }}
                         to={`/${page.url}`}
                         underline="none"
-                        key={page.url}
                     >
                         <StyledListItemButton
                             selected={selectedPage === page.url}

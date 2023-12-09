@@ -6,6 +6,7 @@ import HomeIcon from '@mui/icons-material/Home'
 import SensorsIcon from '@mui/icons-material/Sensors'
 import AssignmentOutlinedIcon from '@mui/icons-material/AssignmentOutlined'
 import MoveUpIcon from '@mui/icons-material/MoveUp'
+import PlaceIcon from '@mui/icons-material/Place'
 import { Drawer as MuiDrawer } from "@mui/material"
 import PageList from "./PageList"
 
@@ -22,6 +23,7 @@ const DrawerHeader = styled("div")(({ theme }) => ({
 const pages = [
     { name: "Home", url: "", icon: <HomeIcon /> },
     { name: "Unit Status", url: "units", icon: <SensorsIcon /> },
+    { name: "Unit Map", url: "map", icon: <PlaceIcon /> },
     { name: "Supply Chain", url: "supply-chain", icon: <MoveUpIcon /> },
     { name: "Forms", url: "forms", icon: <AssignmentOutlinedIcon /> },
 ]

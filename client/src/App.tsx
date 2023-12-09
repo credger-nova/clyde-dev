@@ -8,6 +8,7 @@ import './css/app.css'
 
 const Home = React.lazy(() => import("./pages/home"))
 const Units = React.lazy(() => import("./pages/units"))
+const UnitMap = React.lazy(() => import("./pages/map"))
 const SupplyChain = React.lazy(() => import("./pages/supply-chain"))
 const Forms = React.lazy(() => import("./pages/forms"))
 
@@ -24,6 +25,11 @@ function App() {
         <Route path="/units" element={
           <PrivateRoute>
             <Units />
+          </PrivateRoute>
+        } />
+        <Route path="/map" element={
+          <PrivateRoute>
+            <UnitMap />
           </PrivateRoute>
         } />
         <Route path="/supply-chain" element={

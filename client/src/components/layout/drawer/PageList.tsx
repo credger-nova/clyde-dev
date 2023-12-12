@@ -26,7 +26,7 @@ const StyledListItemButton = styled(ListItemButton)({
     },
     "&.Mui-selected": {
         color: "white",
-        borderLeft: "4px solid white",
+        textDecoration: "underline",
         backgroundColor: "transparent",
         ".MuiListItemIcon-root": {
             color: "white"

@@ -1,5 +1,5 @@
 import { FastifyInstance, FastifyRequest } from "fastify"
-import { prisma } from "../prisma-client"
+import { prisma } from "../utils/prisma-client"
 
 async function routes(fastify: FastifyInstance) {
     // Get all units

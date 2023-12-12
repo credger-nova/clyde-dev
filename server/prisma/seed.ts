@@ -2,7 +2,7 @@ import * as fs from "fs"
 import * as path from "path"
 import { parse } from "csv-parse"
 import { Unit, Parameter, WeeklyDowntime } from "@prisma/client"
-import { prisma } from "../src/prisma-client"
+import { prisma } from "../src/utils/prisma-client"
 
 const NUM_COLS = [
     "oemHP",

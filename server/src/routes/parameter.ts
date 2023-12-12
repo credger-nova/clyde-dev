@@ -1,5 +1,5 @@
 import { FastifyInstance, FastifyRequest } from "fastify"
-import { prisma } from "../prisma-client"
+import { prisma } from "../utils/prisma-client"
 import { UnitStatus } from "../models/types"
 
 const OIL_PRES_UNITS = ["N11073", "N90128"]

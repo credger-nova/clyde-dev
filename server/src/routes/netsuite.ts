@@ -22,7 +22,7 @@ async function routes(fastify: FastifyInstance) {
     fastify.get("/trucks", async (req, res) => {
         const jwt = await getNsAccessJwt()
 
-        const { data } = await axios.get("",
+        const { data } = await axios.get("https://8898907-sb1.restlets.api.netsuite.com/app/site/hosting/restlet.nl?script=672&deploy=1",
             {
                 headers: {
                     "Content-Type": "application/json",

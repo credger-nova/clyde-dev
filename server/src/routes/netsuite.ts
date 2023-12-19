@@ -32,6 +32,21 @@ async function routes(fastify: FastifyInstance) {
 
         return data
     })
+
+    // Route to get SO #s
+    fastify.get("/sales-orders", async (req, res) => {
+        const jwt = await getNsAccessJwt()
+
+        const { data } = await axios.get("https://8898907-sb1.restlets.api.netsuite.com/app/site/hosting/restlet.nl?script=673&deploy=1",
+            {
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${jwt.access_token}`
+                }
+            })
+
+        return data
+    })
 }
 
 export default routes

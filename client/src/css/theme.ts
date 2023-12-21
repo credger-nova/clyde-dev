@@ -2,9 +2,9 @@ import { createTheme, Theme } from "@mui/material/styles";
 
 export const PRIMARY_MAIN = "#FFFFFF";
 export const PRIMARY_LIGHT = "#FCBB93";
-export const PRIMARY_DARK = "#CE4A0B";
-export const SECONDARY_MAIN = "#043C5C";
-export const SECONDARY_LIGHT = "#043C5C";
+export const PRIMARY_DARK = "#680bce";
+export const SECONDARY_MAIN = "#680bce";
+export const SECONDARY_LIGHT = "#680bce";
 export const SECONDARY_DARK = "#1A1E22";
 export const BACKGROUND = "#1C252F";
 export const PAPER = "#16181A";

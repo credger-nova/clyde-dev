@@ -1,13 +1,12 @@
 import React from "react"
 
-import { styled } from "@mui/material/styles"
 import Divider from "@mui/material/Divider"
 import Link from "@mui/material/Link"
 import List from "@mui/material/List"
-import ListItemButton from "@mui/material/ListItem"
 import ListItemIcon from "@mui/material/ListItemIcon"
 import ListItemText from "@mui/material/ListItemText"
 import { Link as RouterLink } from "react-router-dom"
+import { StyledListItemButton } from "../../common/StyledListItemButton"
 
 interface Page {
     name: string,
@@ -18,24 +17,6 @@ interface Page {
 interface Props {
     pages: Array<Page>
 }
-
-const StyledListItemButton = styled(ListItemButton)({
-    color: "darkgray",
-    ".MuiListItemIcon-root": {
-        color: "darkgray"
-    },
-    "&.Mui-selected": {
-        color: "white",
-        textDecoration: "underline",
-        backgroundColor: "transparent",
-        ".MuiListItemIcon-root": {
-            color: "white"
-        }
-    },
-    "&:hover": {
-        backgroundColor: "rgba(255, 255, 255, 0.08)"
-    }
-})
 
 export default function PageList(props: Props) {
     const [selectedPage, setSelectedPage] = React.useState<string>(location.pathname.split("/")[1])

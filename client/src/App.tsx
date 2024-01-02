@@ -1,6 +1,6 @@
 import * as React from "react"
 
-import { Route, Routes } from "react-router-dom"
+import { Routes, Route } from "react-router-dom"
 import Loader from "./components/common/Loader"
 import PrivateRoute from "./components/common/PrivateRoute"
 
@@ -12,32 +12,31 @@ const UnitMap = React.lazy(() => import("./pages/map"))
 const SupplyChain = React.lazy(() => import("./pages/supply-chain"))
 const Forms = React.lazy(() => import("./pages/forms"))
 
-function App() {
-
+export default function App() {
   return (
     <React.Suspense fallback={<Loader />}>
       <Routes>
-        <Route path="/" element={
+        <Route path="" element={
           <PrivateRoute>
             <Home />
           </PrivateRoute>
         } />
-        <Route path="/units" element={
+        <Route path="units" element={
           <PrivateRoute>
             <Units />
           </PrivateRoute>
         } />
-        <Route path="/map" element={
+        <Route path="map" element={
           <PrivateRoute>
             <UnitMap />
           </PrivateRoute>
         } />
-        <Route path="/supply-chain" element={
+        <Route path="supply-chain" element={
           <PrivateRoute>
             <SupplyChain />
           </PrivateRoute>
         } />
-        <Route path="/forms" element={
+        <Route path="forms/*" element={
           <PrivateRoute>
             <Forms />
           </PrivateRoute>
@@ -46,5 +45,3 @@ function App() {
     </React.Suspense>
   )
 }
-
-export default App

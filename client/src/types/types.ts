@@ -26,7 +26,7 @@ export interface Unit {
     compressorFrameFamily: string,
     compressorFrameSN: string,
     stages: string,
-    cyclinderSize: string,
+    cylinderSize: string,
     packageMfgDate: Date,
     engineMfgDate: Date,
     zeroHourDate: Date,

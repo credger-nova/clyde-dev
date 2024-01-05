@@ -8,7 +8,7 @@ import Paper from '@mui/material/Paper'
 import Grid from '@mui/material/Unstable_Grid2'
 import Box from '@mui/material/Box'
 import Divider from '@mui/material/Divider'
-import Autocomplete from '@mui/material/Autocomplete'
+import Autocomplete, { createFilterOptions } from '@mui/material/Autocomplete'
 import Button from '@mui/material/Button'
 import IconButton from '@mui/material/IconButton'
 import Radio from '@mui/material/Radio'
@@ -39,14 +39,14 @@ interface Part {
     id: string,
     values: {
         itemid: string,
-        salesdescription: string,
+        salesdescription: string | null,
         cost: string
     }
 }
 interface OrderRow {
     qty: number,
     itemNumber: string,
-    description: string
+    description: string | null
 }
 
 const URGENCY = ["Unit Down", "Rush", "Standard"]
@@ -139,6 +139,15 @@ export default function PartsReqForm() {
         const tempRows = [...rows]
         const row = { ...tempRows[index] }
         row.qty = Number(e.target.value)
+        tempRows[index] = row
+        setRows(tempRows)
+    }
+
+    const onPartChange = (index: number) => (_e: React.SyntheticEvent, value: Part | null) => {
+        const tempRows = [...rows]
+        const row = { ...tempRows[index] }
+        row.itemNumber = value ? value.values.itemid : ""
+        row.description = value ? value.values.salesdescription : null
         tempRows[index] = row
         setRows(tempRows)
     }
@@ -391,7 +400,23 @@ export default function PartsReqForm() {
                                                         sx={{ width: "100%" }}
                                                     />
                                                 </TableCell>
-                                                <TableCell>{row.itemNumber}</TableCell>
+                                                <TableCell>
+                                                    <Autocomplete
+                                                        options={parts ? parts : []}
+                                                        getOptionLabel={(option: Part) => `${option.values.itemid}` + (option.values.salesdescription ? ` - ${option.values.salesdescription}` : "")}
+                                                        onChange={onPartChange(index)}
+                                                        loading={partsLoading}
+                                                        filterOptions={createFilterOptions({
+                                                            matchFrom: "any",
+                                                            limit: 500
+                                                        })}
+                                                        renderInput={(params) => <StyledTextField
+                                                            {...params}
+                                                            variant="standard"
+                                                            value={rows[index].itemNumber}
+                                                        />}
+                                                    />
+                                                </TableCell>
                                                 <TableCell>{row.description}</TableCell>
                                                 <TableCell>
                                                     <IconButton

@@ -7,7 +7,7 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import CircleIcon from '@mui/icons-material/Circle';
-import { UnitStatus as IUnitStatus } from "../../types/types";
+import { UnitStatus as IUnitStatus } from "../../types/unit";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -30,7 +30,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 }));
 
 interface Props {
-    parameters: Array<IUnitStatus> | null
+    parameters: Array<IUnitStatus> | undefined
 }
 
 export default function UnitStatus(props: Props) {

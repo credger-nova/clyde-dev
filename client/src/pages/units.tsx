@@ -1,13 +1,13 @@
-import useFetch from "../hooks/useFetch"
 import UnitStatus from "../components/unit-status/UnitStatus"
+import { useStatuses } from "../hooks/parameter"
 
 export default function Units() {
-    const { data: unitParameters } = useFetch(`${import.meta.env.VITE_API_BASE}/parameter/status`)
+    const { data: unitStatuses } = useStatuses()
 
     return (
         <div className="page-container">
             <UnitStatus
-                parameters={unitParameters}
+                parameters={unitStatuses}
             />
         </div>
     )

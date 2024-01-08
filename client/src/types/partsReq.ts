@@ -4,10 +4,12 @@ export interface ReqClass {
     afe: string | null,
     so: string | null
 }
+
 export interface RelAsset {
     unit: Unit | null,
     truck: string | null
 }
+
 export interface OrderRow {
     qty: number,
     itemNumber: string,
@@ -26,4 +28,14 @@ export interface PartsReq {
     parts: Array<OrderRow>,
     status: string,
     updated: Date
+}
+
+export interface Part {
+    recordType: string,
+    id: string,
+    values: {
+        itemid: string,
+        salesdescription: string,
+        cost: string
+    }
 }

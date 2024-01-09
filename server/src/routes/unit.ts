@@ -4,7 +4,13 @@ import { prisma } from "../utils/prisma-client"
 async function routes(fastify: FastifyInstance) {
     // Get all units
     fastify.get("/", async (req, res) => {
-        const allUnits = await prisma.unit.findMany()
+        const allUnits = await prisma.unit.findMany({
+            orderBy: [
+                {
+                    unitNumber: "asc"
+                }
+            ]
+        })
 
         return allUnits
     })

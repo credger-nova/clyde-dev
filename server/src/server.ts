@@ -11,6 +11,7 @@ const createServer = async () => {
     await fastify.register(require("./routes/parameter"), { prefix: "parameter" })
     await fastify.register(require("./routes/netsuite"), { prefix: "netsuite" })
     await fastify.register(require("./routes/kpa"), { prefix: "kpa" })
+    await fastify.register(require("./routes/forms"), { prefix: "forms" })
 
     fastify.setErrorHandler((error, req, res) => {
         req.log.error(error.toString())

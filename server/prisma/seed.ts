@@ -32,15 +32,14 @@ const DATE_COLS = [
     "timestamp"
 ]
 
-async function main() {
-    /*
-     * Seed Unit table
-     */
+var csvFilePath, headers, fileContent
 
+function seed_unit() {
     console.log("Seeding Unit Table")
-    var csvFilePath = path.resolve(__dirname, "seeds/unit.csv")
 
-    var headers = [
+    csvFilePath = path.resolve(__dirname, "seeds/unit.csv")
+
+    headers = [
         "status",
         "unitNumber",
         "customer",
@@ -100,7 +99,7 @@ async function main() {
         "releaseWeek",
     ]
 
-    var fileContent = fs.readFileSync(csvFilePath, { encoding: "utf-8" })
+    fileContent = fs.readFileSync(csvFilePath, { encoding: "utf-8" })
 
     parse(fileContent, {
         delimiter: ",",
@@ -132,12 +131,11 @@ async function main() {
             })
         }
     })
+}
 
-    /*
-     * Seed Parameter table
-     */
-
+function seed_parameter() {
     console.log("Seeding Parameter Table")
+
     csvFilePath = path.resolve(__dirname, "seeds/parameter.csv")
 
     headers = [
@@ -184,12 +182,11 @@ async function main() {
             })
         }
     })
+}
 
-    /*
-     * Seed Weekly Downtime table
-     */
-
+function seed_downtime() {
     console.log("Seeding Weekly Downtime Table")
+
     csvFilePath = path.resolve(__dirname, "seeds/weekly_downtime.csv")
 
     headers = [
@@ -238,10 +235,12 @@ async function main() {
     })
 }
 
-main().then(async () => {
+async function main() {
+    seed_unit()
+    seed_parameter()
+    seed_downtime()
+
     await prisma.$disconnect()
-}).catch(async (e) => {
-    console.error(e)
-    await prisma.$disconnect()
-    process.exit(1)
-})
+}
+
+main()

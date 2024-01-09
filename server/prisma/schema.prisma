@@ -67,6 +67,7 @@ model Unit {
   releaseWeek            String?          @map("release_week")
   parameters             Parameter[]
   weeklyDowntimes        WeeklyDowntime[]
+  partsReqs              PartsReq[]
 
   @@map("unit")
 }
@@ -91,4 +92,35 @@ model WeeklyDowntime {
 
   @@id([unitNumber, week])
   @@map("weekly_downtime")
+}
+
+model PartsReqRow {
+  id          String    @id @default(uuid())
+  qty         Int
+  itemNumber  String    @map("item_number")
+  description String?
+  cost        String?
+  PartsReq    PartsReq? @relation(fields: [partsReqId], references: [id])
+  partsReqId  Int?      @map("parts_req_id")
+
+  @@map("parts_req_row")
+}
+
+model PartsReq {
+  id         Int           @id @default(autoincrement())
+  requester  String
+  date       DateTime      @db.Timestamptz(6)
+  afe        String?
+  so         String?
+  unitNumber String?       @map("unit_number")
+  truck      String?
+  urgency    String
+  orderType  String        @map("order_type")
+  region     String
+  parts      PartsReqRow[]
+  status     String
+  updated    DateTime      @db.Timestamptz(6)
+  Unit       Unit?         @relation(fields: [unitNumber], references: [unitNumber], onDelete: Cascade)
+
+  @@map("parts_req")
 }

@@ -1,7 +1,15 @@
 import * as React from "react"
 
 import { useAuth0 } from "@auth0/auth0-react"
-import useFetch from "../../hooks/useFetch"
+import { useAFEs } from "../../hooks/afe"
+import { useSOs } from "../../hooks/so"
+import { useUnits } from "../../hooks/unit"
+import { useTrucks } from "../../hooks/truck"
+import { useParts } from "../../hooks/parts"
+import { createPartsReq } from "../../hooks/partsReq"
+
+import { ReqClass, RelAsset, OrderRow, PartsReq } from "../../types/partsReq"
+import { Unit } from "../../types/unit"
 
 import { styled } from '@mui/material/styles'
 import Paper from '@mui/material/Paper'
@@ -23,17 +31,9 @@ import TableRow from '@mui/material/TableRow'
 import AddIcon from '@mui/icons-material/Add'
 import DeleteIcon from '@mui/icons-material/Delete'
 import { StyledTextField } from "../common/TextField"
-import { Unit } from "../../types/types"
 import { UNIT_PLANNING } from "../../utils/unitPlanning"
+import { useMutation } from "@tanstack/react-query"
 
-interface ReqClass {
-    afe: string,
-    so: string
-}
-interface RelAsset {
-    unit: Unit | null,
-    truck: string
-}
 interface Part {
     recordType: string,
     id: string,
@@ -42,11 +42,6 @@ interface Part {
         salesdescription: string | null,
         cost: string
     }
-}
-interface OrderRow {
-    qty: number,
-    itemNumber: string,
-    description: string | null
 }
 
 const URGENCY = ["Unit Down", "Rush", "Standard"]
@@ -64,23 +59,42 @@ const Item = styled(Paper)(({ theme }) => ({
 export default function PartsReqForm() {
     const { user } = useAuth0()
 
-    const { data: afeNumbers, loading: afeLoading } = useFetch<Array<string>>(`${import.meta.env.VITE_API_BASE}/kpa/afe`)
-    const { data: soNumbers, loading: soLoading } = useFetch<Array<string>>(`${import.meta.env.VITE_API_BASE}/netsuite/sales-orders`)
-    const { data: unitNumbers, loading: unitsLoading } = useFetch<Array<Unit>>(`${import.meta.env.VITE_API_BASE}/unit`)
-    const { data: trucks, loading: trucksLoading } = useFetch<Array<string>>(`${import.meta.env.VITE_API_BASE}/netsuite/trucks`)
-    const { data: parts, loading: partsLoading } = useFetch<Array<Part>>(`${import.meta.env.VITE_API_BASE}/netsuite/items`)
+    const { data: afeNumbers, isFetching: afeFetching } = useAFEs()
+    const { data: soNumbers, isFetching: soFetching } = useSOs()
+    const { data: unitNumbers, isFetching: unitsFetching } = useUnits()
+    const { data: trucks, isFetching: trucksFetching } = useTrucks()
+    const { data: parts, isFetching: partsFetching } = useParts()
+
+    const { mutate: doCreatePartsReq } = useMutation({ mutationFn: createPartsReq })
 
     const [requester] = React.useState<string | undefined>(user?.name)
-    const [orderDate] = React.useState<string>(new Date().toLocaleDateString())
-    const [reqClass, setReqClass] = React.useState<ReqClass>({ afe: "", so: "" })
-    const [relAsset, setRelAsset] = React.useState<RelAsset>({ unit: null, truck: "" })
+    const [orderDate] = React.useState<Date>(new Date())
+    const [reqClass, setReqClass] = React.useState<ReqClass>({ afe: null, so: null })
+    const [relAsset, setRelAsset] = React.useState<RelAsset>({ unit: null, truck: null })
     const [urgency, setUrgency] = React.useState<string>("")
     const [orderType, setOrderType] = React.useState<string>("")
     const [region, setRegion] = React.useState<string>("")
     const [rows, setRows] = React.useState<Array<OrderRow>>([])
 
-    const handleSubmit = () => {
-        console.log("Submitted")
+    const handleSubmit = (event: React.SyntheticEvent) => {
+        event.preventDefault()
+
+        const formData: PartsReq = {
+            requester: requester ? requester : "",
+            date: orderDate,
+            class: reqClass,
+            relAsset: relAsset,
+            urgency: urgency,
+            orderType: orderType,
+            region: region,
+            parts: rows,
+            status: "Created",
+            updated: new Date()
+        }
+
+        doCreatePartsReq(formData)
+
+        window.location.href = ".."
     }
 
     const disableSubmit: boolean = !requester &&
@@ -96,7 +110,7 @@ export default function PartsReqForm() {
         setReqClass((prevState) => {
             return ({
                 ...prevState,
-                afe: value ? value : ""
+                afe: value ? value : null
             })
         })
     }
@@ -104,7 +118,7 @@ export default function PartsReqForm() {
         setReqClass((prevState) => {
             return ({
                 ...prevState,
-                so: value ? value : ""
+                so: value ? value : null
             })
         })
     }
@@ -120,13 +134,13 @@ export default function PartsReqForm() {
         setRelAsset((prevState) => {
             return ({
                 ...prevState,
-                truck: value ? value : ""
+                truck: value ? value : null
             })
         })
     }
 
     const onCreateRow = () => {
-        setRows([...rows, { qty: 1, itemNumber: "", description: "" }])
+        setRows([...rows, { qty: 1, itemNumber: "", description: "", cost: "" }])
     }
 
     function removeRow(index: number) {
@@ -148,6 +162,7 @@ export default function PartsReqForm() {
         const row = { ...tempRows[index] }
         row.itemNumber = value ? value.values.itemid : ""
         row.description = value ? value.values.salesdescription : null
+        row.cost = value ? value.values.cost : null
         tempRows[index] = row
         setRows(tempRows)
     }
@@ -174,7 +189,7 @@ export default function PartsReqForm() {
                                 <StyledTextField
                                     variant="standard"
                                     label="Order Date"
-                                    value={orderDate}
+                                    value={orderDate.toLocaleDateString()}
                                     InputProps={{ readOnly: true }}
                                 />
                                 <b><p style={{ margin: "20px 0px 0px 0px" }}>Class:</p></b>
@@ -182,7 +197,7 @@ export default function PartsReqForm() {
                                 <Autocomplete
                                     options={afeNumbers ? afeNumbers : []}
                                     onChange={onAfeChange}
-                                    loading={afeLoading}
+                                    loading={afeFetching}
                                     renderInput={(params) => <StyledTextField
                                         {...params}
                                         variant="standard"
@@ -193,7 +208,7 @@ export default function PartsReqForm() {
                                 <Autocomplete
                                     options={soNumbers ? soNumbers : []}
                                     onChange={onSoChange}
-                                    loading={soLoading}
+                                    loading={soFetching}
                                     renderInput={(params) => <StyledTextField
                                         {...params}
                                         variant="standard"
@@ -207,13 +222,14 @@ export default function PartsReqForm() {
                                     options={unitNumbers ? unitNumbers : []}
                                     getOptionLabel={(option: Unit) => option.unitNumber}
                                     onChange={onUnitNumberChange}
-                                    loading={unitsLoading}
+                                    loading={unitsFetching}
                                     renderInput={(params) => <StyledTextField
                                         {...params}
                                         variant="standard"
                                         label="Unit #"
                                         value={relAsset.unit}
                                     />}
+                                    disabled={relAsset.truck !== null}
                                 />
                                 <div style={{ display: "flex", flexDirection: "row", width: "100%" }}>
                                     <p style={{ marginTop: "10px", marginRight: "10px" }}>Location:</p>
@@ -237,13 +253,14 @@ export default function PartsReqForm() {
                                 <Autocomplete
                                     options={trucks ? trucks : []}
                                     onChange={onTruckChange}
-                                    loading={trucksLoading}
+                                    loading={trucksFetching}
                                     renderInput={(params) => <StyledTextField
                                         {...params}
                                         variant="standard"
                                         label="Truck #"
                                         value={relAsset.truck}
                                     />}
+                                    disabled={relAsset.unit !== null}
                                 />
                             </Box>
                         </Item>
@@ -403,9 +420,12 @@ export default function PartsReqForm() {
                                                 <TableCell>
                                                     <Autocomplete
                                                         options={parts ? parts : []}
-                                                        getOptionLabel={(option: Part) => `${option.values.itemid}` + (option.values.salesdescription ? ` - ${option.values.salesdescription}` : "")}
+                                                        getOptionLabel={(option: Part) => `${option.values.itemid}` + (option.values.salesdescription ?
+                                                            ` - ${option.values.salesdescription}` :
+                                                            "")}
+
                                                         onChange={onPartChange(index)}
-                                                        loading={partsLoading}
+                                                        loading={partsFetching}
                                                         filterOptions={createFilterOptions({
                                                             matchFrom: "any",
                                                             limit: 500
@@ -413,7 +433,6 @@ export default function PartsReqForm() {
                                                         renderInput={(params) => <StyledTextField
                                                             {...params}
                                                             variant="standard"
-                                                            value={rows[index].itemNumber}
                                                         />}
                                                     />
                                                 </TableCell>

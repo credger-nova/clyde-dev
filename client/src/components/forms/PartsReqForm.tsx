@@ -1,5 +1,6 @@
 import * as React from "react"
 
+import { useMutation } from "@tanstack/react-query"
 import { useAuth0 } from "@auth0/auth0-react"
 import { useAFEs } from "../../hooks/afe"
 import { useSOs } from "../../hooks/so"
@@ -32,7 +33,6 @@ import AddIcon from '@mui/icons-material/Add'
 import DeleteIcon from '@mui/icons-material/Delete'
 import { StyledTextField } from "../common/TextField"
 import { UNIT_PLANNING } from "../../utils/unitPlanning"
-import { useMutation } from "@tanstack/react-query"
 
 interface Part {
     recordType: string,
@@ -79,7 +79,7 @@ export default function PartsReqForm() {
     const handleSubmit = (event: React.SyntheticEvent) => {
         event.preventDefault()
 
-        const formData: PartsReq = {
+        const formData: Omit<PartsReq, "id"> = {
             requester: requester ? requester : "",
             date: orderDate,
             class: reqClass,

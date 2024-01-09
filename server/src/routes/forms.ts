@@ -5,10 +5,34 @@ import { PartsReq } from "../models/partsReq"
 async function routes(fastify: FastifyInstance) {
     // Get all Parts Reqs
     fastify.get("/parts-req", async (req, res) => {
-        const partsReqs = await prisma.partsReq.findMany({
+        const result = await prisma.partsReq.findMany({
             include: {
                 parts: true
             }
+        })
+
+        const partsReqs = result.map((obj) => {
+            return (
+                {
+                    id: obj.id,
+                    requester: obj.requester,
+                    date: obj.date,
+                    class: {
+                        afe: obj.afe,
+                        so: obj.so
+                    },
+                    relAsset: {
+                        unit: obj.unitNumber,
+                        truck: obj.truck
+                    },
+                    urgency: obj.urgency,
+                    orderType: obj.orderType,
+                    region: obj.region,
+                    parts: obj.parts,
+                    status: obj.status,
+                    updated: obj.updated
+                } as PartsReq
+            )
         })
 
         return partsReqs
@@ -16,7 +40,7 @@ async function routes(fastify: FastifyInstance) {
 
     // Get single Parts Req by id
     fastify.get<{ Params: { id: number } }>("/parts-req/:id", async (req, res) => {
-        const partsReq = await prisma.partsReq.findUnique({
+        const result = await prisma.partsReq.findUnique({
             where: {
                 id: Number(req.params.id)
             },
@@ -24,6 +48,31 @@ async function routes(fastify: FastifyInstance) {
                 parts: true
             }
         })
+
+        let partsReq
+        if (result) {
+            partsReq = {
+                id: result.id,
+                requester: result.requester,
+                date: result.date,
+                class: {
+                    afe: result.afe,
+                    so: result.so
+                },
+                relAsset: {
+                    unit: result.unitNumber,
+                    truck: result.truck
+                },
+                urgency: result.urgency,
+                orderType: result.orderType,
+                region: result.region,
+                parts: result.parts,
+                status: result.status,
+                updated: result.updated
+            } as PartsReq
+        } else {
+            partsReq = null
+        }
 
         return partsReq
     })

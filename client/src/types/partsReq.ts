@@ -18,6 +18,7 @@ export interface OrderRow {
 }
 
 export interface PartsReq {
+    id: number,
     requester: string,
     date: Date,
     class: ReqClass,

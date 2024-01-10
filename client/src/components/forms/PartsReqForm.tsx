@@ -204,6 +204,7 @@ export default function PartsReqForm() {
                                         label="AFE #"
                                         value={reqClass.afe}
                                     />}
+                                    disabled={reqClass.so !== null}
                                 />
                                 <Autocomplete
                                     options={soNumbers ? soNumbers : []}
@@ -215,6 +216,7 @@ export default function PartsReqForm() {
                                         label="SO #"
                                         value={reqClass.so}
                                     />}
+                                    disabled={reqClass.afe !== null}
                                 />
                                 <b><p style={{ margin: "20px 0px 0px 0px" }}>Related Asset:</p></b>
                                 <Divider />

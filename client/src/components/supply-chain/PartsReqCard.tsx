@@ -1,13 +1,15 @@
-import { OrderRow, Part, PartsReq } from "../../types/partsReq"
+import { OrderRow, PartsReq } from "../../types/partsReq"
 import Card from '@mui/material/Card'
 import CardHeader from '@mui/material/CardHeader'
 import CardContent from '@mui/material/CardContent'
-import CardActions from '@mui/material/CardActions'
 import Typography from '@mui/material/Typography'
 import Divider from '@mui/material/Divider'
+import { styled } from '@mui/material/styles'
+import { UNIT_PLANNING } from "../../utils/unitPlanning"
 
 interface Props {
-    partsReq: PartsReq
+    partsReq: PartsReq,
+    setActivePartsReq: React.Dispatch<React.SetStateAction<PartsReq | null>>
 }
 
 function calcCost(parts: Array<OrderRow>) {
@@ -20,11 +22,22 @@ function calcCost(parts: Array<OrderRow>) {
     return `$${sum.toFixed(2)}`
 }
 
+const StyledCard = styled(Card)(() => ({
+    cursor: "pointer",
+    border: "3px solid transparent",
+    "&:hover": {
+        boxShadow: "0 0 10px white"
+    }
+}))
+
 export default function PartsReqCard(props: Props) {
 
     return (
-        <Card
-            sx={{ maxHeight: "250px", width: "275px", backgroundImage: "none", margin: "0px 15px 15px 0px", padding: "5px", borderRadius: "0.5rem" }}
+        <StyledCard
+            onClick={() => { props.setActivePartsReq(props.partsReq) }}
+            sx={{
+                maxHeight: "250px", width: "275px", backgroundImage: "none", margin: "0px 15px 15px 0px", padding: "5px", borderRadius: "0.5rem"
+            }}
         >
             <CardHeader
                 title={`Parts Requisition #${props.partsReq.id}`}
@@ -89,16 +102,16 @@ export default function PartsReqCard(props: Props) {
                 </div>
             </CardContent>
             <Divider />
-            <CardContent>
-                <div style={{ display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
+            <CardContent sx={{ padding: "5px" }}>
+                <div style={{ display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
+                    <Typography variant="caption">
+                        {`Estimated Cost: ${calcCost(props.partsReq.parts)}`}
+                    </Typography>
                     <Typography variant="caption">
                         {props.partsReq.status}
                     </Typography>
-                    <Typography variant="caption">
-                        {calcCost(props.partsReq.parts)}
-                    </Typography>
                 </div>
             </CardContent>
-        </Card>
+        </StyledCard>
     )
 }

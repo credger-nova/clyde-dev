@@ -1,11 +1,15 @@
+import * as React from "react"
 import PartsReqCard from "../components/supply-chain/PartsReqCard"
 import { usePartsReqs } from "../hooks/partsReq"
 import Grid from '@mui/material/Unstable_Grid2'
 import Box from '@mui/material/Box'
+import { PartsReq } from "../types/partsReq"
 
 
 export default function SupplyChain() {
     const { data } = usePartsReqs()
+
+    const [activePartsReq, setActivePartsReq] = React.useState<PartsReq | null>(null)
 
     return (
         <div className="page-container">
@@ -23,6 +27,7 @@ export default function SupplyChain() {
                             >
                                 <PartsReqCard
                                     partsReq={partsReq}
+                                    setActivePartsReq={setActivePartsReq}
                                 />
                             </Grid>
                         )

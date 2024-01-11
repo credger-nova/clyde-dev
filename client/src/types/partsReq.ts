@@ -23,9 +23,9 @@ export interface PartsReq {
     date: Date,
     class: ReqClass,
     relAsset: RelAsset,
-    urgency: string,
-    orderType: string,
-    region: string,
+    urgency: string | null,
+    orderType: string | null,
+    region: string | null,
     parts: Array<OrderRow>,
     status: string,
     updated: Date

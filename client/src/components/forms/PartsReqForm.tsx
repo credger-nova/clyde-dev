@@ -9,6 +9,8 @@ import { useTrucks } from "../../hooks/truck"
 import { useParts } from "../../hooks/parts"
 import { createPartsReq } from "../../hooks/partsReq"
 
+import { toTitleCase } from "../../utils/helperFunctions"
+
 import { ReqClass, RelAsset, OrderRow, PartsReq } from "../../types/partsReq"
 import { Unit } from "../../types/unit"
 
@@ -71,9 +73,9 @@ export default function PartsReqForm() {
     const [orderDate] = React.useState<Date>(new Date())
     const [reqClass, setReqClass] = React.useState<ReqClass>({ afe: null, so: null })
     const [relAsset, setRelAsset] = React.useState<RelAsset>({ unit: null, truck: null })
-    const [urgency, setUrgency] = React.useState<string>("")
-    const [orderType, setOrderType] = React.useState<string>("")
-    const [region, setRegion] = React.useState<string>("")
+    const [urgency, setUrgency] = React.useState<string | null>(null)
+    const [orderType, setOrderType] = React.useState<string | null>(null)
+    const [region, setRegion] = React.useState<string | null>(null)
     const [rows, setRows] = React.useState<Array<OrderRow>>([])
 
     const handleSubmit = (event: React.SyntheticEvent) => {
@@ -88,7 +90,7 @@ export default function PartsReqForm() {
             orderType: orderType,
             region: region,
             parts: rows,
-            status: "Created",
+            status: "Pending Approval",
             updated: new Date()
         }
 
@@ -110,7 +112,7 @@ export default function PartsReqForm() {
         setReqClass((prevState) => {
             return ({
                 ...prevState,
-                afe: value ? value : null
+                afe: value
             })
         })
     }
@@ -118,23 +120,30 @@ export default function PartsReqForm() {
         setReqClass((prevState) => {
             return ({
                 ...prevState,
-                so: value ? value : null
+                so: value
             })
         })
+
+        setOrderType(value ? "Third-Party" : null)
     }
     const onUnitNumberChange = (_e: React.SyntheticEvent, value: Unit | null) => {
         setRelAsset((prevState) => {
             return ({
                 ...prevState,
-                unit: value ? value : null
+                unit: value
             })
         })
+
+        onSoChange(_e, null)
+
+        setOrderType(value ? "Rental" : null)
+        setRegion(value ? value.operationalRegion ? toTitleCase(value.operationalRegion) : null : null)
     }
     const onTruckChange = (_e: React.SyntheticEvent, value: string | null) => {
         setRelAsset((prevState) => {
             return ({
                 ...prevState,
-                truck: value ? value : null
+                truck: value
             })
         })
     }
@@ -198,11 +207,11 @@ export default function PartsReqForm() {
                                     options={afeNumbers ? afeNumbers : []}
                                     onChange={onAfeChange}
                                     loading={afeFetching}
+                                    value={reqClass.afe}
                                     renderInput={(params) => <StyledTextField
                                         {...params}
                                         variant="standard"
                                         label="AFE #"
-                                        value={reqClass.afe}
                                     />}
                                     disabled={reqClass.so !== null}
                                 />
@@ -210,13 +219,13 @@ export default function PartsReqForm() {
                                     options={soNumbers ? soNumbers : []}
                                     onChange={onSoChange}
                                     loading={soFetching}
+                                    value={reqClass.so}
                                     renderInput={(params) => <StyledTextField
                                         {...params}
                                         variant="standard"
                                         label="SO #"
-                                        value={reqClass.so}
                                     />}
-                                    disabled={reqClass.afe !== null}
+                                    disabled={reqClass.afe !== null || relAsset.unit !== null}
                                 />
                                 <b><p style={{ margin: "20px 0px 0px 0px" }}>Related Asset:</p></b>
                                 <Divider />
@@ -225,11 +234,11 @@ export default function PartsReqForm() {
                                     getOptionLabel={(option: Unit) => option.unitNumber}
                                     onChange={onUnitNumberChange}
                                     loading={unitsFetching}
+                                    value={relAsset.unit}
                                     renderInput={(params) => <StyledTextField
                                         {...params}
                                         variant="standard"
                                         label="Unit #"
-                                        value={relAsset.unit}
                                     />}
                                     disabled={relAsset.truck !== null}
                                 />
@@ -256,11 +265,11 @@ export default function PartsReqForm() {
                                     options={trucks ? trucks : []}
                                     onChange={onTruckChange}
                                     loading={trucksFetching}
+                                    value={relAsset.truck}
                                     renderInput={(params) => <StyledTextField
                                         {...params}
                                         variant="standard"
                                         label="Truck #"
-                                        value={relAsset.truck}
                                     />}
                                     disabled={relAsset.unit !== null}
                                 />
@@ -290,7 +299,7 @@ export default function PartsReqForm() {
                                 </FormControl>
                                 <b><p style={{ margin: "20px 0px 0px 0px" }}>Order Type:</p></b>
                                 <Divider />
-                                <FormControl>
+                                <FormControl disabled={relAsset.unit !== null || reqClass.so !== null}>
                                     <RadioGroup row>
                                         {ORDER_TYPE.map((val) => {
                                             return (
@@ -308,7 +317,7 @@ export default function PartsReqForm() {
                                 </FormControl>
                                 <b><p style={{ margin: "20px 0px 0px 0px" }}>Operational Region:</p></b>
                                 <Divider />
-                                <FormControl>
+                                <FormControl disabled={relAsset.unit !== null}>
                                     <RadioGroup row>
                                         {REGION.map((val) => {
                                             return (

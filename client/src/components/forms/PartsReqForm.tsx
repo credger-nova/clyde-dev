@@ -77,6 +77,20 @@ export default function PartsReqForm() {
     const [orderType, setOrderType] = React.useState<string | null>(null)
     const [region, setRegion] = React.useState<string | null>(null)
     const [rows, setRows] = React.useState<Array<OrderRow>>([])
+    const [disableSubmit, setDisableSubmit] = React.useState<boolean>(true)
+
+    React.useEffect(() => {
+        if (!requester || !orderDate || (!reqClass.afe && !reqClass.so) || (!relAsset.unit && !relAsset.truck) ||
+            !urgency || !orderType || !(rows.length > 0)) {
+            setDisableSubmit(true)
+        } else {
+            if (!rows[0].itemNumber) {
+                setDisableSubmit(true)
+            } else {
+                setDisableSubmit(false)
+            }
+        }
+    }, [requester, orderDate, reqClass, relAsset, urgency, orderType, rows])
 
     const handleSubmit = (event: React.SyntheticEvent) => {
         event.preventDefault()
@@ -98,15 +112,6 @@ export default function PartsReqForm() {
 
         window.location.href = ".."
     }
-
-    const disableSubmit: boolean = !requester &&
-        !orderDate &&
-        (!reqClass.afe || !reqClass.so) &&
-        (!relAsset.unit || !relAsset.truck) &&
-        !urgency &&
-        !orderType &&
-        !region &&
-        rows.length === 0
 
     const onAfeChange = (_e: React.SyntheticEvent, value: string | null) => {
         setReqClass((prevState) => {

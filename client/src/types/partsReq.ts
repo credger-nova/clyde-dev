@@ -27,6 +27,7 @@ export interface PartsReq {
     orderType: string | null,
     region: string | null,
     parts: Array<OrderRow>,
+    comments: Array<Comment>,
     status: string,
     updated: Date
 }
@@ -39,4 +40,10 @@ export interface Part {
         salesdescription: string,
         cost: string
     }
+}
+
+export interface Comment {
+    comment: string,
+    name: string,
+    timestamp: Date
 }

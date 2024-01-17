@@ -11,7 +11,7 @@ import { createPartsReq } from "../../hooks/partsReq"
 
 import { toTitleCase } from "../../utils/helperFunctions"
 
-import { ReqClass, RelAsset, OrderRow, PartsReq } from "../../types/partsReq"
+import { ReqClass, RelAsset, OrderRow, PartsReq, Part, Comment } from "../../types/partsReq"
 import { Unit } from "../../types/unit"
 
 import { styled } from '@mui/material/styles'
@@ -35,16 +35,6 @@ import AddIcon from '@mui/icons-material/Add'
 import DeleteIcon from '@mui/icons-material/Delete'
 import { StyledTextField } from "../common/TextField"
 import { UNIT_PLANNING } from "../../utils/unitPlanning"
-
-interface Part {
-    recordType: string,
-    id: string,
-    values: {
-        itemid: string,
-        salesdescription: string | null,
-        cost: string
-    }
-}
 
 const URGENCY = ["Unit Down", "Rush", "Standard"]
 const ORDER_TYPE = ["Rental", "Third-Party", "Shop Supplies", "Truck Supplies"]
@@ -77,6 +67,8 @@ export default function PartsReqForm() {
     const [orderType, setOrderType] = React.useState<string | null>(null)
     const [region, setRegion] = React.useState<string | null>(null)
     const [rows, setRows] = React.useState<Array<OrderRow>>([])
+    const [comment, setComment] = React.useState<string>("")
+    const [comments, setComments] = React.useState<Array<Comment>>([])
     const [disableSubmit, setDisableSubmit] = React.useState<boolean>(true)
 
     React.useEffect(() => {
@@ -104,6 +96,7 @@ export default function PartsReqForm() {
             orderType: orderType,
             region: region,
             parts: rows,
+            comments: comments,
             status: "Pending Approval",
             updated: new Date()
         }
@@ -152,6 +145,9 @@ export default function PartsReqForm() {
             })
         })
     }
+    const onCommentChange = (e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
+        setComment(e.target.value)
+    }
 
     const onCreateRow = () => {
         setRows([...rows, { qty: 1, itemNumber: "", description: "", cost: "" }])
@@ -181,6 +177,19 @@ export default function PartsReqForm() {
         setRows(tempRows)
     }
 
+    const onAddComment = () => {
+        setComments((comments) => [
+            ...comments,
+            {
+                comment: comment,
+                name: user ? user.name! : "",
+                timestamp: new Date()
+            }
+        ])
+
+        setComment("")
+    }
+
     return (
         <Box sx={{
             width: "100%", maxHeight: "calc(100% - 64px)", bgcolor: "background.paper", margin: "15px", padding: "10px", borderRadius: "0.5rem",
@@ -189,7 +198,7 @@ export default function PartsReqForm() {
             <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
                 <h2 style={{ margin: "5px" }}>New Parts Requisition</h2>
                 <Grid container spacing={2} sx={{ width: "100%" }}>
-                    <Grid xs={4}>
+                    <Grid xs={3}>
                         <Item>
                             <Box>
                                 <b><p style={{ margin: 0 }}>Complete All Applicable Fields:</p></b>
@@ -281,7 +290,7 @@ export default function PartsReqForm() {
                             </Box>
                         </Item>
                     </Grid>
-                    <Grid xs={8}>
+                    <Grid xs={6}>
                         <Item>
                             <Box>
                                 <b><p style={{ margin: 0 }}>Urgency:</p></b>
@@ -401,6 +410,43 @@ export default function PartsReqForm() {
                                         <p style={{ margin: 0 }}>{relAsset.unit.cylinderSize}</p> : null
                                     }
                                 </div>
+                            </Box>
+                        </Item>
+                    </Grid>
+                    <Grid xs={3}>
+                        <Item style={{ maxHeight: "600px", overflow: "auto" }}>
+                            <div style={{ display: "flex", alignItems: "flex-end", padding: "5px" }}>
+                                <StyledTextField
+                                    multiline
+                                    variant="standard"
+                                    label="New Comment"
+                                    value={comment}
+                                    onChange={onCommentChange}
+                                />
+                                <IconButton
+                                    onClick={onAddComment}
+                                    disabled={!comment}
+                                >
+                                    <AddIcon />
+                                </IconButton>
+                            </div>
+                            <Box
+                                style={{ maxHeight: "500px", overflow: "auto", padding: "5px" }}
+                            >
+                                {comments.sort((x, y) => { return x.timestamp < y.timestamp ? 1 : -1 }) // Sort comments chronologically
+                                    .map((comment: Comment, index: number) => {
+                                        return (
+                                            <Box
+                                                key={index}
+                                                sx={{ padding: "5px", marginBottom: "5px", borderRadius: "0.25rem", backgroundColor: "background.paper" }}
+                                            >
+                                                <div style={{ display: "flex", flexDirection: "column" }}>
+                                                    <p>{comment.comment}</p>
+                                                    <i style={{ color: "#838385" }}>{comment.name} - {comment.timestamp.toLocaleDateString()} {comment.timestamp.toLocaleTimeString()}</i>
+                                                </div>
+                                            </Box>
+                                        )
+                                    })}
                             </Box>
                         </Item>
                     </Grid>

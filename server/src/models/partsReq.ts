@@ -14,6 +14,12 @@ export interface OrderRow {
     description: string | null
 }
 
+export interface Comment {
+    comment: string,
+    name: string,
+    timestamp: Date
+}
+
 export interface PartsReq {
     id: number,
     requester: string,
@@ -24,6 +30,7 @@ export interface PartsReq {
     orderType: string,
     region: string,
     parts: Array<OrderRow>,
+    comments: Array<Comment>,
     status: string,
     updated: Date
 }

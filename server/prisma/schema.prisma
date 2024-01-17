@@ -118,9 +118,21 @@ model PartsReq {
   orderType  String        @map("order_type")
   region     String
   parts      PartsReqRow[]
+  comments   Comment[]
   status     String
   updated    DateTime      @db.Timestamptz(6)
   Unit       Unit?         @relation(fields: [unitNumber], references: [unitNumber], onDelete: Cascade)
 
   @@map("parts_req")
+}
+
+model Comment {
+  id         String    @id @default(uuid())
+  comment    String
+  name       String
+  timestamp  DateTime  @db.Timestamptz(6)
+  PartsReq   PartsReq? @relation(fields: [partsReqId], references: [id], onDelete: Cascade)
+  partsReqId Int?      @map("parts_req_id")
+
+  @@map("comment")
 }

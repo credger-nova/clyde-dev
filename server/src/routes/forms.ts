@@ -7,7 +7,8 @@ async function routes(fastify: FastifyInstance) {
     fastify.get("/parts-req", async (req, res) => {
         const result = await prisma.partsReq.findMany({
             include: {
-                parts: true
+                parts: true,
+                comments: true
             }
         })
 
@@ -29,6 +30,7 @@ async function routes(fastify: FastifyInstance) {
                     orderType: obj.orderType,
                     region: obj.region,
                     parts: obj.parts,
+                    comments: obj.comments,
                     status: obj.status,
                     updated: obj.updated
                 } as PartsReq
@@ -45,7 +47,8 @@ async function routes(fastify: FastifyInstance) {
                 id: Number(req.params.id)
             },
             include: {
-                parts: true
+                parts: true,
+                comments: true
             }
         })
 
@@ -67,6 +70,7 @@ async function routes(fastify: FastifyInstance) {
                 orderType: result.orderType,
                 region: result.region,
                 parts: result.parts,
+                comments: result.comments,
                 status: result.status,
                 updated: result.updated
             } as PartsReq
@@ -96,6 +100,11 @@ async function routes(fastify: FastifyInstance) {
                 parts: {
                     createMany: {
                         data: req.body.parts
+                    }
+                },
+                comments: {
+                    createMany: {
+                        data: req.body.comments
                     }
                 },
                 status: req.body.status,

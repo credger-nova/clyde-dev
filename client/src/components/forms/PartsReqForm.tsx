@@ -11,7 +11,7 @@ import { createPartsReq } from "../../hooks/partsReq"
 
 import { toTitleCase } from "../../utils/helperFunctions"
 
-import { ReqClass, RelAsset, OrderRow, PartsReq, Part, Comment } from "../../types/partsReq"
+import { ReqClass, RelAsset, OrderRow, CreatePartsReq, Part, Comment } from "../../types/partsReq"
 import { Unit } from "../../types/unit"
 
 import { styled } from '@mui/material/styles'
@@ -66,9 +66,9 @@ export default function PartsReqForm() {
     const [urgency, setUrgency] = React.useState<string | null>(null)
     const [orderType, setOrderType] = React.useState<string | null>(null)
     const [region, setRegion] = React.useState<string | null>(null)
-    const [rows, setRows] = React.useState<Array<OrderRow>>([])
+    const [rows, setRows] = React.useState<Array<Omit<OrderRow, "id">>>([])
     const [comment, setComment] = React.useState<string>("")
-    const [comments, setComments] = React.useState<Array<Comment>>([])
+    const [comments, setComments] = React.useState<Array<Omit<Comment, "id">>>([])
     const [disableSubmit, setDisableSubmit] = React.useState<boolean>(true)
 
     React.useEffect(() => {
@@ -87,7 +87,7 @@ export default function PartsReqForm() {
     const handleSubmit = (event: React.SyntheticEvent) => {
         event.preventDefault()
 
-        const formData: Omit<PartsReq, "id"> = {
+        const formData: CreatePartsReq = {
             requester: requester ? requester : "",
             date: orderDate,
             class: reqClass,
@@ -434,7 +434,7 @@ export default function PartsReqForm() {
                                 style={{ maxHeight: "500px", overflow: "auto", padding: "5px" }}
                             >
                                 {comments.sort((x, y) => { return x.timestamp < y.timestamp ? 1 : -1 }) // Sort comments chronologically
-                                    .map((comment: Comment, index: number) => {
+                                    .map((comment: Omit<Comment, "id">, index: number) => {
                                         return (
                                             <Box
                                                 key={index}

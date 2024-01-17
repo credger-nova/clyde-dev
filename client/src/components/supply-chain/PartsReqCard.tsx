@@ -5,7 +5,6 @@ import CardContent from '@mui/material/CardContent'
 import Typography from '@mui/material/Typography'
 import Divider from '@mui/material/Divider'
 import { styled } from '@mui/material/styles'
-import { UNIT_PLANNING } from "../../utils/unitPlanning"
 
 interface Props {
     partsReq: PartsReq,

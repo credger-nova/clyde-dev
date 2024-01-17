@@ -9,12 +9,14 @@ export interface RelAsset {
     truck: string | null
 }
 export interface OrderRow {
+    id: string,
     qty: number,
     itemNumber: string,
     description: string | null
 }
 
 export interface Comment {
+    id: string,
     comment: string,
     name: string,
     timestamp: Date

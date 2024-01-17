@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query"
 import axios from "axios"
-import { PartsReq } from "../types/partsReq"
+import { CreatePartsReq, PartsReq } from "../types/partsReq"
 
 // Get all Parts Reqs
 const getAllPartsReqs = async () => {
@@ -25,7 +25,7 @@ export function usePartsReq(id: string) {
 }
 
 // Create Parts Req
-export const createPartsReq = async (partsReq: Omit<PartsReq, "id">) => {
+export const createPartsReq = async (partsReq: CreatePartsReq) => {
     const { data } = await axios.post(`${import.meta.env.VITE_API_BASE}/forms/parts-req`, partsReq)
 
     return data

@@ -38,7 +38,7 @@ async function routes(fastify: FastifyInstance) {
                 ]
             },
             include: {
-                Unit: {
+                unit: {
                     select: {
                         telemetry: true,
                         location: true,
@@ -84,10 +84,10 @@ async function routes(fastify: FastifyInstance) {
             const unit = value.find(i => i.unitNumber === key)
 
             unitStatus.timestamp = value.reduce((a, b) => a.timestamp! > b.timestamp! ? a : b).timestamp!
-            unitStatus.location = unit?.Unit?.location!
-            unitStatus.customer = unit?.Unit?.customer!
-            unitStatus.engineFamily = unit?.Unit?.engineFamily!
-            unitStatus.telemetry = unit?.Unit?.telemetry!
+            unitStatus.location = unit?.unit?.location!
+            unitStatus.customer = unit?.unit?.customer!
+            unitStatus.engineFamily = unit?.unit?.engineFamily!
+            unitStatus.telemetry = unit?.unit?.telemetry!
 
             if (((new Date().valueOf() - unitStatus.timestamp.valueOf()) / (1000 * 24 * 60 * 60)) > 1) {
                 unitStatus.status = "Cold"

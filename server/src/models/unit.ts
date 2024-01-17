@@ -1,3 +1,5 @@
+import { Unit } from "@prisma/client";
+
 export interface UnitStatus {
     unitNumber: string,
     location?: string,
@@ -6,5 +8,6 @@ export interface UnitStatus {
     status: string,
     statusMessage?: string,
     telemetry?: string,
-    timestamp: Date
+    timestamp: Date,
+    unit: Unit
 }

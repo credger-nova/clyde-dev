@@ -8,7 +8,8 @@ async function routes(fastify: FastifyInstance) {
         const result = await prisma.partsReq.findMany({
             include: {
                 parts: true,
-                comments: true
+                comments: true,
+                unit: true
             }
         })
 
@@ -23,7 +24,7 @@ async function routes(fastify: FastifyInstance) {
                         so: obj.so
                     },
                     relAsset: {
-                        unit: obj.unitNumber,
+                        unit: obj.unit,
                         truck: obj.truck
                     },
                     urgency: obj.urgency,
@@ -48,7 +49,8 @@ async function routes(fastify: FastifyInstance) {
             },
             include: {
                 parts: true,
-                comments: true
+                comments: true,
+                unit: true
             }
         })
 
@@ -63,7 +65,7 @@ async function routes(fastify: FastifyInstance) {
                     so: result.so
                 },
                 relAsset: {
-                    unit: result.unitNumber,
+                    unit: result.unit,
                     truck: result.truck
                 },
                 urgency: result.urgency,

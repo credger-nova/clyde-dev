@@ -77,7 +77,7 @@ model Parameter {
   name       String
   value      String?
   timestamp  DateTime? @db.Timestamptz(6)
-  Unit       Unit?     @relation(fields: [unitNumber], references: [unitNumber], onDelete: Cascade)
+  unit       Unit?     @relation(fields: [unitNumber], references: [unitNumber], onDelete: Cascade)
 
   @@id([unitNumber, name])
   @@map("parameter")
@@ -88,7 +88,7 @@ model WeeklyDowntime {
   week       String
   ma         Float
   dtHours    Float  @map("dt_hours")
-  Unit       Unit?  @relation(fields: [unitNumber], references: [unitNumber], onDelete: Cascade)
+  unit       Unit?  @relation(fields: [unitNumber], references: [unitNumber], onDelete: Cascade)
 
   @@id([unitNumber, week])
   @@map("weekly_downtime")
@@ -121,7 +121,7 @@ model PartsReq {
   comments   Comment[]
   status     String
   updated    DateTime      @db.Timestamptz(6)
-  Unit       Unit?         @relation(fields: [unitNumber], references: [unitNumber], onDelete: Cascade)
+  unit       Unit?         @relation(fields: [unitNumber], references: [unitNumber], onDelete: Cascade)
 
   @@map("parts_req")
 }

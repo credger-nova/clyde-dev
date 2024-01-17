@@ -11,6 +11,7 @@ export interface RelAsset {
 }
 
 export interface OrderRow {
+    id: string,
     qty: number,
     itemNumber: string,
     description: string | null,
@@ -32,6 +33,11 @@ export interface PartsReq {
     updated: Date
 }
 
+export interface CreatePartsReq extends Omit<PartsReq, "id" | "parts" | "comments"> {
+    parts: Array<Omit<OrderRow, "id">>,
+    comments: Array<Omit<Comment, "id">>
+}
+
 export interface Part {
     recordType: string,
     id: string,
@@ -43,6 +49,7 @@ export interface Part {
 }
 
 export interface Comment {
+    id: string,
     comment: string,
     name: string,
     timestamp: Date

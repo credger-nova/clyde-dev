@@ -1,6 +1,9 @@
+import { Unit } from "@prisma/client";
+
 export interface Parameter {
     unitNumber: string,
     name: string,
     parameter: string,
-    timestamp: Date
+    timestamp: Date,
+    unit: Unit
 }

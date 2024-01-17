@@ -67,7 +67,7 @@ export default function PartsReqCard(props: Props) {
                         </Typography>
                         {props.partsReq.relAsset.unit ?
                             <Typography variant="body2" sx={{ width: "50%" }}>
-                                {`Unit ${props.partsReq.relAsset.unit}`}
+                                {`Unit ${props.partsReq.relAsset.unit.unitNumber}`}
                             </Typography> :
                             <Typography variant="body2" sx={{ width: "50%" }}>
                                 {`Truck ${props.partsReq.relAsset.truck}`}

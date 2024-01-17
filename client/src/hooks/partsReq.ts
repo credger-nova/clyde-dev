@@ -30,3 +30,5 @@ export const createPartsReq = async (partsReq: CreatePartsReq) => {
 
     return data
 }
+
+// Update Parts Req

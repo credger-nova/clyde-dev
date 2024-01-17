@@ -4,6 +4,7 @@ import { usePartsReqs } from "../hooks/partsReq"
 import Grid from '@mui/material/Unstable_Grid2'
 import Box from '@mui/material/Box'
 import { PartsReq } from "../types/partsReq"
+import EditDialog from "../components/supply-chain/EditDialog"
 
 
 export default function SupplyChain() {
@@ -34,6 +35,11 @@ export default function SupplyChain() {
                     })}
                 </Grid>
             </Box>
+            <EditDialog
+                partsReq={activePartsReq!}
+                open={activePartsReq !== null}
+                setActivePartsReq={setActivePartsReq}
+            />
         </div>
     )
 }

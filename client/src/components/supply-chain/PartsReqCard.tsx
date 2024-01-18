@@ -8,7 +8,7 @@ import { styled } from '@mui/material/styles'
 
 interface Props {
     partsReq: PartsReq,
-    setActivePartsReq: React.Dispatch<React.SetStateAction<PartsReq | null>>
+    setActivePartsReqId: React.Dispatch<React.SetStateAction<number | null>>
 }
 
 function calcCost(parts: Array<OrderRow>) {
@@ -30,17 +30,18 @@ const StyledCard = styled(Card)(() => ({
 }))
 
 export default function PartsReqCard(props: Props) {
+    const { partsReq, setActivePartsReqId } = props
 
     return (
         <StyledCard
-            onClick={() => { props.setActivePartsReq(props.partsReq) }}
+            onClick={() => { setActivePartsReqId(partsReq.id) }}
             sx={{
                 maxHeight: "250px", width: "275px", backgroundImage: "none", margin: "0px 15px 15px 0px", padding: "5px", borderRadius: "0.5rem"
             }}
         >
             <CardHeader
-                title={`Parts Requisition #${props.partsReq.id}`}
-                subheader={`${props.partsReq.requester} - ${new Date(props.partsReq.date).toLocaleDateString()}`}
+                title={`Parts Requisition #${partsReq.id}`}
+                subheader={`${partsReq.requester} - ${new Date(partsReq.date).toLocaleDateString()}`}
                 sx={{ padding: "5px" }}
             />
             <Divider />
@@ -52,12 +53,12 @@ export default function PartsReqCard(props: Props) {
                         <Typography variant="subtitle2" sx={{ width: "50%" }}>
                             Class:
                         </Typography>
-                        {props.partsReq.class.afe ?
+                        {partsReq.class.afe ?
                             <Typography variant="body2" sx={{ width: "50%" }}>
-                                {`AFE ${props.partsReq.class.afe}`}
+                                {`AFE ${partsReq.class.afe}`}
                             </Typography> :
                             <Typography variant="body2" sx={{ width: "50%" }}>
-                                {`SO ${props.partsReq.class.so}`}
+                                {`SO ${partsReq.class.so}`}
                             </Typography>
                         }
                     </div>
@@ -65,12 +66,12 @@ export default function PartsReqCard(props: Props) {
                         <Typography variant="subtitle2" sx={{ width: "50%" }}>
                             Related Asset:
                         </Typography>
-                        {props.partsReq.relAsset.unit ?
+                        {partsReq.relAsset.unit ?
                             <Typography variant="body2" sx={{ width: "50%" }}>
-                                {`Unit ${props.partsReq.relAsset.unit.unitNumber}`}
+                                {`Unit ${partsReq.relAsset.unit.unitNumber}`}
                             </Typography> :
                             <Typography variant="body2" sx={{ width: "50%" }}>
-                                {`Truck ${props.partsReq.relAsset.truck}`}
+                                {`Truck ${partsReq.relAsset.truck}`}
                             </Typography>
                         }
                     </div>
@@ -79,7 +80,7 @@ export default function PartsReqCard(props: Props) {
                             Urgency:
                         </Typography>
                         <Typography variant="body2" sx={{ width: "50%" }}>
-                            {props.partsReq.urgency}
+                            {partsReq.urgency}
                         </Typography>
                     </div>
                     <div style={{ display: "flex", flexDirection: "row", width: "100%", justifyContent: "flex-start", alignItems: "center" }}>
@@ -87,7 +88,7 @@ export default function PartsReqCard(props: Props) {
                             Order Type:
                         </Typography>
                         <Typography variant="body2" sx={{ width: "50%" }}>
-                            {props.partsReq.orderType}
+                            {partsReq.orderType}
                         </Typography>
                     </div>
                     <div style={{ display: "flex", flexDirection: "row", width: "100%", justifyContent: "flex-start", alignItems: "center" }}>
@@ -95,7 +96,7 @@ export default function PartsReqCard(props: Props) {
                             Region:
                         </Typography>
                         <Typography variant="body2" sx={{ width: "50%" }}>
-                            {props.partsReq.region}
+                            {partsReq.region}
                         </Typography>
                     </div>
                 </div>
@@ -104,10 +105,10 @@ export default function PartsReqCard(props: Props) {
             <CardContent sx={{ padding: "5px" }}>
                 <div style={{ display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
                     <Typography variant="caption">
-                        {`Estimated Cost: ${calcCost(props.partsReq.parts)}`}
+                        {`Estimated Cost: ${calcCost(partsReq.parts)}`}
                     </Typography>
                     <Typography variant="caption">
-                        {props.partsReq.status}
+                        {partsReq.status}
                     </Typography>
                 </div>
             </CardContent>

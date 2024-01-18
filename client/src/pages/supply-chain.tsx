@@ -3,14 +3,13 @@ import PartsReqCard from "../components/supply-chain/PartsReqCard"
 import { usePartsReqs } from "../hooks/partsReq"
 import Grid from '@mui/material/Unstable_Grid2'
 import Box from '@mui/material/Box'
-import { PartsReq } from "../types/partsReq"
 import EditDialog from "../components/supply-chain/EditDialog"
 
 
 export default function SupplyChain() {
     const { data } = usePartsReqs()
 
-    const [activePartsReq, setActivePartsReq] = React.useState<PartsReq | null>(null)
+    const [activePartsReqId, setActivePartsReqId] = React.useState<number | null>(null)
 
     return (
         <div className="page-container">
@@ -28,7 +27,7 @@ export default function SupplyChain() {
                             >
                                 <PartsReqCard
                                     partsReq={partsReq}
-                                    setActivePartsReq={setActivePartsReq}
+                                    setActivePartsReqId={setActivePartsReqId}
                                 />
                             </Grid>
                         )
@@ -36,9 +35,9 @@ export default function SupplyChain() {
                 </Grid>
             </Box>
             <EditDialog
-                partsReq={activePartsReq!}
-                open={activePartsReq !== null}
-                setActivePartsReq={setActivePartsReq}
+                partsReqId={activePartsReqId!}
+                open={activePartsReqId !== null}
+                setActivePartsReqId={setActivePartsReqId}
             />
         </div>
     )

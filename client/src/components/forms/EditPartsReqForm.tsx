@@ -37,6 +37,8 @@ import { UNIT_PLANNING } from "../../utils/unitPlanning"
 const URGENCY = ["Unit Down", "Rush", "Standard"]
 const ORDER_TYPE = ["Rental", "Third-Party", "Shop Supplies", "Truck Supplies"]
 const REGION = ["East Texas", "South Texas", "Midcon", "North Permian", "South Permian", "Pecos", "Carlsbad"]
+const STATUS = ["Pending Approval", "Rejected - Adjustments Required", "Approved", "Sourcing - Information Required", "Ordered - Awaiting Parts",
+    "Completed - Parts Staged/Delivered", "Closed - Parts in Hand"]
 
 const Item = styled(Paper)(({ theme }) => ({
     backgroundColor: "#242424",
@@ -48,10 +50,12 @@ const Item = styled(Paper)(({ theme }) => ({
 
 interface Props {
     partsReq: PartsReq,
-    setActivePartsReq: React.Dispatch<React.SetStateAction<PartsReq | null>>
+    setActivePartsReqId: React.Dispatch<React.SetStateAction<number | null>>
 }
 
 export default function EditPartsReqForm(props: Props) {
+    const { partsReq, setActivePartsReqId } = props
+
     const { user } = useAuth0()
 
     const { data: afeNumbers, isFetching: afeFetching } = useAFEs()
@@ -60,24 +64,42 @@ export default function EditPartsReqForm(props: Props) {
     const { data: trucks, isFetching: trucksFetching } = useTrucks()
     const { data: parts, isFetching: partsFetching } = useParts()
 
-    const [requester] = React.useState<string>(props.partsReq.requester)
-    const [orderDate] = React.useState<Date>(props.partsReq.date)
-    const [reqClass, setReqClass] = React.useState<ReqClass>({ afe: props.partsReq.class.afe, so: props.partsReq.class.so })
-    const [relAsset, setRelAsset] = React.useState<RelAsset>({ unit: props.partsReq.relAsset.unit, truck: props.partsReq.relAsset.truck })
-    const [urgency, setUrgency] = React.useState<string | null>(props.partsReq.urgency)
-    const [orderType, setOrderType] = React.useState<string | null>(props.partsReq.orderType)
-    const [region, setRegion] = React.useState<string | null>(props.partsReq.region)
-    const [rows, setRows] = React.useState<Array<Omit<OrderRow, "id">>>(props.partsReq.parts)
+    const [status, setStatus] = React.useState<string>(partsReq.status)
+    const [requester] = React.useState<string>(partsReq.requester)
+    const [orderDate] = React.useState<Date>(partsReq.date)
+    const [reqClass, setReqClass] = React.useState<ReqClass>({ afe: partsReq.class.afe, so: partsReq.class.so })
+    const [relAsset, setRelAsset] = React.useState<RelAsset>({ unit: partsReq.relAsset.unit, truck: partsReq.relAsset.truck })
+    const [urgency, setUrgency] = React.useState<string | null>(partsReq.urgency)
+    const [orderType, setOrderType] = React.useState<string | null>(partsReq.orderType)
+    const [region, setRegion] = React.useState<string | null>(partsReq.region)
+    const [rows, setRows] = React.useState<Array<Omit<OrderRow, "id">>>(partsReq.parts)
     const [comment, setComment] = React.useState<string>("")
-    const [comments, setComments] = React.useState<Array<Omit<Comment, "id">>>(props.partsReq.comments)
-    const [disableSubmit, setDisableSubmit] = React.useState<boolean>(true)
+    const [comments, setComments] = React.useState<Array<Omit<Comment, "id">>>(partsReq.comments)
+    const [disabled, setDisabled] = React.useState<boolean>(false)
+
+    React.useEffect(() => {
+        if (!requester || !orderDate || (!reqClass.afe && !reqClass.so) || (!relAsset.unit && !relAsset.truck) ||
+            !urgency || !orderType || !(rows.length > 0)) {
+            setDisabled(true)
+        } else {
+            if (!rows[0].itemNumber) {
+                setDisabled(true)
+            } else {
+                setDisabled(false)
+            }
+        }
+    }, [requester, orderDate, reqClass, relAsset, urgency, orderType, rows, setDisabled])
 
     const handleSubmit = (event: React.SyntheticEvent) => {
         event.preventDefault()
 
         console.log("Submit Updated Parts Req")
 
-        props.setActivePartsReq(null)
+        setActivePartsReqId(null)
+    }
+
+    const onStatusChange = (_e: React.SyntheticEvent, value: string | null) => {
+        setStatus(value ?? "")
     }
 
     const onAfeChange = (_e: React.SyntheticEvent, value: string | null) => {
@@ -164,15 +186,34 @@ export default function EditPartsReqForm(props: Props) {
         setComment("")
     }
 
+    function getPart(item: string): Part | null {
+        const part = parts?.find((el) => el.values.itemid === item)
+        return part ?? null
+    }
+
     return (
         <Box sx={{
-            width: "100%", maxHeight: "calc(100% - 64px)", bgcolor: "background.paper", margin: "15px", padding: "10px", borderRadius: "0.5rem",
+            bgcolor: "background.paper", margin: "15px", padding: "10px", borderRadius: "0.5rem",
             overflow: "auto", border: "5px solid", borderColor: "background.paper"
         }}>
             <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-                <h2 style={{ margin: "5px" }}>New Parts Requisition</h2>
                 <Grid container spacing={2} sx={{ width: "100%" }}>
                     <Grid xs={3}>
+                        <Item sx={{ marginBottom: "15px" }}>
+                            <Box>
+                                <Autocomplete
+                                    options={STATUS}
+                                    onChange={onStatusChange}
+                                    value={status}
+                                    disableClearable
+                                    renderInput={(params) => <StyledTextField
+                                        {...params}
+                                        variant="standard"
+                                        label="Status"
+                                    />}
+                                />
+                            </Box>
+                        </Item>
                         <Item>
                             <Box>
                                 <b><p style={{ margin: 0 }}>Complete All Applicable Fields:</p></b>
@@ -223,6 +264,7 @@ export default function EditPartsReqForm(props: Props) {
                                     onChange={onUnitNumberChange}
                                     loading={unitsFetching}
                                     value={relAsset.unit}
+                                    isOptionEqualToValue={(option, value) => option.unitNumber === value.unitNumber}
                                     renderInput={(params) => <StyledTextField
                                         {...params}
                                         variant="standard"
@@ -459,13 +501,13 @@ export default function EditPartsReqForm(props: Props) {
                                                         getOptionLabel={(option: Part) => `${option.values.itemid}` + (option.values.salesdescription ?
                                                             ` - ${option.values.salesdescription}` :
                                                             "")}
-
                                                         onChange={onPartChange(index)}
                                                         loading={partsFetching}
                                                         filterOptions={createFilterOptions({
                                                             matchFrom: "any",
                                                             limit: 500
                                                         })}
+                                                        value={getPart(row.itemNumber)}
                                                         renderInput={(params) => <StyledTextField
                                                             {...params}
                                                             variant="standard"
@@ -498,9 +540,17 @@ export default function EditPartsReqForm(props: Props) {
                 </Grid>
                 <div style={{ display: "flex", justifyContent: "flex-end", width: "100%", padding: "15px 15px 0px 0px" }}>
                     <Button
+                        onClick={() => { setActivePartsReqId(null) }}
+                        variant="outlined"
+                        color="error"
+                        sx={{ marginRight: "10px" }}
+                    >
+                        Cancel
+                    </Button>
+                    <Button
                         variant="outlined"
                         type="submit"
-                        disabled={disableSubmit}
+                        disabled={disabled}
                     >
                         Submit
                     </Button>

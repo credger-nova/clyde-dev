@@ -14,14 +14,14 @@ export function usePartsReqs() {
 }
 
 // Get single Parts Req
-const getPartsReq = async (id: string) => {
+const getPartsReq = async (id: number) => {
     const { data } = await axios.get<PartsReq>(`${import.meta.env.VITE_API_BASE}/forms/parts-req/${id}`)
 
     return data
 }
 
-export function usePartsReq(id: string) {
-    return useQuery({ queryKey: ["partsReq", id], queryFn: () => getPartsReq(id) })
+export function usePartsReq(id: number) {
+    return useQuery({ queryKey: ["partsReq", id], queryFn: () => getPartsReq(id), enabled: id !== null })
 }
 
 // Create Parts Req

@@ -3,32 +3,42 @@ import Dialog from '@mui/material/Dialog'
 import DialogActions from '@mui/material/DialogActions'
 import DialogContent from '@mui/material/DialogContent'
 import DialogTitle from '@mui/material/DialogTitle'
-import { PartsReq } from "../../types/partsReq"
 import EditPartsReqForm from "../forms/EditPartsReqForm"
+import { usePartsReq } from "../../hooks/partsReq"
 
 interface Props {
-    partsReq: PartsReq,
+    partsReqId: number,
     open: boolean,
-    setActivePartsReq: React.Dispatch<React.SetStateAction<PartsReq | null>>
+    setActivePartsReqId: React.Dispatch<React.SetStateAction<number | null>>
 }
 
 export default function EditDialog(props: Props) {
+    const { partsReqId, open, setActivePartsReqId } = props
+
+    const { data: partsReq } = usePartsReq(partsReqId)
+
     const handleClose = () => {
-        props.setActivePartsReq(null)
+        setActivePartsReqId(null)
     }
 
-    return (props.open && (
+    return (partsReq && (
         <Dialog
-            open={props.open}
+            open={open}
             onClose={handleClose}
+            sx={{
+                "& .MuiDialog-paper": {
+                    minWidth: "90vw"
+                }
+            }}
         >
-            <DialogTitle>Edit Parts Requisition #{props.partsReq.id}</DialogTitle>
+            <DialogTitle sx={{ textAlign: "center" }}>Edit Parts Requisition #{partsReq.id}</DialogTitle>
             <DialogContent>
                 <EditPartsReqForm
-                    partsReq={props.partsReq}
-                    setActivePartsReq={props.setActivePartsReq}
+                    partsReq={partsReq}
+                    setActivePartsReqId={setActivePartsReqId}
                 />
             </DialogContent>
+            <DialogActions />
         </Dialog>
     ))
 }

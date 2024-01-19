@@ -9,7 +9,7 @@ import { useParts } from "../../hooks/parts"
 
 import { toTitleCase } from "../../utils/helperFunctions"
 
-import { ReqClass, RelAsset, OrderRow, Part, Comment, PartsReq } from "../../types/partsReq"
+import { ReqClass, RelAsset, OrderRow, Part, Comment, PartsReq, UpdatePartsReq } from "../../types/partsReq"
 import { Unit } from "../../types/unit"
 
 import { styled } from '@mui/material/styles'
@@ -33,6 +33,7 @@ import AddIcon from '@mui/icons-material/Add'
 import DeleteIcon from '@mui/icons-material/Delete'
 import { StyledTextField } from "../common/TextField"
 import { UNIT_PLANNING } from "../../utils/unitPlanning"
+import { useUpdatePartsReq } from "../../hooks/partsReq"
 
 const URGENCY = ["Unit Down", "Rush", "Standard"]
 const ORDER_TYPE = ["Rental", "Third-Party", "Shop Supplies", "Truck Supplies"]
@@ -50,11 +51,11 @@ const Item = styled(Paper)(({ theme }) => ({
 
 interface Props {
     partsReq: PartsReq,
-    setActivePartsReqId: React.Dispatch<React.SetStateAction<number | null>>
+    setActivePartsReq: React.Dispatch<React.SetStateAction<PartsReq | null>>
 }
 
 export default function EditPartsReqForm(props: Props) {
-    const { partsReq, setActivePartsReqId } = props
+    const { partsReq, setActivePartsReq } = props
 
     const { user } = useAuth0()
 
@@ -63,6 +64,8 @@ export default function EditPartsReqForm(props: Props) {
     const { data: unitNumbers, isFetching: unitsFetching } = useUnits()
     const { data: trucks, isFetching: trucksFetching } = useTrucks()
     const { data: parts, isFetching: partsFetching } = useParts()
+
+    const { mutateAsync: updatePartsReq } = useUpdatePartsReq()
 
     const [status, setStatus] = React.useState<string>(partsReq.status)
     const [requester] = React.useState<string>(partsReq.requester)
@@ -73,6 +76,7 @@ export default function EditPartsReqForm(props: Props) {
     const [orderType, setOrderType] = React.useState<string | null>(partsReq.orderType)
     const [region, setRegion] = React.useState<string | null>(partsReq.region)
     const [rows, setRows] = React.useState<Array<Omit<OrderRow, "id">>>(partsReq.parts)
+    const [delRows, setDelRows] = React.useState<Array<OrderRow>>([])
     const [comment, setComment] = React.useState<string>("")
     const [comments, setComments] = React.useState<Array<Omit<Comment, "id">>>(partsReq.comments)
     const [disabled, setDisabled] = React.useState<boolean>(false)
@@ -93,9 +97,22 @@ export default function EditPartsReqForm(props: Props) {
     const handleSubmit = (event: React.SyntheticEvent) => {
         event.preventDefault()
 
-        console.log("Submit Updated Parts Req")
+        const formData: UpdatePartsReq = {
+            id: partsReq.id,
+            class: reqClass,
+            relAsset: relAsset,
+            urgency: urgency,
+            orderType: orderType,
+            region: region,
+            parts: rows as Array<OrderRow>,
+            comments: comments as Array<Comment>,
+            status: status,
+            delRows: delRows
+        }
 
-        setActivePartsReqId(null)
+        updatePartsReq(formData)
+
+        setActivePartsReq(null)
     }
 
     const onStatusChange = (_e: React.SyntheticEvent, value: string | null) => {
@@ -153,6 +170,10 @@ export default function EditPartsReqForm(props: Props) {
         const tempRows = [...rows]
         tempRows.splice(index, 1)
         setRows(tempRows)
+
+        if ((rows[index] as OrderRow).id) {
+            setDelRows([...delRows, rows[index] as OrderRow])
+        }
     }
 
     const onQtyChange = (index: number) => (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -540,7 +561,7 @@ export default function EditPartsReqForm(props: Props) {
                 </Grid>
                 <div style={{ display: "flex", justifyContent: "flex-end", width: "100%", padding: "15px 15px 0px 0px" }}>
                     <Button
-                        onClick={() => { setActivePartsReqId(null) }}
+                        onClick={() => { setActivePartsReq(null) }}
                         variant="outlined"
                         color="error"
                         sx={{ marginRight: "10px" }}
@@ -552,7 +573,7 @@ export default function EditPartsReqForm(props: Props) {
                         type="submit"
                         disabled={disabled}
                     >
-                        Submit
+                        Save
                     </Button>
                 </div>
             </form>

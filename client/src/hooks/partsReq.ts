@@ -1,6 +1,6 @@
-import { useQuery } from "@tanstack/react-query"
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import axios from "axios"
-import { CreatePartsReq, PartsReq } from "../types/partsReq"
+import { CreatePartsReq, PartsReq, UpdatePartsReq } from "../types/partsReq"
 
 // Get all Parts Reqs
 const getAllPartsReqs = async () => {
@@ -10,7 +10,7 @@ const getAllPartsReqs = async () => {
 }
 
 export function usePartsReqs() {
-    return useQuery({ queryKey: ["partsReqs"], queryFn: getAllPartsReqs })
+    return useQuery({ queryKey: ["partsReq"], queryFn: getAllPartsReqs })
 }
 
 // Get single Parts Req
@@ -25,10 +25,31 @@ export function usePartsReq(id: number) {
 }
 
 // Create Parts Req
-export const createPartsReq = async (partsReq: CreatePartsReq) => {
+const createPartsReq = async (partsReq: CreatePartsReq) => {
     const { data } = await axios.post(`${import.meta.env.VITE_API_BASE}/forms/parts-req`, partsReq)
 
     return data
 }
 
+export function useCreatePartsReq() {
+    const queryClient = useQueryClient()
+
+    return useMutation({ mutationFn: createPartsReq, onSuccess: data => { queryClient.setQueryData(["partsReq"], data) } })
+}
+
 // Update Parts Req
+const updatePartsReq = async (partsReq: Partial<UpdatePartsReq>) => {
+    const { data } = await axios.put(`${import.meta.env.VITE_API_BASE}/forms/parts-req/${partsReq.id}`, partsReq)
+
+    return data
+}
+
+export function useUpdatePartsReq() {
+    const queryClient = useQueryClient()
+
+    return useMutation({
+        mutationFn: updatePartsReq, onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["partsReq"] })
+        }
+    })
+}

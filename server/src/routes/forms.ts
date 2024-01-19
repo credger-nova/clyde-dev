@@ -1,6 +1,6 @@
 import { FastifyInstance, FastifyRequest } from "fastify"
 import { prisma } from "../utils/prisma-client"
-import { PartsReq } from "../models/partsReq"
+import { PartsReq, UpdatePartsReq } from "../models/partsReq"
 
 async function routes(fastify: FastifyInstance) {
     // Get all Parts Reqs
@@ -42,7 +42,7 @@ async function routes(fastify: FastifyInstance) {
     })
 
     // Get single Parts Req by id
-    fastify.get<{ Params: { id: number } }>("/parts-req/:id", async (req, res) => {
+    fastify.get<{ Params: { id: string } }>("/parts-req/:id", async (req, res) => {
         const result = await prisma.partsReq.findUnique({
             where: {
                 id: Number(req.params.id)
@@ -116,6 +116,90 @@ async function routes(fastify: FastifyInstance) {
 
         res.status(201)
         return partsReq
+    })
+
+    // Update a Parts Req form
+    fastify.put("/parts-req/:id", async (req: FastifyRequest<{ Params: { id: string }, Body: Partial<UpdatePartsReq> }>, res) => {
+        // Ensure no invalid rows are created
+        const existingParts = req.body.parts ? req.body.parts.filter(row => (row.itemNumber !== "" && row.id)) : []
+        const newParts = req.body.parts ? req.body.parts.filter(row => (!row.id)) : []
+
+        console.log("Existing: " + existingParts)
+        console.log("New: " + newParts)
+
+        // Update existing parts rows
+        for (const part of existingParts) {
+            await prisma.partsReqRow.update({
+                where: {
+                    id: part.id
+                },
+                data: {
+                    qty: part.qty,
+                    itemNumber: part.itemNumber,
+                    description: part.description
+                }
+            })
+        }
+
+        // Add new parts rows
+        for (const part of newParts) {
+            await prisma.partsReqRow.create({
+                data: {
+                    qty: part.qty,
+                    itemNumber: part.itemNumber,
+                    description: part.description,
+                    partsReqId: Number(req.params.id)
+                }
+            })
+        }
+
+        // Delete parts rows
+        if (req.body.delRows) {
+            for (const row of req.body.delRows) {
+                await prisma.partsReqRow.delete({
+                    where: {
+                        id: row.id
+                    }
+                })
+            }
+        }
+
+        // Add new comments
+        if (req.body.comments) {
+            for (const comment of req.body.comments) {
+                if (!comment.id) {
+                    await prisma.comment.create({
+                        data: {
+                            comment: comment.comment,
+                            name: comment.name,
+                            timestamp: comment.timestamp,
+                            partsReqId: Number(req.params.id)
+                        }
+                    })
+                }
+            }
+        }
+
+        // Update parts req fields
+        const updatedPartsReq = await prisma.partsReq.update({
+            where: {
+                id: Number(req.params.id)
+            },
+            data: {
+                afe: req.body.class?.afe,
+                so: req.body.class?.so,
+                unitNumber: req.body.relAsset?.unit?.unitNumber,
+                truck: req.body.relAsset?.truck,
+                urgency: req.body.urgency,
+                orderType: req.body.orderType,
+                region: req.body.region,
+                status: req.body.status,
+                updated: new Date().toISOString()
+            }
+        })
+
+        res.status(200)
+        return (updatedPartsReq)
     })
 }
 

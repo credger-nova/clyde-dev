@@ -38,6 +38,10 @@ export interface CreatePartsReq extends Omit<PartsReq, "id" | "parts" | "comment
     comments: Array<Omit<Comment, "id">>
 }
 
+export interface UpdatePartsReq extends Omit<PartsReq, "requester" | "date" | "updated"> {
+    delRows: Array<OrderRow>
+}
+
 export interface Part {
     recordType: string,
     id: string,

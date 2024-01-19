@@ -4,21 +4,19 @@ import DialogActions from '@mui/material/DialogActions'
 import DialogContent from '@mui/material/DialogContent'
 import DialogTitle from '@mui/material/DialogTitle'
 import EditPartsReqForm from "../forms/EditPartsReqForm"
-import { usePartsReq } from "../../hooks/partsReq"
+import { PartsReq } from "../../types/partsReq"
 
 interface Props {
-    partsReqId: number,
+    partsReq: PartsReq,
     open: boolean,
-    setActivePartsReqId: React.Dispatch<React.SetStateAction<number | null>>
+    setActivePartsReq: React.Dispatch<React.SetStateAction<PartsReq | null>>
 }
 
 export default function EditDialog(props: Props) {
-    const { partsReqId, open, setActivePartsReqId } = props
-
-    const { data: partsReq } = usePartsReq(partsReqId)
+    const { partsReq, open, setActivePartsReq } = props
 
     const handleClose = () => {
-        setActivePartsReqId(null)
+        setActivePartsReq(null)
     }
 
     return (partsReq && (
@@ -35,7 +33,7 @@ export default function EditDialog(props: Props) {
             <DialogContent>
                 <EditPartsReqForm
                     partsReq={partsReq}
-                    setActivePartsReqId={setActivePartsReqId}
+                    setActivePartsReq={setActivePartsReq}
                 />
             </DialogContent>
             <DialogActions />

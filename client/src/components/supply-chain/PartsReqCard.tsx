@@ -8,7 +8,7 @@ import { styled } from '@mui/material/styles'
 
 interface Props {
     partsReq: PartsReq,
-    setActivePartsReqId: React.Dispatch<React.SetStateAction<number | null>>
+    setActivePartsReq: React.Dispatch<React.SetStateAction<PartsReq | null>>
 }
 
 function calcCost(parts: Array<OrderRow>) {
@@ -30,11 +30,11 @@ const StyledCard = styled(Card)(() => ({
 }))
 
 export default function PartsReqCard(props: Props) {
-    const { partsReq, setActivePartsReqId } = props
+    const { partsReq, setActivePartsReq } = props
 
     return (
         <StyledCard
-            onClick={() => { setActivePartsReqId(partsReq.id) }}
+            onClick={() => { setActivePartsReq(partsReq) }}
             sx={{
                 maxHeight: "250px", width: "275px", backgroundImage: "none", margin: "0px 15px 15px 0px", padding: "5px", borderRadius: "0.5rem"
             }}

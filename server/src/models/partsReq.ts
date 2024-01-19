@@ -36,3 +36,7 @@ export interface PartsReq {
     status: string,
     updated: Date
 }
+
+export interface UpdatePartsReq extends Omit<PartsReq, "requester" | "date" | "updated"> {
+    delRows: Array<OrderRow>
+}

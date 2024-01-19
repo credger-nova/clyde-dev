@@ -1,13 +1,12 @@
 import * as React from "react"
 
-import { useMutation } from "@tanstack/react-query"
 import { useAuth0 } from "@auth0/auth0-react"
 import { useAFEs } from "../../hooks/afe"
 import { useSOs } from "../../hooks/so"
 import { useUnits } from "../../hooks/unit"
 import { useTrucks } from "../../hooks/truck"
 import { useParts } from "../../hooks/parts"
-import { createPartsReq } from "../../hooks/partsReq"
+import { useCreatePartsReq } from "../../hooks/partsReq"
 
 import { toTitleCase } from "../../utils/helperFunctions"
 
@@ -57,7 +56,7 @@ export default function PartsReqForm() {
     const { data: trucks, isFetching: trucksFetching } = useTrucks()
     const { data: parts, isFetching: partsFetching } = useParts()
 
-    const { mutate: doCreatePartsReq } = useMutation({ mutationFn: createPartsReq })
+    const { mutateAsync: createPartsReq } = useCreatePartsReq()
 
     const [requester] = React.useState<string | undefined>(user?.name)
     const [orderDate] = React.useState<Date>(new Date())
@@ -101,7 +100,7 @@ export default function PartsReqForm() {
             updated: new Date()
         }
 
-        doCreatePartsReq(formData)
+        createPartsReq(formData)
 
         window.location.href = ".."
     }

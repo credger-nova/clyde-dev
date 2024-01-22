@@ -4,8 +4,90 @@ import { PartsReq, UpdatePartsReq } from "../models/partsReq"
 
 async function routes(fastify: FastifyInstance) {
     // Get all Parts Reqs
-    fastify.get("/parts-req", async (req, res) => {
+    fastify.get("/parts-req", async (req: FastifyRequest<{
+        Querystring: {
+            searchString?: string,
+            id?: string,
+            afe?: string,
+            so?: string,
+            unitNumber?: string,
+            truck?: string,
+            part?: string,
+            requester?: string,
+            customer?: string,
+            urgency?: string
+        }
+    }>, res) => {
+        const {
+            searchString,
+            afe,
+            so,
+            unitNumber,
+            truck,
+            part, // TODO
+            requester,
+            customer, // TODO
+            urgency
+        } = req.query
+
         const result = await prisma.partsReq.findMany({
+            where: searchString ? {
+                OR: [
+                    {
+                        afe: {
+                            contains: searchString, mode: "insensitive"
+                        }
+                    },
+                    {
+                        so: {
+                            contains: searchString, mode: "insensitive"
+                        }
+                    },
+                    {
+                        unitNumber: {
+                            contains: searchString, mode: "insensitive"
+                        }
+                    },
+                    {
+                        truck: {
+                            contains: searchString, mode: "insensitive"
+                        }
+                    },
+                    {
+                        requester: {
+                            contains: searchString, mode: "insensitive"
+                        }
+                    },
+                    {
+                        unit: {
+                            customer: {
+                                contains: searchString, mode: "insensitive"
+                            }
+                        }
+                    }
+                ]
+                /*AND: [{
+                    AND: [
+                        afe ? { afe: afe } : {},
+                        so ? { so: so } : {},
+                        unitNumber ? { unitNumber: unitNumber } : {},
+                        truck ? { truck: truck } : {},
+                        requester ? { requester: requester } : {},
+                        urgency ? { urgency: urgency } : {}
+                    ]
+                },
+                {
+                    OR: [
+                        { id: Number(searchString) },
+                        { afe: { contains: searchString } },
+                        { so: { contains: searchString } },
+                        { unitNumber: { contains: searchString } },
+                        { truck: { contains: searchString } },
+                        { requester: { contains: searchString } },
+                        { unit: { customer: { contains: searchString?.toUpperCase() } } }
+                    ]
+                }]*/
+            } : {},
             include: {
                 parts: true,
                 comments: true,
@@ -123,9 +205,6 @@ async function routes(fastify: FastifyInstance) {
         // Ensure no invalid rows are created
         const existingParts = req.body.parts ? req.body.parts.filter(row => (row.itemNumber !== "" && row.id)) : []
         const newParts = req.body.parts ? req.body.parts.filter(row => (!row.id)) : []
-
-        console.log("Existing: " + existingParts)
-        console.log("New: " + newParts)
 
         // Update existing parts rows
         for (const part of existingParts) {

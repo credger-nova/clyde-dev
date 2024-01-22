@@ -3,14 +3,17 @@ import axios from "axios"
 import { CreatePartsReq, PartsReq, UpdatePartsReq } from "../types/partsReq"
 
 // Get all Parts Reqs
-const getAllPartsReqs = async () => {
-    const { data } = await axios.get<Array<PartsReq>>(`${import.meta.env.VITE_API_BASE}/forms/parts-req`)
+const getAllPartsReqs = async (searchString: string) => {
+    const url = new URL(`${import.meta.env.VITE_API_BASE}/forms/parts-req`)
+    searchString ? url.searchParams.append("searchString", searchString) : null
+
+    const { data } = await axios.get<Array<PartsReq>>(url.toString())
 
     return data
 }
 
-export function usePartsReqs() {
-    return useQuery({ queryKey: ["partsReq"], queryFn: getAllPartsReqs })
+export function usePartsReqs(searchString: string) {
+    return useQuery({ queryKey: ["partsReq", searchString], queryFn: () => getAllPartsReqs(searchString) })
 }
 
 // Get single Parts Req

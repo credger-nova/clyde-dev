@@ -1,7 +1,5 @@
-import * as fs from "fs"
-import * as path from "path"
 import { parse } from "csv-parse"
-import { Unit, Parameter, WeeklyDowntime } from "@prisma/client"
+import fs from "node:fs"
 import { prisma } from "../src/utils/prisma-client"
 
 const NUM_COLS = [
@@ -32,14 +30,10 @@ const DATE_COLS = [
     "timestamp"
 ]
 
-var csvFilePath, headers, fileContent
-
-function seed_unit() {
+const seedUnit = async () => {
     console.log("Seeding Unit Table")
 
-    csvFilePath = path.resolve(__dirname, "seeds/unit.csv")
-
-    headers = [
+    const headers = [
         "status",
         "unitNumber",
         "customer",
@@ -99,146 +93,136 @@ function seed_unit() {
         "releaseWeek",
     ]
 
-    fileContent = fs.readFileSync(csvFilePath, { encoding: "utf-8" })
-
-    parse(fileContent, {
-        delimiter: ",",
-        columns: headers,
-        from: 2,
-        cast: (value, context) => {
-            if (value !== "NULL") {
-                if (NUM_COLS.includes(context.column as string)) {
-                    return Number(value)
-                } else if (DATE_COLS.includes(context.column as string)) {
-                    return new Date(value)
+    const parser = fs
+        .createReadStream(`${__dirname}/seeds/unit.csv`)
+        .pipe(parse({
+            delimiter: ",",
+            columns: headers,
+            from: 2,
+            cast: (value, context) => {
+                if (value !== "NULL") {
+                    if (NUM_COLS.includes(context.column as string)) {
+                        return Number(value)
+                    } else if (DATE_COLS.includes(context.column as string)) {
+                        return new Date(value)
+                    } else {
+                        return value
+                    }
                 } else {
-                    return value
+                    return null
                 }
-            } else {
-                return null
             }
-        }
-    }, async (error, result: Unit[]) => {
-        if (error) {
-            console.error(error)
-        }
+        }))
 
-        for (const unit of result) {
-            const createdUnit = await prisma.unit.upsert({
-                where: { unitNumber: unit.unitNumber },
-                update: unit,
-                create: unit
-            })
-        }
-    })
+    for await (const unit of parser) {
+        await prisma.unit.upsert({
+            where: { unitNumber: unit.unitNumber },
+            update: unit,
+            create: unit
+        })
+    }
+
+    console.log("Unit Table Seeding Complete")
 }
 
-function seed_parameter() {
+const seedParameter = async () => {
     console.log("Seeding Parameter Table")
 
-    csvFilePath = path.resolve(__dirname, "seeds/parameter.csv")
-
-    headers = [
+    const headers = [
         "unitNumber",
         "name",
         "value",
         "timestamp"
     ]
 
-    fileContent = fs.readFileSync(csvFilePath, { encoding: "utf-8" })
-
-    parse(fileContent, {
-        delimiter: ",",
-        columns: headers,
-        from: 2,
-        cast: (value, context) => {
-            if (value !== "NULL") {
-                if (NUM_COLS.includes(context.column as string)) {
-                    return Number(value)
-                } else if (DATE_COLS.includes(context.column as string)) {
-                    return new Date(value)
-                } else {
-                    return value
-                }
-            } else {
-                return null
-            }
-        }
-    }, async (error, result: Parameter[]) => {
-        if (error) {
-            console.error(error)
-        }
-
-        for (const parameter of result) {
-            const createdParameter = await prisma.parameter.upsert({
-                where: {
-                    unitNumber_name: {
-                        unitNumber: parameter.unitNumber,
-                        name: parameter.name
+    const parser = fs
+        .createReadStream(`${__dirname}/seeds/parameter.csv`)
+        .pipe(parse({
+            delimiter: ",",
+            columns: headers,
+            from: 2,
+            cast: (value, context) => {
+                if (value !== "NULL") {
+                    if (NUM_COLS.includes(context.column as string)) {
+                        return Number(value)
+                    } else if (DATE_COLS.includes(context.column as string)) {
+                        return new Date(value)
+                    } else {
+                        return value
                     }
-                },
-                update: parameter,
-                create: parameter
-            })
-        }
-    })
+                } else {
+                    return null
+                }
+            }
+        }))
+
+    for await (const parameter of parser) {
+        await prisma.parameter.upsert({
+            where: {
+                unitNumber_name: {
+                    unitNumber: parameter.unitNumber,
+                    name: parameter.name
+                }
+            },
+            update: parameter,
+            create: parameter
+        })
+    }
+
+    console.log("Parameter Table Seeding Complete")
 }
 
-function seed_downtime() {
+const seedWeeklyDowntime = async () => {
     console.log("Seeding Weekly Downtime Table")
 
-    csvFilePath = path.resolve(__dirname, "seeds/weekly_downtime.csv")
-
-    headers = [
+    const headers = [
         "unitNumber",
         "week",
         "ma",
         "dtHours"
     ]
 
-    fileContent = fs.readFileSync(csvFilePath, { encoding: "utf-8" })
-
-    parse(fileContent, {
-        delimiter: ",",
-        columns: headers,
-        from: 2,
-        cast: (value, context) => {
-            if (value !== "NULL") {
-                if (NUM_COLS.includes(context.column as string)) {
-                    return Number(value)
-                } else if (DATE_COLS.includes(context.column as string)) {
-                    return new Date(value)
-                } else {
-                    return value
-                }
-            } else {
-                return null
-            }
-        }
-    }, async (error, result: WeeklyDowntime[]) => {
-        if (error) {
-            console.error(error)
-        }
-
-        for (const weeklyDowntime of result) {
-            const createdWeeklyDowntime = await prisma.weeklyDowntime.upsert({
-                where: {
-                    unitNumber_week: {
-                        unitNumber: weeklyDowntime.unitNumber,
-                        week: weeklyDowntime.week
+    const parser = fs
+        .createReadStream(`${__dirname}/seeds/weekly_downtime.csv`)
+        .pipe(parse({
+            delimiter: ",",
+            columns: headers,
+            from: 2,
+            cast: (value, context) => {
+                if (value !== "NULL") {
+                    if (NUM_COLS.includes(context.column as string)) {
+                        return Number(value)
+                    } else if (DATE_COLS.includes(context.column as string)) {
+                        return new Date(value)
+                    } else {
+                        return value
                     }
-                },
-                update: weeklyDowntime,
-                create: weeklyDowntime
-            })
-        }
-    })
+                } else {
+                    return null
+                }
+            }
+        }))
+
+    for await (const weeklyDowntime of parser) {
+        await prisma.weeklyDowntime.upsert({
+            where: {
+                unitNumber_week: {
+                    unitNumber: weeklyDowntime.unitNumber,
+                    week: weeklyDowntime.week
+                }
+            },
+            update: weeklyDowntime,
+            create: weeklyDowntime
+        })
+    }
+
+    console.log("Weekly Downtime Table Seeding Complete")
 }
 
 async function main() {
-    seed_unit()
-    seed_parameter()
-    seed_downtime()
+    await seedUnit()
+    await seedParameter()
+    await seedWeeklyDowntime()
 
     await prisma.$disconnect()
 }

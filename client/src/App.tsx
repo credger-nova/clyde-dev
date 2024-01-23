@@ -5,6 +5,7 @@ import Loader from "./components/common/Loader"
 import PrivateRoute from "./components/common/PrivateRoute"
 
 import './css/app.css'
+import { useAuth0 } from "@auth0/auth0-react"
 
 const Home = React.lazy(() => import("./pages/home"))
 const Units = React.lazy(() => import("./pages/units"))
@@ -13,6 +14,12 @@ const SupplyChain = React.lazy(() => import("./pages/supply-chain"))
 const Forms = React.lazy(() => import("./pages/forms"))
 
 export default function App() {
+  const { user } = useAuth0()
+
+  React.useEffect(() => {
+    console.log(user)
+  }, [user])
+
   return (
     <React.Suspense fallback={<Loader />}>
       <Routes>

@@ -21,9 +21,13 @@ export default function SearchFilter(props: Props) {
             <StyledTextField
                 variant="standard"
                 label="Search"
+                placeholder="Name, Unit #, AFE #, etc..."
                 type="search"
                 onChange={handleSearchStringChange}
                 value={searchString}
+                InputLabelProps={{
+                    shrink: true
+                }}
                 sx={{ width: "200px" }}
             />
         </div>

@@ -7,18 +7,28 @@ import Loader from "./Loader"
 
 interface Props {
     children?: ReactNode
+    titles?: Array<string>
 }
 
-const Route = ({ children }: Props) => {
+const Route = ({ children, titles }: Props) => {
     const { user } = useAuth0()
 
     const { data: novaUser, isFetched } = useNovaUser(undefined, user?.email)
 
-    return isFetched ?
-        novaUser ?
-            <Layout>{children}</Layout> :
-            <Navigate to="/login" /> :
-        <Loader /> // TODO: Create page to redirect to login
+    if (isFetched) {
+        if (novaUser) {
+            const canAccess = titles ? titles.includes(novaUser.title) : true
+
+            return (canAccess ?
+                <Layout>{children}</Layout> :
+                <Navigate to="/" /> // TODO: Create an Unauthorized page
+            )
+        } else {
+            <Navigate to="/login" /> // TODO: Create page to redirect to login
+        }
+    } else {
+        return <Loader />
+    }
 }
 
 const PrivateRoute = withAuthenticationRequired(Route, {

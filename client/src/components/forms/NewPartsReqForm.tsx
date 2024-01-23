@@ -7,6 +7,7 @@ import { useUnits } from "../../hooks/unit"
 import { useTrucks } from "../../hooks/truck"
 import { useParts } from "../../hooks/parts"
 import { useCreatePartsReq } from "../../hooks/partsReq"
+import { useNovaUser } from "../../hooks/user"
 
 import { toTitleCase } from "../../utils/helperFunctions"
 
@@ -34,9 +35,10 @@ import AddIcon from '@mui/icons-material/Add'
 import DeleteIcon from '@mui/icons-material/Delete'
 import { StyledTextField } from "../common/TextField"
 import { UNIT_PLANNING } from "../../utils/unitPlanning"
+import Loader from "../common/Loader"
 
 const URGENCY = ["Unit Down", "Rush", "Standard"]
-const ORDER_TYPE = ["Rental", "Third-Party", "Shop Supplies", "Truck Supplies"]
+const ORDER_TYPE = [{ type: "Rental" }, { type: "Third-Party" }, { type: "Shop Supplies" }, { type: "Truck Supplies" }, { type: "Stock", titles: ["Supply Chain", "Software"] }]
 const REGION = ["East Texas", "South Texas", "Midcon", "North Permian", "South Permian", "Pecos", "Carlsbad"]
 
 const Item = styled(Paper)(({ theme }) => ({
@@ -50,6 +52,8 @@ const Item = styled(Paper)(({ theme }) => ({
 export default function PartsReqForm() {
     const { user } = useAuth0()
 
+    const { data: novaUser, isFetched } = useNovaUser(undefined, user?.email)
+
     const { data: afeNumbers, isFetching: afeFetching } = useAFEs()
     const { data: soNumbers, isFetching: soFetching } = useSOs()
     const { data: unitNumbers, isFetching: unitsFetching } = useUnits()
@@ -58,7 +62,7 @@ export default function PartsReqForm() {
 
     const { mutateAsync: createPartsReq } = useCreatePartsReq()
 
-    const [requester] = React.useState<string | undefined>(user?.name)
+    const [requester] = React.useState<string | undefined>(`${novaUser?.firstName} ${novaUser?.lastName}`)
     const [orderDate] = React.useState<Date>(new Date())
     const [reqClass, setReqClass] = React.useState<ReqClass>({ afe: null, so: null })
     const [relAsset, setRelAsset] = React.useState<RelAsset>({ unit: null, truck: null })
@@ -181,7 +185,7 @@ export default function PartsReqForm() {
             ...comments,
             {
                 comment: comment,
-                name: user ? user.name! : "",
+                name: novaUser ? `${novaUser.firstName} ${novaUser.lastName}` : "",
                 timestamp: new Date()
             }
         ])
@@ -189,348 +193,354 @@ export default function PartsReqForm() {
         setComment("")
     }
 
-    return (
-        <Box sx={{
-            width: "100%", maxHeight: "calc(100% - 64px)", bgcolor: "background.paper", margin: "15px", padding: "10px", borderRadius: "0.5rem",
-            overflow: "auto", border: "5px solid", borderColor: "background.paper"
-        }}>
-            <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-                <h2 style={{ margin: "5px" }}>New Parts Requisition</h2>
-                <Grid container spacing={2} sx={{ width: "100%" }}>
-                    <Grid xs={3}>
-                        <Item>
-                            <Box>
-                                <b><p style={{ margin: 0 }}>Complete All Applicable Fields:</p></b>
-                                <Divider />
-                                <StyledTextField
-                                    variant="standard"
-                                    label="Parts Requester"
-                                    defaultValue={requester}
-                                    InputProps={{ readOnly: true }}
-                                />
-                                <StyledTextField
-                                    variant="standard"
-                                    label="Order Date"
-                                    value={orderDate.toLocaleDateString()}
-                                    InputProps={{ readOnly: true }}
-                                />
-                                <b><p style={{ margin: "20px 0px 0px 0px" }}>Class:</p></b>
-                                <Divider />
-                                <Autocomplete
-                                    options={afeNumbers ? afeNumbers : []}
-                                    onChange={onAfeChange}
-                                    loading={afeFetching}
-                                    value={reqClass.afe}
-                                    renderInput={(params) => <StyledTextField
-                                        {...params}
+    if (isFetched) {
+        return (
+            <Box sx={{
+                width: "100%", maxHeight: "calc(100% - 64px)", bgcolor: "background.paper", margin: "15px", padding: "10px", borderRadius: "0.5rem",
+                overflow: "auto", border: "5px solid", borderColor: "background.paper"
+            }}>
+                <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+                    <h2 style={{ margin: "5px" }}>New Parts Requisition</h2>
+                    <Grid container spacing={2} sx={{ width: "100%" }}>
+                        <Grid xs={3}>
+                            <Item>
+                                <Box>
+                                    <b><p style={{ margin: 0 }}>Complete All Applicable Fields:</p></b>
+                                    <Divider />
+                                    <StyledTextField
                                         variant="standard"
-                                        label="AFE #"
-                                    />}
-                                    disabled={reqClass.so !== null}
-                                />
-                                <Autocomplete
-                                    options={soNumbers ? soNumbers : []}
-                                    onChange={onSoChange}
-                                    loading={soFetching}
-                                    value={reqClass.so}
-                                    renderInput={(params) => <StyledTextField
-                                        {...params}
+                                        label="Parts Requester"
+                                        defaultValue={requester}
+                                        InputProps={{ readOnly: true }}
+                                    />
+                                    <StyledTextField
                                         variant="standard"
-                                        label="SO #"
-                                    />}
-                                    disabled={reqClass.afe !== null || relAsset.unit !== null}
-                                />
-                                <b><p style={{ margin: "20px 0px 0px 0px" }}>Related Asset:</p></b>
-                                <Divider />
-                                <Autocomplete
-                                    options={unitNumbers ? unitNumbers : []}
-                                    getOptionLabel={(option: Unit) => option.unitNumber}
-                                    onChange={onUnitNumberChange}
-                                    loading={unitsFetching}
-                                    value={relAsset.unit}
-                                    renderInput={(params) => <StyledTextField
-                                        {...params}
-                                        variant="standard"
-                                        label="Unit #"
-                                    />}
-                                    disabled={relAsset.truck !== null}
-                                />
-                                <div style={{ display: "flex", flexDirection: "row", width: "100%" }}>
-                                    <p style={{ marginTop: "10px", marginRight: "10px" }}>Location:</p>
-                                    {relAsset.unit ?
-                                        <p style={{ marginTop: "10px" }}>{relAsset.unit.location}</p> : null
-                                    }
-                                </div>
-                                <div style={{ display: "flex", flexDirection: "row", width: "100%" }}>
-                                    <p style={{ marginTop: "5px", marginRight: "10px" }}>Customer:</p>
-                                    {relAsset.unit ?
-                                        <p style={{ marginTop: "5px" }}>{relAsset.unit.customer}</p> : null
-                                    }
-                                </div>
-                                <div style={{ display: "flex", flexDirection: "row", width: "100%" }}>
-                                    <p style={{ marginTop: "5px", marginRight: "10px" }}>Status:</p>
-                                    {relAsset.unit ?
-                                        <p style={{ marginTop: "5px" }}>{relAsset.unit.status}</p> : null
-                                    }
-                                </div>
-                                <b><p style={{ margin: "5px 0px 0px 0px" }}>OR:</p></b>
-                                <Autocomplete
-                                    options={trucks ? trucks : []}
-                                    onChange={onTruckChange}
-                                    loading={trucksFetching}
-                                    value={relAsset.truck}
-                                    renderInput={(params) => <StyledTextField
-                                        {...params}
-                                        variant="standard"
-                                        label="Truck #"
-                                    />}
-                                    disabled={relAsset.unit !== null}
-                                />
-                            </Box>
-                        </Item>
-                    </Grid>
-                    <Grid xs={6}>
-                        <Item>
-                            <Box>
-                                <b><p style={{ margin: 0 }}>Urgency:</p></b>
-                                <Divider />
-                                <FormControl>
-                                    <RadioGroup row>
-                                        {URGENCY.map((val) => {
-                                            return (
-                                                <FormControlLabel
-                                                    value={urgency}
-                                                    onChange={() => setUrgency(val)}
-                                                    control={<Radio disableRipple sx={{ paddingRight: "2px" }} checked={urgency === val} />}
-                                                    label={val}
-                                                    defaultChecked={false}
-                                                    key={val}
-                                                />
-                                            )
-                                        })}
-                                    </RadioGroup>
-                                </FormControl>
-                                <b><p style={{ margin: "20px 0px 0px 0px" }}>Order Type:</p></b>
-                                <Divider />
-                                <FormControl disabled={relAsset.unit !== null || reqClass.so !== null}>
-                                    <RadioGroup row>
-                                        {ORDER_TYPE.map((val) => {
-                                            return (
-                                                <FormControlLabel
-                                                    value={orderType}
-                                                    onChange={() => setOrderType(val)}
-                                                    control={<Radio disableRipple sx={{ paddingRight: "2px" }} checked={orderType === val} />}
-                                                    label={val}
-                                                    defaultChecked={false}
-                                                    key={val}
-                                                />
-                                            )
-                                        })}
-                                    </RadioGroup>
-                                </FormControl>
-                                <b><p style={{ margin: "20px 0px 0px 0px" }}>Operational Region:</p></b>
-                                <Divider />
-                                <FormControl disabled={relAsset.unit !== null}>
-                                    <RadioGroup row>
-                                        {REGION.map((val) => {
-                                            return (
-                                                <FormControlLabel
-                                                    value={region}
-                                                    onChange={() => setRegion(val)}
-                                                    control={<Radio disableRipple sx={{ paddingRight: "2px" }} checked={region === val} />}
-                                                    label={val}
-                                                    defaultChecked={false}
-                                                    key={val}
-                                                />
-                                            )
-                                        })}
-                                    </RadioGroup>
-                                </FormControl>
-                            </Box>
-                        </Item>
-                        <Item sx={{
-                            marginTop: "15px", border: relAsset.unit ? UNIT_PLANNING.includes(relAsset.unit.unitNumber) ?
-                                "3px solid red" :
-                                "3px solid transparent" :
-                                "3px solid transparent"
-                        }} >
-                            <Box>
-                                <b><p style={{ margin: 0 }}>Unit Planning Approval Status:</p></b>
-                                <Divider />
-                                {relAsset.unit ?
-                                    UNIT_PLANNING.includes(relAsset.unit.unitNumber) ?
-                                        <b><p style={{ marginTop: "5px", color: "red" }}>Travis Yount Must Approve Non-PM Parts</p></b> :
-                                        <p style={{ marginTop: "5px" }}>No Additional Approval Needed</p> :
-                                    <p style={{ marginTop: "5px" }}>No Additional Approval Needed</p>
-                                }
-                                <b><p style={{ margin: "20px 0px 0px 0px" }}>Engine:</p></b>
-                                <Divider />
-                                <div style={{ display: "flex", flexDirection: "row", width: "100%" }}>
-                                    <p style={{ marginTop: "5px", marginRight: "10px" }}>Make & Model:</p>
-                                    {relAsset.unit ?
-                                        <p style={{ marginTop: "5px" }}>{relAsset.unit.engine}</p> : null
-                                    }
-                                </div>
-                                <div style={{ display: "flex", flexDirection: "row", width: "100%" }}>
-                                    <p style={{ marginRight: "10px", marginTop: 0 }}>S/N:</p>
-                                    {relAsset.unit ?
-                                        <p style={{ margin: 0 }}>{relAsset.unit.engineSerialNum}</p> : null
-                                    }
-                                </div>
-                                <b><p style={{ margin: "10px 0px 0px 0px" }}>Compressor Frame:</p></b>
-                                <Divider />
-                                <div style={{ display: "flex", flexDirection: "row", width: "100%" }}>
-                                    <p style={{ marginTop: "5px", marginRight: "10px" }}>Make:</p>
-                                    {relAsset.unit ?
-                                        <p style={{ marginTop: "5px" }}>{relAsset.unit.compressorFrame}</p> : null
-                                    }
-                                </div>
-                                <div style={{ display: "flex", flexDirection: "row", width: "100%" }}>
-                                    <p style={{ marginRight: "10px", marginTop: 0 }}>Model:</p>
-                                    {relAsset.unit ?
-                                        <p style={{ margin: 0 }}>{relAsset.unit.compressorFrameFamily}</p> : null
-                                    }
-                                </div>
-                                <div style={{ display: "flex", flexDirection: "row", width: "100%" }}>
-                                    <p style={{ marginRight: "10px", marginTop: 0 }}>S/N:</p>
-                                    {relAsset.unit ?
-                                        <p style={{ margin: 0 }}>{relAsset.unit.compressorFrameSN}</p> : null
-                                    }
-                                </div>
-                                <div style={{ display: "flex", flexDirection: "row", width: "100%" }}>
-                                    <p style={{ marginRight: "10px", marginTop: 0 }}>Stages:</p>
-                                    {relAsset.unit ?
-                                        <p style={{ margin: 0 }}>{relAsset.unit.stages}</p> : null
-                                    }
-                                </div>
-                                <div style={{ display: "flex", flexDirection: "row", width: "100%" }}>
-                                    <p style={{ marginRight: "10px", marginTop: 0, marginBottom: 0 }}>Cylinder Size:</p>
-                                    {relAsset.unit ?
-                                        <p style={{ margin: 0 }}>{relAsset.unit.cylinderSize}</p> : null
-                                    }
-                                </div>
-                            </Box>
-                        </Item>
-                    </Grid>
-                    <Grid xs={3}>
-                        <Item style={{ maxHeight: "600px", overflow: "auto" }}>
-                            <div style={{ display: "flex", alignItems: "flex-end", padding: "5px" }}>
-                                <StyledTextField
-                                    multiline
-                                    variant="standard"
-                                    label="New Comment"
-                                    value={comment}
-                                    onChange={onCommentChange}
-                                />
-                                <IconButton
-                                    onClick={onAddComment}
-                                    disabled={!comment}
-                                >
-                                    <AddIcon />
-                                </IconButton>
-                            </div>
-                            <Box
-                                style={{ maxHeight: "500px", overflow: "auto", padding: "5px" }}
-                            >
-                                {comments.sort((x, y) => { return x.timestamp < y.timestamp ? 1 : -1 }) // Sort comments chronologically
-                                    .map((comment: Omit<Comment, "id">, index: number) => {
-                                        return (
-                                            <Box
-                                                key={index}
-                                                sx={{ padding: "5px", marginBottom: "5px", borderRadius: "0.25rem", backgroundColor: "background.paper" }}
-                                            >
-                                                <div style={{ display: "flex", flexDirection: "column" }}>
-                                                    <p>{comment.comment}</p>
-                                                    <i style={{ color: "#838385" }}>{comment.name} - {comment.timestamp.toLocaleDateString()} {comment.timestamp.toLocaleTimeString()}</i>
-                                                </div>
-                                            </Box>
-                                        )
-                                    })}
-                            </Box>
-                        </Item>
-                    </Grid>
-                    <Grid xs={12}>
-                        <Item>
-                            <Table size="small">
-                                <TableHead>
-                                    <TableRow>
-                                        <TableCell width={"7%"}>Qty Needed</TableCell>
-                                        <TableCell width={"25%"}>Part #</TableCell>
-                                        <TableCell>Description</TableCell>
-                                        <TableCell width={"5%"}></TableCell>
-                                    </TableRow>
-                                </TableHead>
-                                <TableBody>
-                                    {rows.map((row, index) => {
-                                        return (
-                                            <TableRow
-                                                key={index}
-                                            >
-                                                <TableCell>
-                                                    <StyledTextField
-                                                        type="number"
-                                                        variant="standard"
-                                                        value={row.qty}
-                                                        onChange={onQtyChange(index)}
-                                                        InputProps={{
-                                                            inputProps: { min: 1 }
-                                                        }}
-                                                        sx={{ width: "100%" }}
+                                        label="Order Date"
+                                        value={orderDate.toLocaleDateString()}
+                                        InputProps={{ readOnly: true }}
+                                    />
+                                    <b><p style={{ margin: "20px 0px 0px 0px" }}>Class:</p></b>
+                                    <Divider />
+                                    <Autocomplete
+                                        options={afeNumbers ? afeNumbers : []}
+                                        onChange={onAfeChange}
+                                        loading={afeFetching}
+                                        value={reqClass.afe}
+                                        renderInput={(params) => <StyledTextField
+                                            {...params}
+                                            variant="standard"
+                                            label="AFE #"
+                                        />}
+                                        disabled={reqClass.so !== null}
+                                    />
+                                    <Autocomplete
+                                        options={soNumbers ? soNumbers : []}
+                                        onChange={onSoChange}
+                                        loading={soFetching}
+                                        value={reqClass.so}
+                                        renderInput={(params) => <StyledTextField
+                                            {...params}
+                                            variant="standard"
+                                            label="SO #"
+                                        />}
+                                        disabled={reqClass.afe !== null || relAsset.unit !== null}
+                                    />
+                                    <b><p style={{ margin: "20px 0px 0px 0px" }}>Related Asset:</p></b>
+                                    <Divider />
+                                    <Autocomplete
+                                        options={unitNumbers ? unitNumbers : []}
+                                        getOptionLabel={(option: Unit) => option.unitNumber}
+                                        onChange={onUnitNumberChange}
+                                        loading={unitsFetching}
+                                        value={relAsset.unit}
+                                        renderInput={(params) => <StyledTextField
+                                            {...params}
+                                            variant="standard"
+                                            label="Unit #"
+                                        />}
+                                        disabled={relAsset.truck !== null}
+                                    />
+                                    <div style={{ display: "flex", flexDirection: "row", width: "100%" }}>
+                                        <p style={{ marginTop: "10px", marginRight: "10px" }}>Location:</p>
+                                        {relAsset.unit ?
+                                            <p style={{ marginTop: "10px" }}>{relAsset.unit.location}</p> : null
+                                        }
+                                    </div>
+                                    <div style={{ display: "flex", flexDirection: "row", width: "100%" }}>
+                                        <p style={{ marginTop: "5px", marginRight: "10px" }}>Customer:</p>
+                                        {relAsset.unit ?
+                                            <p style={{ marginTop: "5px" }}>{relAsset.unit.customer}</p> : null
+                                        }
+                                    </div>
+                                    <div style={{ display: "flex", flexDirection: "row", width: "100%" }}>
+                                        <p style={{ marginTop: "5px", marginRight: "10px" }}>Status:</p>
+                                        {relAsset.unit ?
+                                            <p style={{ marginTop: "5px" }}>{relAsset.unit.status}</p> : null
+                                        }
+                                    </div>
+                                    <b><p style={{ margin: "5px 0px 0px 0px" }}>OR:</p></b>
+                                    <Autocomplete
+                                        options={trucks ? trucks : []}
+                                        onChange={onTruckChange}
+                                        loading={trucksFetching}
+                                        value={relAsset.truck}
+                                        renderInput={(params) => <StyledTextField
+                                            {...params}
+                                            variant="standard"
+                                            label="Truck #"
+                                        />}
+                                        disabled={relAsset.unit !== null}
+                                    />
+                                </Box>
+                            </Item>
+                        </Grid>
+                        <Grid xs={6}>
+                            <Item>
+                                <Box>
+                                    <b><p style={{ margin: 0 }}>Urgency:</p></b>
+                                    <Divider />
+                                    <FormControl>
+                                        <RadioGroup row>
+                                            {URGENCY.map((val) => {
+                                                return (
+                                                    <FormControlLabel
+                                                        value={urgency}
+                                                        onChange={() => setUrgency(val)}
+                                                        control={<Radio disableRipple sx={{ paddingRight: "2px" }} checked={urgency === val} />}
+                                                        label={val}
+                                                        defaultChecked={false}
+                                                        key={val}
                                                     />
-                                                </TableCell>
-                                                <TableCell>
-                                                    <Autocomplete
-                                                        options={parts ? parts : []}
-                                                        getOptionLabel={(option: Part) => `${option.values.itemid}` + (option.values.salesdescription ?
-                                                            ` - ${option.values.salesdescription}` :
-                                                            "")}
+                                                )
+                                            })}
+                                        </RadioGroup>
+                                    </FormControl>
+                                    <b><p style={{ margin: "20px 0px 0px 0px" }}>Order Type:</p></b>
+                                    <Divider />
+                                    <FormControl disabled={relAsset.unit !== null || reqClass.so !== null}>
+                                        <RadioGroup row>
+                                            {ORDER_TYPE.map((val) => {
+                                                const canAccess = val.titles ? (val.titles.findIndex(el => novaUser!.title.includes(el)) !== -1) : true
 
-                                                        onChange={onPartChange(index)}
-                                                        loading={partsFetching}
-                                                        filterOptions={createFilterOptions({
-                                                            matchFrom: "any",
-                                                            limit: 500
-                                                        })}
-                                                        renderInput={(params) => <StyledTextField
-                                                            {...params}
-                                                            variant="standard"
-                                                        />}
+                                                return canAccess ? (
+                                                    <FormControlLabel
+                                                        value={orderType}
+                                                        onChange={() => setOrderType(val.type)}
+                                                        control={<Radio disableRipple sx={{ paddingRight: "2px" }} checked={orderType === val.type} />}
+                                                        label={val.type}
+                                                        defaultChecked={false}
+                                                        key={val.type}
                                                     />
-                                                </TableCell>
-                                                <TableCell>{row.description}</TableCell>
-                                                <TableCell>
-                                                    <IconButton
-                                                        onClick={() => removeRow(index)}
-                                                        disableRipple
-                                                    >
-                                                        <DeleteIcon />
-                                                    </IconButton>
-                                                </TableCell>
-                                            </TableRow>
-                                        )
-                                    })}
-                                </TableBody>
-                            </Table>
-                            <Button
-                                startIcon={<AddIcon />}
-                                onClick={onCreateRow}
-                                sx={{ marginTop: "5px" }}
-                            >
-                                Add Item
-                            </Button>
-                        </Item>
+                                                ) : null
+                                            })}
+                                        </RadioGroup>
+                                    </FormControl>
+                                    <b><p style={{ margin: "20px 0px 0px 0px" }}>Operational Region:</p></b>
+                                    <Divider />
+                                    <FormControl disabled={relAsset.unit !== null}>
+                                        <RadioGroup row>
+                                            {REGION.map((val) => {
+                                                return (
+                                                    <FormControlLabel
+                                                        value={region}
+                                                        onChange={() => setRegion(val)}
+                                                        control={<Radio disableRipple sx={{ paddingRight: "2px" }} checked={region === val} />}
+                                                        label={val}
+                                                        defaultChecked={false}
+                                                        key={val}
+                                                    />
+                                                )
+                                            })}
+                                        </RadioGroup>
+                                    </FormControl>
+                                </Box>
+                            </Item>
+                            <Item sx={{
+                                marginTop: "15px", border: relAsset.unit ? UNIT_PLANNING.includes(relAsset.unit.unitNumber) ?
+                                    "3px solid red" :
+                                    "3px solid transparent" :
+                                    "3px solid transparent"
+                            }} >
+                                <Box>
+                                    <b><p style={{ margin: 0 }}>Unit Planning Approval Status:</p></b>
+                                    <Divider />
+                                    {relAsset.unit ?
+                                        UNIT_PLANNING.includes(relAsset.unit.unitNumber) ?
+                                            <b><p style={{ marginTop: "5px", color: "red" }}>Travis Yount Must Approve Non-PM Parts</p></b> :
+                                            <p style={{ marginTop: "5px" }}>No Additional Approval Needed</p> :
+                                        <p style={{ marginTop: "5px" }}>No Additional Approval Needed</p>
+                                    }
+                                    <b><p style={{ margin: "20px 0px 0px 0px" }}>Engine:</p></b>
+                                    <Divider />
+                                    <div style={{ display: "flex", flexDirection: "row", width: "100%" }}>
+                                        <p style={{ marginTop: "5px", marginRight: "10px" }}>Make & Model:</p>
+                                        {relAsset.unit ?
+                                            <p style={{ marginTop: "5px" }}>{relAsset.unit.engine}</p> : null
+                                        }
+                                    </div>
+                                    <div style={{ display: "flex", flexDirection: "row", width: "100%" }}>
+                                        <p style={{ marginRight: "10px", marginTop: 0 }}>S/N:</p>
+                                        {relAsset.unit ?
+                                            <p style={{ margin: 0 }}>{relAsset.unit.engineSerialNum}</p> : null
+                                        }
+                                    </div>
+                                    <b><p style={{ margin: "10px 0px 0px 0px" }}>Compressor Frame:</p></b>
+                                    <Divider />
+                                    <div style={{ display: "flex", flexDirection: "row", width: "100%" }}>
+                                        <p style={{ marginTop: "5px", marginRight: "10px" }}>Make:</p>
+                                        {relAsset.unit ?
+                                            <p style={{ marginTop: "5px" }}>{relAsset.unit.compressorFrame}</p> : null
+                                        }
+                                    </div>
+                                    <div style={{ display: "flex", flexDirection: "row", width: "100%" }}>
+                                        <p style={{ marginRight: "10px", marginTop: 0 }}>Model:</p>
+                                        {relAsset.unit ?
+                                            <p style={{ margin: 0 }}>{relAsset.unit.compressorFrameFamily}</p> : null
+                                        }
+                                    </div>
+                                    <div style={{ display: "flex", flexDirection: "row", width: "100%" }}>
+                                        <p style={{ marginRight: "10px", marginTop: 0 }}>S/N:</p>
+                                        {relAsset.unit ?
+                                            <p style={{ margin: 0 }}>{relAsset.unit.compressorFrameSN}</p> : null
+                                        }
+                                    </div>
+                                    <div style={{ display: "flex", flexDirection: "row", width: "100%" }}>
+                                        <p style={{ marginRight: "10px", marginTop: 0 }}>Stages:</p>
+                                        {relAsset.unit ?
+                                            <p style={{ margin: 0 }}>{relAsset.unit.stages}</p> : null
+                                        }
+                                    </div>
+                                    <div style={{ display: "flex", flexDirection: "row", width: "100%" }}>
+                                        <p style={{ marginRight: "10px", marginTop: 0, marginBottom: 0 }}>Cylinder Size:</p>
+                                        {relAsset.unit ?
+                                            <p style={{ margin: 0 }}>{relAsset.unit.cylinderSize}</p> : null
+                                        }
+                                    </div>
+                                </Box>
+                            </Item>
+                        </Grid>
+                        <Grid xs={3}>
+                            <Item style={{ maxHeight: "600px", overflow: "auto" }}>
+                                <div style={{ display: "flex", alignItems: "flex-end", padding: "5px" }}>
+                                    <StyledTextField
+                                        multiline
+                                        variant="standard"
+                                        label="New Comment"
+                                        value={comment}
+                                        onChange={onCommentChange}
+                                    />
+                                    <IconButton
+                                        onClick={onAddComment}
+                                        disabled={!comment}
+                                    >
+                                        <AddIcon />
+                                    </IconButton>
+                                </div>
+                                <Box
+                                    style={{ maxHeight: "500px", overflow: "auto", padding: "5px" }}
+                                >
+                                    {comments.sort((x, y) => { return x.timestamp < y.timestamp ? 1 : -1 }) // Sort comments chronologically
+                                        .map((comment: Omit<Comment, "id">, index: number) => {
+                                            return (
+                                                <Box
+                                                    key={index}
+                                                    sx={{ padding: "5px", marginBottom: "5px", borderRadius: "0.25rem", backgroundColor: "background.paper" }}
+                                                >
+                                                    <div style={{ display: "flex", flexDirection: "column" }}>
+                                                        <p>{comment.comment}</p>
+                                                        <i style={{ color: "#838385" }}>{comment.name} - {comment.timestamp.toLocaleDateString()} {comment.timestamp.toLocaleTimeString()}</i>
+                                                    </div>
+                                                </Box>
+                                            )
+                                        })}
+                                </Box>
+                            </Item>
+                        </Grid>
+                        <Grid xs={12}>
+                            <Item>
+                                <Table size="small">
+                                    <TableHead>
+                                        <TableRow>
+                                            <TableCell width={"7%"}>Qty Needed</TableCell>
+                                            <TableCell width={"25%"}>Part #</TableCell>
+                                            <TableCell>Description</TableCell>
+                                            <TableCell width={"5%"}></TableCell>
+                                        </TableRow>
+                                    </TableHead>
+                                    <TableBody>
+                                        {rows.map((row, index) => {
+                                            return (
+                                                <TableRow
+                                                    key={index}
+                                                >
+                                                    <TableCell>
+                                                        <StyledTextField
+                                                            type="number"
+                                                            variant="standard"
+                                                            value={row.qty}
+                                                            onChange={onQtyChange(index)}
+                                                            InputProps={{
+                                                                inputProps: { min: 1 }
+                                                            }}
+                                                            sx={{ width: "100%" }}
+                                                        />
+                                                    </TableCell>
+                                                    <TableCell>
+                                                        <Autocomplete
+                                                            options={parts ? parts : []}
+                                                            getOptionLabel={(option: Part) => `${option.values.itemid}` + (option.values.salesdescription ?
+                                                                ` - ${option.values.salesdescription}` :
+                                                                "")}
+
+                                                            onChange={onPartChange(index)}
+                                                            loading={partsFetching}
+                                                            filterOptions={createFilterOptions({
+                                                                matchFrom: "any",
+                                                                limit: 500
+                                                            })}
+                                                            renderInput={(params) => <StyledTextField
+                                                                {...params}
+                                                                variant="standard"
+                                                            />}
+                                                        />
+                                                    </TableCell>
+                                                    <TableCell>{row.description}</TableCell>
+                                                    <TableCell>
+                                                        <IconButton
+                                                            onClick={() => removeRow(index)}
+                                                            disableRipple
+                                                        >
+                                                            <DeleteIcon />
+                                                        </IconButton>
+                                                    </TableCell>
+                                                </TableRow>
+                                            )
+                                        })}
+                                    </TableBody>
+                                </Table>
+                                <Button
+                                    startIcon={<AddIcon />}
+                                    onClick={onCreateRow}
+                                    sx={{ marginTop: "5px" }}
+                                >
+                                    Add Item
+                                </Button>
+                            </Item>
+                        </Grid>
                     </Grid>
-                </Grid>
-                <div style={{ display: "flex", justifyContent: "flex-end", width: "100%", padding: "15px 15px 0px 0px" }}>
-                    <Button
-                        variant="outlined"
-                        type="submit"
-                        disabled={disableSubmit}
-                    >
-                        Submit
-                    </Button>
-                </div>
-            </form>
-        </Box >
-    )
+                    <div style={{ display: "flex", justifyContent: "flex-end", width: "100%", padding: "15px 15px 0px 0px" }}>
+                        <Button
+                            variant="outlined"
+                            type="submit"
+                            disabled={disableSubmit}
+                        >
+                            Submit
+                        </Button>
+                    </div>
+                </form>
+            </Box >
+        )
+    } else {
+        return <Loader />
+    }
 }

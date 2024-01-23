@@ -22,12 +22,16 @@ export default function App() {
           </PrivateRoute>
         } />
         <Route path="units" element={
-          <PrivateRoute>
+          <PrivateRoute
+            titles={["Software Developer"]}
+          >
             <Units />
           </PrivateRoute>
         } />
         <Route path="map" element={
-          <PrivateRoute>
+          <PrivateRoute
+            titles={["Software Developer"]}
+          >
             <UnitMap />
           </PrivateRoute>
         } />

@@ -22,8 +22,8 @@ const DrawerHeader = styled("div")(({ theme }) => ({
 
 const pages = [
     { name: "Home", url: "", icon: <HomeIcon /> },
-    { name: "Unit Status", url: "units", icon: <SensorsIcon /> },
-    { name: "Unit Map", url: "map", icon: <PlaceIcon /> },
+    { name: "Unit Status", url: "units", icon: <SensorsIcon />, titles: ["Software Developer"] },
+    { name: "Unit Map", url: "map", icon: <PlaceIcon />, titles: ["Software Developer"] },
     { name: "Supply Chain", url: "supply-chain", icon: <MoveUpIcon /> },
     { name: "Forms", url: "forms", icon: <AssignmentOutlinedIcon /> },
 ]

@@ -12,6 +12,7 @@ export interface OrderRow {
     id: string,
     qty: number,
     itemNumber: string,
+    cost: string | null,
     description: string | null
 }
 

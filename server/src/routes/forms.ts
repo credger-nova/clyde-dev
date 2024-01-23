@@ -227,6 +227,7 @@ async function routes(fastify: FastifyInstance) {
                     qty: part.qty,
                     itemNumber: part.itemNumber,
                     description: part.description,
+                    cost: part.cost,
                     partsReqId: Number(req.params.id)
                 }
             })

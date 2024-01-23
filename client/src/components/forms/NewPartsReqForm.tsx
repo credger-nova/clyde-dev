@@ -12,7 +12,7 @@ import { useNovaUser } from "../../hooks/user"
 import { toTitleCase } from "../../utils/helperFunctions"
 import { calcCost } from "../../utils/helperFunctions"
 
-import { ReqClass, RelAsset, OrderRow, CreatePartsReq, Part, Comment } from "../../types/partsReq"
+import { OrderRow, CreatePartsReq, Part, Comment } from "../../types/partsReq"
 import { Unit } from "../../types/unit"
 
 import { styled } from '@mui/material/styles'
@@ -65,8 +65,10 @@ export default function PartsReqForm() {
 
     const [requester] = React.useState<string | undefined>(`${novaUser?.firstName} ${novaUser?.lastName}`)
     const [orderDate] = React.useState<Date>(new Date())
-    const [reqClass, setReqClass] = React.useState<ReqClass>({ afe: null, so: null })
-    const [relAsset, setRelAsset] = React.useState<RelAsset>({ unit: null, truck: null })
+    const [afe, setAfe] = React.useState<string | null>(null)
+    const [so, setSo] = React.useState<string | null>(null)
+    const [unit, setUnit] = React.useState<Unit | null>(null)
+    const [truck, setTruck] = React.useState<string | null>(null)
     const [urgency, setUrgency] = React.useState<string | null>(null)
     const [orderType, setOrderType] = React.useState<string | null>(null)
     const [region, setRegion] = React.useState<string | null>(null)
@@ -76,7 +78,7 @@ export default function PartsReqForm() {
     const [disableSubmit, setDisableSubmit] = React.useState<boolean>(true)
 
     React.useEffect(() => {
-        if (!requester || !orderDate || (!reqClass.afe && !reqClass.so) || (!relAsset.unit && !relAsset.truck) ||
+        if (!requester || !orderDate || (!afe && !so) || (!unit && !truck) ||
             !urgency || !orderType || !(rows.length > 0)) {
             setDisableSubmit(true)
         } else {
@@ -86,7 +88,7 @@ export default function PartsReqForm() {
                 setDisableSubmit(false)
             }
         }
-    }, [requester, orderDate, reqClass, relAsset, urgency, orderType, rows])
+    }, [requester, orderDate, afe, so, unit, truck, urgency, orderType, rows])
 
     const handleSubmit = (event: React.SyntheticEvent) => {
         event.preventDefault()
@@ -94,8 +96,10 @@ export default function PartsReqForm() {
         const formData: CreatePartsReq = {
             requester: requester ? requester : "",
             date: orderDate,
-            class: reqClass,
-            relAsset: relAsset,
+            afe: afe,
+            so: so,
+            unit: unit,
+            truck: truck,
             urgency: urgency,
             orderType: orderType,
             region: region,
@@ -111,30 +115,15 @@ export default function PartsReqForm() {
     }
 
     const onAfeChange = (_e: React.SyntheticEvent, value: string | null) => {
-        setReqClass((prevState) => {
-            return ({
-                ...prevState,
-                afe: value
-            })
-        })
+        setAfe(value ?? null)
     }
     const onSoChange = (_e: React.SyntheticEvent, value: string | null) => {
-        setReqClass((prevState) => {
-            return ({
-                ...prevState,
-                so: value
-            })
-        })
+        setSo(value ?? null)
 
         setOrderType(value ? "Third-Party" : null)
     }
     const onUnitNumberChange = (_e: React.SyntheticEvent, value: Unit | null) => {
-        setRelAsset((prevState) => {
-            return ({
-                ...prevState,
-                unit: value
-            })
-        })
+        setUnit(value ?? null)
 
         onSoChange(_e, null)
 
@@ -142,12 +131,7 @@ export default function PartsReqForm() {
         setRegion(value ? value.operationalRegion ? toTitleCase(value.operationalRegion) : null : null)
     }
     const onTruckChange = (_e: React.SyntheticEvent, value: string | null) => {
-        setRelAsset((prevState) => {
-            return ({
-                ...prevState,
-                truck: value
-            })
-        })
+        setTruck(value ?? null)
     }
     const onCommentChange = (e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
         setComment(e.target.value)
@@ -226,25 +210,25 @@ export default function PartsReqForm() {
                                         options={afeNumbers ? afeNumbers : []}
                                         onChange={onAfeChange}
                                         loading={afeFetching}
-                                        value={reqClass.afe}
+                                        value={afe}
                                         renderInput={(params) => <StyledTextField
                                             {...params}
                                             variant="standard"
                                             label="AFE #"
                                         />}
-                                        disabled={reqClass.so !== null}
+                                        disabled={so !== null}
                                     />
                                     <Autocomplete
                                         options={soNumbers ? soNumbers : []}
                                         onChange={onSoChange}
                                         loading={soFetching}
-                                        value={reqClass.so}
+                                        value={so}
                                         renderInput={(params) => <StyledTextField
                                             {...params}
                                             variant="standard"
                                             label="SO #"
                                         />}
-                                        disabled={reqClass.afe !== null || relAsset.unit !== null}
+                                        disabled={afe !== null || unit !== null}
                                     />
                                     <b><p style={{ margin: "20px 0px 0px 0px" }}>Related Asset:</p></b>
                                     <Divider />
@@ -253,30 +237,30 @@ export default function PartsReqForm() {
                                         getOptionLabel={(option: Unit) => option.unitNumber}
                                         onChange={onUnitNumberChange}
                                         loading={unitsFetching}
-                                        value={relAsset.unit}
+                                        value={unit}
                                         renderInput={(params) => <StyledTextField
                                             {...params}
                                             variant="standard"
                                             label="Unit #"
                                         />}
-                                        disabled={relAsset.truck !== null}
+                                        disabled={truck !== null}
                                     />
                                     <div style={{ display: "flex", flexDirection: "row", width: "100%" }}>
                                         <p style={{ marginTop: "10px", marginRight: "10px" }}>Location:</p>
-                                        {relAsset.unit ?
-                                            <p style={{ marginTop: "10px" }}>{relAsset.unit.location}</p> : null
+                                        {unit ?
+                                            <p style={{ marginTop: "10px" }}>{unit.location}</p> : null
                                         }
                                     </div>
                                     <div style={{ display: "flex", flexDirection: "row", width: "100%" }}>
                                         <p style={{ marginTop: "5px", marginRight: "10px" }}>Customer:</p>
-                                        {relAsset.unit ?
-                                            <p style={{ marginTop: "5px" }}>{relAsset.unit.customer}</p> : null
+                                        {unit ?
+                                            <p style={{ marginTop: "5px" }}>{unit.customer}</p> : null
                                         }
                                     </div>
                                     <div style={{ display: "flex", flexDirection: "row", width: "100%" }}>
                                         <p style={{ marginTop: "5px", marginRight: "10px" }}>Status:</p>
-                                        {relAsset.unit ?
-                                            <p style={{ marginTop: "5px" }}>{relAsset.unit.status}</p> : null
+                                        {unit ?
+                                            <p style={{ marginTop: "5px" }}>{unit.status}</p> : null
                                         }
                                     </div>
                                     <b><p style={{ margin: "5px 0px 0px 0px" }}>OR:</p></b>
@@ -284,13 +268,13 @@ export default function PartsReqForm() {
                                         options={trucks ? trucks : []}
                                         onChange={onTruckChange}
                                         loading={trucksFetching}
-                                        value={relAsset.truck}
+                                        value={truck}
                                         renderInput={(params) => <StyledTextField
                                             {...params}
                                             variant="standard"
                                             label="Truck #"
                                         />}
-                                        disabled={relAsset.unit !== null}
+                                        disabled={unit !== null}
                                     />
                                 </Box>
                             </Item>
@@ -318,7 +302,7 @@ export default function PartsReqForm() {
                                     </FormControl>
                                     <b><p style={{ margin: "20px 0px 0px 0px" }}>Order Type:</p></b>
                                     <Divider />
-                                    <FormControl disabled={relAsset.unit !== null || reqClass.so !== null}>
+                                    <FormControl disabled={unit !== null || so !== null}>
                                         <RadioGroup row>
                                             {ORDER_TYPE.map((val) => {
                                                 const canAccess = val.titles ? (val.titles.findIndex(el => novaUser!.title.includes(el)) !== -1) : true
@@ -338,7 +322,7 @@ export default function PartsReqForm() {
                                     </FormControl>
                                     <b><p style={{ margin: "20px 0px 0px 0px" }}>Operational Region:</p></b>
                                     <Divider />
-                                    <FormControl disabled={relAsset.unit !== null}>
+                                    <FormControl disabled={unit !== null}>
                                         <RadioGroup row>
                                             {REGION.map((val) => {
                                                 return (
@@ -357,7 +341,7 @@ export default function PartsReqForm() {
                                 </Box>
                             </Item>
                             <Item sx={{
-                                marginTop: "15px", border: relAsset.unit ? UNIT_PLANNING.includes(relAsset.unit.unitNumber) ?
+                                marginTop: "15px", border: unit ? UNIT_PLANNING.includes(unit.unitNumber) ?
                                     "3px solid red" :
                                     "3px solid transparent" :
                                     "3px solid transparent"
@@ -365,8 +349,8 @@ export default function PartsReqForm() {
                                 <Box>
                                     <b><p style={{ margin: 0 }}>Unit Planning Approval Status:</p></b>
                                     <Divider />
-                                    {relAsset.unit ?
-                                        UNIT_PLANNING.includes(relAsset.unit.unitNumber) ?
+                                    {unit ?
+                                        UNIT_PLANNING.includes(unit.unitNumber) ?
                                             <b><p style={{ marginTop: "5px", color: "red" }}>Travis Yount Must Approve Non-PM Parts</p></b> :
                                             <p style={{ marginTop: "5px" }}>No Additional Approval Needed</p> :
                                         <p style={{ marginTop: "5px" }}>No Additional Approval Needed</p>
@@ -375,46 +359,46 @@ export default function PartsReqForm() {
                                     <Divider />
                                     <div style={{ display: "flex", flexDirection: "row", width: "100%" }}>
                                         <p style={{ marginTop: "5px", marginRight: "10px" }}>Make & Model:</p>
-                                        {relAsset.unit ?
-                                            <p style={{ marginTop: "5px" }}>{relAsset.unit.engine}</p> : null
+                                        {unit ?
+                                            <p style={{ marginTop: "5px" }}>{unit.engine}</p> : null
                                         }
                                     </div>
                                     <div style={{ display: "flex", flexDirection: "row", width: "100%" }}>
                                         <p style={{ marginRight: "10px", marginTop: 0 }}>S/N:</p>
-                                        {relAsset.unit ?
-                                            <p style={{ margin: 0 }}>{relAsset.unit.engineSerialNum}</p> : null
+                                        {unit ?
+                                            <p style={{ margin: 0 }}>{unit.engineSerialNum}</p> : null
                                         }
                                     </div>
                                     <b><p style={{ margin: "10px 0px 0px 0px" }}>Compressor Frame:</p></b>
                                     <Divider />
                                     <div style={{ display: "flex", flexDirection: "row", width: "100%" }}>
                                         <p style={{ marginTop: "5px", marginRight: "10px" }}>Make:</p>
-                                        {relAsset.unit ?
-                                            <p style={{ marginTop: "5px" }}>{relAsset.unit.compressorFrame}</p> : null
+                                        {unit ?
+                                            <p style={{ marginTop: "5px" }}>{unit.compressorFrame}</p> : null
                                         }
                                     </div>
                                     <div style={{ display: "flex", flexDirection: "row", width: "100%" }}>
                                         <p style={{ marginRight: "10px", marginTop: 0 }}>Model:</p>
-                                        {relAsset.unit ?
-                                            <p style={{ margin: 0 }}>{relAsset.unit.compressorFrameFamily}</p> : null
+                                        {unit ?
+                                            <p style={{ margin: 0 }}>{unit.compressorFrameFamily}</p> : null
                                         }
                                     </div>
                                     <div style={{ display: "flex", flexDirection: "row", width: "100%" }}>
                                         <p style={{ marginRight: "10px", marginTop: 0 }}>S/N:</p>
-                                        {relAsset.unit ?
-                                            <p style={{ margin: 0 }}>{relAsset.unit.compressorFrameSN}</p> : null
+                                        {unit ?
+                                            <p style={{ margin: 0 }}>{unit.compressorFrameSN}</p> : null
                                         }
                                     </div>
                                     <div style={{ display: "flex", flexDirection: "row", width: "100%" }}>
                                         <p style={{ marginRight: "10px", marginTop: 0 }}>Stages:</p>
-                                        {relAsset.unit ?
-                                            <p style={{ margin: 0 }}>{relAsset.unit.stages}</p> : null
+                                        {unit ?
+                                            <p style={{ margin: 0 }}>{unit.stages}</p> : null
                                         }
                                     </div>
                                     <div style={{ display: "flex", flexDirection: "row", width: "100%" }}>
                                         <p style={{ marginRight: "10px", marginTop: 0, marginBottom: 0 }}>Cylinder Size:</p>
-                                        {relAsset.unit ?
-                                            <p style={{ margin: 0 }}>{relAsset.unit.cylinderSize}</p> : null
+                                        {unit ?
+                                            <p style={{ margin: 0 }}>{unit.cylinderSize}</p> : null
                                         }
                                     </div>
                                 </Box>

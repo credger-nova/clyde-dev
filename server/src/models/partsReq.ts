@@ -1,13 +1,5 @@
 import { Unit } from "@prisma/client"
 
-export interface ReqClass {
-    afe: string | null,
-    so: string | null
-}
-export interface RelAsset {
-    unit: Unit | null,
-    truck: string | null
-}
 export interface OrderRow {
     id: string,
     qty: number,
@@ -27,8 +19,10 @@ export interface PartsReq {
     id: number,
     requester: string,
     date: Date,
-    class: ReqClass,
-    relAsset: RelAsset,
+    afe: string,
+    so: string,
+    unit: Unit,
+    truck: string,
     urgency: string,
     orderType: string,
     region: string,

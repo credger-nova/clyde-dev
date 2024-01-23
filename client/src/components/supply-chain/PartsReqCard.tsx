@@ -45,12 +45,12 @@ export default function PartsReqCard(props: Props) {
                         <Typography variant="subtitle2" sx={{ width: "50%" }}>
                             Class:
                         </Typography>
-                        {partsReq.class.afe ?
+                        {partsReq.afe ?
                             <Typography variant="body2" sx={{ width: "50%" }}>
-                                {`AFE ${partsReq.class.afe}`}
+                                {`AFE ${partsReq.afe}`}
                             </Typography> :
                             <Typography variant="body2" sx={{ width: "50%" }}>
-                                {`SO ${partsReq.class.so}`}
+                                {`SO ${partsReq.so}`}
                             </Typography>
                         }
                     </div>
@@ -58,12 +58,12 @@ export default function PartsReqCard(props: Props) {
                         <Typography variant="subtitle2" sx={{ width: "50%" }}>
                             Related Asset:
                         </Typography>
-                        {partsReq.relAsset.unit ?
+                        {partsReq.unit ?
                             <Typography variant="body2" sx={{ width: "50%" }}>
-                                {`Unit ${partsReq.relAsset.unit.unitNumber}`}
+                                {`Unit ${partsReq.unit.unitNumber}`}
                             </Typography> :
                             <Typography variant="body2" sx={{ width: "50%" }}>
-                                {`Truck ${partsReq.relAsset.truck}`}
+                                {`Truck ${partsReq.truck}`}
                             </Typography>
                         }
                     </div>

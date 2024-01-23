@@ -2,6 +2,17 @@ import { FastifyInstance, FastifyRequest } from "fastify"
 import { prisma } from "../utils/prisma-client"
 import { PartsReq, UpdatePartsReq } from "../models/partsReq"
 
+async function genSystemComment(message: string, id: number) {
+    await prisma.comment.create({
+        data: {
+            comment: message,
+            name: "Kepler",
+            timestamp: new Date().toISOString(),
+            partsReqId: id
+        }
+    })
+}
+
 async function routes(fastify: FastifyInstance) {
     // Get all Parts Reqs
     fastify.get("/parts-req", async (req: FastifyRequest<{
@@ -101,14 +112,10 @@ async function routes(fastify: FastifyInstance) {
                     id: obj.id,
                     requester: obj.requester,
                     date: obj.date,
-                    class: {
-                        afe: obj.afe,
-                        so: obj.so
-                    },
-                    relAsset: {
-                        unit: obj.unit,
-                        truck: obj.truck
-                    },
+                    afe: obj.afe,
+                    so: obj.so,
+                    unit: obj.unit,
+                    truck: obj.truck,
                     urgency: obj.urgency,
                     orderType: obj.orderType,
                     region: obj.region,
@@ -142,14 +149,10 @@ async function routes(fastify: FastifyInstance) {
                 id: result.id,
                 requester: result.requester,
                 date: result.date,
-                class: {
-                    afe: result.afe,
-                    so: result.so
-                },
-                relAsset: {
-                    unit: result.unit,
-                    truck: result.truck
-                },
+                afe: result.afe,
+                so: result.so,
+                unit: result.unit,
+                truck: result.truck,
                 urgency: result.urgency,
                 orderType: result.orderType,
                 region: result.region,
@@ -174,10 +177,10 @@ async function routes(fastify: FastifyInstance) {
             data: {
                 requester: req.body.requester,
                 date: req.body.date,
-                afe: req.body.class.afe,
-                so: req.body.class.so,
-                unitNumber: req.body.relAsset.unit?.unitNumber,
-                truck: req.body.relAsset.truck,
+                afe: req.body.afe,
+                so: req.body.so,
+                unitNumber: req.body.unit ? req.body.unit.unitNumber : null,
+                truck: req.body.truck,
                 urgency: req.body.urgency,
                 orderType: req.body.orderType,
                 region: req.body.region,
@@ -202,6 +205,16 @@ async function routes(fastify: FastifyInstance) {
 
     // Update a Parts Req form
     fastify.put("/parts-req/:id", async (req: FastifyRequest<{ Params: { id: string }, Body: Partial<UpdatePartsReq> }>, res) => {
+        // Get existing version of the Parts Req for comment generation
+        const oldPartsReq = await prisma.partsReq.findUnique({
+            where: {
+                id: Number(req.params.id)
+            }
+        })
+
+        //console.log(req.body)
+        //console.log(oldPartsReq)
+
         // Ensure no invalid rows are created
         const existingParts = req.body.parts ? req.body.parts.filter(row => (row.itemNumber !== "" && row.id)) : []
         const newParts = req.body.parts ? req.body.parts.filter(row => (!row.id)) : []
@@ -244,6 +257,64 @@ async function routes(fastify: FastifyInstance) {
             }
         }
 
+        // Generate system comments based on what fields have changed
+        // Status change
+        /*if (oldPartsReq?.status !== req.body.status) {
+            const message = `Status Change: ${oldPartsReq?.status} -> ${req.body.status}`
+            const id = Number(req.params.id)
+
+            await genSystemComment(message, id)
+        }
+        // AFE change
+        if (oldPartsReq?.afe !== req.body.class?.afe) {
+            const message = `AFE Change: ${oldPartsReq?.afe} -> ${req.body.class?.afe}`
+            const id = Number(req.params.id)
+
+            await genSystemComment(message, id)
+        }
+        // SO change
+        if (oldPartsReq?.so !== req.body.class?.so) {
+            const message = `SO Change: ${oldPartsReq?.so} -> ${req.body.class?.so}`
+            const id = Number(req.params.id)
+
+            await genSystemComment(message, id)
+        }
+        // Unit change
+        if (oldPartsReq?.unitNumber !== req.body.relAsset?.unit?.unitNumber) {
+            const message = `Unit Change: ${oldPartsReq?.unitNumber} -> ${req.body.relAsset?.unit?.unitNumber}`
+            const id = Number(req.params.id)
+
+            await genSystemComment(message, id)
+        }
+        // Truck change
+        if (oldPartsReq?.truck !== req.body.relAsset?.truck) {
+            const message = `Truck Change: ${oldPartsReq?.truck} -> ${req.body.relAsset?.truck}`
+            const id = Number(req.params.id)
+
+            await genSystemComment(message, id)
+        }
+        // Urgency change
+        if (oldPartsReq?.urgency !== req.body.urgency) {
+            const message = `Urgency Change: ${oldPartsReq?.urgency} -> ${req.body.urgency}`
+            const id = Number(req.params.id)
+
+            await genSystemComment(message, id)
+        }
+        // Order Type change
+        if (oldPartsReq?.orderType !== req.body.orderType) {
+            const message = `Order Type Change: ${oldPartsReq?.orderType} -> ${req.body.orderType}`
+            const id = Number(req.params.id)
+
+            await genSystemComment(message, id)
+        }
+        // Region change
+        if (oldPartsReq?.region !== req.body.region) {
+            const message = `Region Change: ${oldPartsReq?.region} -> ${req.body.region}`
+            const id = Number(req.params.id)
+
+            await genSystemComment(message, id)
+        }*/
+
         // Add new comments
         if (req.body.comments) {
             for (const comment of req.body.comments) {
@@ -266,10 +337,10 @@ async function routes(fastify: FastifyInstance) {
                 id: Number(req.params.id)
             },
             data: {
-                afe: req.body.class?.afe,
-                so: req.body.class?.so,
-                unitNumber: req.body.relAsset?.unit?.unitNumber,
-                truck: req.body.relAsset?.truck,
+                afe: req.body.afe,
+                so: req.body.so,
+                unitNumber: req.body.unit?.unitNumber,
+                truck: req.body.truck,
                 urgency: req.body.urgency,
                 orderType: req.body.orderType,
                 region: req.body.region,

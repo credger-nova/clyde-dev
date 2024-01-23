@@ -10,6 +10,7 @@ import { useCreatePartsReq } from "../../hooks/partsReq"
 import { useNovaUser } from "../../hooks/user"
 
 import { toTitleCase } from "../../utils/helperFunctions"
+import { calcCost } from "../../utils/helperFunctions"
 
 import { ReqClass, RelAsset, OrderRow, CreatePartsReq, Part, Comment } from "../../types/partsReq"
 import { Unit } from "../../types/unit"
@@ -464,6 +465,7 @@ export default function PartsReqForm() {
                                             <TableCell width={"7%"}>Qty Needed</TableCell>
                                             <TableCell width={"25%"}>Part #</TableCell>
                                             <TableCell>Description</TableCell>
+                                            <TableCell width={"10%"}>Estimated Cost</TableCell>
                                             <TableCell width={"5%"}></TableCell>
                                         </TableRow>
                                     </TableHead>
@@ -505,6 +507,7 @@ export default function PartsReqForm() {
                                                         />
                                                     </TableCell>
                                                     <TableCell>{row.description}</TableCell>
+                                                    <TableCell>{row.cost ? `$${row.cost}` : ""}</TableCell>
                                                     <TableCell>
                                                         <IconButton
                                                             onClick={() => removeRow(index)}
@@ -516,6 +519,13 @@ export default function PartsReqForm() {
                                                 </TableRow>
                                             )
                                         })}
+                                        <TableRow>
+                                            <TableCell sx={{ border: "none" }} />
+                                            <TableCell sx={{ border: "none" }} />
+                                            <TableCell sx={{ border: "none" }} />
+                                            <TableCell sx={{ border: "none" }}><b>{calcCost(rows as Array<OrderRow>)}</b></TableCell>
+                                            <TableCell sx={{ border: "none" }} />
+                                        </TableRow>
                                     </TableBody>
                                 </Table>
                                 <Button

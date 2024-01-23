@@ -1,4 +1,4 @@
-import { OrderRow, PartsReq } from "../../types/partsReq"
+import { PartsReq } from "../../types/partsReq"
 import Card from '@mui/material/Card'
 import CardHeader from '@mui/material/CardHeader'
 import CardContent from '@mui/material/CardContent'
@@ -6,19 +6,11 @@ import Typography from '@mui/material/Typography'
 import Divider from '@mui/material/Divider'
 import { styled } from '@mui/material/styles'
 
+import { calcCost } from "../../utils/helperFunctions"
+
 interface Props {
     partsReq: PartsReq,
     setActivePartsReq: React.Dispatch<React.SetStateAction<PartsReq | null>>
-}
-
-function calcCost(parts: Array<OrderRow>) {
-    let sum = 0
-
-    for (const part of parts) {
-        sum += Number(part.cost)
-    }
-
-    return `$${sum.toFixed(2)}`
 }
 
 const StyledCard = styled(Card)(() => ({

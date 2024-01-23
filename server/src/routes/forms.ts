@@ -212,9 +212,6 @@ async function routes(fastify: FastifyInstance) {
             }
         })
 
-        //console.log(req.body)
-        //console.log(oldPartsReq)
-
         // Ensure no invalid rows are created
         const existingParts = req.body.parts ? req.body.parts.filter(row => (row.itemNumber !== "" && row.id)) : []
         const newParts = req.body.parts ? req.body.parts.filter(row => (!row.id)) : []
@@ -244,6 +241,12 @@ async function routes(fastify: FastifyInstance) {
                     partsReqId: Number(req.params.id)
                 }
             })
+
+            // Add system comments
+            const message = `Added (x${part.qty}): ${part.itemNumber}`
+            const id = Number(req.params.id)
+
+            await genSystemComment(message, id)
         }
 
         // Delete parts rows
@@ -254,41 +257,47 @@ async function routes(fastify: FastifyInstance) {
                         id: row.id
                     }
                 })
+
+                // Add system comments
+                const message = `Removed (x${row.qty}): ${row.itemNumber}`
+                const id = Number(req.params.id)
+
+                await genSystemComment(message, id)
             }
         }
 
         // Generate system comments based on what fields have changed
         // Status change
-        /*if (oldPartsReq?.status !== req.body.status) {
+        if (oldPartsReq?.status !== req.body.status) {
             const message = `Status Change: ${oldPartsReq?.status} -> ${req.body.status}`
             const id = Number(req.params.id)
 
             await genSystemComment(message, id)
         }
         // AFE change
-        if (oldPartsReq?.afe !== req.body.class?.afe) {
-            const message = `AFE Change: ${oldPartsReq?.afe} -> ${req.body.class?.afe}`
+        if (oldPartsReq?.afe !== req.body.afe) {
+            const message = `AFE Change: ${oldPartsReq?.afe} -> ${req.body.afe}`
             const id = Number(req.params.id)
 
             await genSystemComment(message, id)
         }
         // SO change
-        if (oldPartsReq?.so !== req.body.class?.so) {
-            const message = `SO Change: ${oldPartsReq?.so} -> ${req.body.class?.so}`
+        if (oldPartsReq?.so !== req.body.so) {
+            const message = `SO Change: ${oldPartsReq?.so} -> ${req.body.so}`
             const id = Number(req.params.id)
 
             await genSystemComment(message, id)
         }
         // Unit change
-        if (oldPartsReq?.unitNumber !== req.body.relAsset?.unit?.unitNumber) {
-            const message = `Unit Change: ${oldPartsReq?.unitNumber} -> ${req.body.relAsset?.unit?.unitNumber}`
+        if (oldPartsReq?.unitNumber !== req.body.unit?.unitNumber) {
+            const message = `Unit Change: ${oldPartsReq?.unitNumber} -> ${req.body.unit?.unitNumber}`
             const id = Number(req.params.id)
 
             await genSystemComment(message, id)
         }
         // Truck change
-        if (oldPartsReq?.truck !== req.body.relAsset?.truck) {
-            const message = `Truck Change: ${oldPartsReq?.truck} -> ${req.body.relAsset?.truck}`
+        if (oldPartsReq?.truck !== req.body.truck) {
+            const message = `Truck Change: ${oldPartsReq?.truck} -> ${req.body.truck}`
             const id = Number(req.params.id)
 
             await genSystemComment(message, id)
@@ -313,7 +322,11 @@ async function routes(fastify: FastifyInstance) {
             const id = Number(req.params.id)
 
             await genSystemComment(message, id)
-        }*/
+        }
+        // Part changes
+        for (const part of existingParts) {
+            console.log(part)
+        }
 
         // Add new comments
         if (req.body.comments) {

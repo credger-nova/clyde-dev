@@ -553,6 +553,7 @@ export default function EditPartsReqForm(props: Props) {
                                                                 inputProps: { min: 1 }
                                                             }}
                                                             sx={{ width: "100%" }}
+                                                            helperText={!rows[index].itemNumber && " "}
                                                         />
                                                     </TableCell>
                                                     <TableCell>
@@ -586,6 +587,7 @@ export default function EditPartsReqForm(props: Props) {
                                                             variant="standard"
                                                             value={row.description}
                                                             onChange={onDescriptionChange(index)}
+                                                            helperText={!rows[index].itemNumber && " "}
                                                         />
                                                     </TableCell>
                                                     <TableCell>
@@ -601,6 +603,7 @@ export default function EditPartsReqForm(props: Props) {
                                                                     min: 0
                                                                 }
                                                             }}
+                                                            helperText={!rows[index].itemNumber && " "}
                                                         />
                                                     </TableCell>
                                                     <TableCell>{row.cost ? `$${(Number(row.cost) * row.qty).toFixed(2)}` : ""}</TableCell>

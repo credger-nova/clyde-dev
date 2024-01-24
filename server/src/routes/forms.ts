@@ -218,7 +218,7 @@ async function routes(fastify: FastifyInstance) {
 
         // Ensure no invalid rows are created
         const existingParts = updateReq.parts ? updateReq.parts.filter(row => (row.itemNumber !== "" && row.id)) : []
-        const newParts = updateReq.parts ? updateReq.parts.filter(row => (!row.id)) : []
+        const newParts = updateReq.parts ? updateReq.parts.filter(row => (row.itemNumber !== "" && !row.id)) : []
 
         // Update existing parts rows
         for (const part of existingParts) {

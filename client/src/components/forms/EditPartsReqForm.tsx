@@ -184,12 +184,20 @@ export default function EditPartsReqForm(props: Props) {
         setRows(tempRows)
     }
 
-    const onPartChange = (index: number) => (_e: React.SyntheticEvent, value: Part | null) => {
+    const onPartChange = (index: number) => (_e: React.SyntheticEvent, value: Part | string | null) => {
         const tempRows = [...rows]
         const row = { ...tempRows[index] }
-        row.itemNumber = value ? value.values.itemid : ""
-        row.description = value ? value.values.salesdescription : null
-        row.cost = value ? value.values.cost : null
+        row.itemNumber = typeof value === "string" ? value : (value ? value.values.itemid : "")
+        row.description = typeof value === "string" ? "" : (value ? value.values.salesdescription : "")
+        row.cost = typeof value === "string" ? "" : (value ? value.values.cost : "")
+        tempRows[index] = row
+        setRows(tempRows)
+    }
+
+    const onDescriptionChange = (index: number) => (e: React.ChangeEvent<HTMLInputElement>) => {
+        const tempRows = [...rows]
+        const row = { ...tempRows[index] }
+        row.description = e.target.value
         tempRows[index] = row
         setRows(tempRows)
     }
@@ -215,9 +223,9 @@ export default function EditPartsReqForm(props: Props) {
         setComment("")
     }
 
-    function getPart(item: string): Part | null {
+    function getPart(item: string): Part | string {
         const part = parts?.find((el) => el.values.itemid === item)
-        return part ?? null
+        return part ?? item
     }
 
     if (isFetched) {
@@ -540,9 +548,14 @@ export default function EditPartsReqForm(props: Props) {
                                                     <TableCell>
                                                         <Autocomplete
                                                             options={parts ? parts : []}
-                                                            getOptionLabel={(option: Part) => `${option.values.itemid}` + (option.values.salesdescription ?
-                                                                ` - ${option.values.salesdescription}` :
-                                                                "")}
+                                                            freeSolo
+                                                            getOptionLabel={(option: Part | string) =>
+                                                                typeof option === "string" ?
+                                                                    option :
+                                                                    `${option.values.itemid}` + (option.values.salesdescription ?
+                                                                        ` - ${option.values.salesdescription}` :
+                                                                        "")
+                                                            }
                                                             onChange={onPartChange(index)}
                                                             loading={partsFetching}
                                                             filterOptions={createFilterOptions({
@@ -553,21 +566,30 @@ export default function EditPartsReqForm(props: Props) {
                                                             renderInput={(params) => <StyledTextField
                                                                 {...params}
                                                                 variant="standard"
+                                                                error={!rows[index].itemNumber}
+                                                                helperText={!rows[index].itemNumber && "Press 'Enter' to save custom part"}
                                                             />}
                                                         />
                                                     </TableCell>
-                                                    <TableCell>{row.description}</TableCell>
+                                                    <TableCell>
+                                                        <StyledTextField
+                                                            variant="standard"
+                                                            value={row.description}
+                                                            onChange={onDescriptionChange(index)}
+                                                        />
+                                                    </TableCell>
                                                     <TableCell>
                                                         <StyledTextField
                                                             variant="standard"
                                                             type="number"
                                                             value={row.cost}
                                                             onChange={onCostChange(index)}
-                                                            inputProps={{
-                                                                step: "0.01"
-                                                            }}
                                                             InputProps={{
-                                                                startAdornment: <InputAdornment position="start">$</InputAdornment>
+                                                                startAdornment: <InputAdornment position="start">$</InputAdornment>,
+                                                                inputProps: {
+                                                                    step: "0.01",
+                                                                    min: 0
+                                                                }
                                                             }}
                                                         />
                                                     </TableCell>

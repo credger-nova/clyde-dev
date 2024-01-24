@@ -434,7 +434,7 @@ export default function PartsReqForm() {
                             </Item>
                         </Grid>
                         <Grid xs={3}>
-                            <Item style={{ maxHeight: "600px", overflow: "auto" }}>
+                            <Item style={{ maxHeight: "750px", overflow: "auto" }}>
                                 <div style={{ display: "flex", alignItems: "flex-end", padding: "5px" }}>
                                     <StyledTextField
                                         multiline
@@ -451,7 +451,7 @@ export default function PartsReqForm() {
                                     </IconButton>
                                 </div>
                                 <Box
-                                    style={{ maxHeight: "500px", overflow: "auto", padding: "5px" }}
+                                    style={{ maxHeight: "670px", overflow: "auto", padding: "5px" }}
                                 >
                                     {comments.sort((x, y) => { return x.timestamp < y.timestamp ? 1 : -1 }) // Sort comments chronologically
                                         .map((comment: Omit<Comment, "id">, index: number) => {

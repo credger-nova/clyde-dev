@@ -196,13 +196,23 @@ export default function PartsReqForm() {
         setComment("")
     }
 
+    const handleKeyDown = (e: { keyCode: number; preventDefault: () => void }) => {
+        if (e.keyCode === 13) {
+            e.preventDefault()
+        }
+    }
+
     if (isFetched) {
         return (
             <Box sx={{
                 width: "100%", maxHeight: "calc(100% - 64px)", bgcolor: "background.paper", margin: "15px", padding: "10px", borderRadius: "0.5rem",
                 overflow: "auto", border: "5px solid", borderColor: "background.paper"
             }}>
-                <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+                <form
+                    onSubmit={handleSubmit}
+                    onKeyDown={handleKeyDown}
+                    style={{ display: "flex", flexDirection: "column", alignItems: "center" }}
+                >
                     <h2 style={{ margin: "5px" }}>New Parts Requisition</h2>
                     <Grid container spacing={2} sx={{ width: "100%" }}>
                         <Grid xs={3}>

@@ -26,6 +26,7 @@ export interface PartsReq {
     truck: string,
     urgency: string,
     orderType: string,
+    pickup: string,
     region: string,
     parts: Array<OrderRow>,
     comments: Array<Comment>,

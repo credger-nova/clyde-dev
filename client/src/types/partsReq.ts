@@ -19,6 +19,7 @@ export interface PartsReq {
     truck: string | null,
     urgency: string | null,
     orderType: string | null,
+    pickup: string,
     region: string | null,
     parts: Array<OrderRow>,
     comments: Array<Comment>,

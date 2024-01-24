@@ -117,6 +117,7 @@ model PartsReq {
   truck      String?
   urgency    String
   orderType  String        @map("order_type")
+  pickup     String        @default("")
   region     String
   parts      PartsReqRow[]
   comments   Comment[]

@@ -119,6 +119,7 @@ async function routes(fastify: FastifyInstance) {
                     truck: obj.truck,
                     urgency: obj.urgency,
                     orderType: obj.orderType,
+                    pickup: obj.pickup,
                     region: obj.region,
                     parts: obj.parts,
                     comments: obj.comments,
@@ -157,6 +158,7 @@ async function routes(fastify: FastifyInstance) {
                 truck: result.truck,
                 urgency: result.urgency,
                 orderType: result.orderType,
+                pickup: result.pickup,
                 region: result.region,
                 parts: result.parts,
                 comments: result.comments,
@@ -317,6 +319,13 @@ async function routes(fastify: FastifyInstance) {
         // Order Type change
         if (oldPartsReq?.orderType !== updateReq.orderType) {
             const message = `Order Type Change: ${oldPartsReq?.orderType} -> ${updateReq.orderType}`
+            const id = Number(req.params.id)
+
+            await genSystemComment(message, user, id)
+        }
+        // Pickup Location change
+        if (oldPartsReq?.pickup !== updateReq.pickup) {
+            const message = `Pick Up Location Change: ${oldPartsReq?.pickup} -> ${updateReq.pickup}`
             const id = Number(req.params.id)
 
             await genSystemComment(message, user, id)

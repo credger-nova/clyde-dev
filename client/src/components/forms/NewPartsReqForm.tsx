@@ -104,6 +104,7 @@ export default function PartsReqForm() {
             truck: truck,
             urgency: urgency,
             orderType: orderType,
+            pickup: "",
             region: region,
             parts: rows,
             comments: comments,

@@ -40,6 +40,7 @@ import InputAdornment from '@mui/material/InputAdornment'
 
 const URGENCY = ["Unit Down", "Rush", "Standard"]
 const ORDER_TYPE = [{ type: "Rental" }, { type: "Third-Party" }, { type: "Shop Supplies" }, { type: "Truck Supplies" }, { type: "Stock", titles: ["Supply Chain", "Software"] }]
+const PICKUP_LOCATION = ["Conex 1", "Conex 2", "Buffalo Warehouse", "Midland Yard", "Will Call"]
 const REGION = ["East Texas", "South Texas", "Midcon", "North Permian", "South Permian", "Pecos", "Carlsbad"]
 const STATUS = ["Pending Approval", "Rejected - Adjustments Required", "Approved", "Sourcing - Information Required", "Ordered - Awaiting Parts",
     "Completed - Parts Staged/Delivered", "Closed - Parts in Hand"]
@@ -82,6 +83,7 @@ export default function EditPartsReqForm(props: Props) {
     const [truck, setTruck] = React.useState<string | null>(partsReq.truck)
     const [urgency, setUrgency] = React.useState<string | null>(partsReq.urgency)
     const [orderType, setOrderType] = React.useState<string | null>(partsReq.orderType)
+    const [pickup, setPickup] = React.useState<string>(partsReq.pickup)
     const [region, setRegion] = React.useState<string | null>(partsReq.region)
     const [rows, setRows] = React.useState<Array<Omit<OrderRow, "id">>>(partsReq.parts)
     const [delRows, setDelRows] = React.useState<Array<OrderRow>>([])
@@ -363,6 +365,23 @@ export default function EditPartsReqForm(props: Props) {
                             </Item>
                         </Grid>
                         <Grid xs={6}>
+                            {(status === "Completed - Parts Staged/Delivered" || status === "Closed - Parts in Hand") &&
+                                <Item sx={{ marginBottom: "15px" }}>
+                                    <Box>
+                                        <Autocomplete
+                                            options={PICKUP_LOCATION}
+                                            onChange={(_e, value) => setPickup(value)}
+                                            value={pickup}
+                                            disableClearable
+                                            renderInput={(params) => <StyledTextField
+                                                {...params}
+                                                variant="standard"
+                                                label="Pick Up Location"
+                                            />}
+                                        />
+                                    </Box>
+                                </Item>
+                            }
                             <Item>
                                 <Box>
                                     <b><p style={{ margin: 0 }}>Urgency:</p></b>

@@ -105,20 +105,23 @@ export default function EditPartsReqForm(props: Props) {
     const handleSubmit = (event: React.SyntheticEvent) => {
         event.preventDefault()
 
-        const formData: UpdatePartsReq = {
-            id: partsReq.id,
-            contact: contact,
-            afe: afe,
-            so: so,
-            unit: unit,
-            truck: truck,
-            urgency: urgency,
-            orderType: orderType,
-            region: region,
-            parts: rows as Array<OrderRow>,
-            comments: comments as Array<Comment>,
-            status: status,
-            delRows: delRows
+        const formData = {
+            user: `${novaUser?.firstName} ${novaUser?.lastName}`,
+            updateReq: {
+                id: partsReq.id,
+                contact: contact,
+                afe: afe,
+                so: so,
+                unit: unit,
+                truck: truck,
+                urgency: urgency,
+                orderType: orderType,
+                region: region,
+                parts: rows as Array<OrderRow>,
+                comments: comments as Array<Comment>,
+                status: status,
+                delRows: delRows
+            } as UpdatePartsReq
         }
 
         updatePartsReq(formData)

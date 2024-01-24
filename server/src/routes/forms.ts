@@ -2,11 +2,11 @@ import { FastifyInstance, FastifyRequest } from "fastify"
 import { prisma } from "../utils/prisma-client"
 import { PartsReq, UpdatePartsReq } from "../models/partsReq"
 
-async function genSystemComment(message: string, id: number) {
+async function genSystemComment(message: string, user: string, id: number) {
     await prisma.comment.create({
         data: {
             comment: message,
-            name: "Kepler",
+            name: user,
             timestamp: new Date().toISOString(),
             partsReqId: id
         }
@@ -206,7 +206,9 @@ async function routes(fastify: FastifyInstance) {
     })
 
     // Update a Parts Req form
-    fastify.put("/parts-req/:id", async (req: FastifyRequest<{ Params: { id: string }, Body: Partial<UpdatePartsReq> }>, res) => {
+    fastify.put("/parts-req/:id", async (req: FastifyRequest<{ Params: { id: string }, Body: { user: string, updateReq: Partial<UpdatePartsReq> } }>, res) => {
+        const { user, updateReq } = req.body
+
         // Get existing version of the Parts Req for comment generation
         const oldPartsReq = await prisma.partsReq.findUnique({
             where: {
@@ -215,8 +217,8 @@ async function routes(fastify: FastifyInstance) {
         })
 
         // Ensure no invalid rows are created
-        const existingParts = req.body.parts ? req.body.parts.filter(row => (row.itemNumber !== "" && row.id)) : []
-        const newParts = req.body.parts ? req.body.parts.filter(row => (!row.id)) : []
+        const existingParts = updateReq.parts ? updateReq.parts.filter(row => (row.itemNumber !== "" && row.id)) : []
+        const newParts = updateReq.parts ? updateReq.parts.filter(row => (!row.id)) : []
 
         // Update existing parts rows
         for (const part of existingParts) {
@@ -249,12 +251,12 @@ async function routes(fastify: FastifyInstance) {
             const message = `Added (x${part.qty}): ${part.itemNumber}`
             const id = Number(req.params.id)
 
-            await genSystemComment(message, id)
+            await genSystemComment(message, user, id)
         }
 
         // Delete parts rows
-        if (req.body.delRows) {
-            for (const row of req.body.delRows) {
+        if (updateReq.delRows) {
+            for (const row of updateReq.delRows) {
                 await prisma.partsReqRow.delete({
                     where: {
                         id: row.id
@@ -265,66 +267,66 @@ async function routes(fastify: FastifyInstance) {
                 const message = `Removed (x${row.qty}): ${row.itemNumber}`
                 const id = Number(req.params.id)
 
-                await genSystemComment(message, id)
+                await genSystemComment(message, user, id)
             }
         }
 
         // Generate system comments based on what fields have changed
         // Status change
-        if (oldPartsReq?.status !== req.body.status) {
-            const message = `Status Change: ${oldPartsReq?.status} -> ${req.body.status}`
+        if (oldPartsReq?.status !== updateReq.status) {
+            const message = `Status Change: ${oldPartsReq?.status} -> ${updateReq.status}`
             const id = Number(req.params.id)
 
-            await genSystemComment(message, id)
+            await genSystemComment(message, user, id)
         }
         // AFE change
-        if (oldPartsReq?.afe !== req.body.afe) {
-            const message = `AFE Change: ${oldPartsReq?.afe} -> ${req.body.afe}`
+        if (oldPartsReq?.afe !== updateReq.afe) {
+            const message = `AFE Change: ${oldPartsReq?.afe} -> ${updateReq.afe}`
             const id = Number(req.params.id)
 
-            await genSystemComment(message, id)
+            await genSystemComment(message, user, id)
         }
         // SO change
-        if (oldPartsReq?.so !== req.body.so) {
-            const message = `SO Change: ${oldPartsReq?.so} -> ${req.body.so}`
+        if (oldPartsReq?.so !== updateReq.so) {
+            const message = `SO Change: ${oldPartsReq?.so} -> ${updateReq.so}`
             const id = Number(req.params.id)
 
-            await genSystemComment(message, id)
+            await genSystemComment(message, user, id)
         }
         // Unit change
-        if (oldPartsReq?.unitNumber !== req.body.unit?.unitNumber) {
-            const message = `Unit Change: ${oldPartsReq?.unitNumber} -> ${req.body.unit?.unitNumber}`
+        if (oldPartsReq?.unitNumber !== updateReq.unit?.unitNumber) {
+            const message = `Unit Change: ${oldPartsReq?.unitNumber} -> ${updateReq.unit?.unitNumber}`
             const id = Number(req.params.id)
 
-            await genSystemComment(message, id)
+            await genSystemComment(message, user, id)
         }
         // Truck change
-        if (oldPartsReq?.truck !== req.body.truck) {
-            const message = `Truck Change: ${oldPartsReq?.truck} -> ${req.body.truck}`
+        if (oldPartsReq?.truck !== updateReq.truck) {
+            const message = `Truck Change: ${oldPartsReq?.truck} -> ${updateReq.truck}`
             const id = Number(req.params.id)
 
-            await genSystemComment(message, id)
+            await genSystemComment(message, user, id)
         }
         // Urgency change
-        if (oldPartsReq?.urgency !== req.body.urgency) {
-            const message = `Urgency Change: ${oldPartsReq?.urgency} -> ${req.body.urgency}`
+        if (oldPartsReq?.urgency !== updateReq.urgency) {
+            const message = `Urgency Change: ${oldPartsReq?.urgency} -> ${updateReq.urgency}`
             const id = Number(req.params.id)
 
-            await genSystemComment(message, id)
+            await genSystemComment(message, user, id)
         }
         // Order Type change
-        if (oldPartsReq?.orderType !== req.body.orderType) {
-            const message = `Order Type Change: ${oldPartsReq?.orderType} -> ${req.body.orderType}`
+        if (oldPartsReq?.orderType !== updateReq.orderType) {
+            const message = `Order Type Change: ${oldPartsReq?.orderType} -> ${updateReq.orderType}`
             const id = Number(req.params.id)
 
-            await genSystemComment(message, id)
+            await genSystemComment(message, user, id)
         }
         // Region change
-        if (oldPartsReq?.region !== req.body.region) {
-            const message = `Region Change: ${oldPartsReq?.region} -> ${req.body.region}`
+        if (oldPartsReq?.region !== updateReq.region) {
+            const message = `Region Change: ${oldPartsReq?.region} -> ${updateReq.region}`
             const id = Number(req.params.id)
 
-            await genSystemComment(message, id)
+            await genSystemComment(message, user, id)
         }
         // Part changes
         for (const part of existingParts) {
@@ -332,8 +334,8 @@ async function routes(fastify: FastifyInstance) {
         }
 
         // Add new comments
-        if (req.body.comments) {
-            for (const comment of req.body.comments) {
+        if (updateReq.comments) {
+            for (const comment of updateReq.comments) {
                 if (!comment.id) {
                     await prisma.comment.create({
                         data: {
@@ -353,15 +355,15 @@ async function routes(fastify: FastifyInstance) {
                 id: Number(req.params.id)
             },
             data: {
-                contact: req.body.contact,
-                afe: req.body.afe,
-                so: req.body.so,
-                unitNumber: req.body.unit?.unitNumber,
-                truck: req.body.truck,
-                urgency: req.body.urgency,
-                orderType: req.body.orderType,
-                region: req.body.region,
-                status: req.body.status,
+                contact: updateReq.contact,
+                afe: updateReq.afe,
+                so: updateReq.so,
+                unitNumber: updateReq.unit?.unitNumber,
+                truck: updateReq.truck,
+                urgency: updateReq.urgency,
+                orderType: updateReq.orderType,
+                region: updateReq.region,
+                status: updateReq.status,
                 updated: new Date().toISOString()
             }
         })

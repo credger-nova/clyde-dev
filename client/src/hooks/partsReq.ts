@@ -41,8 +41,10 @@ export function useCreatePartsReq() {
 }
 
 // Update Parts Req
-const updatePartsReq = async (partsReq: Partial<UpdatePartsReq>) => {
-    const { data } = await axios.put(`${import.meta.env.VITE_API_BASE}/forms/parts-req/${partsReq.id}`, partsReq)
+const updatePartsReq = async ({ user, updateReq }: { user: string, updateReq: Partial<UpdatePartsReq> }) => {
+    const body = { user: user, updateReq: updateReq }
+
+    const { data } = await axios.put(`${import.meta.env.VITE_API_BASE}/forms/parts-req/${updateReq.id}`, body)
 
     return data
 }

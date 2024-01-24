@@ -7,6 +7,7 @@ import { useUnits } from "../../hooks/unit"
 import { useTrucks } from "../../hooks/truck"
 import { useParts } from "../../hooks/parts"
 import { useNovaUser } from "../../hooks/user"
+import { useUpdatePartsReq } from "../../hooks/partsReq"
 
 import { toTitleCase } from "../../utils/helperFunctions"
 import { calcCost } from "../../utils/helperFunctions"
@@ -35,7 +36,7 @@ import AddIcon from '@mui/icons-material/Add'
 import DeleteIcon from '@mui/icons-material/Delete'
 import { StyledTextField } from "../common/TextField"
 import { UNIT_PLANNING } from "../../utils/unitPlanning"
-import { useUpdatePartsReq } from "../../hooks/partsReq"
+import InputAdornment from '@mui/material/InputAdornment'
 
 const URGENCY = ["Unit Down", "Rush", "Standard"]
 const ORDER_TYPE = [{ type: "Rental" }, { type: "Third-Party" }, { type: "Shop Supplies" }, { type: "Truck Supplies" }, { type: "Stock", titles: ["Supply Chain", "Software"] }]
@@ -178,6 +179,14 @@ export default function EditPartsReqForm(props: Props) {
         row.itemNumber = value ? value.values.itemid : ""
         row.description = value ? value.values.salesdescription : null
         row.cost = value ? value.values.cost : null
+        tempRows[index] = row
+        setRows(tempRows)
+    }
+
+    const onCostChange = (index: number) => (e: React.ChangeEvent<HTMLInputElement>) => {
+        const tempRows = [...rows]
+        const row = { ...tempRows[index] }
+        row.cost = e.target.value
         tempRows[index] = row
         setRows(tempRows)
     }
@@ -486,8 +495,9 @@ export default function EditPartsReqForm(props: Props) {
                                             <TableCell width={"7%"}>Qty Needed</TableCell>
                                             <TableCell width={"25%"}>Part #</TableCell>
                                             <TableCell>Description</TableCell>
-                                            <TableCell width={"10%"}>Estimated Cost</TableCell>
-                                            <TableCell width={"5%"}></TableCell>
+                                            <TableCell width={"90px"}>Rate</TableCell>
+                                            <TableCell width={"5%"}>Amount</TableCell>
+                                            <TableCell width={"3%"}></TableCell>
                                         </TableRow>
                                     </TableHead>
                                     <TableBody>
@@ -528,7 +538,21 @@ export default function EditPartsReqForm(props: Props) {
                                                         />
                                                     </TableCell>
                                                     <TableCell>{row.description}</TableCell>
-                                                    <TableCell>{row.cost ? `$${row.cost}` : ""}</TableCell>
+                                                    <TableCell>
+                                                        <StyledTextField
+                                                            variant="standard"
+                                                            type="number"
+                                                            value={row.cost}
+                                                            onChange={onCostChange(index)}
+                                                            inputProps={{
+                                                                step: "0.01"
+                                                            }}
+                                                            InputProps={{
+                                                                startAdornment: <InputAdornment position="start">$</InputAdornment>
+                                                            }}
+                                                        />
+                                                    </TableCell>
+                                                    <TableCell>{row.cost ? `$${(Number(row.cost) * row.qty).toFixed(2)}` : ""}</TableCell>
                                                     <TableCell>
                                                         <IconButton
                                                             onClick={() => removeRow(index)}
@@ -541,6 +565,7 @@ export default function EditPartsReqForm(props: Props) {
                                             )
                                         })}
                                         <TableRow>
+                                            <TableCell sx={{ border: "none" }} />
                                             <TableCell sx={{ border: "none" }} />
                                             <TableCell sx={{ border: "none" }} />
                                             <TableCell sx={{ border: "none" }} />

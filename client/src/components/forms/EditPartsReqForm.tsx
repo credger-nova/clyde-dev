@@ -118,6 +118,7 @@ export default function EditPartsReqForm(props: Props) {
                 truck: truck,
                 urgency: urgency,
                 orderType: orderType,
+                pickup: pickup,
                 region: region,
                 parts: rows as Array<OrderRow>,
                 comments: comments as Array<Comment>,

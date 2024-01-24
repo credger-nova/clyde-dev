@@ -371,6 +371,7 @@ async function routes(fastify: FastifyInstance) {
                 truck: updateReq.truck,
                 urgency: updateReq.urgency,
                 orderType: updateReq.orderType,
+                pickup: updateReq.pickup,
                 region: updateReq.region,
                 status: updateReq.status,
                 updated: new Date().toISOString()

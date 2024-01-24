@@ -74,6 +74,7 @@ export default function EditPartsReqForm(props: Props) {
 
     const [status, setStatus] = React.useState<string>(partsReq.status)
     const [requester] = React.useState<string>(partsReq.requester)
+    const [contact, setContact] = React.useState<string>(partsReq.contact)
     const [orderDate] = React.useState<Date>(partsReq.date)
     const [afe, setAfe] = React.useState<string | null>(partsReq.afe)
     const [so, setSo] = React.useState<string | null>(partsReq.so)
@@ -106,6 +107,7 @@ export default function EditPartsReqForm(props: Props) {
 
         const formData: UpdatePartsReq = {
             id: partsReq.id,
+            contact: contact,
             afe: afe,
             so: so,
             unit: unit,
@@ -126,6 +128,12 @@ export default function EditPartsReqForm(props: Props) {
 
     const onStatusChange = (_e: React.SyntheticEvent, value: string | null) => {
         setStatus(value ?? "")
+
+        if (["Sourcing - Information Required", "Ordered - Awaiting Parts", "Completed - Parts Staged/Delivered", "Closed - Parts in Hand"].includes(value ?? "")) {
+            setContact(`${novaUser?.firstName} ${novaUser?.lastName}`)
+        } else {
+            setContact("")
+        }
     }
 
     const onAfeChange = (_e: React.SyntheticEvent, value: string | null) => {
@@ -243,6 +251,14 @@ export default function EditPartsReqForm(props: Props) {
                                         defaultValue={requester}
                                         InputProps={{ readOnly: true }}
                                     />
+                                    {contact &&
+                                        <StyledTextField
+                                            variant="standard"
+                                            label="Supply Chain Contact"
+                                            defaultValue={contact}
+                                            InputProps={{ readOnly: true }}
+                                        />
+                                    }
                                     <StyledTextField
                                         variant="standard"
                                         label="Order Date"

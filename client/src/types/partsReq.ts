@@ -11,6 +11,7 @@ export interface OrderRow {
 export interface PartsReq {
     id: number,
     requester: string,
+    contact: string,
     date: Date,
     afe: string | null,
     so: string | null,

@@ -109,6 +109,7 @@ model PartsReqRow {
 model PartsReq {
   id         Int           @id @default(autoincrement())
   requester  String
+  contact    String        @default("")
   date       DateTime      @db.Timestamptz(6)
   afe        String?
   so         String?

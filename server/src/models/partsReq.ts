@@ -18,6 +18,7 @@ export interface Comment {
 export interface PartsReq {
     id: number,
     requester: string,
+    contact: string,
     date: Date,
     afe: string,
     so: string,

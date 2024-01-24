@@ -111,6 +111,7 @@ async function routes(fastify: FastifyInstance) {
                 {
                     id: obj.id,
                     requester: obj.requester,
+                    contact: obj.contact,
                     date: obj.date,
                     afe: obj.afe,
                     so: obj.so,
@@ -148,6 +149,7 @@ async function routes(fastify: FastifyInstance) {
             partsReq = {
                 id: result.id,
                 requester: result.requester,
+                contact: result.contact,
                 date: result.date,
                 afe: result.afe,
                 so: result.so,
@@ -351,6 +353,7 @@ async function routes(fastify: FastifyInstance) {
                 id: Number(req.params.id)
             },
             data: {
+                contact: req.body.contact,
                 afe: req.body.afe,
                 so: req.body.so,
                 unitNumber: req.body.unit?.unitNumber,

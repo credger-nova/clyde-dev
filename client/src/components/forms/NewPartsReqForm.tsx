@@ -96,6 +96,7 @@ export default function PartsReqForm() {
 
         const formData: CreatePartsReq = {
             requester: requester ? requester : "",
+            contact: "",
             date: orderDate,
             afe: afe,
             so: so,

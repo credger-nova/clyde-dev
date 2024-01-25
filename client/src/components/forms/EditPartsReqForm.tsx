@@ -6,6 +6,7 @@ import { useSOs } from "../../hooks/so"
 import { useUnits } from "../../hooks/unit"
 import { useTrucks } from "../../hooks/truck"
 import { useParts } from "../../hooks/parts"
+import { useLocations } from "../../hooks/location"
 import { useNovaUser } from "../../hooks/user"
 import { useUpdatePartsReq } from "../../hooks/partsReq"
 
@@ -40,7 +41,6 @@ import InputAdornment from '@mui/material/InputAdornment'
 
 const URGENCY = ["Unit Down", "Rush", "Standard"]
 const ORDER_TYPE = [{ type: "Rental" }, { type: "Third-Party" }, { type: "Shop Supplies" }, { type: "Truck Supplies" }, { type: "Stock", titles: ["Supply Chain", "Software"] }]
-const PICKUP_LOCATION = ["Conex 1", "Conex 2", "Buffalo Warehouse", "Midland Yard", "Will Call"]
 const REGION = ["East Texas", "South Texas", "Midcon", "North Permian", "South Permian", "Pecos", "Carlsbad"]
 const STATUS = ["Pending Approval", "Rejected - Adjustments Required", "Approved", "Sourcing - Information Required", "Ordered - Awaiting Parts",
     "Completed - Parts Staged/Delivered", "Closed - Parts in Hand"]
@@ -70,6 +70,7 @@ export default function EditPartsReqForm(props: Props) {
     const { data: unitNumbers, isFetching: unitsFetching } = useUnits()
     const { data: trucks, isFetching: trucksFetching } = useTrucks()
     const { data: parts, isFetching: partsFetching } = useParts()
+    const { data: locations, isFetching: locationsFetcing } = useLocations()
 
     const { mutateAsync: updatePartsReq } = useUpdatePartsReq()
 
@@ -370,7 +371,8 @@ export default function EditPartsReqForm(props: Props) {
                                 <Item sx={{ marginBottom: "15px" }}>
                                     <Box>
                                         <Autocomplete
-                                            options={PICKUP_LOCATION}
+                                            options={locations ? locations.concat("WILL CALL") : []}
+                                            loading={locationsFetcing}
                                             onChange={(_e, value) => setPickup(value)}
                                             value={pickup}
                                             disableClearable

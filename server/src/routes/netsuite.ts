@@ -58,6 +58,23 @@ async function routes(fastify: FastifyInstance) {
 
         return data
     })
+
+    // Route to get Locations
+    fastify.get("/locations", async (req, res) => {
+        const jwt = await getNsAccessJwt()
+
+        const { data } = await axios.get(`${ENV === "prod" ? process.env.PROD_NS_RESTLET_BASE :
+            process.env.DEV_NS_RESTLET_BASE}script=${ENV === "prod" ? process.env.PROD_NS_LOCATIONS_RESTLET :
+                process.env.DEV_NS_LOCATIONS_RESTLET}&deploy=1`,
+            {
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${jwt.access_token}`
+                }
+            })
+
+        return data
+    })
 }
 
 export default routes

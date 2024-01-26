@@ -8,3 +8,16 @@
   width: 100%;
   display: flex;
 }
+
+.collapse-button {
+  display: flex;
+  align-items: center;
+  width: max-content;
+  padding: 10px;
+  background-color: #16181a;
+  border-top: none;
+  border-bottom-left-radius: 0.5rem;
+  border-bottom-right-radius: 0.5rem;
+  cursor: pointer;
+  font-size: small;
+}

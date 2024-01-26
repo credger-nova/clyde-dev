@@ -25,6 +25,23 @@ async function routes(fastify: FastifyInstance) {
 
         return unit
     })
+
+    // Get list of customers
+    fastify.get("/customer", async (req, res) => {
+        const allUnits = await prisma.unit.findMany({
+            distinct: ["customer"],
+            select: {
+                customer: true
+            }
+        })
+
+        const customers = allUnits
+            .map(item => item.customer)
+            .filter(item => item)
+            .sort()
+
+        return customers
+    })
 }
 
 export default routes

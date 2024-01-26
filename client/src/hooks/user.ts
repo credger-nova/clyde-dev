@@ -20,3 +20,16 @@ export function useNovaUser(id?: string, email?: string) {
         enabled: id !== undefined || email !== undefined
     })
 }
+
+const getAllNovaUsers = async () => {
+    const { data } = await axios.get<Array<NovaUser>>(`${import.meta.env.VITE_API_BASE}/kpa/employee/all`)
+
+    return data
+}
+
+export function useAllNovaUsers() {
+    return useQuery({
+        queryKey: ["users"],
+        queryFn: getAllNovaUsers
+    })
+}

@@ -1,6 +1,9 @@
 import { FastifyInstance, FastifyRequest } from "fastify"
 import { prisma } from "../utils/prisma-client"
 import { PartsReq, UpdatePartsReq } from "../models/partsReq"
+import { Prisma } from "@prisma/client"
+
+const URGENCY_SORT = ["Unit Down", "Rush", "Standard", "Stock"]
 
 async function genSystemComment(message: string, user: string, id: number) {
     await prisma.comment.create({
@@ -13,92 +16,53 @@ async function genSystemComment(message: string, user: string, id: number) {
     })
 }
 
+interface PartsReqQuery {
+    searchString?: string,
+    id?: string,
+    afe?: Array<string>,
+    so?: Array<string>,
+    unitNumber?: Array<string>,
+    truck?: Array<string>,
+    part?: Array<string>,
+    requester?: Array<string>,
+    customer?: Array<string>,
+    urgency?: Array<string>,
+    status?: Array<string>
+}
+
 async function routes(fastify: FastifyInstance) {
-    // Get all Parts Reqs
-    fastify.get("/parts-req", async (req: FastifyRequest<{
-        Querystring: {
-            searchString?: string,
-            id?: string,
-            afe?: string,
-            so?: string,
-            unitNumber?: string,
-            truck?: string,
-            part?: string,
-            requester?: string,
-            customer?: string,
-            urgency?: string
-        }
-    }>, res) => {
-        const {
-            searchString,
-            afe,
-            so,
-            unitNumber,
-            truck,
-            part, // TODO
-            requester,
-            customer, // TODO
-            urgency
-        } = req.query
+    // POST request to get Parts Reqs with requirements defined in body
+    fastify.post("/parts-req", async (req: FastifyRequest<{ Body: PartsReqQuery }>, res) => {
 
         const result = await prisma.partsReq.findMany({
-            where: searchString ? {
-                OR: [
+            where: {
+                AND: [
                     {
-                        afe: {
-                            contains: searchString, mode: "insensitive"
-                        }
+                        AND: [
+                            req.body.afe && req.body.afe.length > 0 ? { afe: { in: req.body.afe } } : {},
+                            req.body.so && req.body.so.length > 0 ? { so: { in: req.body.so } } : {},
+                            req.body.unitNumber && req.body.unitNumber.length > 0 ? { unitNumber: { in: req.body.unitNumber } } : {},
+                            req.body.truck && req.body.truck.length > 0 ? { truck: { in: req.body.truck } } : {},
+                            {}, // TODO: parts
+                            req.body.requester && req.body.requester.length > 0 ? { requester: { in: req.body.requester } } : {},
+                            req.body.customer && req.body.customer.length > 0 ? { unit: { customer: { in: req.body.customer } } } : {},
+                            req.body.urgency && req.body.urgency.length > 0 ? { urgency: { in: req.body.urgency } } : {},
+                            req.body.status && req.body.status.length > 0 ? { status: { in: req.body.status } } : {}
+                        ]
                     },
                     {
-                        so: {
-                            contains: searchString, mode: "insensitive"
-                        }
-                    },
-                    {
-                        unitNumber: {
-                            contains: searchString, mode: "insensitive"
-                        }
-                    },
-                    {
-                        truck: {
-                            contains: searchString, mode: "insensitive"
-                        }
-                    },
-                    {
-                        requester: {
-                            contains: searchString, mode: "insensitive"
-                        }
-                    },
-                    {
-                        unit: {
-                            customer: {
-                                contains: searchString, mode: "insensitive"
-                            }
-                        }
+                        OR: [
+                            { id: Number(req.body.searchString) ? { in: req.body.searchString ? [Number(req.body.searchString)] : [] } : {} },
+                            { afe: { contains: req.body.searchString ?? "", mode: "insensitive" } },
+                            { so: { contains: req.body.searchString ?? "", mode: "insensitive" } },
+                            { unitNumber: { contains: req.body.searchString ?? "", mode: "insensitive" } },
+                            { truck: { contains: req.body.searchString ?? "", mode: "insensitive" } },
+                            { requester: { contains: req.body.searchString ?? "", mode: "insensitive" } },
+                            { unit: { customer: { contains: req.body.searchString ?? "", mode: "insensitive" } } }
+                        ]
                     }
                 ]
-                /*AND: [{
-                    AND: [
-                        afe ? { afe: afe } : {},
-                        so ? { so: so } : {},
-                        unitNumber ? { unitNumber: unitNumber } : {},
-                        truck ? { truck: truck } : {},
-                        requester ? { requester: requester } : {},
-                        urgency ? { urgency: urgency } : {}
-                    ]
-                },
-                {
-                    OR: [
-                        { id: Number(searchString) },
-                        { afe: { contains: searchString } },
-                        { so: { contains: searchString } },
-                        { unitNumber: { contains: searchString } },
-                        { truck: { contains: searchString } },
-                        { requester: { contains: searchString } },
-                        { unit: { customer: { contains: searchString?.toUpperCase() } } }
-                    ]
-                }]*/
-            } : {},
+            },
             include: {
                 parts: true,
                 comments: true,
@@ -128,6 +92,9 @@ async function routes(fastify: FastifyInstance) {
                 } as PartsReq
             )
         })
+
+        // Sort by Urgency and Date
+        partsReqs.sort((a, b) => URGENCY_SORT.indexOf(a.urgency) - URGENCY_SORT.indexOf(b.urgency) || a.date.getTime() - b.date.getTime())
 
         return partsReqs
     })
@@ -173,7 +140,7 @@ async function routes(fastify: FastifyInstance) {
     })
 
     // Create a Parts Req form
-    fastify.post("/parts-req", async (req: FastifyRequest<{ Body: PartsReq }>, res) => {
+    fastify.post("/parts-req/create", async (req: FastifyRequest<{ Body: PartsReq }>, res) => {
         // Ensure no invalid rows are created
         req.body.parts = req.body.parts.filter(row => row.itemNumber !== "")
 
@@ -336,10 +303,6 @@ async function routes(fastify: FastifyInstance) {
             const id = Number(req.params.id)
 
             await genSystemComment(message, user, id)
-        }
-        // Part changes
-        for (const part of existingParts) {
-            console.log(part)
         }
 
         // Add new comments

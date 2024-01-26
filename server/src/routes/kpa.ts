@@ -86,7 +86,61 @@ async function routes(fastify: FastifyInstance) {
         return afeNums
     })
 
-    // Route to get all Employees or single Employee by id/email
+    // Get all Employees
+    fastify.get("/employee/all", async (req, res) => {
+        const titles = await getJobTitles()
+        const regions = await getRegions()
+
+        const postBody = {
+            token: KPA_KEY
+        }
+
+        const { data } = await axios.post(ALL_USERS_URL, postBody)
+
+        var users = []
+
+        for (const user of data.users) {
+            users.push({
+                id: user.id,
+                firstName: user.firstname,
+                lastName: user.lastname,
+                email: user.email,
+                title: user.jobTitle_id,
+                region: user.lineOfBusiness_id,
+                supervisorId: user.supervisor_id,
+                managerId: user.manager_id
+            } as NovaUser)
+        }
+
+        for (const user of users) {
+            const res = titles.find(obj => obj.id === user.title)
+
+            // Remove employees with no title
+            if (res) {
+                user.title = res.title
+            } else {
+                const index = users.indexOf(user)
+                if (index > -1) {
+                    users.splice(index, 1)
+                }
+            }
+
+            const regionRes = regions.filter(obj => user.region.includes(obj.id))
+
+            const regionNames = []
+            for (const region of regionRes) {
+                regionNames.push(region.name)
+            }
+
+            user.region = regionNames
+        }
+
+        users.sort((a, b) => { return `${a.firstName} ${a.lastName}`.localeCompare(`${b.firstName} ${b.lastName}`) })
+
+        return users
+    })
+
+    // Route to get single Employee by id/email
     fastify.get("/employee", async (req: FastifyRequest<{
         Querystring: {
             id?: string,
@@ -181,8 +235,8 @@ async function routes(fastify: FastifyInstance) {
                 const user = users.find(obj => obj.email === email)
 
                 return user
-            } else { // Get all Employees
-                return users
+            } else {
+                return ("No User Found")
             }
         }
     })

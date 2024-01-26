@@ -1,19 +1,16 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import axios from "axios"
-import { CreatePartsReq, PartsReq, UpdatePartsReq } from "../types/partsReq"
+import { CreatePartsReq, PartsReq, PartsReqQuery, UpdatePartsReq } from "../types/partsReq"
 
 // Get all Parts Reqs
-const getAllPartsReqs = async (searchString: string) => {
-    const url = new URL(`${import.meta.env.VITE_API_BASE}/forms/parts-req`)
-    searchString ? url.searchParams.append("searchString", searchString) : null
+const getAllPartsReqs = async (partsReqQuery: PartsReqQuery) => {
+    const { data } = await axios.post(`${import.meta.env.VITE_API_BASE}/forms/parts-req`, partsReqQuery)
 
-    const { data } = await axios.get<Array<PartsReq>>(url.toString())
-
-    return data
+    return data as Array<PartsReq>
 }
 
-export function usePartsReqs(searchString: string) {
-    return useQuery({ queryKey: ["partsReq", searchString], queryFn: () => getAllPartsReqs(searchString) })
+export function usePartsReqs(partsReqQuery: PartsReqQuery) {
+    return useQuery({ queryKey: ["partsReq", partsReqQuery], queryFn: () => getAllPartsReqs(partsReqQuery) })
 }
 
 // Get single Parts Req
@@ -29,7 +26,7 @@ export function usePartsReq(id: number) {
 
 // Create Parts Req
 const createPartsReq = async (partsReq: CreatePartsReq) => {
-    const { data } = await axios.post(`${import.meta.env.VITE_API_BASE}/forms/parts-req`, partsReq)
+    const { data } = await axios.post(`${import.meta.env.VITE_API_BASE}/forms/parts-req/create`, partsReq)
 
     return data
 }

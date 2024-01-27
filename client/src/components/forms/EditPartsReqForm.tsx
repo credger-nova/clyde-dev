@@ -165,6 +165,9 @@ export default function EditPartsReqForm(props: Props) {
     const onCommentChange = (e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
         setComment(e.target.value)
     }
+    const onPickupChange = (_e: React.SyntheticEvent, value: string | null) => {
+        setPickup(value ?? "")
+    }
 
     const onCreateRow = () => {
         setRows([...rows, { qty: 1, itemNumber: "", description: "", cost: "" }])
@@ -373,7 +376,7 @@ export default function EditPartsReqForm(props: Props) {
                                         <Autocomplete
                                             options={locations ? locations.concat("WILL CALL") : []}
                                             loading={locationsFetcing}
-                                            onChange={(_e, value) => setPickup(value)}
+                                            onChange={onPickupChange}
                                             value={pickup}
                                             disableClearable
                                             renderInput={(params) => <StyledTextField

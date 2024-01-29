@@ -55,7 +55,10 @@ export interface Unit {
     bdComments: string,
     opsComments: string,
     setWeek: string,
-    releaseWeek: string
+    releaseWeek: string,
+    assignedTechnician: string,
+    assignedManager: string,
+    assignedDirector: string
 }
 
 export interface UnitStatus {

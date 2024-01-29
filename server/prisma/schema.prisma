@@ -65,6 +65,9 @@ model Unit {
   opsComments            String?          @map("ops_comments")
   setWeek                String?          @map("set_week")
   releaseWeek            String?          @map("release_week")
+  assignedTechnician     String?          @map("assigned_technician")
+  assignedManager        String?          @map("assigned_manager")
+  assignedDirector       String?          @map("assigned_director")
   parameters             Parameter[]
   weeklyDowntimes        WeeklyDowntime[]
   partsReqs              PartsReq[]

@@ -4,7 +4,7 @@
 # If you need more help, visit the Dockerfile reference guide at
 # https://docs.docker.com/go/dockerfile-reference/
 
-ARG NODE_VERSION=20.10.0
+ARG NODE_VERSION=20.11.0
 
 
 ################################################################################
@@ -42,6 +42,9 @@ RUN --mount=type=bind,source=package.json,target=package.json \
 
 # Copy the rest of the source files into the image.
 COPY . .
+# Generate Prisma client
+RUN npx prisma generate
+COPY prisma ./prisma
 # Run the build script.
 RUN npm run build
 
@@ -58,12 +61,12 @@ ENV NODE_ENV production
 USER node
 
 # Copy package.json so that package manager commands can be used.
-COPY package.json .
+COPY package*.json ./
 
 # Copy the production dependencies from the deps stage and also
 # the built application from the build stage into the image.
-COPY --from=deps /usr/src/app/node_modules ./node_modules
-COPY --from=build /usr/src/app/build ./build
+COPY --from=build /usr/src/app/node_modules ./node_modules
+COPY --from=build /usr/src/app/build ./
 
 # Expose the port that the application listens on.
 EXPOSE 5000

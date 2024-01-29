@@ -91,6 +91,9 @@ const seedUnit = async () => {
         "opsComments",
         "setWeek",
         "releaseWeek",
+        "assignedTechnician",
+        "assignedManager",
+        "assignedDirector"
     ]
 
     const parser = fs

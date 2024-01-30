@@ -5,6 +5,8 @@ steps:
     args:
       [
         "build",
+        "--build-arg",
+        "build_mode=${_BUILD_MODE}",
         "-t",
         "${_LOCATION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/$COMMIT_SHA",
         ".",

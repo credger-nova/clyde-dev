@@ -1,7 +1,6 @@
 import { Auth0Provider, AppState } from "@auth0/auth0-react";
 import React from "react"
 import { useNavigate } from "react-router-dom";
-import { AUTH0_DOMAIN, AUTH0_CLIENT_ID } from "../utils/globals";
 
 const Auth0ProviderWithHistory: React.FunctionComponent<{ children: React.ReactNode }> = ({ children }) => {
     const navigate = useNavigate()
@@ -12,8 +11,8 @@ const Auth0ProviderWithHistory: React.FunctionComponent<{ children: React.ReactN
 
     return (
         <Auth0Provider
-            domain={AUTH0_DOMAIN}
-            clientId={AUTH0_CLIENT_ID}
+            domain={import.meta.env.VITE_AUTH0_DOMAIN}
+            clientId={import.meta.env.VITE_AUTH0_CLIENT_ID}
             onRedirectCallback={onRedirectCallback}
             authorizationParams={{
                 redirect_uri: window.location.origin

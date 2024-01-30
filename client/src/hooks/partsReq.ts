@@ -1,11 +1,10 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import axios from "axios"
 import { CreatePartsReq, PartsReq, PartsReqQuery, UpdatePartsReq } from "../types/partsReq"
-import { API_BASE } from "../utils/globals"
 
 // Get all Parts Reqs
 const getAllPartsReqs = async (partsReqQuery: PartsReqQuery) => {
-    const { data } = await axios.post(`${API_BASE}/forms/parts-req`, partsReqQuery)
+    const { data } = await axios.post(`${import.meta.env.VITE_API_BASE}/forms/parts-req`, partsReqQuery)
 
     return data as Array<PartsReq>
 }
@@ -16,7 +15,7 @@ export function usePartsReqs(partsReqQuery: PartsReqQuery) {
 
 // Get single Parts Req
 const getPartsReq = async (id: number) => {
-    const { data } = await axios.get<PartsReq>(`${API_BASE}/forms/parts-req/${id}`)
+    const { data } = await axios.get<PartsReq>(`${import.meta.env.VITE_API_BASE}/forms/parts-req/${id}`)
 
     return data
 }
@@ -27,7 +26,7 @@ export function usePartsReq(id: number) {
 
 // Create Parts Req
 const createPartsReq = async (partsReq: CreatePartsReq) => {
-    const { data } = await axios.post(`${API_BASE}/forms/parts-req/create`, partsReq)
+    const { data } = await axios.post(`${import.meta.env.VITE_API_BASE}/forms/parts-req/create`, partsReq)
 
     return data
 }
@@ -42,7 +41,7 @@ export function useCreatePartsReq() {
 const updatePartsReq = async ({ user, updateReq }: { user: string, updateReq: Partial<UpdatePartsReq> }) => {
     const body = { user: user, updateReq: updateReq }
 
-    const { data } = await axios.put(`${API_BASE}/forms/parts-req/${updateReq.id}`, body)
+    const { data } = await axios.put(`${import.meta.env.VITE_API_BASE}/forms/parts-req/${updateReq.id}`, body)
 
     return data
 }

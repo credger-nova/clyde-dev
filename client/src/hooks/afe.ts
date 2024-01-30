@@ -1,9 +1,10 @@
 import { useQuery } from "@tanstack/react-query"
 import axios from "axios"
+import { API_BASE } from "../utils/globals"
 
 // Get all AFE #s
 const getAllAFEs = async () => {
-    const { data } = await axios.get<Array<string>>(`${import.meta.env.VITE_API_BASE}/kpa/afe`)
+    const { data } = await axios.get<Array<string>>(`${API_BASE}/kpa/afe`)
 
     return data
 }

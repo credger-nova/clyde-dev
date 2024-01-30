@@ -1,10 +1,11 @@
 import { useQuery } from "@tanstack/react-query"
 import axios from "axios"
 import { NovaUser } from "../types/novaUser"
+import { API_BASE } from "../utils/globals"
 
 // Get user by id or email
 const getNovaUser = async (id?: string, email?: string) => {
-    const url = new URL(`${import.meta.env.VITE_API_BASE}/kpa/employee`)
+    const url = new URL(`${API_BASE}/kpa/employee`)
     id ? url.searchParams.append("id", id) : null
     email ? url.searchParams.append("email", email) : null
 
@@ -22,7 +23,7 @@ export function useNovaUser(id?: string, email?: string) {
 }
 
 const getAllNovaUsers = async () => {
-    const { data } = await axios.get<Array<NovaUser>>(`${import.meta.env.VITE_API_BASE}/kpa/employee/all`)
+    const { data } = await axios.get<Array<NovaUser>>(`${API_BASE}/kpa/employee/all`)
 
     return data
 }

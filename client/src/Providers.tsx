@@ -23,7 +23,7 @@ export default function Providers({ children }: Props) {
                     <Auth0ProviderWithHistory>
                         <UIStateProvider>
                             {children}
-                            {import.meta.env.VITE_NODE_ENV !== "production" && (
+                            {import.meta.env.DEV && (
                                 <ReactQueryDevtools initialIsOpen={false} />
                             )}
                         </UIStateProvider>

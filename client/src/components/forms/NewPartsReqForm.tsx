@@ -38,6 +38,8 @@ import { StyledTextField } from "../common/TextField"
 import { UNIT_PLANNING } from "../../utils/unitPlanning"
 import Loader from "../common/Loader"
 import InputAdornment from '@mui/material/InputAdornment'
+import parse from 'autosuggest-highlight/parse'
+import match from 'autosuggest-highlight/match'
 
 const URGENCY = ["Unit Down", "Rush", "Standard"]
 const ORDER_TYPE = [{ type: "Rental" }, { type: "Third-Party" }, { type: "Shop Supplies" }, { type: "Truck Supplies" }, { type: "Stock", titles: ["Supply Chain", "Software"] }]
@@ -525,6 +527,32 @@ export default function PartsReqForm() {
                                                                 error={!rows[index].itemNumber}
                                                                 helperText={!rows[index].itemNumber && "Press 'Enter' to save custom part"}
                                                             />}
+                                                            renderOption={(props, option, { inputValue }) => {
+                                                                const matches = match(`${option.values.itemid}` + (option.values.salesdescription ?
+                                                                    ` - ${option.values.salesdescription}` :
+                                                                    ""), inputValue, { insideWords: true });
+                                                                const parts = parse(`${option.values.itemid}` + (option.values.salesdescription ?
+                                                                    ` - ${option.values.salesdescription}` :
+                                                                    ""), matches);
+
+                                                                return (
+                                                                    <li {...props}>
+                                                                        <div>
+                                                                            {parts.map((part, index) => (
+                                                                                <span
+                                                                                    key={index}
+                                                                                    style={{
+                                                                                        fontWeight: part.highlight ? 700 : 400,
+                                                                                        color: part.highlight ? "#23aee5" : "#fff"
+                                                                                    }}
+                                                                                >
+                                                                                    {part.text}
+                                                                                </span>
+                                                                            ))}
+                                                                        </div>
+                                                                    </li>
+                                                                );
+                                                            }}
                                                         />
                                                     </TableCell>
                                                     <TableCell>

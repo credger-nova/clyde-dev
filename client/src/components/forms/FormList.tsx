@@ -9,6 +9,7 @@ import Button from '@mui/material/Button';
 import EditNoteIcon from '@mui/icons-material/EditNote';
 import Link from "@mui/material/Link"
 import { Link as RouterLink } from "react-router-dom"
+import { useTheme } from "@mui/material";
 
 interface Props {
     category: string,
@@ -16,6 +17,8 @@ interface Props {
 }
 
 export default function FormList(props: Props) {
+    const theme = useTheme()
+
     const [filteredForms, setFilteredForms] = React.useState<Array<{ name: string, category: string, url: string }>>([])
 
     React.useEffect(() => {
@@ -31,8 +34,8 @@ export default function FormList(props: Props) {
             <Table size="small">
                 <TableHead>
                     <TableRow>
-                        <TableCell>Name</TableCell>
-                        <TableCell>Category</TableCell>
+                        <TableCell width={"15%"}>Name</TableCell>
+                        <TableCell width={"15%"}>Category</TableCell>
                         <TableCell>Actions</TableCell>
                     </TableRow>
                 </TableHead>
@@ -51,8 +54,11 @@ export default function FormList(props: Props) {
                                         to={`new/${form.url}`}
                                     >
                                         <Button
-                                            variant="text"
+                                            variant="contained"
                                             startIcon={<EditNoteIcon />}
+                                            sx={{
+                                                backgroundColor: theme.palette.primary.dark
+                                            }}
                                         >
                                             Fill Out
                                         </Button>

@@ -79,7 +79,7 @@ export default function PartsReqForm() {
     const [disableSubmit, setDisableSubmit] = React.useState<boolean>(true)
 
     React.useEffect(() => {
-        if (!requester || !orderDate || (!afe && !so) || (!unit && !truck) ||
+        if (!requester || !orderDate || (!unit && !truck) ||
             !urgency || !orderType || !(rows.length > 0)) {
             setDisableSubmit(true)
         } else {

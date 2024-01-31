@@ -93,7 +93,7 @@ export default function EditPartsReqForm(props: Props) {
     const [disabled, setDisabled] = React.useState<boolean>(false)
 
     React.useEffect(() => {
-        if (!requester || !orderDate || (!afe && !so) || (!unit && !truck) ||
+        if (!requester || !orderDate || (!unit && !truck) ||
             !urgency || !orderType || !(rows.length > 0)) {
             setDisabled(true)
         } else {

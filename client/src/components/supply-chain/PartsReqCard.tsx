@@ -48,10 +48,12 @@ export default function PartsReqCard(props: Props) {
                         {partsReq.afe ?
                             <Typography variant="body2" sx={{ width: "50%" }}>
                                 {`AFE ${partsReq.afe}`}
-                            </Typography> :
+                            </Typography> : null
+                        }
+                        {partsReq.so ?
                             <Typography variant="body2" sx={{ width: "50%" }}>
                                 {`SO ${partsReq.so}`}
-                            </Typography>
+                            </Typography> : null
                         }
                     </div>
                     <div style={{ display: "flex", flexDirection: "row", width: "100%", justifyContent: "flex-start", alignItems: "center" }}>

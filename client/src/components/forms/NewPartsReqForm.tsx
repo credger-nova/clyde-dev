@@ -12,7 +12,9 @@ import { useNovaUser } from "../../hooks/user"
 import { toTitleCase } from "../../utils/helperFunctions"
 import { calcCost } from "../../utils/helperFunctions"
 
-import { OrderRow, CreatePartsReq, Part, Comment } from "../../types/partsReq"
+import { OrderRow, CreatePartsReq } from "../../types/partsReq"
+import { Part } from "../../types/part"
+import { Comment } from "../../types/comment"
 import { Unit } from "../../types/unit"
 
 import { styled } from '@mui/material/styles'
@@ -163,9 +165,9 @@ export default function PartsReqForm() {
     const onPartChange = (index: number) => (_e: React.SyntheticEvent, value: Part | string | null) => {
         const tempRows = [...rows]
         const row = { ...tempRows[index] }
-        row.itemNumber = typeof value === "string" ? value : (value ? value.values.itemid : "")
-        row.description = typeof value === "string" ? "" : (value ? value.values.salesdescription : "")
-        row.cost = typeof value === "string" ? "" : (value ? value.values.cost : "")
+        row.itemNumber = typeof value === "string" ? value : (value ? value.itemNumber : "")
+        row.description = typeof value === "string" ? "" : (value ? value.description : "")
+        row.cost = typeof value === "string" ? "" : (value ? value.cost : "")
         tempRows[index] = row
         setRows(tempRows)
     }
@@ -599,8 +601,8 @@ export default function PartsReqForm() {
                                                             getOptionLabel={(option: Part | string) =>
                                                                 typeof option === "string" ?
                                                                     option :
-                                                                    `${option.values.itemid}` + (option.values.salesdescription ?
-                                                                        ` - ${option.values.salesdescription}` :
+                                                                    `${option.itemNumber}` + (option.description ?
+                                                                        ` - ${option.description}` :
                                                                         "")
                                                             }
                                                             onChange={onPartChange(index)}
@@ -616,11 +618,11 @@ export default function PartsReqForm() {
                                                                 helperText={!rows[index].itemNumber && "Press 'Enter' to save custom part"}
                                                             />}
                                                             renderOption={(props, option, { inputValue }) => {
-                                                                const matches = match(`${option.values.itemid}` + (option.values.salesdescription ?
-                                                                    ` - ${option.values.salesdescription}` :
+                                                                const matches = match(`${option.itemNumber}` + (option.description ?
+                                                                    ` - ${option.description}` :
                                                                     ""), inputValue, { insideWords: true });
-                                                                const parts = parse(`${option.values.itemid}` + (option.values.salesdescription ?
-                                                                    ` - ${option.values.salesdescription}` :
+                                                                const parts = parse(`${option.itemNumber}` + (option.description ?
+                                                                    ` - ${option.description}` :
                                                                     ""), matches);
 
                                                                 return (

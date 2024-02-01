@@ -2,6 +2,7 @@ import { FastifyInstance } from "fastify";
 import getNsAccessJwt from "../utils/netsuite/get-ns-access-jwt";
 import axios from "axios";
 import dotenv from "dotenv";
+import { Part, NetsuitePart } from "../models/part";
 
 dotenv.config();
 
@@ -10,7 +11,7 @@ async function routes(fastify: FastifyInstance) {
     fastify.get("/items", async (req, res) => {
         const jwt = await getNsAccessJwt()
 
-        const { data } = await axios.get(`${process.env.NS_RESTLET_BASE}script=${process.env.NS_ITEMS_RESTLET}&deploy=1`,
+        const { data } = await axios.get<Array<NetsuitePart>>(`${process.env.NS_RESTLET_BASE}script=${process.env.NS_ITEMS_RESTLET}&deploy=1`,
             {
                 headers: {
                     "Content-Type": "application/json",
@@ -18,7 +19,16 @@ async function routes(fastify: FastifyInstance) {
                 }
             })
 
-        return data
+        const parts = data.map(part => {
+            return {
+                id: part.id,
+                itemNumber: part.values.itemid,
+                description: part.values.salesdescription,
+                cost: part.values.cost
+            } as Part
+        })
+
+        return parts
     })
 
     // Route to get trucks

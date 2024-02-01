@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query"
 import axios from "axios"
-import { Part } from "../types/partsReq"
+import { Part } from "../types/part"
 
 // Get all Parts
 const getAllParts = async () => {

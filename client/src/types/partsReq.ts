@@ -1,4 +1,5 @@
 import { Unit } from "./unit";
+import { Comment } from "./comment";
 
 export interface OrderRow {
     id: string,
@@ -48,21 +49,4 @@ export interface CreatePartsReq extends Omit<PartsReq, "id" | "parts" | "comment
 
 export interface UpdatePartsReq extends Omit<PartsReq, "requester" | "date" | "updated"> {
     delRows: Array<OrderRow>
-}
-
-export interface Part {
-    recordType: string,
-    id: string,
-    values: {
-        itemid: string,
-        salesdescription: string,
-        cost: string
-    }
-}
-
-export interface Comment {
-    id: string,
-    comment: string,
-    name: string,
-    timestamp: Date
 }

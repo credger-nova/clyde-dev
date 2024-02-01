@@ -13,8 +13,10 @@ import { useUpdatePartsReq } from "../../hooks/partsReq"
 import { toTitleCase } from "../../utils/helperFunctions"
 import { calcCost } from "../../utils/helperFunctions"
 
-import { OrderRow, Part, Comment, PartsReq, UpdatePartsReq } from "../../types/partsReq"
+import { OrderRow, PartsReq, UpdatePartsReq } from "../../types/partsReq"
 import { Unit } from "../../types/unit"
+import { Part } from "../../types/part"
+import { Comment } from "../../types/comment"
 
 import { styled } from '@mui/material/styles'
 import Paper from '@mui/material/Paper'
@@ -196,9 +198,9 @@ export default function EditPartsReqForm(props: Props) {
     const onPartChange = (index: number) => (_e: React.SyntheticEvent, value: Part | string | null) => {
         const tempRows = [...rows]
         const row = { ...tempRows[index] }
-        row.itemNumber = typeof value === "string" ? value : (value ? value.values.itemid : "")
-        row.description = typeof value === "string" ? "" : (value ? value.values.salesdescription : "")
-        row.cost = typeof value === "string" ? "" : (value ? value.values.cost : "")
+        row.itemNumber = typeof value === "string" ? value : (value ? value.itemNumber : "")
+        row.description = typeof value === "string" ? "" : (value ? value.description : "")
+        row.cost = typeof value === "string" ? "" : (value ? value.cost : "")
         tempRows[index] = row
         setRows(tempRows)
     }
@@ -239,7 +241,7 @@ export default function EditPartsReqForm(props: Props) {
     }
 
     function getPart(item: string): Part | string {
-        const part = parts?.find((el) => el.values.itemid === item)
+        const part = parts?.find((el) => el.itemNumber === item)
         return part ?? item
     }
 
@@ -499,7 +501,7 @@ export default function EditPartsReqForm(props: Props) {
                                             renderOption={(props, option, { inputValue }) => {
                                                 const matches = match(option, inputValue, { insideWords: true });
                                                 const parts = parse(option, matches);
-    
+
                                                 return (
                                                     <li {...props}>
                                                         <div>
@@ -722,8 +724,8 @@ export default function EditPartsReqForm(props: Props) {
                                                             getOptionLabel={(option: Part | string) =>
                                                                 typeof option === "string" ?
                                                                     option :
-                                                                    `${option.values.itemid}` + (option.values.salesdescription ?
-                                                                        ` - ${option.values.salesdescription}` :
+                                                                    `${option.itemNumber}` + (option.description ?
+                                                                        ` - ${option.description}` :
                                                                         "")
                                                             }
                                                             onChange={onPartChange(index)}
@@ -741,11 +743,11 @@ export default function EditPartsReqForm(props: Props) {
                                                             />}
                                                             renderOption={(props, option, { inputValue }) => {
                                                                 option = option as Part
-                                                                const matches = match(`${option.values.itemid}` + (option.values.salesdescription ?
-                                                                    ` - ${option.values.salesdescription}` :
+                                                                const matches = match(`${option.itemNumber}` + (option.description ?
+                                                                    ` - ${option.description}` :
                                                                     ""), inputValue, { insideWords: true });
-                                                                const parts = parse(`${option.values.itemid}` + (option.values.salesdescription ?
-                                                                    ` - ${option.values.salesdescription}` :
+                                                                const parts = parse(`${option.itemNumber}` + (option.description ?
+                                                                    ` - ${option.description}` :
                                                                     ""), matches);
 
                                                                 return (

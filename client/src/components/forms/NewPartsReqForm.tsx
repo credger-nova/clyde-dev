@@ -248,6 +248,28 @@ export default function PartsReqForm() {
                                             label="AFE #"
                                         />}
                                         disabled={so !== null}
+                                        renderOption={(props, option, { inputValue }) => {
+                                            const matches = match(option, inputValue, { insideWords: true });
+                                            const parts = parse(option, matches);
+
+                                            return (
+                                                <li {...props}>
+                                                    <div>
+                                                        {parts.map((part, index) => (
+                                                            <span
+                                                                key={index}
+                                                                style={{
+                                                                    fontWeight: part.highlight ? 700 : 400,
+                                                                    color: part.highlight ? "#23aee5" : "#fff"
+                                                                }}
+                                                            >
+                                                                {part.text}
+                                                            </span>
+                                                        ))}
+                                                    </div>
+                                                </li>
+                                            );
+                                        }}
                                     />
                                     <Autocomplete
                                         options={soNumbers ? soNumbers : []}
@@ -260,6 +282,28 @@ export default function PartsReqForm() {
                                             label="SO #"
                                         />}
                                         disabled={afe !== null || unit !== null}
+                                        renderOption={(props, option, { inputValue }) => {
+                                            const matches = match(option, inputValue, { insideWords: true });
+                                            const parts = parse(option, matches);
+
+                                            return (
+                                                <li {...props}>
+                                                    <div>
+                                                        {parts.map((part, index) => (
+                                                            <span
+                                                                key={index}
+                                                                style={{
+                                                                    fontWeight: part.highlight ? 700 : 400,
+                                                                    color: part.highlight ? "#23aee5" : "#fff"
+                                                                }}
+                                                            >
+                                                                {part.text}
+                                                            </span>
+                                                        ))}
+                                                    </div>
+                                                </li>
+                                            );
+                                        }}
                                     />
                                     <b><p style={{ margin: "20px 0px 0px 0px" }}>Related Asset:</p></b>
                                     <Divider />
@@ -275,6 +319,28 @@ export default function PartsReqForm() {
                                             label="Unit #"
                                         />}
                                         disabled={truck !== null}
+                                        renderOption={(props, option, { inputValue }) => {
+                                            const matches = match(option.unitNumber, inputValue, { insideWords: true });
+                                            const parts = parse(option.unitNumber, matches);
+
+                                            return (
+                                                <li {...props}>
+                                                    <div>
+                                                        {parts.map((part, index) => (
+                                                            <span
+                                                                key={index}
+                                                                style={{
+                                                                    fontWeight: part.highlight ? 700 : 400,
+                                                                    color: part.highlight ? "#23aee5" : "#fff"
+                                                                }}
+                                                            >
+                                                                {part.text}
+                                                            </span>
+                                                        ))}
+                                                    </div>
+                                                </li>
+                                            );
+                                        }}
                                     />
                                     <div style={{ display: "flex", flexDirection: "row", width: "100%" }}>
                                         <p style={{ marginTop: "10px", marginRight: "10px" }}>Location:</p>
@@ -306,6 +372,28 @@ export default function PartsReqForm() {
                                             label="Truck #"
                                         />}
                                         disabled={unit !== null}
+                                        renderOption={(props, option, { inputValue }) => {
+                                            const matches = match(option, inputValue, { insideWords: true });
+                                            const parts = parse(option, matches);
+
+                                            return (
+                                                <li {...props}>
+                                                    <div>
+                                                        {parts.map((part, index) => (
+                                                            <span
+                                                                key={index}
+                                                                style={{
+                                                                    fontWeight: part.highlight ? 700 : 400,
+                                                                    color: part.highlight ? "#23aee5" : "#fff"
+                                                                }}
+                                                            >
+                                                                {part.text}
+                                                            </span>
+                                                        ))}
+                                                    </div>
+                                                </li>
+                                            );
+                                        }}
                                     />
                                 </Box>
                             </Item>

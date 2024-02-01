@@ -268,6 +268,28 @@ export default function EditPartsReqForm(props: Props) {
                                             variant="standard"
                                             label="Status"
                                         />}
+                                        renderOption={(props, option, { inputValue }) => {
+                                            const matches = match(option, inputValue, { insideWords: true });
+                                            const parts = parse(option, matches);
+
+                                            return (
+                                                <li {...props}>
+                                                    <div>
+                                                        {parts.map((part, index) => (
+                                                            <span
+                                                                key={index}
+                                                                style={{
+                                                                    fontWeight: part.highlight ? 700 : 400,
+                                                                    color: part.highlight ? "#23aee5" : "#fff"
+                                                                }}
+                                                            >
+                                                                {part.text}
+                                                            </span>
+                                                        ))}
+                                                    </div>
+                                                </li>
+                                            );
+                                        }}
                                     />
                                 </Box>
                             </Item>
@@ -308,6 +330,28 @@ export default function EditPartsReqForm(props: Props) {
                                             label="AFE #"
                                         />}
                                         disabled={so !== null}
+                                        renderOption={(props, option, { inputValue }) => {
+                                            const matches = match(option, inputValue, { insideWords: true });
+                                            const parts = parse(option, matches);
+
+                                            return (
+                                                <li {...props}>
+                                                    <div>
+                                                        {parts.map((part, index) => (
+                                                            <span
+                                                                key={index}
+                                                                style={{
+                                                                    fontWeight: part.highlight ? 700 : 400,
+                                                                    color: part.highlight ? "#23aee5" : "#fff"
+                                                                }}
+                                                            >
+                                                                {part.text}
+                                                            </span>
+                                                        ))}
+                                                    </div>
+                                                </li>
+                                            );
+                                        }}
                                     />
                                     <Autocomplete
                                         options={soNumbers ? soNumbers : []}
@@ -320,6 +364,28 @@ export default function EditPartsReqForm(props: Props) {
                                             label="SO #"
                                         />}
                                         disabled={afe !== null || unit !== null}
+                                        renderOption={(props, option, { inputValue }) => {
+                                            const matches = match(option, inputValue, { insideWords: true });
+                                            const parts = parse(option, matches);
+
+                                            return (
+                                                <li {...props}>
+                                                    <div>
+                                                        {parts.map((part, index) => (
+                                                            <span
+                                                                key={index}
+                                                                style={{
+                                                                    fontWeight: part.highlight ? 700 : 400,
+                                                                    color: part.highlight ? "#23aee5" : "#fff"
+                                                                }}
+                                                            >
+                                                                {part.text}
+                                                            </span>
+                                                        ))}
+                                                    </div>
+                                                </li>
+                                            );
+                                        }}
                                     />
                                     <b><p style={{ margin: "20px 0px 0px 0px" }}>Related Asset:</p></b>
                                     <Divider />
@@ -336,6 +402,28 @@ export default function EditPartsReqForm(props: Props) {
                                             label="Unit #"
                                         />}
                                         disabled={truck !== null}
+                                        renderOption={(props, option, { inputValue }) => {
+                                            const matches = match(option.unitNumber, inputValue, { insideWords: true });
+                                            const parts = parse(option.unitNumber, matches);
+
+                                            return (
+                                                <li {...props}>
+                                                    <div>
+                                                        {parts.map((part, index) => (
+                                                            <span
+                                                                key={index}
+                                                                style={{
+                                                                    fontWeight: part.highlight ? 700 : 400,
+                                                                    color: part.highlight ? "#23aee5" : "#fff"
+                                                                }}
+                                                            >
+                                                                {part.text}
+                                                            </span>
+                                                        ))}
+                                                    </div>
+                                                </li>
+                                            );
+                                        }}
                                     />
                                     <div style={{ display: "flex", flexDirection: "row", width: "100%" }}>
                                         <p style={{ marginTop: "10px", marginRight: "10px" }}>Location:</p>
@@ -367,6 +455,28 @@ export default function EditPartsReqForm(props: Props) {
                                             label="Truck #"
                                         />}
                                         disabled={unit !== null}
+                                        renderOption={(props, option, { inputValue }) => {
+                                            const matches = match(option, inputValue, { insideWords: true });
+                                            const parts = parse(option, matches);
+
+                                            return (
+                                                <li {...props}>
+                                                    <div>
+                                                        {parts.map((part, index) => (
+                                                            <span
+                                                                key={index}
+                                                                style={{
+                                                                    fontWeight: part.highlight ? 700 : 400,
+                                                                    color: part.highlight ? "#23aee5" : "#fff"
+                                                                }}
+                                                            >
+                                                                {part.text}
+                                                            </span>
+                                                        ))}
+                                                    </div>
+                                                </li>
+                                            );
+                                        }}
                                     />
                                 </Box>
                             </Item>
@@ -386,6 +496,28 @@ export default function EditPartsReqForm(props: Props) {
                                                 variant="standard"
                                                 label="Pick Up Location"
                                             />}
+                                            renderOption={(props, option, { inputValue }) => {
+                                                const matches = match(option, inputValue, { insideWords: true });
+                                                const parts = parse(option, matches);
+    
+                                                return (
+                                                    <li {...props}>
+                                                        <div>
+                                                            {parts.map((part, index) => (
+                                                                <span
+                                                                    key={index}
+                                                                    style={{
+                                                                        fontWeight: part.highlight ? 700 : 400,
+                                                                        color: part.highlight ? "#23aee5" : "#fff"
+                                                                    }}
+                                                                >
+                                                                    {part.text}
+                                                                </span>
+                                                            ))}
+                                                        </div>
+                                                    </li>
+                                                );
+                                            }}
                                         />
                                     </Box>
                                 </Item>

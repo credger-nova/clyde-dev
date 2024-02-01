@@ -5,6 +5,8 @@ import Box from '@mui/material/Box'
 import Autocomplete from '@mui/material/Autocomplete'
 import { StyledTextField } from "../common/TextField"
 import { Unit } from "../../types/unit"
+import parse from 'autosuggest-highlight/parse'
+import match from 'autosuggest-highlight/match'
 
 import { PartsReqQuery } from "../../types/partsReq"
 import { useAFEs } from "../../hooks/afe"
@@ -141,6 +143,28 @@ export default function SearchFilter(props: Props) {
                                 label="AFE #"
                             />}
                             sx={{ width: "330px" }}
+                            renderOption={(props, option, { inputValue }) => {
+                                const matches = match(option, inputValue, { insideWords: true });
+                                const parts = parse(option, matches);
+
+                                return (
+                                    <li {...props}>
+                                        <div>
+                                            {parts.map((part, index) => (
+                                                <span
+                                                    key={index}
+                                                    style={{
+                                                        fontWeight: part.highlight ? 700 : 400,
+                                                        color: part.highlight ? "#23aee5" : "#fff"
+                                                    }}
+                                                >
+                                                    {part.text}
+                                                </span>
+                                            ))}
+                                        </div>
+                                    </li>
+                                );
+                            }}
                         />
                     </Grid>
                     <Grid>
@@ -158,6 +182,28 @@ export default function SearchFilter(props: Props) {
                                 label="SO #"
                             />}
                             sx={{ width: "330px" }}
+                            renderOption={(props, option, { inputValue }) => {
+                                const matches = match(option, inputValue, { insideWords: true });
+                                const parts = parse(option, matches);
+
+                                return (
+                                    <li {...props}>
+                                        <div>
+                                            {parts.map((part, index) => (
+                                                <span
+                                                    key={index}
+                                                    style={{
+                                                        fontWeight: part.highlight ? 700 : 400,
+                                                        color: part.highlight ? "#23aee5" : "#fff"
+                                                    }}
+                                                >
+                                                    {part.text}
+                                                </span>
+                                            ))}
+                                        </div>
+                                    </li>
+                                );
+                            }}
                         />
                     </Grid>
                     <Grid>
@@ -176,6 +222,28 @@ export default function SearchFilter(props: Props) {
                                 label="Unit #"
                             />}
                             sx={{ width: "330px" }}
+                            renderOption={(props, option, { inputValue }) => {
+                                const matches = match(option.unitNumber, inputValue, { insideWords: true });
+                                const parts = parse(option.unitNumber, matches);
+
+                                return (
+                                    <li {...props}>
+                                        <div>
+                                            {parts.map((part, index) => (
+                                                <span
+                                                    key={index}
+                                                    style={{
+                                                        fontWeight: part.highlight ? 700 : 400,
+                                                        color: part.highlight ? "#23aee5" : "#fff"
+                                                    }}
+                                                >
+                                                    {part.text}
+                                                </span>
+                                            ))}
+                                        </div>
+                                    </li>
+                                );
+                            }}
                         />
                     </Grid>
                     <Grid>
@@ -193,6 +261,28 @@ export default function SearchFilter(props: Props) {
                                 label="Truck #"
                             />}
                             sx={{ width: "330px" }}
+                            renderOption={(props, option, { inputValue }) => {
+                                const matches = match(option, inputValue, { insideWords: true });
+                                const parts = parse(option, matches);
+
+                                return (
+                                    <li {...props}>
+                                        <div>
+                                            {parts.map((part, index) => (
+                                                <span
+                                                    key={index}
+                                                    style={{
+                                                        fontWeight: part.highlight ? 700 : 400,
+                                                        color: part.highlight ? "#23aee5" : "#fff"
+                                                    }}
+                                                >
+                                                    {part.text}
+                                                </span>
+                                            ))}
+                                        </div>
+                                    </li>
+                                );
+                            }}
                         />
                     </Grid>
                     <Grid>
@@ -209,6 +299,28 @@ export default function SearchFilter(props: Props) {
                                 label="Urgency"
                             />}
                             sx={{ width: "330px" }}
+                            renderOption={(props, option, { inputValue }) => {
+                                const matches = match(option, inputValue, { insideWords: true });
+                                const parts = parse(option, matches);
+
+                                return (
+                                    <li {...props}>
+                                        <div>
+                                            {parts.map((part, index) => (
+                                                <span
+                                                    key={index}
+                                                    style={{
+                                                        fontWeight: part.highlight ? 700 : 400,
+                                                        color: part.highlight ? "#23aee5" : "#fff"
+                                                    }}
+                                                >
+                                                    {part.text}
+                                                </span>
+                                            ))}
+                                        </div>
+                                    </li>
+                                );
+                            }}
                         />
                     </Grid>
                     <Grid>
@@ -225,6 +337,28 @@ export default function SearchFilter(props: Props) {
                                 label="Status"
                             />}
                             sx={{ width: "330px" }}
+                            renderOption={(props, option, { inputValue }) => {
+                                const matches = match(option, inputValue, { insideWords: true });
+                                const parts = parse(option, matches);
+
+                                return (
+                                    <li {...props}>
+                                        <div>
+                                            {parts.map((part, index) => (
+                                                <span
+                                                    key={index}
+                                                    style={{
+                                                        fontWeight: part.highlight ? 700 : 400,
+                                                        color: part.highlight ? "#23aee5" : "#fff"
+                                                    }}
+                                                >
+                                                    {part.text}
+                                                </span>
+                                            ))}
+                                        </div>
+                                    </li>
+                                );
+                            }}
                         />
                     </Grid>
                     <Grid>
@@ -243,6 +377,28 @@ export default function SearchFilter(props: Props) {
                                 label="Requester"
                             />}
                             sx={{ width: "330px" }}
+                            renderOption={(props, option, { inputValue }) => {
+                                const matches = match((option.firstName + " " + option.lastName), inputValue, { insideWords: true });
+                                const parts = parse((option.firstName + " " + option.lastName), matches);
+
+                                return (
+                                    <li {...props}>
+                                        <div>
+                                            {parts.map((part, index) => (
+                                                <span
+                                                    key={index}
+                                                    style={{
+                                                        fontWeight: part.highlight ? 700 : 400,
+                                                        color: part.highlight ? "#23aee5" : "#fff"
+                                                    }}
+                                                >
+                                                    {part.text}
+                                                </span>
+                                            ))}
+                                        </div>
+                                    </li>
+                                );
+                            }}
                         />
                     </Grid>
                     <Grid>
@@ -260,6 +416,28 @@ export default function SearchFilter(props: Props) {
                                 label="Customer"
                             />}
                             sx={{ width: "330px" }}
+                            renderOption={(props, option, { inputValue }) => {
+                                const matches = match(option, inputValue, { insideWords: true });
+                                const parts = parse(option, matches);
+
+                                return (
+                                    <li {...props}>
+                                        <div>
+                                            {parts.map((part, index) => (
+                                                <span
+                                                    key={index}
+                                                    style={{
+                                                        fontWeight: part.highlight ? 700 : 400,
+                                                        color: part.highlight ? "#23aee5" : "#fff"
+                                                    }}
+                                                >
+                                                    {part.text}
+                                                </span>
+                                            ))}
+                                        </div>
+                                    </li>
+                                );
+                            }}
                         />
                     </Grid>
                 </Grid>

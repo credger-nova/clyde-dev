@@ -42,6 +42,7 @@ import { UNIT_PLANNING } from "../../utils/unitPlanning"
 import InputAdornment from '@mui/material/InputAdornment'
 import parse from 'autosuggest-highlight/parse'
 import match from 'autosuggest-highlight/match'
+import theme from "../../css/theme"
 
 const URGENCY = ["Unit Down", "Rush", "Standard"]
 const ORDER_TYPE = [{ type: "Rental" }, { type: "Third-Party" }, { type: "Shop Supplies" }, { type: "Truck Supplies" }, { type: "Stock", titles: ["Supply Chain", "Software"] }]
@@ -60,6 +61,10 @@ const Item = styled(Paper)(({ theme }) => ({
 interface Props {
     partsReq: PartsReq,
     setActivePartsReq: React.Dispatch<React.SetStateAction<PartsReq | null>>
+}
+
+interface PartOption extends Part {
+    inputValue?: string
 }
 
 export default function EditPartsReqForm(props: Props) {
@@ -95,6 +100,11 @@ export default function EditPartsReqForm(props: Props) {
     const [comment, setComment] = React.useState<string>("")
     const [comments, setComments] = React.useState<Array<Omit<Comment, "id">>>(partsReq.comments)
     const [disabled, setDisabled] = React.useState<boolean>(false)
+
+    const partsFilter = createFilterOptions<PartOption>({
+        matchFrom: "any",
+        limit: 500
+    })
 
     React.useEffect(() => {
         if (!requester || !orderDate || (!unit && !truck) ||
@@ -195,12 +205,24 @@ export default function EditPartsReqForm(props: Props) {
         setRows(tempRows)
     }
 
-    const onPartChange = (index: number) => (_e: React.SyntheticEvent, value: Part | string | null) => {
+    const onPartChange = (index: number) => (_e: React.SyntheticEvent, value: PartOption | string | null) => {
         const tempRows = [...rows]
         const row = { ...tempRows[index] }
-        row.itemNumber = typeof value === "string" ? value : (value ? value.itemNumber : "")
-        row.description = typeof value === "string" ? "" : (value ? value.description : "")
-        row.cost = typeof value === "string" ? "" : (value ? value.cost : "")
+
+        if (typeof value === "string") {
+            row.itemNumber = value
+            row.description = ""
+            row.cost = ""
+        } else if (value && value.inputValue) {
+            row.itemNumber = value.inputValue
+            row.description = ""
+            row.cost = ""
+        } else {
+            row.itemNumber = value?.itemNumber ? value.itemNumber : ""
+            row.description = value?.description ? value.description : ""
+            row.cost = value?.cost ? value.cost : ""
+        }
+
         tempRows[index] = row
         setRows(tempRows)
     }
@@ -234,15 +256,21 @@ export default function EditPartsReqForm(props: Props) {
         setComment("")
     }
 
+    // Prevent enter key from submitting form
     const handleKeyDown = (e: { keyCode: number; preventDefault: () => void }) => {
         if (e.keyCode === 13) {
             e.preventDefault()
         }
     }
 
-    function getPart(item: string): Part | string {
+    function getPart(item: string): PartOption | string {
         const part = parts?.find((el) => el.itemNumber === item)
-        return part ?? item
+        return part as PartOption ?? item
+    }
+
+    function partExists(itemNumber: string): boolean {
+        const part = parts?.find((el) => el.itemNumber === itemNumber)
+        return part ? true : false
     }
 
     if (isFetched) {
@@ -719,27 +747,49 @@ export default function EditPartsReqForm(props: Props) {
                                                     </TableCell>
                                                     <TableCell>
                                                         <Autocomplete
-                                                            options={parts ? parts : []}
+                                                            options={parts ? parts as Array<PartOption> : []}
                                                             freeSolo
-                                                            getOptionLabel={(option: Part | string) =>
-                                                                typeof option === "string" ?
-                                                                    option :
-                                                                    `${option.itemNumber}` + (option.description ?
-                                                                        ` - ${option.description}` :
-                                                                        "")
-                                                            }
+                                                            clearOnBlur
+                                                            selectOnFocus
+                                                            getOptionLabel={(option) => {
+                                                                if (typeof option === "string") {
+                                                                    return option
+                                                                }
+                                                                if (option.inputValue) {
+                                                                    return option.inputValue
+                                                                }
+                                                                return `${option.itemNumber}` + (option.description ?
+                                                                    ` - ${option.description}` :
+                                                                    "")
+                                                            }}
                                                             onChange={onPartChange(index)}
                                                             loading={partsFetching}
-                                                            filterOptions={createFilterOptions({
-                                                                matchFrom: "any",
-                                                                limit: 500
-                                                            })}
+                                                            filterOptions={(options, params) => {
+                                                                const filtered = partsFilter(options, params)
+
+                                                                const { inputValue } = params
+                                                                // Suggest creation of new value if nothing exists
+                                                                const isExisting = options.some((option) => inputValue === `${option.itemNumber}` + (option.description ?
+                                                                    ` - ${option.description}` :
+                                                                    ""))
+                                                                if (inputValue !== "" && !isExisting) {
+                                                                    filtered.push({
+                                                                        inputValue,
+                                                                        itemNumber: `Add "${inputValue}"`,
+                                                                        id: inputValue,
+                                                                        description: "",
+                                                                        cost: ""
+                                                                    })
+                                                                }
+
+                                                                return filtered
+                                                            }}
                                                             value={getPart(row.itemNumber)}
                                                             renderInput={(params) => <StyledTextField
                                                                 {...params}
                                                                 variant="standard"
                                                                 error={!rows[index].itemNumber}
-                                                                helperText={!rows[index].itemNumber && "Press 'Enter' to save custom part"}
+                                                                helperText={rows[index].itemNumber ? "" : "Press 'Enter' to save custom part"}
                                                             />}
                                                             renderOption={(props, option, { inputValue }) => {
                                                                 option = option as Part
@@ -776,6 +826,7 @@ export default function EditPartsReqForm(props: Props) {
                                                             value={row.description}
                                                             onChange={onDescriptionChange(index)}
                                                             helperText={!rows[index].itemNumber && " "}
+                                                            disabled={partExists(rows[index].itemNumber)}
                                                         />
                                                     </TableCell>
                                                     <TableCell>
@@ -792,6 +843,7 @@ export default function EditPartsReqForm(props: Props) {
                                                                 }
                                                             }}
                                                             helperText={!rows[index].itemNumber && " "}
+                                                            disabled={partExists(rows[index].itemNumber)}
                                                         />
                                                     </TableCell>
                                                     <TableCell>{row.cost ? `$${(Number(row.cost) * row.qty).toFixed(2)}` : ""}</TableCell>
@@ -817,9 +869,10 @@ export default function EditPartsReqForm(props: Props) {
                                     </TableBody>
                                 </Table>
                                 <Button
+                                    variant="contained"
                                     startIcon={<AddIcon />}
                                     onClick={onCreateRow}
-                                    sx={{ marginTop: "5px" }}
+                                    sx={{ marginTop: "5px", backgroundColor: theme.palette.primary.dark }}
                                 >
                                     Add Item
                                 </Button>

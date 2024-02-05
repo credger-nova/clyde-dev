@@ -581,6 +581,8 @@ export default function PartsReqForm() {
                         </Grid>
                         <Grid xs={3}>
                             <Item style={{ maxHeight: "750px", overflow: "auto" }}>
+                                <b><p style={{ margin: 0 }}>Comments:</p></b>
+                                <Divider />
                                 <div style={{ display: "flex", alignItems: "flex-end", padding: "5px" }}>
                                     <StyledTextField
                                         multiline
@@ -680,7 +682,7 @@ export default function PartsReqForm() {
                                                                     inputValue.toUpperCase() === option.description.toUpperCase()
                                                                 )
 
-                                                                const isExisting = isItemNumberExisting && isDescriptionExisting
+                                                                const isExisting = isItemNumberExisting || isDescriptionExisting
 
                                                                 if (inputValue !== "" && !isExisting) {
                                                                     filtered.push({

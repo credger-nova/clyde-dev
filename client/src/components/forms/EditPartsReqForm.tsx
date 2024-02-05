@@ -698,7 +698,9 @@ export default function EditPartsReqForm(props: Props) {
                             </Item>
                         </Grid>
                         <Grid xs={3}>
-                            <Item style={{ maxHeight: "750px", overflow: "auto" }}>
+                            <Item style={{ maxHeight: "770px", overflow: "auto" }}>
+                                <b><p style={{ margin: 0 }}>Comments:</p></b>
+                                <Divider />
                                 <div style={{ display: "flex", alignItems: "flex-end", padding: "5px" }}>
                                     <StyledTextField
                                         multiline
@@ -798,7 +800,7 @@ export default function EditPartsReqForm(props: Props) {
                                                                     inputValue.toUpperCase() === option.description.toUpperCase()
                                                                 )
 
-                                                                const isExisting = isItemNumberExisting && isDescriptionExisting
+                                                                const isExisting = isItemNumberExisting || isDescriptionExisting
 
                                                                 if (inputValue !== "" && !isExisting) {
                                                                     filtered.push({

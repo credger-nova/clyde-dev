@@ -190,9 +190,16 @@ export default function PartsReqForm() {
         const row = { ...tempRows[index] }
 
         if (typeof value === "string") {
-            row.itemNumber = value
-            row.description = ""
-            row.cost = ""
+            if (partExists(value)) {
+                const part = getPart(value)
+                row.itemNumber = part.itemNumber
+                row.description = part.description
+                row.cost = part.cost
+            } else {
+                row.itemNumber = value
+                row.description = ""
+                row.cost = ""
+            }
         } else if (value && value.inputValue) {
             row.itemNumber = value.inputValue
             row.description = ""
@@ -243,8 +250,14 @@ export default function PartsReqForm() {
         }
     }
 
+    function getPart(itemNumber: string): Part {
+        const part = parts?.find((el) => el.itemNumber.toUpperCase() === itemNumber.toUpperCase())
+
+        return part!
+    }
+
     function partExists(itemNumber: string): boolean {
-        const part = parts?.find((el) => el.itemNumber === itemNumber)
+        const part = parts?.find((el) => el.itemNumber.toUpperCase() === itemNumber.toUpperCase())
         return part ? true : false
     }
 
@@ -660,9 +673,11 @@ export default function PartsReqForm() {
 
                                                                 const { inputValue } = params
                                                                 // Suggest creation of new value if nothing exists
-                                                                const isExisting = options.some((option) => inputValue === `${option.itemNumber}` + (option.description ?
-                                                                    ` - ${option.description}` :
-                                                                    ""))
+                                                                const isItemNumberExisting = options.some((option) => inputValue === option.itemNumber)
+                                                                const isDescriptionExisting = options.some((option) => inputValue === option.description)
+
+                                                                const isExisting = isItemNumberExisting && isDescriptionExisting
+                                                                
                                                                 if (inputValue !== "" && !isExisting) {
                                                                     filtered.push({
                                                                         inputValue,

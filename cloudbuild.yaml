@@ -1,5 +1,5 @@
 steps:
-  # Build the container image
+  # Build the container image and push to Container Registry
   - name: "gcr.io/cloud-builders/docker"
     dir: "${_DIRECTORY}"
     args:
@@ -11,6 +11,17 @@ steps:
         "${_LOCATION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/$COMMIT_SHA",
         ".",
       ]
+  # Deploy container image to Cloud Run
+  - name: "gcr.io/google.com/cloudsdktool/cloud-sdk"
+    entrypoint: gcloud
+    args:
+      - "run"
+      - "deploy"
+      - "${_SERVICE_NAME}"
+      - "--image"
+      - "${_LOCATION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/$COMMIT_SHA"
+      - "--region"
+      - "${_LOCATION}"
 images:
   - "${_LOCATION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/$COMMIT_SHA"
 options:

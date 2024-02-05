@@ -43,6 +43,7 @@ import InputAdornment from '@mui/material/InputAdornment'
 import parse from 'autosuggest-highlight/parse'
 import match from 'autosuggest-highlight/match'
 import theme from "../../css/theme"
+import Popper, { PopperProps } from '@mui/material/Popper'
 
 const URGENCY = ["Unit Down", "Rush", "Standard"]
 const ORDER_TYPE = [{ type: "Rental" }, { type: "Third-Party" }, { type: "Shop Supplies" }, { type: "Truck Supplies" }, { type: "Stock", titles: ["Supply Chain", "Software"] }]
@@ -57,6 +58,18 @@ const Item = styled(Paper)(({ theme }) => ({
     textAlign: "left",
     color: "white"
 }))
+
+function CustomPopper(props: PopperProps) {
+    return (
+        <Popper
+            {...props}
+            placement="top-start"
+            style={{ width: "75vw" }}
+        >
+            {props.children as React.ReactNode}
+        </Popper>
+    )
+}
 
 interface Props {
     partsReq: PartsReq,
@@ -261,11 +274,6 @@ export default function EditPartsReqForm(props: Props) {
         if (e.keyCode === 13) {
             e.preventDefault()
         }
-    }
-
-    function getPart(item: string): PartOption | string {
-        const part = parts?.find((el) => el.itemNumber === item)
-        return part as PartOption ?? item
     }
 
     function partExists(itemNumber: string): boolean {
@@ -762,6 +770,7 @@ export default function EditPartsReqForm(props: Props) {
                                                                     ` - ${option.description}` :
                                                                     "")
                                                             }}
+                                                            value={rows[index].itemNumber}
                                                             onChange={onPartChange(index)}
                                                             loading={partsFetching}
                                                             filterOptions={(options, params) => {
@@ -784,7 +793,6 @@ export default function EditPartsReqForm(props: Props) {
 
                                                                 return filtered
                                                             }}
-                                                            value={getPart(row.itemNumber)}
                                                             renderInput={(params) => <StyledTextField
                                                                 {...params}
                                                                 variant="standard"
@@ -792,18 +800,20 @@ export default function EditPartsReqForm(props: Props) {
                                                                 helperText={rows[index].itemNumber ? "" : "Press 'Enter' to save custom part"}
                                                             />}
                                                             renderOption={(props, option, { inputValue }) => {
-                                                                option = option as Part
-                                                                const matches = match(`${option.itemNumber}` + (option.description ?
-                                                                    ` - ${option.description}` :
-                                                                    ""), inputValue, { insideWords: true });
-                                                                const parts = parse(`${option.itemNumber}` + (option.description ?
-                                                                    ` - ${option.description}` :
-                                                                    ""), matches);
+                                                                // Get matches in item number
+                                                                const itemNumberMatches = match(option.itemNumber, inputValue, { insideWords: true })
+                                                                // Get parts from item number matches
+                                                                const itemNumberParts = parse(option.itemNumber, itemNumberMatches)
+
+                                                                // Get matches in description
+                                                                const descriptionMatches = match(option.description, inputValue, { insideWords: true })
+                                                                // Get parts from description matches
+                                                                const descriptionParts = parse(option.description, descriptionMatches)
 
                                                                 return (
-                                                                    <li {...props}>
-                                                                        <div>
-                                                                            {parts.map((part, index) => (
+                                                                    <li {...props} style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+                                                                        <div style={{ width: "30%", marginRight: "5px" }}>
+                                                                            {itemNumberParts.map((part, index) => (
                                                                                 <span
                                                                                     key={index}
                                                                                     style={{
@@ -815,9 +825,26 @@ export default function EditPartsReqForm(props: Props) {
                                                                                 </span>
                                                                             ))}
                                                                         </div>
+                                                                        <div style={{ width: "100%" }}>
+                                                                            {descriptionParts.map((part, index) => (
+                                                                                <span
+                                                                                    key={index}
+                                                                                    style={{
+                                                                                        fontWeight: part.highlight ? 700 : 400,
+                                                                                        color: part.highlight ? "#23aee5" : "#fff"
+                                                                                    }}
+                                                                                >
+                                                                                    {part.text}
+                                                                                </span>
+                                                                            ))}
+                                                                        </div>
+                                                                        <span style={{ width: "15%", display: "flex", justifyContent: "flex-end" }}>
+                                                                            {option.cost ? `$${option.cost}` : ""}
+                                                                        </span>
                                                                     </li>
-                                                                );
+                                                                )
                                                             }}
+                                                            PopperComponent={CustomPopper}
                                                         />
                                                     </TableCell>
                                                     <TableCell>

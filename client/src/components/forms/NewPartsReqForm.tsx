@@ -43,6 +43,7 @@ import InputAdornment from '@mui/material/InputAdornment'
 import parse from 'autosuggest-highlight/parse'
 import match from 'autosuggest-highlight/match'
 import theme from "../../css/theme"
+import Popper, { PopperProps } from '@mui/material/Popper'
 
 const URGENCY = ["Unit Down", "Rush", "Standard"]
 const ORDER_TYPE = [{ type: "Rental" }, { type: "Third-Party" }, { type: "Shop Supplies" }, { type: "Truck Supplies" }, { type: "Stock", titles: ["Supply Chain", "Software"] }]
@@ -55,6 +56,18 @@ const Item = styled(Paper)(({ theme }) => ({
     textAlign: "left",
     color: "white"
 }))
+
+function CustomPopper(props: PopperProps) {
+    return (
+        <Popper
+            {...props}
+            placement="top-start"
+            style={{ width: "75vw" }}
+        >
+            {props.children as React.ReactNode}
+        </Popper>
+    )
+}
 
 interface PartOption extends Part {
     inputValue?: string
@@ -639,6 +652,7 @@ export default function PartsReqForm() {
                                                                     ` - ${option.description}` :
                                                                     "")
                                                             }}
+                                                            value={rows[index].itemNumber}
                                                             onChange={onPartChange(index)}
                                                             loading={partsFetching}
                                                             filterOptions={(options, params) => {
@@ -668,17 +682,20 @@ export default function PartsReqForm() {
                                                                 helperText={rows[index].itemNumber ? "" : "Press 'Enter' to save custom part"}
                                                             />}
                                                             renderOption={(props, option, { inputValue }) => {
-                                                                const matches = match(`${option.itemNumber}` + (option.description ?
-                                                                    ` - ${option.description}` :
-                                                                    ""), inputValue, { insideWords: true });
-                                                                const parts = parse(`${option.itemNumber}` + (option.description ?
-                                                                    ` - ${option.description}` :
-                                                                    ""), matches);
+                                                                // Get matches in item number
+                                                                const itemNumberMatches = match(option.itemNumber, inputValue, { insideWords: true })
+                                                                // Get parts from item number matches
+                                                                const itemNumberParts = parse(option.itemNumber, itemNumberMatches)
+
+                                                                // Get matches in description
+                                                                const descriptionMatches = match(option.description, inputValue, { insideWords: true })
+                                                                // Get parts from description matches
+                                                                const descriptionParts = parse(option.description, descriptionMatches)
 
                                                                 return (
-                                                                    <li {...props}>
-                                                                        <div>
-                                                                            {parts.map((part, index) => (
+                                                                    <li {...props} style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+                                                                        <div style={{ width: "30%", marginRight: "5px" }}>
+                                                                            {itemNumberParts.map((part, index) => (
                                                                                 <span
                                                                                     key={index}
                                                                                     style={{
@@ -690,9 +707,26 @@ export default function PartsReqForm() {
                                                                                 </span>
                                                                             ))}
                                                                         </div>
+                                                                        <div style={{ width: "100%" }}>
+                                                                            {descriptionParts.map((part, index) => (
+                                                                                <span
+                                                                                    key={index}
+                                                                                    style={{
+                                                                                        fontWeight: part.highlight ? 700 : 400,
+                                                                                        color: part.highlight ? "#23aee5" : "#fff"
+                                                                                    }}
+                                                                                >
+                                                                                    {part.text}
+                                                                                </span>
+                                                                            ))}
+                                                                        </div>
+                                                                        <span style={{ width: "15%", display: "flex", justifyContent: "flex-end" }}>
+                                                                            {option.cost ? `$${option.cost}` : ""}
+                                                                        </span>
                                                                     </li>
-                                                                );
+                                                                )
                                                             }}
+                                                            PopperComponent={CustomPopper}
                                                         />
                                                     </TableCell>
                                                     <TableCell>

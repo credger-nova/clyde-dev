@@ -791,8 +791,12 @@ export default function EditPartsReqForm(props: Props) {
 
                                                                 const { inputValue } = params
                                                                 // Suggest creation of new value if nothing exists
-                                                                const isItemNumberExisting = options.some((option) => inputValue === option.itemNumber)
-                                                                const isDescriptionExisting = options.some((option) => inputValue === option.description)
+                                                                const isItemNumberExisting = options.some((option) =>
+                                                                    inputValue.toUpperCase() === option.itemNumber.toUpperCase()
+                                                                )
+                                                                const isDescriptionExisting = options.some((option) =>
+                                                                    inputValue.toUpperCase() === option.description.toUpperCase()
+                                                                )
 
                                                                 const isExisting = isItemNumberExisting && isDescriptionExisting
 

@@ -1,5 +1,6 @@
 import { FastifyInstance, FastifyRequest } from "fastify"
-import { downloadFile, storage } from "../utils/gcp-storage"
+import { storage } from "../utils/gcp-storage"
+import { downloadFile } from "../api/storage"
 import dotenv from "dotenv"
 
 dotenv.config()

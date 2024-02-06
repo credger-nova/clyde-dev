@@ -1,7 +1,7 @@
 import { FastifyInstance, FastifyRequest } from "fastify"
 import { prisma } from "../utils/prisma-client"
 import { PartsReq, UpdatePartsReq } from "../models/partsReq"
-import { uploadFiles } from "../utils/gcp-storage"
+import { uploadFiles } from "../api/storage"
 
 const URGENCY_SORT = ["Unit Down", "Rush", "Standard", "Stock"]
 
@@ -192,7 +192,7 @@ async function routes(fastify: FastifyInstance) {
         })
 
         if (newFiles.length > 0) {
-            await uploadFiles(newFiles, bucket, folder)
+            await uploadFiles(bucket, folder, newFiles)
         }
 
         res.status(201)

@@ -1,13 +1,8 @@
 import { FastifyInstance, FastifyRequest } from "fastify"
-import { storage } from "../utils/gcp-storage"
+import { downloadFile, storage } from "../utils/gcp-storage"
 import dotenv from "dotenv"
-import { File } from "@prisma/client"
 
 dotenv.config()
-
-interface UploadFiles {
-    files: Array<File>,
-}
 
 async function routes(fastify: FastifyInstance) {
     // List available storage buckets
@@ -24,17 +19,11 @@ async function routes(fastify: FastifyInstance) {
         return files.map((file) => file.name)
     })
 
-    // Upload files to Cloud Storage
-    fastify.post("/", async (req: FastifyRequest<{ Body: UploadFiles }>, res) => {
-        const { files } = req.body
+    // Download file at given location
+    fastify.post("/download", async (req: FastifyRequest<{ Body: { bucket: string, fileName: string, destFileName: string } }>, res) => {
+        const { bucket, fileName, destFileName } = req.body
 
-        for (const file of files) {
-            const options = {
-                destination: file.id
-            }
-
-            await storage.bucket(file.bucket).upload(file.name, options)
-        }
+        await downloadFile(bucket, fileName, destFileName)
     })
 }
 

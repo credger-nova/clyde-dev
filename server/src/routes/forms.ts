@@ -1,7 +1,6 @@
 import { FastifyInstance, FastifyRequest } from "fastify"
 import { prisma } from "../utils/prisma-client"
 import { PartsReq, UpdatePartsReq } from "../models/partsReq"
-import axios from "axios"
 import { uploadFiles } from "../utils/gcp-storage"
 
 const URGENCY_SORT = ["Unit Down", "Rush", "Standard", "Stock"]
@@ -145,58 +144,59 @@ async function routes(fastify: FastifyInstance) {
     })
 
     // Create a Parts Req form
-    fastify.post("/parts-req/create", async (req: FastifyRequest<{ Body: PartsReq }>, res) => {
-        // Ensure no invalid rows are created
-        req.body.parts = req.body.parts.filter(row => row.itemNumber !== "")
+    fastify.post("/parts-req/create", async (req: FastifyRequest<{ Body: { partsReq: PartsReq, bucket: string, folder: string } }>, res) => {
+        const { partsReq, bucket, folder } = req.body
 
-        const partsReq = await prisma.partsReq.create({
+        // Ensure no invalid rows are created
+        partsReq.parts = partsReq.parts.filter(row => row.itemNumber !== "")
+
+        const newPartsReq = await prisma.partsReq.create({
             data: {
-                requester: req.body.requester,
-                date: req.body.date,
-                afe: req.body.afe,
-                so: req.body.so,
-                unitNumber: req.body.unit ? req.body.unit.unitNumber : null,
-                truck: req.body.truck,
-                urgency: req.body.urgency,
-                orderType: req.body.orderType,
-                region: req.body.region,
+                requester: partsReq.requester,
+                date: partsReq.date,
+                afe: partsReq.afe,
+                so: partsReq.so,
+                unitNumber: partsReq.unit ? partsReq.unit.unitNumber : null,
+                truck: partsReq.truck,
+                urgency: partsReq.urgency,
+                orderType: partsReq.orderType,
+                region: partsReq.region,
                 parts: {
                     createMany: {
-                        data: req.body.parts
+                        data: partsReq.parts
                     }
                 },
                 comments: {
                     createMany: {
-                        data: req.body.comments
+                        data: partsReq.comments
                     }
                 },
                 files: {
                     createMany: {
-                        data: req.body.files.map((file) => {
+                        data: partsReq.files.map((file) => {
                             return {
-                                name: file.name,
-                                bucket: file.bucket
+                                name: file.name
                             }
                         })
                     }
                 },
-                status: req.body.status,
-                updated: req.body.updated
+                status: partsReq.status,
+                updated: partsReq.updated
             }
         })
 
         const newFiles = await prisma.file.findMany({
             where: {
-                partsReqId: partsReq.id
+                partsReqId: newPartsReq.id
             }
         })
 
         if (newFiles.length > 0) {
-            await uploadFiles(newFiles)
+            await uploadFiles(newFiles, bucket, folder)
         }
 
         res.status(201)
-        return partsReq
+        return newPartsReq
     })
 
     // Update a Parts Req form

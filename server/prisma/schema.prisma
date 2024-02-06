@@ -146,7 +146,6 @@ model Comment {
 model File {
   id         String    @id @default(uuid())
   name       String
-  bucket     String
   isDeleted  Boolean   @default(false) @map("is_deleted")
   partsReq   PartsReq? @relation(fields: [partsReqId], references: [id], onDelete: Cascade)
   partsReqId Int?      @map("parts_req_id")

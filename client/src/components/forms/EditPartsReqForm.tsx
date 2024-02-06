@@ -44,6 +44,7 @@ import parse from 'autosuggest-highlight/parse'
 import match from 'autosuggest-highlight/match'
 import theme from "../../css/theme"
 import Popper, { PopperProps } from '@mui/material/Popper'
+import Files from "./Files"
 
 const URGENCY = ["Unit Down", "Rush", "Standard"]
 const ORDER_TYPE = [{ type: "Rental" }, { type: "Third-Party" }, { type: "Shop Supplies" }, { type: "Truck Supplies" }, { type: "Stock", titles: ["Supply Chain", "Software"] }]
@@ -717,7 +718,7 @@ export default function EditPartsReqForm(props: Props) {
                                     </IconButton>
                                 </div>
                                 <Box
-                                    style={{ maxHeight: "400px", overflow: "auto", padding: "5px" }}
+                                    style={{ maxHeight: "400px", overflow: "auto", padding: "5px 0px 0px 0px" }}
                                 >
                                     {comments.sort((x, y) => { return x.timestamp < y.timestamp ? 1 : -1 }) // Sort comments chronologically
                                         .map((comment: Omit<Comment, "id">, index: number) => {
@@ -740,6 +741,21 @@ export default function EditPartsReqForm(props: Props) {
                             >
                                 <b><p style={{ margin: 0 }}>Documents:</p></b>
                                 <Divider />
+                                <Button
+                                    variant={"contained"}
+                                    sx={{ width: "100%", marginTop: "10px", backgroundColor: theme.palette.primary.dark }}
+                                >
+                                    Add Document
+                                </Button>
+                                <Box
+                                    sx={{ maxHeight: "250px", overflow: "auto", padding: "5px 0px 0px 0px" }}
+                                >
+                                    <Files
+                                        files={partsReq.files}
+                                        folder={"parts-req"}
+                                        downloadable
+                                    />
+                                </Box>
                             </Item>
                         </Grid>
                         <Grid xs={12}>

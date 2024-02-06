@@ -9,11 +9,14 @@ export const uploadFiles = async (bucket: string, folder: string, files: Array<F
     }
 }
 
-export const downloadFile = async (bucket: string, fileName: string, destination: string) => {
-    await storage
+export const generateSignedURL = async (bucket: string, fileName: string) => {
+    const [signedURL] = await storage
         .bucket(bucket)
         .file(fileName)
-        .download({
-            destination: destination
+        .getSignedUrl({
+            action: "read",
+            expires: Date.now() + 1000 * 60 // 1 minute
         })
+
+    return signedURL
 }

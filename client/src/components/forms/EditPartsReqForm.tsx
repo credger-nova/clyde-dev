@@ -698,7 +698,7 @@ export default function EditPartsReqForm(props: Props) {
                             </Item>
                         </Grid>
                         <Grid xs={3}>
-                            <Item style={{ maxHeight: "770px", overflow: "auto" }}>
+                            <Item style={{ overflow: "auto" }}>
                                 <b><p style={{ margin: 0 }}>Comments:</p></b>
                                 <Divider />
                                 <div style={{ display: "flex", alignItems: "flex-end", padding: "5px" }}>
@@ -717,7 +717,7 @@ export default function EditPartsReqForm(props: Props) {
                                     </IconButton>
                                 </div>
                                 <Box
-                                    style={{ maxHeight: "670px", overflow: "auto", padding: "5px" }}
+                                    style={{ maxHeight: "400px", overflow: "auto", padding: "5px" }}
                                 >
                                     {comments.sort((x, y) => { return x.timestamp < y.timestamp ? 1 : -1 }) // Sort comments chronologically
                                         .map((comment: Omit<Comment, "id">, index: number) => {
@@ -734,6 +734,12 @@ export default function EditPartsReqForm(props: Props) {
                                             )
                                         })}
                                 </Box>
+                            </Item>
+                            <Item
+                                sx={{ marginTop: "15px" }}
+                            >
+                                <b><p style={{ margin: 0 }}>Documents:</p></b>
+                                <Divider />
                             </Item>
                         </Grid>
                         <Grid xs={12}>

@@ -1,7 +1,8 @@
 import { FastifyInstance, FastifyRequest } from "fastify"
 import { prisma } from "../utils/prisma-client"
 import { PartsReq, UpdatePartsReq } from "../models/partsReq"
-import { Prisma } from "@prisma/client"
+import axios from "axios"
+import { uploadFiles } from "../utils/gcp-storage"
 
 const URGENCY_SORT = ["Unit Down", "Rush", "Standard", "Stock"]
 
@@ -66,7 +67,8 @@ async function routes(fastify: FastifyInstance) {
             include: {
                 parts: true,
                 comments: true,
-                unit: true
+                unit: true,
+                files: true
             }
         })
 
@@ -87,6 +89,7 @@ async function routes(fastify: FastifyInstance) {
                     region: obj.region,
                     parts: obj.parts,
                     comments: obj.comments,
+                    files: obj.files,
                     status: obj.status,
                     updated: obj.updated
                 } as PartsReq
@@ -108,7 +111,8 @@ async function routes(fastify: FastifyInstance) {
             include: {
                 parts: true,
                 comments: true,
-                unit: true
+                unit: true,
+                files: true
             }
         })
 
@@ -129,6 +133,7 @@ async function routes(fastify: FastifyInstance) {
                 region: result.region,
                 parts: result.parts,
                 comments: result.comments,
+                files: result.files,
                 status: result.status,
                 updated: result.updated
             } as PartsReq
@@ -165,10 +170,30 @@ async function routes(fastify: FastifyInstance) {
                         data: req.body.comments
                     }
                 },
+                files: {
+                    createMany: {
+                        data: req.body.files.map((file) => {
+                            return {
+                                name: file.name,
+                                bucket: file.bucket
+                            }
+                        })
+                    }
+                },
                 status: req.body.status,
                 updated: req.body.updated
             }
         })
+
+        const newFiles = await prisma.file.findMany({
+            where: {
+                partsReqId: partsReq.id
+            }
+        })
+
+        if (newFiles.length > 0) {
+            await uploadFiles(newFiles)
+        }
 
         res.status(201)
         return partsReq

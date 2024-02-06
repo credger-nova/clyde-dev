@@ -1,4 +1,4 @@
-import { Unit } from "@prisma/client"
+import { File, Unit, Comment } from "@prisma/client"
 
 export interface OrderRow {
     id: string,
@@ -6,13 +6,6 @@ export interface OrderRow {
     itemNumber: string,
     cost: string | null,
     description: string | null
-}
-
-export interface Comment {
-    id: string,
-    comment: string,
-    name: string,
-    timestamp: Date
 }
 
 export interface PartsReq {
@@ -30,6 +23,7 @@ export interface PartsReq {
     region: string,
     parts: Array<OrderRow>,
     comments: Array<Comment>,
+    files: Array<File>,
     status: string,
     updated: Date
 }

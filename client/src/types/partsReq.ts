@@ -1,5 +1,6 @@
 import { Unit } from "./unit";
 import { Comment } from "./comment";
+import { File } from "./file";
 
 export interface OrderRow {
     id: string,
@@ -24,6 +25,7 @@ export interface PartsReq {
     region: string | null,
     parts: Array<OrderRow>,
     comments: Array<Comment>,
+    files: Array<File>,
     status: string,
     updated: Date
 }

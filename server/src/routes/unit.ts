@@ -1,4 +1,4 @@
-import { FastifyInstance, FastifyRequest } from "fastify"
+import { FastifyInstance } from "fastify"
 import { prisma } from "../utils/prisma-client"
 
 async function routes(fastify: FastifyInstance) {

@@ -103,7 +103,7 @@ model PartsReqRow {
   itemNumber  String    @map("item_number")
   description String?
   cost        String?
-  PartsReq    PartsReq? @relation(fields: [partsReqId], references: [id])
+  partsReq    PartsReq? @relation(fields: [partsReqId], references: [id])
   partsReqId  Int?      @map("parts_req_id")
 
   @@map("parts_req_row")
@@ -127,6 +127,7 @@ model PartsReq {
   status     String
   updated    DateTime      @db.Timestamptz(6)
   unit       Unit?         @relation(fields: [unitNumber], references: [unitNumber], onDelete: Cascade)
+  files      File[]
 
   @@map("parts_req")
 }
@@ -136,8 +137,19 @@ model Comment {
   comment    String
   name       String
   timestamp  DateTime  @db.Timestamptz(6)
-  PartsReq   PartsReq? @relation(fields: [partsReqId], references: [id], onDelete: Cascade)
+  partsReq   PartsReq? @relation(fields: [partsReqId], references: [id], onDelete: Cascade)
   partsReqId Int?      @map("parts_req_id")
 
   @@map("comment")
+}
+
+model File {
+  id         String    @id @default(uuid())
+  name       String
+  bucket     String
+  isDeleted  Boolean   @default(false) @map("is_deleted")
+  partsReq   PartsReq? @relation(fields: [partsReqId], references: [id], onDelete: Cascade)
+  partsReqId Int?      @map("parts_req_id")
+
+  @@map("file")
 }

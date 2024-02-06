@@ -18,6 +18,7 @@
   "dependencies": {
     "@fastify/cors": "^8.5.0",
     "@fastify/postgres": "^5.2.2",
+    "@google-cloud/storage": "^7.7.0",
     "@prisma/client": "^5.9.1",
     "@types/crypto-js": "^4.2.1",
     "@types/jsrsasign": "^10.5.12",

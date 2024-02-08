@@ -16,6 +16,7 @@ import { OrderRow, CreatePartsReq } from "../../types/partsReq"
 import { Part } from "../../types/part"
 import { Comment } from "../../types/comment"
 import { Unit } from "../../types/unit"
+import { File } from "../../types/file"
 
 import { styled } from '@mui/material/styles'
 import Paper from '@mui/material/Paper'
@@ -44,6 +45,7 @@ import parse from 'autosuggest-highlight/parse'
 import match from 'autosuggest-highlight/match'
 import theme from "../../css/theme"
 import Popper, { PopperProps } from '@mui/material/Popper'
+import Files from "./Files"
 
 const URGENCY = ["Unit Down", "Rush", "Standard"]
 const ORDER_TYPE = [{ type: "Rental" }, { type: "Third-Party" }, { type: "Shop Supplies" }, { type: "Truck Supplies" }, { type: "Stock", titles: ["Supply Chain", "Software"] }]
@@ -98,6 +100,7 @@ export default function PartsReqForm() {
     const [rows, setRows] = React.useState<Array<Omit<OrderRow, "id">>>([])
     const [comment, setComment] = React.useState<string>("")
     const [comments, setComments] = React.useState<Array<Omit<Comment, "id">>>([])
+    const [files, setFiles] = React.useState<Array<Omit<File, "id">>>([])
     const [disableSubmit, setDisableSubmit] = React.useState<boolean>(true)
 
     const partsFilter = createFilterOptions<PartOption>({
@@ -135,6 +138,7 @@ export default function PartsReqForm() {
             region: region,
             parts: rows,
             comments: comments,
+            files: files,
             status: "Pending Approval",
             updated: new Date()
         }
@@ -622,6 +626,20 @@ export default function PartsReqForm() {
                             >
                                 <b><p style={{ margin: 0 }}>Documents:</p></b>
                                 <Divider />
+                                <Button
+                                    variant={"contained"}
+                                    sx={{ width: "100%", margin: "10px 0px 10px 0px", backgroundColor: theme.palette.primary.dark }}
+                                >
+                                    Add Document
+                                </Button>
+                                <Box
+                                    sx={{ maxHeight: "300px", overflow: "auto" }}
+                                >
+                                    <Files
+                                        files={files as Array<File>}
+                                        folder={"parts-req"}
+                                    />
+                                </Box>
                             </Item>
                         </Grid>
                         <Grid xs={12}>

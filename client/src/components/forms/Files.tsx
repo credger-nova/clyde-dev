@@ -1,4 +1,4 @@
-import { useGenerateSignedURL } from "../../hooks/storage"
+import { useDownloadFile, useGetFileStream, useSoftDeleteFile } from "../../hooks/storage"
 
 import { File } from "../../types/file"
 import List from '@mui/material/List'
@@ -10,38 +10,44 @@ import DownloadIcon from '@mui/icons-material/Download'
 
 interface Props {
     files: Array<File>,
-    folder: string,
-    downloadable?: boolean
+    folder: string
 }
 
 export default function Files(props: Props) {
-    const { files, folder, downloadable } = props
+    const { files, folder } = props
 
-    const { mutateAsync: generateSignedURL } = useGenerateSignedURL()
+    const { mutateAsync: downloadFile } = useDownloadFile()
+    const { mutateAsync: getFileStream } = useGetFileStream()
+    const { mutateAsync: softDeleteFile } = useSoftDeleteFile()
 
     const handleDownload = async (file: File) => {
-        const url = await generateSignedURL({
+        const { data } = await getFileStream({
             bucket: import.meta.env.VITE_BUCKET,
-            fileName: `${folder}/${file.id}.${file.name.split(".").pop()}`
+            fileName: encodeURIComponent(`${folder}/${file.id}.${file.name.split(".").pop()}`)
         })
+    }
 
-        console.log(url)
+    const handleDelete = async (id: string) => {
+        softDeleteFile({
+            id
+        })
     }
 
     return (
         <List
             dense
         >
-            {files.map((file) =>
+            {files.map((file, index) =>
+                !file.isDeleted &&
                 <ListItem
-                    key={file.id}
+                    key={index}
                     sx={{ padding: "5px", marginBottom: "5px", borderRadius: "0.25rem", backgroundColor: "background.paper" }}
                 >
                     <ListItemText>{file.name.split("/").pop()}</ListItemText>
                     <div
                         style={{ display: "flex", justifyContent: "flex-end" }}
                     >
-                        {downloadable ?
+                        {file ?
                             <IconButton
                                 disableRipple
                                 onClick={() => handleDownload(file)}
@@ -51,6 +57,7 @@ export default function Files(props: Props) {
                             </IconButton> : null}
                         <IconButton
                             disableRipple
+                            onClick={() => handleDelete(file.id)}
                             sx={{ padding: "5px" }}
                         >
                             <DeleteIcon />

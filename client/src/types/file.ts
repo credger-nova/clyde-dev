@@ -4,8 +4,3 @@ export interface File {
     partsReqId: string,
     isDeleted: boolean
 }
-
-export interface FileDownloadQuery {
-    bucket: string,
-    fileName: string
-}

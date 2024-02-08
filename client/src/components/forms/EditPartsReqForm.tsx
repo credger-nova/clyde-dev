@@ -743,17 +743,16 @@ export default function EditPartsReqForm(props: Props) {
                                 <Divider />
                                 <Button
                                     variant={"contained"}
-                                    sx={{ width: "100%", marginTop: "10px", backgroundColor: theme.palette.primary.dark }}
+                                    sx={{ width: "100%", margin: "10px 0px 10px 0px", backgroundColor: theme.palette.primary.dark }}
                                 >
                                     Add Document
                                 </Button>
                                 <Box
-                                    sx={{ maxHeight: "250px", overflow: "auto", padding: "5px 0px 0px 0px" }}
+                                    sx={{ maxHeight: "300px", overflow: "auto" }}
                                 >
                                     <Files
                                         files={partsReq.files}
                                         folder={"parts-req"}
-                                        downloadable
                                     />
                                 </Box>
                             </Item>

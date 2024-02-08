@@ -1,4 +1,5 @@
 import { File } from "@prisma/client"
+import { prisma } from "../utils/prisma-client"
 import { storage } from "../utils/gcp-storage"
 
 export const uploadFiles = async (bucket: string, folder: string, files: Array<File>) => {
@@ -15,8 +16,30 @@ export const generateSignedURL = async (bucket: string, fileName: string) => {
         .file(fileName)
         .getSignedUrl({
             action: "read",
-            expires: Date.now() + 1000 * 60 // 1 minute
+            expires: Date.now() + (1000 * 60) // 1 minute
         })
 
     return signedURL
+}
+
+export const getFileStream = (bucket: string, fileName: string) => {
+    const fileStream = storage
+        .bucket(bucket)
+        .file(fileName)
+        .createReadStream()
+
+    return fileStream
+}
+
+export const softDeleteFile = async (id: string) => {
+    const deletedFile = await prisma.file.update({
+        where: {
+            id: id
+        },
+        data: {
+            isDeleted: true
+        }
+    })
+
+    return deletedFile
 }

@@ -1,6 +1,6 @@
 import * as React from "react"
 
-import { useDownloadFile, useGetFileStream, useSoftDeleteFile } from "../../hooks/storage"
+import { useDownloadFile, useGetFileStream } from "../../hooks/storage"
 
 import { File as IFile } from "../../types/file"
 import List from '@mui/material/List'
@@ -13,16 +13,17 @@ import DownloadIcon from '@mui/icons-material/Download'
 interface Props {
     newFiles: Array<File>,
     setNewFiles: React.Dispatch<React.SetStateAction<Array<File>>>,
-    files: Array<IFile>,
+    files?: Array<IFile>,
+    deleteFiles?: Array<string>,
+    setDeleteFiles: React.Dispatch<React.SetStateAction<Array<string>>>,
     folder: string
 }
 
 export default function Files(props: Props) {
-    const { newFiles, setNewFiles, files, folder } = props
+    const { newFiles, setNewFiles, files, deleteFiles, setDeleteFiles, folder } = props
 
     const { mutateAsync: downloadFile } = useDownloadFile()
     const { mutateAsync: getFileStream } = useGetFileStream()
-    const { mutateAsync: softDeleteFile } = useSoftDeleteFile()
 
     const handleRemoveNewFile = (index: number) => {
         const tempFiles = [...newFiles]
@@ -38,9 +39,7 @@ export default function Files(props: Props) {
     }
 
     const handleDelete = async (id: string) => {
-        softDeleteFile({
-            id
-        })
+        setDeleteFiles ? setDeleteFiles(prevState => [...prevState, id]) : null
     }
 
     return (
@@ -95,7 +94,7 @@ export default function Files(props: Props) {
                 dense
                 sx={{ padding: "0px" }}
             >
-                {files.map((file, index) =>
+                {files ? files.map((file, index) =>
                     !file.isDeleted &&
                     <ListItem
                         key={`${index} - ${file.name}`}
@@ -103,8 +102,22 @@ export default function Files(props: Props) {
                     >
                         <ListItemText>{file.name.split("/").pop()}</ListItemText>
                         <div
-                            style={{ display: "flex", justifyContent: "flex-end" }}
+                            style={{ display: "flex", justifyContent: "flex-end", alignItems: "center" }}
                         >
+                            {deleteFiles?.includes(file.id) ? <p
+                                style={{
+                                    color: "red",
+                                    margin: "0px",
+                                    padding: "0px 5px",
+                                    border: "2px solid red",
+                                    borderRadius: "1rem",
+                                    fontWeight: "bold",
+                                    backgroundColor: "#80000030",
+                                    height: "fit-content"
+                                }}
+                            >
+                                Delete
+                            </p> : null}
                             {file ?
                                 <IconButton
                                     disableRipple
@@ -122,7 +135,7 @@ export default function Files(props: Props) {
                             </IconButton>
                         </div>
                     </ListItem>
-                )}
+                ) : null}
             </List>
         </div>
     )

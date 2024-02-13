@@ -103,6 +103,7 @@ export default function PartsReqForm() {
     const [comment, setComment] = React.useState<string>("")
     const [comments, setComments] = React.useState<Array<Omit<Comment, "id">>>([])
     const [newFiles, setNewFiles] = React.useState<Array<File>>([])
+    const [deleteFiles, setDeleteFiles] = React.useState<Array<string>>([])
     const [disableSubmit, setDisableSubmit] = React.useState<boolean>(true)
 
     const partsFilter = createFilterOptions<PartOption>({
@@ -623,7 +624,7 @@ export default function PartsReqForm() {
                                                     sx={{ padding: "5px", marginBottom: "5px", borderRadius: "0.25rem", backgroundColor: "background.paper" }}
                                                 >
                                                     <div style={{ display: "flex", flexDirection: "column" }}>
-                                                        <p style={{margin: "0px"}}>{comment.comment}</p>
+                                                        <p style={{ margin: "0px" }}>{comment.comment}</p>
                                                         <i style={{ color: "#838385" }}>{comment.name} - {comment.timestamp.toLocaleDateString()} {comment.timestamp.toLocaleTimeString()}</i>
                                                     </div>
                                                 </Box>
@@ -647,7 +648,8 @@ export default function PartsReqForm() {
                                     <Files
                                         newFiles={newFiles}
                                         setNewFiles={setNewFiles}
-                                        files={[]}
+                                        deleteFiles={deleteFiles}
+                                        setDeleteFiles={setDeleteFiles}
                                         folder={"parts-req"}
                                     />
                                 </Box>

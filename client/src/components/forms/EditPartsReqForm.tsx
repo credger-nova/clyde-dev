@@ -119,6 +119,7 @@ export default function EditPartsReqForm(props: Props) {
     const [comments, setComments] = React.useState<Array<Omit<Comment, "id">>>(partsReq.comments)
     const [files] = React.useState<Array<IFile>>(partsReq.files)
     const [newFiles, setNewFiles] = React.useState<Array<File>>([])
+    const [deleteFiles, setDeleteFiles] = React.useState<Array<string>>([])
     const [disabled, setDisabled] = React.useState<boolean>(false)
 
     const partsFilter = createFilterOptions<PartOption>({
@@ -768,6 +769,8 @@ export default function EditPartsReqForm(props: Props) {
                                         newFiles={newFiles}
                                         setNewFiles={setNewFiles}
                                         files={files}
+                                        deleteFiles={deleteFiles}
+                                        setDeleteFiles={setDeleteFiles}
                                         folder={"parts-req"}
                                     />
                                 </Box>

@@ -49,6 +49,7 @@ export default function Files(props: Props) {
                 <React.Fragment>
                     <List
                         dense
+                        sx={{ padding: "0px" }}
                     >
                         {Array.from(newFiles).map((file, index) => {
                             return (
@@ -92,6 +93,7 @@ export default function Files(props: Props) {
             }
             <List
                 dense
+                sx={{ padding: "0px" }}
             >
                 {files.map((file, index) =>
                     !file.isDeleted &&

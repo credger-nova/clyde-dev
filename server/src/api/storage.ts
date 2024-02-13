@@ -3,12 +3,10 @@ import { storage } from "../utils/gcp-storage"
 
 export const uploadFile = async (bucket: string, fileName: string, file: Buffer | undefined) => {
     if (file) {
-        const savedFile = storage
+        await storage
             .bucket(bucket)
             .file(fileName)
-            .save(file)
-
-        return savedFile
+            .save(file!)
     }
 }
 

@@ -52,5 +52,6 @@ export interface CreatePartsReq extends Omit<PartsReq, "id" | "parts" | "comment
 
 export interface UpdatePartsReq extends Omit<PartsReq, "requester" | "date" | "updated"> {
     delRows: Array<OrderRow>,
+    newFiles: Array<string>,
     delFiles: Array<string>
 }

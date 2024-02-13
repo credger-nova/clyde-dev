@@ -11,12 +11,13 @@ async function routes(fastify: FastifyInstance) {
         const buffer = await data?.toBuffer()
 
         if (data) {
-            const uploadedFile = await uploadFile(
+            await uploadFile(
                 process.env.STORAGE_BUCKET ?? "",
-                `${(data.fields as any).folder.value}/${data.filename}`,
+                `${(data.fields as any).folder.value}/${data.filename}.pdf`,
                 buffer
             )
-            return uploadedFile
+
+            res.status(200)
         } else {
             return "Error"
         }

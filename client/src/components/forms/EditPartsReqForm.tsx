@@ -9,6 +9,7 @@ import { useParts } from "../../hooks/parts"
 import { useLocations } from "../../hooks/location"
 import { useNovaUser } from "../../hooks/user"
 import { useUpdatePartsReq } from "../../hooks/partsReq"
+import { useUploadFiles } from "../../hooks/storage"
 
 import { toTitleCase } from "../../utils/helperFunctions"
 import { calcCost } from "../../utils/helperFunctions"
@@ -45,6 +46,8 @@ import match from 'autosuggest-highlight/match'
 import theme from "../../css/theme"
 import Popper, { PopperProps } from '@mui/material/Popper'
 import Files from "./Files"
+import AddFileButton from "./AddFileButton"
+import { File as IFile } from "../../types/file"
 
 const URGENCY = ["Unit Down", "Rush", "Standard"]
 const ORDER_TYPE = [{ type: "Rental" }, { type: "Third-Party" }, { type: "Shop Supplies" }, { type: "Truck Supplies" }, { type: "Stock", titles: ["Supply Chain", "Software"] }]
@@ -96,6 +99,7 @@ export default function EditPartsReqForm(props: Props) {
     const { data: locations, isFetching: locationsFetcing } = useLocations()
 
     const { mutateAsync: updatePartsReq } = useUpdatePartsReq()
+    const { mutateAsync: uploadFiles } = useUploadFiles()
 
     const [status, setStatus] = React.useState<string>(partsReq.status)
     const [requester] = React.useState<string>(partsReq.requester)
@@ -113,6 +117,8 @@ export default function EditPartsReqForm(props: Props) {
     const [delRows, setDelRows] = React.useState<Array<OrderRow>>([])
     const [comment, setComment] = React.useState<string>("")
     const [comments, setComments] = React.useState<Array<Omit<Comment, "id">>>(partsReq.comments)
+    const [files] = React.useState<Array<IFile>>(partsReq.files)
+    const [newFiles, setNewFiles] = React.useState<Array<File>>([])
     const [disabled, setDisabled] = React.useState<boolean>(false)
 
     const partsFilter = createFilterOptions<PartOption>({
@@ -133,10 +139,10 @@ export default function EditPartsReqForm(props: Props) {
         }
     }, [requester, orderDate, afe, so, unit, truck, urgency, orderType, rows, setDisabled])
 
-    const handleSubmit = (event: React.SyntheticEvent) => {
+    const handleSubmit = async (event: React.SyntheticEvent) => {
         event.preventDefault()
 
-        const formData = {
+        const updateReq = {
             user: `${novaUser?.firstName} ${novaUser?.lastName}`,
             updateReq: {
                 id: partsReq.id,
@@ -151,12 +157,21 @@ export default function EditPartsReqForm(props: Props) {
                 region: region,
                 parts: rows as Array<OrderRow>,
                 comments: comments as Array<Comment>,
+                newFiles: newFiles.map((file) => file.name),
                 status: status,
                 delRows: delRows
             } as UpdatePartsReq
         }
 
-        updatePartsReq(formData)
+        await updatePartsReq(updateReq).then(async (res) => {
+            for (let i = 0; i < newFiles.length; i++) {
+                const formData = new FormData()
+                formData.append("folder", "parts-req")
+                formData.append("file", newFiles[i], `${res.files[i].id}.${res.files[i].name.split(".").pop()}`)
+
+                await uploadFiles({ formData })
+            }
+        })
 
         setActivePartsReq(null)
     }
@@ -740,18 +755,19 @@ export default function EditPartsReqForm(props: Props) {
                                 sx={{ marginTop: "15px" }}
                             >
                                 <b><p style={{ margin: 0 }}>Documents:</p></b>
-                                <Divider />
-                                <Button
-                                    variant={"contained"}
-                                    sx={{ width: "100%", margin: "10px 0px 10px 0px", backgroundColor: theme.palette.primary.dark }}
-                                >
-                                    Add Document
-                                </Button>
+                                <Divider
+                                    sx={{ marginBottom: "10px" }}
+                                />
+                                <AddFileButton
+                                    setNewFiles={setNewFiles}
+                                />
                                 <Box
                                     sx={{ maxHeight: "250px", overflow: "auto" }}
                                 >
                                     <Files
-                                        files={partsReq.files}
+                                        newFiles={newFiles}
+                                        setNewFiles={setNewFiles}
+                                        files={files}
                                         folder={"parts-req"}
                                     />
                                 </Box>

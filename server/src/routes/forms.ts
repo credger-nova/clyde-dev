@@ -263,6 +263,25 @@ async function routes(fastify: FastifyInstance) {
             }
         }
 
+        const newFileIds = []
+        // Create new files
+        for (const file of updateReq.newFiles ?? []) {
+            const newFile = await prisma.file.create({
+                data: {
+                    name: file,
+                    partsReqId: Number(req.params.id),
+                    isDeleted: false
+                }
+            })
+            newFileIds.push(newFile.id)
+
+            // Add system comments
+            const message = `Added Document: ${file}`
+            const id = Number(req.params.id)
+
+            await genSystemComment(message, user, id)
+        }
+
         // Generate system comments based on what fields have changed
         // Status change
         if (oldPartsReq?.status !== updateReq.status) {
@@ -345,7 +364,7 @@ async function routes(fastify: FastifyInstance) {
         }
 
         // Update parts req fields
-        const updatedPartsReq = await prisma.partsReq.update({
+        await prisma.partsReq.update({
             where: {
                 id: Number(req.params.id)
             },
@@ -361,6 +380,19 @@ async function routes(fastify: FastifyInstance) {
                 region: updateReq.region,
                 status: updateReq.status,
                 updated: new Date().toISOString()
+            }
+        })
+
+        const updatedPartsReq = await prisma.partsReq.findUnique({
+            where: {
+                id: Number(req.params.id)
+            },
+            select: {
+                files: {
+                    where: {
+                        id: { in: newFileIds }
+                    }
+                }
             }
         })
 

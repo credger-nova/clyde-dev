@@ -7,6 +7,7 @@ import { useUnits } from "../../hooks/unit"
 import { useTrucks } from "../../hooks/truck"
 import { useParts } from "../../hooks/parts"
 import { useCreatePartsReq } from "../../hooks/partsReq"
+import { useUploadFiles } from "../../hooks/storage"
 import { useNovaUser } from "../../hooks/user"
 
 import { toTitleCase } from "../../utils/helperFunctions"
@@ -46,7 +47,6 @@ import theme from "../../css/theme"
 import Popper, { PopperProps } from '@mui/material/Popper'
 import Files from "./Files"
 import AddFileButton from "./AddFileButton"
-import { useUploadFiles } from "../../hooks/storage"
 
 const URGENCY = ["Unit Down", "Rush", "Standard"]
 const ORDER_TYPE = [{ type: "Rental" }, { type: "Third-Party" }, { type: "Shop Supplies" }, { type: "Truck Supplies" }, { type: "Stock", titles: ["Supply Chain", "Software"] }]

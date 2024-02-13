@@ -20,7 +20,7 @@ export default function AddFileButton(props: Props) {
         <Button
             variant="contained"
             component="label"
-            sx={{ width: "100%", backgroundColor: theme.palette.primary.dark, marginBottom: "5px" }}
+            sx={{ width: "100%", backgroundColor: theme.palette.primary.dark, marginBottom: "10px" }}
         >
             Add Document(s)
             <input

@@ -613,7 +613,7 @@ export default function PartsReqForm() {
                                     </IconButton>
                                 </div>
                                 <Box
-                                    style={{ maxHeight: "400px", overflow: "auto", padding: "5px" }}
+                                    style={{ maxHeight: "250px", overflow: "auto", padding: "5px" }}
                                 >
                                     {comments.sort((x, y) => { return x.timestamp < y.timestamp ? 1 : -1 }) // Sort comments chronologically
                                         .map((comment: Omit<Comment, "id">, index: number) => {
@@ -623,7 +623,7 @@ export default function PartsReqForm() {
                                                     sx={{ padding: "5px", marginBottom: "5px", borderRadius: "0.25rem", backgroundColor: "background.paper" }}
                                                 >
                                                     <div style={{ display: "flex", flexDirection: "column" }}>
-                                                        <p>{comment.comment}</p>
+                                                        <p style={{margin: "0px"}}>{comment.comment}</p>
                                                         <i style={{ color: "#838385" }}>{comment.name} - {comment.timestamp.toLocaleDateString()} {comment.timestamp.toLocaleTimeString()}</i>
                                                     </div>
                                                 </Box>
@@ -642,7 +642,7 @@ export default function PartsReqForm() {
                                     setNewFiles={setNewFiles}
                                 />
                                 <Box
-                                    sx={{ maxHeight: "300px", overflow: "auto" }}
+                                    sx={{ maxHeight: "250px", overflow: "auto" }}
                                 >
                                     <Files
                                         newFiles={newFiles}

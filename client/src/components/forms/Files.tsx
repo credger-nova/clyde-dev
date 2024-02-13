@@ -44,9 +44,7 @@ export default function Files(props: Props) {
     }
 
     return (
-        <div
-            style={{ marginTop: "10px" }}
-        >
+        <div>
             {newFiles ?
                 <React.Fragment>
                     <List

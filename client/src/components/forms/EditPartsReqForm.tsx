@@ -718,7 +718,7 @@ export default function EditPartsReqForm(props: Props) {
                                     </IconButton>
                                 </div>
                                 <Box
-                                    style={{ maxHeight: "400px", overflow: "auto", padding: "5px 0px 0px 0px" }}
+                                    style={{ maxHeight: "250px", overflow: "auto", padding: "5px 0px 0px 0px" }}
                                 >
                                     {comments.sort((x, y) => { return x.timestamp < y.timestamp ? 1 : -1 }) // Sort comments chronologically
                                         .map((comment: Omit<Comment, "id">, index: number) => {
@@ -728,7 +728,7 @@ export default function EditPartsReqForm(props: Props) {
                                                     sx={{ padding: "5px", marginBottom: "5px", borderRadius: "0.25rem", backgroundColor: "background.paper" }}
                                                 >
                                                     <div style={{ display: "flex", flexDirection: "column" }}>
-                                                        <p>{comment.comment}</p>
+                                                        <p style={{ margin: "0px" }}>{comment.comment}</p>
                                                         <i style={{ color: "#838385" }}>{comment.name} - {new Date(comment.timestamp).toLocaleDateString()} {new Date(comment.timestamp).toLocaleTimeString()}</i>
                                                     </div>
                                                 </Box>
@@ -748,7 +748,7 @@ export default function EditPartsReqForm(props: Props) {
                                     Add Document
                                 </Button>
                                 <Box
-                                    sx={{ maxHeight: "300px", overflow: "auto" }}
+                                    sx={{ maxHeight: "250px", overflow: "auto" }}
                                 >
                                     <Files
                                         files={partsReq.files}

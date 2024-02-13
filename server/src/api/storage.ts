@@ -1,12 +1,14 @@
-import { File } from "@prisma/client"
 import { prisma } from "../utils/prisma-client"
 import { storage } from "../utils/gcp-storage"
 
-export const uploadFiles = async (bucket: string, folder: string, files: Array<File>) => {
-    for (const file of files) {
-        await storage
+export const uploadFile = async (bucket: string, fileName: string, file: Buffer | undefined) => {
+    if (file) {
+        const savedFile = storage
             .bucket(bucket)
-            .upload(`${folder}/${file.id}.${file.id.split(".").pop()}`)
+            .file(fileName)
+            .save(file)
+
+        return savedFile
     }
 }
 

@@ -1,7 +1,6 @@
 import { FastifyInstance, FastifyRequest } from "fastify"
 import { prisma } from "../utils/prisma-client"
-import { PartsReq, UpdatePartsReq } from "../models/partsReq"
-import { uploadFiles } from "../api/storage"
+import { CreatePartsReq, PartsReq, UpdatePartsReq } from "../models/partsReq"
 
 const URGENCY_SORT = ["Unit Down", "Rush", "Standard", "Stock"]
 
@@ -144,8 +143,8 @@ async function routes(fastify: FastifyInstance) {
     })
 
     // Create a Parts Req form
-    fastify.post("/parts-req/create", async (req: FastifyRequest<{ Body: { partsReq: PartsReq, bucket: string, folder: string } }>, res) => {
-        const { partsReq, bucket, folder } = req.body
+    fastify.post("/parts-req/create", async (req: FastifyRequest<{ Body: { partsReq: CreatePartsReq } }>, res) => {
+        const { partsReq } = req.body
 
         // Ensure no invalid rows are created
         partsReq.parts = partsReq.parts.filter(row => row.itemNumber !== "")
@@ -174,9 +173,9 @@ async function routes(fastify: FastifyInstance) {
                 files: {
                     createMany: {
                         data: partsReq.files.map((file) => {
-                            return {
-                                name: file.name
-                            }
+                            return ({
+                                name: file
+                            })
                         })
                     }
                 },
@@ -185,18 +184,17 @@ async function routes(fastify: FastifyInstance) {
             }
         })
 
-        const newFiles = await prisma.file.findMany({
+        const createdPartsReq = await prisma.partsReq.findUnique({
             where: {
-                partsReqId: newPartsReq.id
+                id: newPartsReq.id
+            },
+            include: {
+                files: true
             }
         })
 
-        if (newFiles.length > 0) {
-            await uploadFiles(bucket, folder, newFiles)
-        }
-
         res.status(201)
-        return newPartsReq
+        return createdPartsReq
     })
 
     // Update a Parts Req form

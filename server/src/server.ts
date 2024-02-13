@@ -1,11 +1,13 @@
 import Fastify from "fastify"
 import cors from "@fastify/cors"
+import multipart from "@fastify/multipart"
 import qs from "qs"
 
 const fastify = Fastify({ querystringParser: str => qs.parse(str), logger: true })
 
 const createServer = async () => {
     await fastify.register(cors)
+    await fastify.register(multipart)
 
     await fastify.register(require("./routes/unit"), { prefix: "unit" })
     await fastify.register(require("./routes/parameter"), { prefix: "parameter" })

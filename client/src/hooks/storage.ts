@@ -1,6 +1,17 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import axios from "axios"
 
+// Upload file(s)
+const uploadFiles = async ({ formData }: { formData: FormData }) => {
+    const { data } = await axios.post(`${import.meta.env.VITE_API_BASE}/storage`, formData)
+
+    return data
+}
+
+export function useUploadFiles() {
+    return useMutation({ mutationFn: uploadFiles, onSuccess: (data) => console.log(data) })
+}
+
 // Download file
 const downloadFile = async ({ bucket, fileName }: { bucket: string, fileName: string }) => {
     // Get signed URL

@@ -25,8 +25,10 @@ export function usePartsReq(id: number) {
 }
 
 // Create Parts Req
-const createPartsReq = async (partsReq: CreatePartsReq) => {
-    const { data } = await axios.post(`${import.meta.env.VITE_API_BASE}/forms/parts-req/create`, partsReq)
+const createPartsReq = async ({ partsReq }: { partsReq: CreatePartsReq }) => {
+    const body = { partsReq: partsReq }
+
+    const { data } = await axios.post<PartsReq>(`${import.meta.env.VITE_API_BASE}/forms/parts-req/create`, body)
 
     return data
 }
@@ -41,7 +43,7 @@ export function useCreatePartsReq() {
 const updatePartsReq = async ({ user, updateReq }: { user: string, updateReq: Partial<UpdatePartsReq> }) => {
     const body = { user: user, updateReq: updateReq }
 
-    const { data } = await axios.put(`${import.meta.env.VITE_API_BASE}/forms/parts-req/${updateReq.id}`, body)
+    const { data } = await axios.put<PartsReq>(`${import.meta.env.VITE_API_BASE}/forms/parts-req/${updateReq.id}`, body)
 
     return data
 }

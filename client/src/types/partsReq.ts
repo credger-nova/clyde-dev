@@ -47,10 +47,10 @@ export interface PartsReqQuery {
 export interface CreatePartsReq extends Omit<PartsReq, "id" | "parts" | "comments" | "files"> {
     parts: Array<Omit<OrderRow, "id">>,
     comments: Array<Omit<Comment, "id">>,
-    files: Array<Omit<File, "id">>
+    files: Array<string>
 }
 
 export interface UpdatePartsReq extends Omit<PartsReq, "requester" | "date" | "updated"> {
     delRows: Array<OrderRow>,
-    delFiles: Array<File>
+    delFiles: Array<string>
 }

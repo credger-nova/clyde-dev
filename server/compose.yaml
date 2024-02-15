@@ -14,7 +14,7 @@ services:
     environment:
       NODE_ENV: production
       KPA_KEY: ${KPA_KEY}
-      DATABASE_URL: ${DB_URL}
+      DATABASE_URL: ${DATABASE_URL}
       NS_TOKEN_URL: ${NS_TOKEN_URL}
       NS_RESTLET_BASE: ${NS_RESTLET_BASE}
       NS_ITEMS_RESTLET: ${NS_ITEMS_RESTLET}
@@ -25,6 +25,7 @@ services:
       NS_CONSUMER_KEY: ${NS_CONSUMER_KEY}
       NS_CERT_ID: ${NS_CERT_ID}
       NS_CERT_PRIVATE_KEY: ${NS_CERT_PRIVATE_KEY}
+      SVC_NOVA_CREDENTIALS: ${SVC_NOVA_CREDENTIALS}
     ports:
       - 5000:5000
 

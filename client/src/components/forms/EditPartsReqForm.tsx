@@ -159,6 +159,7 @@ export default function EditPartsReqForm(props: Props) {
                 parts: rows as Array<OrderRow>,
                 comments: comments as Array<Comment>,
                 newFiles: newFiles.map((file) => file.name),
+                delFiles: deleteFiles,
                 status: status,
                 delRows: delRows
             } as UpdatePartsReq
@@ -323,7 +324,7 @@ export default function EditPartsReqForm(props: Props) {
                     style={{ display: "flex", flexDirection: "column", alignItems: "center" }}
                 >
                     <Grid container spacing={2} sx={{ width: "100%" }}>
-                        <Grid xs={3}>
+                        <Grid xs={4}>
                             <Item sx={{ marginBottom: "15px" }}>
                                 <Box>
                                     <Autocomplete
@@ -549,7 +550,7 @@ export default function EditPartsReqForm(props: Props) {
                                 </Box>
                             </Item>
                         </Grid>
-                        <Grid xs={6}>
+                        <Grid xs={4}>
                             {(status === "Completed - Parts Staged/Delivered" || status === "Closed - Parts in Hand") &&
                                 <Item sx={{ marginBottom: "15px" }}>
                                     <Box>
@@ -714,7 +715,7 @@ export default function EditPartsReqForm(props: Props) {
                                 </Box>
                             </Item>
                         </Grid>
-                        <Grid xs={3}>
+                        <Grid xs={4}>
                             <Item style={{ overflow: "auto" }}>
                                 <b><p style={{ margin: 0 }}>Comments:</p></b>
                                 <Divider />

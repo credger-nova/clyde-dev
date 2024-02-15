@@ -8,13 +8,14 @@ import ListItem from '@mui/material/ListItem'
 import IconButton from '@mui/material/IconButton'
 import ListItemText from "@mui/material/ListItemText"
 import DeleteIcon from '@mui/icons-material/Delete'
+import DeleteForeverIcon from '@mui/icons-material/DeleteForever'
 import DownloadIcon from '@mui/icons-material/Download'
 
 interface Props {
     newFiles: Array<File>,
     setNewFiles: React.Dispatch<React.SetStateAction<Array<File>>>,
-    files?: Array<IFile>,
-    deleteFiles?: Array<string>,
+    files: Array<IFile>,
+    deleteFiles: Array<string>,
     setDeleteFiles: React.Dispatch<React.SetStateAction<Array<string>>>,
     folder: string
 }
@@ -39,7 +40,16 @@ export default function Files(props: Props) {
     }
 
     const handleDelete = async (id: string) => {
-        setDeleteFiles ? setDeleteFiles(prevState => [...prevState, id]) : null
+        if (deleteFiles.includes(id)) {
+            const index = deleteFiles.indexOf(id)
+
+            const tempRows = [...deleteFiles]
+            tempRows.splice(index, 1)
+            setDeleteFiles(tempRows)
+        } else {
+            setDeleteFiles(prevState => [...prevState, id])
+        }
+
     }
 
     return (
@@ -104,7 +114,7 @@ export default function Files(props: Props) {
                         <div
                             style={{ display: "flex", justifyContent: "flex-end", alignItems: "center" }}
                         >
-                            {deleteFiles?.includes(file.id) ? <p
+                            {deleteFiles.includes(file.id) ? <p
                                 style={{
                                     color: "red",
                                     margin: "0px",
@@ -118,7 +128,7 @@ export default function Files(props: Props) {
                             >
                                 Delete
                             </p> : null}
-                            {file ?
+                            {!deleteFiles.includes(file.id) ?
                                 <IconButton
                                     disableRipple
                                     onClick={() => handleDownload(file)}
@@ -131,7 +141,10 @@ export default function Files(props: Props) {
                                 onClick={() => handleDelete(file.id)}
                                 sx={{ padding: "5px" }}
                             >
-                                <DeleteIcon />
+                                {deleteFiles.includes(file.id) ?
+                                    <DeleteForeverIcon /> :
+                                    <DeleteIcon />
+                                }
                             </IconButton>
                         </div>
                     </ListItem>

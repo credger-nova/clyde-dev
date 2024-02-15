@@ -263,6 +263,24 @@ async function routes(fastify: FastifyInstance) {
             }
         }
 
+        // Mark files as deleted
+        for (const file of updateReq.delFiles ?? []) {
+            const delFile = await prisma.file.update({
+                where: {
+                    id: file
+                },
+                data: {
+                    isDeleted: true
+                }
+            })
+
+            // Add system comments
+            const message = `Removed Document: ${delFile.name}`
+            const id = Number(req.params.id)
+
+            await genSystemComment(message, user, id)
+        }
+
         const newFileIds = []
         // Create new files
         for (const file of updateReq.newFiles ?? []) {

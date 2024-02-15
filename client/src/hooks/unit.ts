@@ -23,3 +23,14 @@ const getAllCustomers = async () => {
 export function useCustomers() {
     return useQuery({ queryKey: ["customers"], queryFn: getAllCustomers })
 }
+
+// Get Regions
+const getAllRegions = async () => {
+    const { data } = await axios.get<Array<string>>(`${import.meta.env.VITE_API_BASE}/unit/region`)
+
+    return data
+}
+
+export function useRegions() {
+    return useQuery({ queryKey: ["regions"], queryFn: getAllRegions })
+}

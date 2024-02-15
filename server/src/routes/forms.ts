@@ -25,6 +25,7 @@ interface PartsReqQuery {
     part?: Array<string>,
     requester?: Array<string>,
     customer?: Array<string>,
+    region?: Array<string>,
     urgency?: Array<string>,
     status?: Array<string>
 }
@@ -45,6 +46,7 @@ async function routes(fastify: FastifyInstance) {
                             {}, // TODO: parts
                             req.body.requester && req.body.requester.length > 0 ? { requester: { in: req.body.requester } } : {},
                             req.body.customer && req.body.customer.length > 0 ? { unit: { customer: { in: req.body.customer } } } : {},
+                            req.body.region && req.body.region.length > 0 ? { unit: { operationalRegion: { in: req.body.region } } } : {},
                             req.body.urgency && req.body.urgency.length > 0 ? { urgency: { in: req.body.urgency } } : {},
                             req.body.status && req.body.status.length > 0 ? { status: { in: req.body.status } } : {}
                         ]
@@ -57,7 +59,8 @@ async function routes(fastify: FastifyInstance) {
                             { unitNumber: { contains: req.body.searchString ?? "", mode: "insensitive" } },
                             { truck: { contains: req.body.searchString ?? "", mode: "insensitive" } },
                             { requester: { contains: req.body.searchString ?? "", mode: "insensitive" } },
-                            { unit: { customer: { contains: req.body.searchString ?? "", mode: "insensitive" } } }
+                            { unit: { customer: { contains: req.body.searchString ?? "", mode: "insensitive" } } },
+                            { unit: { operationalRegion: { contains: req.body.searchString ?? "", mode: "insensitive" } } }
                         ]
                     }
                 ]

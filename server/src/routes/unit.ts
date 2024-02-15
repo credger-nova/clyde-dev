@@ -42,6 +42,23 @@ async function routes(fastify: FastifyInstance) {
 
         return customers
     })
+
+    // Get list of regions
+    fastify.get("/region", async (req, res) => {
+        const allUnits = await prisma.unit.findMany({
+            distinct: ["operationalRegion"],
+            select: {
+                operationalRegion: true
+            }
+        })
+
+        const regions = allUnits
+            .map(item => item.operationalRegion)
+            .filter(item => item)
+            .sort()
+
+        return regions
+    })
 }
 
 export default routes

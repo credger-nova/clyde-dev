@@ -7,14 +7,14 @@ import { StyledTextField } from "../common/TextField"
 import { Unit } from "../../types/unit"
 import parse from 'autosuggest-highlight/parse'
 import match from 'autosuggest-highlight/match'
-
+import { NovaUser } from "../../types/novaUser"
 import { PartsReqQuery } from "../../types/partsReq"
+
 import { useAFEs } from "../../hooks/afe"
 import { useSOs } from "../../hooks/so"
-import { useCustomers, useUnits } from "../../hooks/unit"
+import { useCustomers, useRegions, useUnits } from "../../hooks/unit"
 import { useTrucks } from "../../hooks/truck"
 import { useAllNovaUsers } from "../../hooks/user"
-import { NovaUser } from "../../types/novaUser"
 //import { useParts } from "../../hooks/parts"
 
 const URGENCY = ["Unit Down", "Rush", "Standard"]
@@ -36,7 +36,7 @@ export default function SearchFilter(props: Props) {
     // const { data: parts, isFetching: partsFetching } = useParts() TODO
     const { data: requesters, isFetching: requestersFetching } = useAllNovaUsers()
     const { data: customers, isFetching: customersFetching } = useCustomers()
-
+    const { data: regions, isFetching: regionsFetching } = useRegions()
 
     const handleSearchStringChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         setPartsReqQuery(prevState => ({
@@ -98,6 +98,13 @@ export default function SearchFilter(props: Props) {
         setPartsReqQuery(prevState => ({
             ...prevState,
             customer: value
+        }))
+    }
+
+    const handleRegionChange = (_e: React.SyntheticEvent<Element, Event>, value: Array<string>) => {
+        setPartsReqQuery(prevState => ({
+            ...prevState,
+            region: value
         }))
     }
 
@@ -414,6 +421,45 @@ export default function SearchFilter(props: Props) {
                                 {...params}
                                 variant="standard"
                                 label="Customer"
+                            />}
+                            sx={{ width: "330px" }}
+                            renderOption={(props, option, { inputValue }) => {
+                                const matches = match(option, inputValue, { insideWords: true });
+                                const parts = parse(option, matches);
+
+                                return (
+                                    <li {...props}>
+                                        <div>
+                                            {parts.map((part, index) => (
+                                                <span
+                                                    key={index}
+                                                    style={{
+                                                        fontWeight: part.highlight ? 700 : 400,
+                                                        color: part.highlight ? "#23aee5" : "#fff"
+                                                    }}
+                                                >
+                                                    {part.text}
+                                                </span>
+                                            ))}
+                                        </div>
+                                    </li>
+                                );
+                            }}
+                        />
+                    </Grid>
+                    <Grid>
+                        <Autocomplete
+                            multiple
+                            filterSelectedOptions
+                            limitTags={3}
+                            size="small"
+                            options={regions ? regions : []}
+                            loading={regionsFetching}
+                            onChange={handleRegionChange}
+                            renderInput={(params) => <StyledTextField
+                                {...params}
+                                variant="standard"
+                                label="Region"
                             />}
                             sx={{ width: "330px" }}
                             renderOption={(props, option, { inputValue }) => {

@@ -1,5 +1,5 @@
 import { FastifyInstance, FastifyRequest } from "fastify"
-import { generateSignedURL, getFileStream, softDeleteFile, uploadFile } from "../api/storage"
+import { generateSignedURL, softDeleteFile, uploadFile } from "../api/storage"
 import dotenv from "dotenv"
 
 dotenv.config()
@@ -12,8 +12,8 @@ async function routes(fastify: FastifyInstance) {
 
         if (data) {
             await uploadFile(
-                process.env.STORAGE_BUCKET ?? "",
-                `${(data.fields as any).folder.value}/${data.filename}.pdf`,
+                (data.fields as any).bucket.value,
+                `${(data.fields as any).folder.value}/${data.filename}`,
                 buffer
             )
 
@@ -30,15 +30,6 @@ async function routes(fastify: FastifyInstance) {
         const signedURL = await generateSignedURL(bucket, fileName)
 
         return signedURL
-    })
-
-    // Get a stream from a given file
-    fastify.get<{ Params: { bucket: string, fileName: string } }>("/download/:bucket/:fileName", async (req, res) => {
-        const { bucket, fileName } = req.params
-
-        const fileStream = getFileStream(bucket, fileName)
-
-        return fileStream
     })
 
     // Delete a file

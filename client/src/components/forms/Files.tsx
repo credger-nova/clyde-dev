@@ -1,6 +1,6 @@
 import * as React from "react"
 
-import { useDownloadFile, useGetFileStream } from "../../hooks/storage"
+import { useGetSignedURL } from "../../hooks/storage"
 
 import { File as IFile } from "../../types/file"
 import List from '@mui/material/List'
@@ -23,8 +23,7 @@ interface Props {
 export default function Files(props: Props) {
     const { newFiles, setNewFiles, files, deleteFiles, setDeleteFiles, folder } = props
 
-    const { mutateAsync: downloadFile } = useDownloadFile()
-    const { mutateAsync: getFileStream } = useGetFileStream()
+    const { mutateAsync: getSignedURL } = useGetSignedURL()
 
     const handleRemoveNewFile = (index: number) => {
         const tempFiles = [...newFiles]
@@ -33,10 +32,12 @@ export default function Files(props: Props) {
     }
 
     const handleDownload = async (file: IFile) => {
-        const { data } = await getFileStream({
+        const signedURL = await getSignedURL({
             bucket: import.meta.env.VITE_BUCKET,
             fileName: encodeURIComponent(`${folder}/${file.id}.${file.name.split(".").pop()}`)
         })
+
+        window.open(signedURL, "_blank")
     }
 
     const handleDelete = async (id: string) => {

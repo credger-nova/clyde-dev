@@ -12,27 +12,15 @@ export function useUploadFiles() {
     return useMutation({ mutationFn: uploadFiles, onSuccess: (data) => console.log(data) })
 }
 
-// Download file
-const downloadFile = async ({ bucket, fileName }: { bucket: string, fileName: string }) => {
-    // Get signed URL
+// Get a signed URL so the user can access the file directly from Cloud Storage
+const getSignedURL = async ({ bucket, fileName }: { bucket: string, fileName: string }) => {
     const { data: signedURL } = await axios.get<string>(`${import.meta.env.VITE_API_BASE}/storage/${bucket}/${fileName}`)
 
-    await axios.get(signedURL)
+    return signedURL
 }
 
-export function useDownloadFile() {
-    return useMutation({ mutationFn: downloadFile })
-}
-
-// Get file stream
-const getFileStream = async ({ bucket, fileName }: { bucket: string, fileName: string }) => {
-    const { data } = await axios.get(`${import.meta.env.VITE_API_BASE}/storage/download/${bucket}/${fileName}`)
-
-    return data
-}
-
-export function useGetFileStream() {
-    return useMutation({ mutationFn: getFileStream })
+export function useGetSignedURL() {
+    return useMutation({ mutationFn: getSignedURL })
 }
 
 const softDeleteFile = async ({ id }: { id: string }) => {

@@ -168,6 +168,7 @@ export default function EditPartsReqForm(props: Props) {
         await updatePartsReq(updateReq).then(async (res) => {
             for (let i = 0; i < newFiles.length; i++) {
                 const formData = new FormData()
+                formData.append("bucket", import.meta.env.VITE_BUCKET)
                 formData.append("folder", "parts-req")
                 formData.append("file", newFiles[i], `${res.files[i].id}.${res.files[i].name.split(".").pop()}`)
 

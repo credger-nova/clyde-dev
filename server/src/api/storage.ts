@@ -22,15 +22,6 @@ export const generateSignedURL = async (bucket: string, fileName: string) => {
     return signedURL
 }
 
-export const getFileStream = (bucket: string, fileName: string) => {
-    const fileStream = storage
-        .bucket(bucket)
-        .file(fileName)
-        .createReadStream()
-
-    return fileStream
-}
-
 export const softDeleteFile = async (id: string) => {
     const deletedFile = await prisma.file.update({
         where: {

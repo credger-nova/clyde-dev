@@ -132,7 +132,7 @@ export default function SearchFilter(props: Props) {
                             InputLabelProps={{
                                 shrink: true
                             }}
-                            sx={{ width: "250px" }}
+                            sx={{ width: "330px" }}
                         />
                     </Grid>
                     <Grid>

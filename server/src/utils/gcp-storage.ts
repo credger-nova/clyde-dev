@@ -1,7 +1,5 @@
 import { Storage } from "@google-cloud/storage"
-import { File } from "@prisma/client"
 import dotenv from "dotenv"
-import * as fs from "fs"
 
 dotenv.config()
 

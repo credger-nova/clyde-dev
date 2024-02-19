@@ -5,6 +5,7 @@ import CardContent from '@mui/material/CardContent'
 import Typography from '@mui/material/Typography'
 import Divider from '@mui/material/Divider'
 import { styled } from '@mui/material/styles'
+import Skeleton from '@mui/material/Skeleton'
 
 import { calcCost } from "../../utils/helperFunctions"
 
@@ -16,10 +17,77 @@ interface Props {
 const StyledCard = styled(Card)(() => ({
     cursor: "pointer",
     border: "3px solid transparent",
+    transition: "transform 0.1s ease-in-out",
     "&:hover": {
-        boxShadow: "0 0 10px white"
+        transform: "scale3d(1.05, 1.05, 1)"
     }
 }))
+
+// Skeleton version of a card
+export function SkeletonCard() {
+    return (
+        <Card
+            sx={{
+                height: "256px", width: "281px", backgroundImage: "none", margin: "0px 15px 15px 0px", padding: "5px", borderRadius: "0.5rem"
+            }}
+        >
+            <CardHeader
+                sx={{ padding: "5px" }}
+                title={
+                    <Skeleton
+                        animation={"wave"}
+                        sx={{ width: "80%" }}
+                    />
+                }
+                subheader={
+                    <Skeleton
+                        animation={"wave"}
+                        sx={{ width: "60%" }}
+                    />
+                }
+            >
+            </CardHeader>
+            <Divider />
+            <CardContent
+                sx={{ padding: "5px" }}
+            >
+                <Skeleton
+                    animation={"wave"}
+                    sx={{ width: "80%", marginBottom: "5px" }}
+                />
+                <Skeleton
+                    animation={"wave"}
+                    sx={{ width: "80%", marginBottom: "5px" }}
+                />
+                <Skeleton
+                    animation={"wave"}
+                    sx={{ width: "80%", marginBottom: "5px" }}
+                />
+                <Skeleton
+                    animation={"wave"}
+                    sx={{ width: "80%", marginBottom: "5px" }}
+                />
+                <Skeleton
+                    animation={"wave"}
+                    sx={{ width: "80%", marginBottom: "5px" }}
+                />
+            </CardContent>
+            <Divider />
+            <CardContent
+                sx={{ padding: "5px" }}
+            >
+                <Skeleton
+                    animation={"wave"}
+                    sx={{ width: "40%", marginBottom: "5px" }}
+                />
+                <Skeleton
+                    animation={"wave"}
+                    sx={{ width: "40%", marginBottom: "5px" }}
+                />
+            </CardContent>
+        </Card>
+    )
+}
 
 export default function PartsReqCard(props: Props) {
     const { partsReq, setActivePartsReq } = props

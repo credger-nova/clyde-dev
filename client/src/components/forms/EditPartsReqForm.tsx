@@ -48,6 +48,7 @@ import Popper, { PopperProps } from '@mui/material/Popper'
 import Files from "./Files"
 import AddFileButton from "./AddFileButton"
 import { File as IFile } from "../../types/file"
+import Skeleton from '@mui/material/Skeleton'
 
 const URGENCY = ["Unit Down", "Rush", "Standard"]
 const ORDER_TYPE = [{ type: "Rental" }, { type: "Third-Party" }, { type: "Shop Supplies" }, { type: "Truck Supplies" }, { type: "Stock", titles: ["Supply Chain", "Software"] }]
@@ -793,7 +794,42 @@ export default function EditPartsReqForm(props: Props) {
                                     </TableHead>
                                     <TableBody>
                                         {rows.map((row, index) => {
-                                            return (
+                                            return partsFetching ? (
+                                                <TableRow
+                                                    key={index}
+                                                >
+                                                    <TableCell>
+                                                        <Skeleton
+                                                            animation={"wave"}
+                                                            sx={{ width: "100%" }}
+                                                        />
+                                                    </TableCell>
+                                                    <TableCell>
+                                                        <Skeleton
+                                                            animation={"wave"}
+                                                            sx={{ width: "100%" }}
+                                                        />
+                                                    </TableCell>
+                                                    <TableCell>
+                                                        <Skeleton
+                                                            animation={"wave"}
+                                                            sx={{ width: "100%" }}
+                                                        />
+                                                    </TableCell>
+                                                    <TableCell>
+                                                        <Skeleton
+                                                            animation={"wave"}
+                                                            sx={{ width: "100%" }}
+                                                        />
+                                                    </TableCell>
+                                                    <TableCell>
+                                                        <Skeleton
+                                                            animation={"wave"}
+                                                            sx={{ width: "100%" }}
+                                                        />
+                                                    </TableCell>
+                                                </TableRow>
+                                            ) : (
                                                 <TableRow
                                                     key={index}
                                                 >
@@ -948,14 +984,16 @@ export default function EditPartsReqForm(props: Props) {
                                                 </TableRow>
                                             )
                                         })}
-                                        <TableRow>
-                                            <TableCell sx={{ border: "none" }} />
-                                            <TableCell sx={{ border: "none" }} />
-                                            <TableCell sx={{ border: "none" }} />
-                                            <TableCell sx={{ border: "none" }} />
-                                            <TableCell sx={{ border: "none" }}><b>{calcCost(rows as Array<OrderRow>)}</b></TableCell>
-                                            <TableCell sx={{ border: "none" }} />
-                                        </TableRow>
+                                        {partsFetching ? null :
+                                            <TableRow>
+                                                <TableCell sx={{ border: "none" }} />
+                                                <TableCell sx={{ border: "none" }} />
+                                                <TableCell sx={{ border: "none" }} />
+                                                <TableCell sx={{ border: "none" }} />
+                                                <TableCell sx={{ border: "none" }}><b>{calcCost(rows as Array<OrderRow>)}</b></TableCell>
+                                                <TableCell sx={{ border: "none" }} />
+                                            </TableRow>
+                                        }
                                     </TableBody>
                                 </Table>
                                 <Button

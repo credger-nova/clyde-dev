@@ -1,5 +1,5 @@
 import * as React from "react"
-import PartsReqCard from "../components/supply-chain/PartsReqCard"
+import PartsReqCard, { SkeletonCard } from "../components/supply-chain/PartsReqCard"
 import Grid from '@mui/material/Unstable_Grid2'
 import Box from '@mui/material/Box'
 import EditDialog from "../components/supply-chain/EditDialog"
@@ -7,7 +7,7 @@ import { PartsReq, PartsReqQuery } from "../types/partsReq"
 import SearchFilter from "../components/supply-chain/SearchFilter"
 import Collapse from '@mui/material/Collapse'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
-import ExpandLessIcon from '@mui/icons-material/ExpandLess';
+import ExpandLessIcon from '@mui/icons-material/ExpandLess'
 
 import { usePartsReqs } from "../hooks/partsReq"
 
@@ -17,7 +17,7 @@ export default function SupplyChain() {
     const [partsReqQuery, setPartsReqQuery] = React.useState<PartsReqQuery>({})
     const [open, setOpen] = React.useState<boolean>(false)
 
-    const { data: partsReqs } = usePartsReqs(partsReqQuery)
+    const { data: partsReqs, isFetching: partsReqsFetching } = usePartsReqs(partsReqQuery)
 
     const handleOpenChange = () => {
         setOpen((prevState) => !prevState)
@@ -54,7 +54,15 @@ export default function SupplyChain() {
                         justifyContent="flex-start"
                         sx={{ width: "100%" }}
                     >
-                        {partsReqs?.map((partsReq) => {
+                        {partsReqsFetching ? Array(10).fill(0).map((_, index) => {
+                            return (
+                                <Grid
+                                    key={index}
+                                >
+                                    <SkeletonCard />
+                                </Grid>
+                            )
+                        }) : partsReqs?.map((partsReq) => {
                             return (
                                 <Grid
                                     key={partsReq.id}

@@ -28,14 +28,14 @@ async function routes(fastify: FastifyInstance) {
             } as Part
         })
 
-        return parts
+        res.status(200).send(parts)
     })
 
     // Route to get trucks
     fastify.get("/trucks", async (req, res) => {
         const jwt = await getNsAccessJwt()
 
-        const { data } = await axios.get(`${process.env.NS_RESTLET_BASE}script=${process.env.NS_TRUCKS_RESTLET}&deploy=1`,
+        const { data } = await axios.get<Array<string>>(`${process.env.NS_RESTLET_BASE}script=${process.env.NS_TRUCKS_RESTLET}&deploy=1`,
             {
                 headers: {
                     "Content-Type": "application/json",
@@ -43,14 +43,14 @@ async function routes(fastify: FastifyInstance) {
                 }
             })
 
-        return data
+        res.status(200).send(data)
     })
 
     // Route to get SO #s
     fastify.get("/sales-orders", async (req, res) => {
         const jwt = await getNsAccessJwt()
 
-        const { data } = await axios.get(`${process.env.NS_RESTLET_BASE}script=${process.env.NS_SO_RESTLET}&deploy=1`,
+        const { data } = await axios.get<Array<string>>(`${process.env.NS_RESTLET_BASE}script=${process.env.NS_SO_RESTLET}&deploy=1`,
             {
                 headers: {
                     "Content-Type": "application/json",
@@ -58,14 +58,14 @@ async function routes(fastify: FastifyInstance) {
                 }
             })
 
-        return data
+        res.status(200).send(data)
     })
 
     // Route to get Locations
     fastify.get("/locations", async (req, res) => {
         const jwt = await getNsAccessJwt()
 
-        const { data } = await axios.get(`${process.env.NS_RESTLET_BASE}script=${process.env.NS_LOCATIONS_RESTLET}&deploy=1`,
+        const { data } = await axios.get<Array<string>>(`${process.env.NS_RESTLET_BASE}script=${process.env.NS_LOCATIONS_RESTLET}&deploy=1`,
             {
                 headers: {
                     "Content-Type": "application/json",
@@ -73,7 +73,7 @@ async function routes(fastify: FastifyInstance) {
                 }
             })
 
-        return data
+        res.status(200).send(data)
     })
 }
 

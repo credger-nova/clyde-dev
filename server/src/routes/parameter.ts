@@ -21,9 +21,9 @@ async function routes(fastify: FastifyInstance) {
     fastify.get("/", async (req, res) => {
         const allParameters = await prisma.parameter.findMany()
 
-        let result = groupBy(allParameters, i => i.unitNumber)
+        let groupedParams = groupBy(allParameters, i => i.unitNumber)
 
-        return result
+        res.status(200).send(groupedParams)
     })
 
     // Get trimmed version of unit parameters suited for unit status page
@@ -98,7 +98,7 @@ async function routes(fastify: FastifyInstance) {
 
         result.sort((a, b) => SORT_ORDER.indexOf(a.status) - SORT_ORDER.indexOf(b.status))
 
-        return result
+        res.status(200).send(result)
     })
 
     // Get all parameters for a single unit by unit number
@@ -109,7 +109,11 @@ async function routes(fastify: FastifyInstance) {
             }
         })
 
-        return unitParameters
+        if (unitParameters.length > 0) {
+            res.status(200).send(unitParameters)
+        } else {
+            res.status(404).send({ error: `No parameters found for ${req.params.unitNum}.` })
+        }
     })
 }
 

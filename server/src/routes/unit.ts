@@ -12,7 +12,7 @@ async function routes(fastify: FastifyInstance) {
             ]
         })
 
-        return allUnits
+        res.status(200).send(allUnits)
     })
 
     // Get single unit by unit number
@@ -23,7 +23,11 @@ async function routes(fastify: FastifyInstance) {
             }
         })
 
-        return unit
+        if (unit) {
+            res.status(200).send(unit)
+        } else {
+            res.status(404).send({ error: `Unit ${req.params.unitNum} not found.` })
+        }
     })
 
     // Get list of customers
@@ -40,7 +44,7 @@ async function routes(fastify: FastifyInstance) {
             .filter(item => item)
             .sort()
 
-        return customers
+        res.status(200).send(customers)
     })
 
     // Get list of regions
@@ -57,7 +61,7 @@ async function routes(fastify: FastifyInstance) {
             .filter(item => item)
             .sort()
 
-        return regions
+        res.status(200).send(regions)
     })
 }
 

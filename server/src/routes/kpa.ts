@@ -61,7 +61,7 @@ async function getRegions(): Promise<Array<{ id: string, name: string }>> {
 async function routes(fastify: FastifyInstance) {
     // Route to get AFEs from KPA
     fastify.get("/afe", async (req, res) => {
-        var afeNums = [];
+        var afeNums: Array<string> = [];
         const pages = await getPages()
 
         for (var i = 1; i < pages + 1; i++) {
@@ -83,7 +83,7 @@ async function routes(fastify: FastifyInstance) {
 
         afeNums = afeNums.filter(value => /^-?\d+\.?\d*$/.test(value))
 
-        return afeNums
+        res.status(200).send(afeNums)
     })
 
     // Get all Employees

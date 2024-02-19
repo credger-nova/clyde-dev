@@ -100,7 +100,7 @@ async function routes(fastify: FastifyInstance) {
         // Sort by Urgency and Date
         partsReqs.sort((a, b) => URGENCY_SORT.indexOf(a.urgency) - URGENCY_SORT.indexOf(b.urgency) || a.date.getTime() - b.date.getTime())
 
-        return partsReqs
+        res.status(200).send(partsReqs)
     })
 
     // Get single Parts Req by id
@@ -142,7 +142,11 @@ async function routes(fastify: FastifyInstance) {
             partsReq = null
         }
 
-        return partsReq
+        if (partsReq) {
+            res.status(200).send(partsReq)
+        } else {
+            res.status(404).send({ error: `No Parts Requisition with id: ${req.params.id} found.` })
+        }
     })
 
     // Create a Parts Req form
@@ -196,8 +200,7 @@ async function routes(fastify: FastifyInstance) {
             }
         })
 
-        res.status(201)
-        return createdPartsReq
+        res.status(201).send(createdPartsReq)
     })
 
     // Update a Parts Req form
@@ -417,8 +420,7 @@ async function routes(fastify: FastifyInstance) {
             }
         })
 
-        res.status(200)
-        return (updatedPartsReq)
+        res.status(201).send(updatedPartsReq)
     })
 }
 

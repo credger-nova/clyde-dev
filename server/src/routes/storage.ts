@@ -1,5 +1,5 @@
-import { FastifyInstance, FastifyRequest } from "fastify"
-import { generateSignedURL, softDeleteFile, uploadFile } from "../api/storage"
+import { FastifyInstance } from "fastify"
+import { generateSignedURL, uploadFile } from "../api/storage"
 import dotenv from "dotenv"
 
 dotenv.config()
@@ -17,9 +17,9 @@ async function routes(fastify: FastifyInstance) {
                 buffer
             )
 
-            res.status(200)
+            res.status(204)
         } else {
-            return "Error"
+            res.status(400).send({ data: "Missing File" })
         }
     })
 
@@ -29,16 +29,7 @@ async function routes(fastify: FastifyInstance) {
 
         const signedURL = await generateSignedURL(bucket, fileName)
 
-        return signedURL
-    })
-
-    // Delete a file
-    fastify.delete("/:id", async (req: FastifyRequest<{ Params: { id: string } }>, res) => {
-        const { id } = req.params
-
-        const updatedFile = await softDeleteFile(id)
-
-        return updatedFile
+        res.status(200).send({ signedURL })
     })
 }
 

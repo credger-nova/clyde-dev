@@ -1,4 +1,3 @@
-import { prisma } from "../utils/prisma-client"
 import { storage } from "../utils/gcp-storage"
 
 export const uploadFile = async (bucket: string, fileName: string, file: Buffer | undefined) => {

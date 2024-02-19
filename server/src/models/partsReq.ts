@@ -28,6 +28,21 @@ export interface PartsReq {
     updated: Date
 }
 
+export interface PartsReqQuery {
+    searchString?: string,
+    id?: string,
+    afe?: Array<string>,
+    so?: Array<string>,
+    unitNumber?: Array<string>,
+    truck?: Array<string>,
+    part?: Array<string>,
+    requester?: Array<string>,
+    customer?: Array<string>,
+    region?: Array<string>,
+    urgency?: Array<string>,
+    status?: Array<string>
+}
+
 export interface CreatePartsReq extends Omit<PartsReq, "id" | "parts" | "comments" | "files"> {
     parts: Array<Omit<OrderRow, "id">>,
     comments: Array<Omit<Comment, "id">>,

@@ -111,7 +111,7 @@ export default function SearchFilter(props: Props) {
     return (
         <div style={{ display: "flex" }}>
             <Box
-                sx={{ padding: "10px", backgroundColor: "background.paper", borderBottomRightRadius: "0.5rem", width: "100%" }}
+                sx={{ padding: "10px", backgroundColor: "background.paper", width: "100%" }}
             >
                 <Grid
                     container

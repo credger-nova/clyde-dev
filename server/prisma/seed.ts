@@ -224,8 +224,8 @@ const seedWeeklyDowntime = async () => {
 
 async function main() {
     await seedUnit()
-    await seedParameter()
-    await seedWeeklyDowntime()
+    //await seedParameter()
+    //await seedWeeklyDowntime()
 
     await prisma.$disconnect()
 }

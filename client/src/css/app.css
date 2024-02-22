@@ -21,3 +21,16 @@
   cursor: pointer;
   font-size: small;
 }
+
+.leaflet-popup-content-wrapper {
+  width: 350px;
+}
+
+.leaflet-popup-body-row {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+}
+.leaflet-popup-content p {
+  margin: 5px 0px !important;
+}

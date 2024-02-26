@@ -1,5 +1,5 @@
 import { FastifyInstance } from "fastify"
-import { getAllUnits, getAllCustomers, getAllRegions, getUnit, generateUnitsLayer } from "../api/unit"
+import { getAllUnits, getAllCustomers, getAllRegions, getUnit, generateUnitsLayer, getAllManagers } from "../api/unit"
 
 async function routes(fastify: FastifyInstance) {
     // Get all units
@@ -36,9 +36,18 @@ async function routes(fastify: FastifyInstance) {
         res.status(200).send(regions)
     })
 
-    // Get GeoJSON layer for all units
-    fastify.get("/geojson", async (req, res) => {
-        const layer = await generateUnitsLayer()
+    // Get list of managers
+    fastify.get("/manager", async (req, res) => {
+        const managers = await getAllManagers()
+
+        res.status(200).send(managers)
+    })
+
+    // Get GeoJSON layer for units
+    fastify.get<{ Params: { manager: string | undefined } }>("/geojson/:manager", async (req, res) => {
+        const { manager } = req.params
+
+        const layer = await generateUnitsLayer(manager)
 
         res.status(200).send(layer)
     })

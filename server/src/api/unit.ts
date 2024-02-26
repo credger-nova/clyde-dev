@@ -73,11 +73,37 @@ export const getAllRegions = async () => {
     return regions
 }
 
-// Generate GeoJSON layer for all units
-export const generateUnitsLayer = async () => {
-    const features: Array<GeoJSONFeature> = []
+// Get list of managers from units
+export const getAllManagers = async () => {
+    const allUnits = await prisma.unit.findMany({
+        distinct: ["assignedManager"],
+        select: {
+            assignedManager: true
+        }
+    })
 
-    const allUnits = await prisma.unit.findMany()
+    const managers = allUnits
+        .map(item => item.assignedManager)
+        .filter(item => item)
+        .sort()
+
+    return managers
+}
+
+// Generate GeoJSON layer for all units
+export const generateUnitsLayer = async (manager?: string) => {
+    const features: Array<GeoJSONFeature> = []
+    let allUnits
+
+    if (manager) {
+        allUnits = await prisma.unit.findMany({
+            where: {
+                assignedManager: manager
+            }
+        })
+    } else {
+        allUnits = await prisma.unit.findMany()
+    }
 
     for (const unit of allUnits) {
         if (formatCoordinates(unit.coordinates)) {

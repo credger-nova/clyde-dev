@@ -34,3 +34,14 @@ const getAllRegions = async () => {
 export function useRegions() {
     return useQuery({ queryKey: ["regions"], queryFn: getAllRegions })
 }
+
+// Get Managers
+const getAllManagers = async () => {
+    const { data } = await axios.get<Array<string>>(`${import.meta.env.VITE_API_BASE}/unit/manager`)
+
+    return data
+}
+
+export function useManagers() {
+    return useQuery({ queryKey: ["managers"], queryFn: getAllManagers })
+}

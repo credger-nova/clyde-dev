@@ -20,7 +20,7 @@
     "@fastify/multipart": "^8.1.0",
     "@fastify/postgres": "^5.2.2",
     "@google-cloud/storage": "^7.7.0",
-    "@prisma/client": "^5.9.1",
+    "@prisma/client": "^5.10.2",
     "@types/crypto-js": "^4.2.1",
     "@types/jsrsasign": "^10.5.12",
     "axios": "^1.6.3",
@@ -37,7 +37,7 @@
     "@types/qs": "^6.9.11",
     "csv-parse": "^5.5.3",
     "nodemon": "^3.0.2",
-    "prisma": "^5.9.1",
+    "prisma": "^5.10.2",
     "ts-node": "^10.9.2",
     "typescript": "^5.3.3"
   }

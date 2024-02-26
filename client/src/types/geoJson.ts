@@ -23,3 +23,8 @@ export interface GeoJSONFeature {
     }
     properties: UnitProperties,
 }
+
+export interface GeoJSONLayer {
+    type: "FeatureCollection",
+    features: Array<GeoJSONFeature>
+}

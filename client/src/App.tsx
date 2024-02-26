@@ -8,7 +8,7 @@ import './css/app.css'
 
 const Home = React.lazy(() => import("./pages/home"))
 const Units = React.lazy(() => import("./pages/units"))
-const UnitMap = React.lazy(() => import("./pages/map"))
+const Map = React.lazy(() => import("./pages/map"))
 const SupplyChain = React.lazy(() => import("./pages/supply-chain"))
 const Forms = React.lazy(() => import("./pages/forms"))
 
@@ -32,7 +32,7 @@ export default function App() {
           <PrivateRoute
             titles={["Software Developer"]}
           >
-            <UnitMap />
+            <Map />
           </PrivateRoute>
         } />
         <Route path="supply-chain" element={

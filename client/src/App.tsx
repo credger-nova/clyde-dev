@@ -29,9 +29,7 @@ export default function App() {
           </PrivateRoute>
         } />
         <Route path="map" element={
-          <PrivateRoute
-            titles={["Software Developer"]}
-          >
+          <PrivateRoute>
             <Map />
           </PrivateRoute>
         } />

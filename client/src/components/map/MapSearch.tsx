@@ -51,7 +51,7 @@ export default function MapSearch(props: Props) {
                 sx={textFieldStyle}
             />}
             renderOption={(props, option, { inputValue }) => {
-                const matches = match(option.properties.unitNumber, inputValue, { insideWords: true });
+                const matches = match(option.properties.unitNumber, inputValue, { insideWords: true, requireMatchAll: true  });
                 const parts = parse(option.properties.unitNumber, matches);
 
                 return (

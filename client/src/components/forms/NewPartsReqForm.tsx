@@ -321,7 +321,7 @@ export default function PartsReqForm() {
                                         />}
                                         disabled={so !== null}
                                         renderOption={(props, option, { inputValue }) => {
-                                            const matches = match(option, inputValue, { insideWords: true });
+                                            const matches = match(option, inputValue, { insideWords: true, requireMatchAll: true });
                                             const parts = parse(option, matches);
 
                                             return (
@@ -355,7 +355,7 @@ export default function PartsReqForm() {
                                         />}
                                         disabled={afe !== null || unit !== null}
                                         renderOption={(props, option, { inputValue }) => {
-                                            const matches = match(option, inputValue, { insideWords: true });
+                                            const matches = match(option, inputValue, { insideWords: true, requireMatchAll: true });
                                             const parts = parse(option, matches);
 
                                             return (
@@ -392,7 +392,7 @@ export default function PartsReqForm() {
                                         />}
                                         disabled={truck !== null}
                                         renderOption={(props, option, { inputValue }) => {
-                                            const matches = match(option.unitNumber, inputValue, { insideWords: true });
+                                            const matches = match(option.unitNumber, inputValue, { insideWords: true, requireMatchAll: true });
                                             const parts = parse(option.unitNumber, matches);
 
                                             return (
@@ -445,7 +445,7 @@ export default function PartsReqForm() {
                                         />}
                                         disabled={unit !== null}
                                         renderOption={(props, option, { inputValue }) => {
-                                            const matches = match(option, inputValue, { insideWords: true });
+                                            const matches = match(option, inputValue, { insideWords: true, requireMatchAll: true });
                                             const parts = parse(option, matches);
 
                                             return (
@@ -743,12 +743,12 @@ export default function PartsReqForm() {
                                                             />}
                                                             renderOption={(props, option, { inputValue }) => {
                                                                 // Get matches in item number
-                                                                const itemNumberMatches = match(option.itemNumber, inputValue, { insideWords: true })
+                                                                const itemNumberMatches = match(option.itemNumber, inputValue, { insideWords: true, requireMatchAll: true })
                                                                 // Get parts from item number matches
                                                                 const itemNumberParts = parse(option.itemNumber, itemNumberMatches)
 
                                                                 // Get matches in description
-                                                                const descriptionMatches = match(option.description, inputValue, { insideWords: true })
+                                                                const descriptionMatches = match(option.description, inputValue, { insideWords: true, requireMatchAll: true })
                                                                 // Get parts from description matches
                                                                 const descriptionParts = parse(option.description, descriptionMatches)
 

@@ -79,8 +79,11 @@ export default function FormList(props: Props) {
                                         to={`new/${form.url}`}
                                     >
                                         <Button
-                                            variant="text"
+                                            variant="contained"
                                             startIcon={<EditNoteIcon />}
+                                            sx={{
+                                                backgroundColor: theme.palette.primary.dark
+                                            }}
                                         >
                                             Fill Out
                                         </Button>

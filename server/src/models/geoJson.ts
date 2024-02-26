@@ -19,7 +19,7 @@ export interface GeoJSONFeature {
     type: "Feature",
     geometry: {
         type: "Point" | "LineString" | "Polygon" | "MultiPoint" | "MultiLineString" | "MultiPolygon",
-        coordinates: Array<number> | Array<Array<number>> | null
+        coordinates: Array<number> | Array<Array<number>> | Array<Array<Array<number>>> | null
     }
     properties: UnitProperties,
 }

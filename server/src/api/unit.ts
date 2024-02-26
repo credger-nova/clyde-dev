@@ -142,3 +142,24 @@ export const generateUnitsLayer = async (manager?: string) => {
 
     return layer
 }
+
+// Get centroid of GeoJSON Point layer
+export const getCentroid = (features: Array<GeoJSONFeature>) => {
+    const lat = []
+    const long = []
+
+    for (const feature of features) {
+        lat.push(feature.geometry.coordinates![1] as number)
+        long.push(feature.geometry.coordinates![0] as number)
+    }
+
+    const minLat = Math.min(...lat)
+    const maxLat = Math.max(...lat)
+    const minLong = Math.min(...long)
+    const maxLong = Math.max(...long)
+
+    const latCenter = (minLat + maxLat) / 2
+    const longCenter = (minLong + maxLong) / 2
+
+    return ([latCenter, longCenter])
+}

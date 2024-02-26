@@ -1,5 +1,6 @@
-import { FastifyInstance } from "fastify"
-import { getAllUnits, getAllCustomers, getAllRegions, getUnit, generateUnitsLayer, getAllManagers } from "../api/unit"
+import { FastifyInstance, FastifyRequest } from "fastify"
+import { getAllUnits, getAllCustomers, getAllRegions, getUnit, generateUnitsLayer, getAllManagers, getCentroid } from "../api/unit"
+import { GeoJSONFeature } from "../models/geoJson"
 
 async function routes(fastify: FastifyInstance) {
     // Get all units
@@ -50,6 +51,15 @@ async function routes(fastify: FastifyInstance) {
         const layer = await generateUnitsLayer(manager)
 
         res.status(200).send(layer)
+    })
+
+    // Get centroid for GeoJSON layer
+    fastify.post("/geojson/centroid", async (req: FastifyRequest<{ Body: { features: Array<GeoJSONFeature> } }>, res) => {
+        const { features } = req.body
+
+        const centroid = getCentroid(features)
+
+        return centroid
     })
 }
 

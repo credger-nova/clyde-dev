@@ -1,7 +1,7 @@
 import * as React from "react"
 
 import { MapContainer, GeoJSON, TileLayer, LayersControl } from "react-leaflet"
-import { Layer, Map, circleMarker } from "leaflet"
+import { LatLngExpression, Layer, Map, circleMarker } from "leaflet"
 import Control from "react-leaflet-custom-control"
 import "leaflet/dist/leaflet.css"
 import { GeoJSONLayer } from "../../types/geoJson"
@@ -9,6 +9,7 @@ import MapSearch from "./MapSearch"
 
 interface Props {
     unitsLayer: GeoJSONLayer | undefined,
+    centroid: Array<number>,
     managers: Array<string> | undefined
 }
 
@@ -97,8 +98,8 @@ const createStyle = (index: number) => {
 }
 
 export default function UnitMap(props: Props) {
-    const { unitsLayer, managers } = props
-
+    const { unitsLayer, centroid, managers } = props
+    
     const { BaseLayer } = LayersControl
 
     const [map, setMap] = React.useState<Map | null>(null)
@@ -106,7 +107,7 @@ export default function UnitMap(props: Props) {
     return (
         <MapContainer
             ref={setMap}
-            center={[33.527409, -97.366201]}
+            center={centroid as LatLngExpression}
             zoom={6}
             zoomControl={false}
             style={{ width: "100%", height: "100%" }}

@@ -626,7 +626,9 @@ export default function PartsReqForm() {
                                                 >
                                                     <div style={{ display: "flex", flexDirection: "column" }}>
                                                         <p style={{ margin: "0px" }}>{comment.comment}</p>
-                                                        <i style={{ color: "#838385" }}>{comment.name} - {comment.timestamp.toLocaleDateString()} {comment.timestamp.toLocaleTimeString()}</i>
+                                                        <i style={{ color: "#838385" }}>
+                                                            {comment.name} - {comment.timestamp.toLocaleDateString()} {comment.timestamp.toLocaleTimeString()}
+                                                        </i>
                                                     </div>
                                                 </Box>
                                             )

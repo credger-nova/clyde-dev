@@ -33,7 +33,7 @@ export default function SearchFilter(props: Props) {
     const { data: soNumbers, isFetching: soFetching } = useSOs()
     const { data: unitNumbers, isFetching: unitsFetching } = useUnits()
     const { data: trucks, isFetching: trucksFetching } = useTrucks()
-    // const { data: parts, isFetching: partsFetching } = useParts() TODO
+    //const { data: parts, isFetching: partsFetching } = useParts() // TODO: add search/filter by part # - ON HOLD
     const { data: requesters, isFetching: requestersFetching } = useAllNovaUsers()
     const { data: customers, isFetching: customersFetching } = useCustomers()
     const { data: regions, isFetching: regionsFetching } = useRegions()
@@ -151,7 +151,7 @@ export default function SearchFilter(props: Props) {
                             />}
                             sx={{ width: "330px" }}
                             renderOption={(props, option, { inputValue }) => {
-                                const matches = match(option, inputValue, { insideWords: true, requireMatchAll: true  });
+                                const matches = match(option, inputValue, { insideWords: true, requireMatchAll: true });
                                 const parts = parse(option, matches);
 
                                 return (
@@ -190,7 +190,7 @@ export default function SearchFilter(props: Props) {
                             />}
                             sx={{ width: "330px" }}
                             renderOption={(props, option, { inputValue }) => {
-                                const matches = match(option, inputValue, { insideWords: true, requireMatchAll: true  });
+                                const matches = match(option, inputValue, { insideWords: true, requireMatchAll: true });
                                 const parts = parse(option, matches);
 
                                 return (
@@ -230,7 +230,7 @@ export default function SearchFilter(props: Props) {
                             />}
                             sx={{ width: "330px" }}
                             renderOption={(props, option, { inputValue }) => {
-                                const matches = match(option.unitNumber, inputValue, { insideWords: true, requireMatchAll: true  });
+                                const matches = match(option.unitNumber, inputValue, { insideWords: true, requireMatchAll: true });
                                 const parts = parse(option.unitNumber, matches);
 
                                 return (
@@ -269,7 +269,7 @@ export default function SearchFilter(props: Props) {
                             />}
                             sx={{ width: "330px" }}
                             renderOption={(props, option, { inputValue }) => {
-                                const matches = match(option, inputValue, { insideWords: true, requireMatchAll: true  });
+                                const matches = match(option, inputValue, { insideWords: true, requireMatchAll: true });
                                 const parts = parse(option, matches);
 
                                 return (
@@ -307,7 +307,7 @@ export default function SearchFilter(props: Props) {
                             />}
                             sx={{ width: "330px" }}
                             renderOption={(props, option, { inputValue }) => {
-                                const matches = match(option, inputValue, { insideWords: true, requireMatchAll: true  });
+                                const matches = match(option, inputValue, { insideWords: true, requireMatchAll: true });
                                 const parts = parse(option, matches);
 
                                 return (
@@ -345,7 +345,7 @@ export default function SearchFilter(props: Props) {
                             />}
                             sx={{ width: "330px" }}
                             renderOption={(props, option, { inputValue }) => {
-                                const matches = match(option, inputValue, { insideWords: true, requireMatchAll: true  });
+                                const matches = match(option, inputValue, { insideWords: true, requireMatchAll: true });
                                 const parts = parse(option, matches);
 
                                 return (
@@ -385,7 +385,7 @@ export default function SearchFilter(props: Props) {
                             />}
                             sx={{ width: "330px" }}
                             renderOption={(props, option, { inputValue }) => {
-                                const matches = match((option.firstName + " " + option.lastName), inputValue, { insideWords: true, requireMatchAll: true  });
+                                const matches = match((option.firstName + " " + option.lastName), inputValue, { insideWords: true, requireMatchAll: true });
                                 const parts = parse((option.firstName + " " + option.lastName), matches);
 
                                 return (
@@ -424,7 +424,7 @@ export default function SearchFilter(props: Props) {
                             />}
                             sx={{ width: "330px" }}
                             renderOption={(props, option, { inputValue }) => {
-                                const matches = match(option, inputValue, { insideWords: true, requireMatchAll: true  });
+                                const matches = match(option, inputValue, { insideWords: true, requireMatchAll: true });
                                 const parts = parse(option, matches);
 
                                 return (
@@ -463,7 +463,7 @@ export default function SearchFilter(props: Props) {
                             />}
                             sx={{ width: "330px" }}
                             renderOption={(props, option, { inputValue }) => {
-                                const matches = match(option, inputValue, { insideWords: true, requireMatchAll: true  });
+                                const matches = match(option, inputValue, { insideWords: true, requireMatchAll: true });
                                 const parts = parse(option, matches);
 
                                 return (

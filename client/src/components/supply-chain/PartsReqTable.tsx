@@ -6,10 +6,12 @@ import TableContainer from '@mui/material/TableContainer'
 import TableHead from '@mui/material/TableHead'
 import TableRow from '@mui/material/TableRow'
 import Paper from '@mui/material/Paper'
+import Typography from '@mui/material/Typography'
 import { PartsReq } from '../../types/partsReq'
 import Skeleton from '@mui/material/Skeleton'
 
 import { calcCost } from '../../utils/helperFunctions'
+import { UNIT_PLANNING } from '../../utils/unitPlanning'
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -92,7 +94,18 @@ export default function PartsReqTable(props: Props) {
                             <StyledTableCell>{partsReq.orderType}</StyledTableCell>
                             <StyledTableCell>{partsReq.region}</StyledTableCell>
                             <StyledTableCell>{calcCost(partsReq.parts)}</StyledTableCell>
-                            <StyledTableCell>{partsReq.status}</StyledTableCell>
+                            <StyledTableCell>
+                                {(partsReq.unit && UNIT_PLANNING.includes(partsReq.unit.unitNumber)) &&
+                                    (partsReq.status === "Pending Approval" || partsReq.status === "Rejected - Adjustments Required") ?
+                                    <>
+                                        {partsReq.status + ' - '}
+                                        <Typography variant="caption" sx={{ color: "red", fontWeight: 700 }}>
+                                            Travis Yount Must Approve Non-PM Parts
+                                        </Typography>
+                                    </>
+                                    : partsReq.status
+                                }
+                            </StyledTableCell>
                         </StyledTableRow>
                     ))}
                 </TableBody>

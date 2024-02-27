@@ -8,6 +8,7 @@ import { styled } from '@mui/material/styles'
 import Skeleton from '@mui/material/Skeleton'
 
 import { calcCost } from "../../utils/helperFunctions"
+import { UNIT_PLANNING } from "../../utils/unitPlanning"
 
 interface Props {
     partsReq: PartsReq,
@@ -172,6 +173,12 @@ export default function PartsReqCard(props: Props) {
                     <Typography variant="caption">
                         {partsReq.status}
                     </Typography>
+                    {(partsReq.unit && UNIT_PLANNING.includes(partsReq.unit.unitNumber)) &&
+                        (partsReq.status === "Pending Approval" || partsReq.status === "Rejected - Adjustments Required") ?
+                        <Typography variant="caption" sx={{ color: "red", fontWeight: 700 }}>
+                            Travis Yount Must Approve Non-PM Parts
+                        </Typography> : null
+                    }
                 </div>
             </CardContent>
         </StyledCard>

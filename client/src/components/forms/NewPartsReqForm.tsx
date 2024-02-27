@@ -290,7 +290,7 @@ export default function PartsReqForm() {
                 >
                     <h2 style={{ margin: "5px" }}>New Parts Requisition</h2>
                     <Grid container spacing={2} sx={{ width: "100%" }}>
-                        <Grid xs={4}>
+                        <Grid xs={12} sm={4}>
                             <Item>
                                 <Box>
                                     <b><p style={{ margin: 0 }}>Complete All Applicable Fields:</p></b>
@@ -470,7 +470,7 @@ export default function PartsReqForm() {
                                 </Box>
                             </Item>
                         </Grid>
-                        <Grid xs={4}>
+                        <Grid xs={12} sm={4}>
                             <Item>
                                 <Box>
                                     <b><p style={{ margin: 0 }}>Urgency:</p></b>
@@ -595,7 +595,7 @@ export default function PartsReqForm() {
                                 </Box>
                             </Item>
                         </Grid>
-                        <Grid xs={4}>
+                        <Grid xs={12} sm={4}>
                             <Item style={{ overflow: "auto" }}>
                                 <b><p style={{ margin: 0 }}>Comments:</p></b>
                                 <Divider />

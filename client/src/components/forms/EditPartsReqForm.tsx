@@ -326,7 +326,7 @@ export default function EditPartsReqForm(props: Props) {
                     style={{ display: "flex", flexDirection: "column", alignItems: "center" }}
                 >
                     <Grid container spacing={2} sx={{ width: "100%" }}>
-                        <Grid xs={4}>
+                        <Grid xs={12} sm={4}>
                             <Item sx={{ marginBottom: "15px" }}>
                                 <Box>
                                     <Autocomplete
@@ -552,7 +552,7 @@ export default function EditPartsReqForm(props: Props) {
                                 </Box>
                             </Item>
                         </Grid>
-                        <Grid xs={4}>
+                        <Grid xs={12} sm={4}>
                             {(status === "Completed - Parts Staged/Delivered" || status === "Closed - Parts in Hand") &&
                                 <Item sx={{ marginBottom: "15px" }}>
                                     <Box>
@@ -717,7 +717,7 @@ export default function EditPartsReqForm(props: Props) {
                                 </Box>
                             </Item>
                         </Grid>
-                        <Grid xs={4}>
+                        <Grid xs={12} sm={4}>
                             <Item style={{ overflow: "auto" }}>
                                 <b><p style={{ margin: 0 }}>Comments:</p></b>
                                 <Divider />

@@ -6,6 +6,7 @@ import Control from "react-leaflet-custom-control"
 import "leaflet/dist/leaflet.css"
 import { GeoJSONLayer } from "../../types/geoJson"
 import MapSearch from "./MapSearch"
+import { UIContext } from "../../context/UIContext"
 
 interface Props {
     unitsLayer: GeoJSONLayer | undefined,
@@ -99,10 +100,17 @@ const createStyle = (index: number) => {
 
 export default function UnitMap(props: Props) {
     const { unitsLayer, centroid, managers } = props
-    
+    const context = React.useContext(UIContext)
+
     const { BaseLayer } = LayersControl
 
     const [map, setMap] = React.useState<Map | null>(null)
+
+    // Resize map when drawer is opened or closed
+    React.useEffect(() => {
+        setTimeout(() => map?.invalidateSize(), 500)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [context?.state.isDrawerOpen])
 
     return (
         <MapContainer

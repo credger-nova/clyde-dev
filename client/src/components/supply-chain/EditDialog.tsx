@@ -25,12 +25,14 @@ export default function EditDialog(props: Props) {
             onClose={handleClose}
             sx={{
                 "& .MuiDialog-paper": {
-                    minWidth: "90vw"
+                    minWidth: "95vw"
                 }
             }}
         >
-            <DialogTitle sx={{ textAlign: "center" }}>Edit Parts Requisition #{partsReq.id}</DialogTitle>
-            <DialogContent>
+            <DialogTitle sx={{ textAlign: "center", padding: "5px" }}>
+                Edit Parts Requisition #{partsReq.id}
+            </DialogTitle>
+            <DialogContent sx={{ padding: "0px" }}>
                 <EditPartsReqForm
                     partsReq={partsReq}
                     setActivePartsReq={setActivePartsReq}

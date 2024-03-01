@@ -1000,7 +1000,10 @@ export default function EditPartsReqForm(props: Props) {
                                     variant="contained"
                                     startIcon={<AddIcon />}
                                     onClick={onCreateRow}
-                                    sx={{ marginTop: "5px", backgroundColor: theme.palette.primary.dark }}
+                                    sx={{
+                                        marginTop: "5px", backgroundColor: theme.palette.primary.dark,
+                                        "&.MuiButton-root:hover": { backgroundColor: "#334787" }
+                                    }}
                                 >
                                     Add Item
                                 </Button>
@@ -1012,7 +1015,7 @@ export default function EditPartsReqForm(props: Props) {
                             onClick={() => { setActivePartsReq(null) }}
                             variant="outlined"
                             color="error"
-                            sx={{ marginRight: "10px" }}
+                            sx={{ marginRight: "10px", "&.MuiButton-root:hover": { backgroundColor: "#334787" } }}
                         >
                             Cancel
                         </Button>
@@ -1020,6 +1023,7 @@ export default function EditPartsReqForm(props: Props) {
                             variant="outlined"
                             type="submit"
                             disabled={disabled}
+                            sx={{ "&.MuiButton-root:hover": { backgroundColor: "#334787" } }}
                         >
                             Save
                         </Button>

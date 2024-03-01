@@ -20,7 +20,10 @@ export default function AddFileButton(props: Props) {
         <Button
             variant="contained"
             component="label"
-            sx={{ width: "100%", backgroundColor: theme.palette.primary.dark, marginBottom: "10px" }}
+            sx={{
+                width: "100%", backgroundColor: theme.palette.primary.dark, marginBottom: "10px",
+                "&.MuiButton-root:hover": { backgroundColor: "#334787" }
+            }}
         >
             Add Document(s)
             <input

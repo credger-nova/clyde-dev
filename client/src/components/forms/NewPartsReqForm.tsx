@@ -843,7 +843,10 @@ export default function PartsReqForm() {
                                     variant="contained"
                                     startIcon={<AddIcon />}
                                     onClick={onCreateRow}
-                                    sx={{ marginTop: "5px", backgroundColor: theme.palette.primary.dark }}
+                                    sx={{
+                                        marginTop: "5px", backgroundColor: theme.palette.primary.dark,
+                                        "&.MuiButton-root:hover": { backgroundColor: "#334787" }
+                                    }}
                                 >
                                     Add Item
                                 </Button>
@@ -855,6 +858,7 @@ export default function PartsReqForm() {
                             variant="outlined"
                             type="submit"
                             disabled={disableSubmit}
+                            sx={{ "&.MuiButton-root:hover": { backgroundColor: "#334787" } }}
                         >
                             Submit
                         </Button>

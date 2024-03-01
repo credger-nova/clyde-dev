@@ -39,9 +39,21 @@ export default function SupplyChain() {
     const [activePartsReq, setActivePartsReq] = React.useState<PartsReq | null>(null)
     const [partsReqQuery, setPartsReqQuery] = React.useState<PartsReqQuery>({})
     const [open, setOpen] = React.useState<boolean>(false)
-    const [uiType, setUIType] = React.useState<string>("card")
+    const [uiType, setUIType] = React.useState<string>(window.screen.width <= 600 ? "card" : "table")
+    const [disabled, setDisabled] = React.useState<boolean>(window.screen.width <= 600)
 
     const { data: partsReqs, isFetching: partsReqsFetching } = usePartsReqs(partsReqQuery)
+
+    React.useEffect(() => {
+        console.log(window.screen.width)
+        if (window.screen.width <= 600) {
+            setDisabled(true)
+            setUIType("card")
+        } else {
+            setDisabled(false)
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [window.screen.width])
 
     const handleOpenChange = () => {
         setOpen((prevState) => !prevState)
@@ -105,6 +117,7 @@ export default function SupplyChain() {
                                 >
                                     <ToggleButton
                                         value="table"
+                                        disabled={disabled}
                                     >
                                         <TableRowsIcon />
                                     </ToggleButton>

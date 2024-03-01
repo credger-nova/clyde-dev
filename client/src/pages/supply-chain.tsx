@@ -39,13 +39,12 @@ export default function SupplyChain() {
     const [activePartsReq, setActivePartsReq] = React.useState<PartsReq | null>(null)
     const [partsReqQuery, setPartsReqQuery] = React.useState<PartsReqQuery>({})
     const [open, setOpen] = React.useState<boolean>(false)
-    const [uiType, setUIType] = React.useState<string>(window.screen.width <= 600 ? "card" : "table")
+    const [uiType, setUIType] = React.useState<"card" | "table">(window.screen.width <= 600 ? "card" : "table")
     const [disabled, setDisabled] = React.useState<boolean>(window.screen.width <= 600)
 
     const { data: partsReqs, isFetching: partsReqsFetching } = usePartsReqs(partsReqQuery)
 
     React.useEffect(() => {
-        console.log(window.screen.width)
         if (window.screen.width <= 600) {
             setDisabled(true)
             setUIType("card")
@@ -59,7 +58,7 @@ export default function SupplyChain() {
         setOpen((prevState) => !prevState)
     }
 
-    const handleUIChange = (_event: React.MouseEvent<HTMLElement>, value: string | null) => {
+    const handleUIChange = (_event: React.MouseEvent<HTMLElement>, value: "table" | "card" | null) => {
         if (value) {
             setUIType(value)
         }

@@ -596,6 +596,9 @@ export default function PartsReqForm() {
                             </Item>
                         </Grid>
                         <Grid xs={12} sm={4}>
+                            <Item sx={{ marginBottom: "10px" }}>
+                                <p style={{ margin: 0 }}><b>Estimated Total Cost: </b>{calcCost(rows as Array<OrderRow>)}</p>
+                            </Item>
                             <Item style={{ overflow: "auto" }}>
                                 <b><p style={{ margin: 0 }}>Comments:</p></b>
                                 <Divider />

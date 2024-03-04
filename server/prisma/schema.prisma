@@ -122,6 +122,8 @@ model PartsReq {
   orderType  String        @map("order_type")
   pickup     String        @default("")
   region     String
+  amex       Boolean       @default(false)
+  vendor     String        @default("")
   parts      PartsReqRow[]
   comments   Comment[]
   status     String

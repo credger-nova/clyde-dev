@@ -73,3 +73,18 @@ export const getAllLocations = async () => {
 
     return data
 }
+
+// Get all vendors from NetSuite
+export const getAllVendors = async () => {
+    const jwt = await getNsAccessJwt()
+
+    const { data } = await axios.get<Array<string>>(`${process.env.NS_RESTLET_BASE}script=${process.env.NS_VENDORS_RESTLET}&deploy=1`,
+        {
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${jwt.access_token}`
+            }
+        })
+
+    return data
+}

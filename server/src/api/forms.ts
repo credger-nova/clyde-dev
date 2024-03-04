@@ -76,6 +76,8 @@ export const getPartsReqs = async (query: PartsReqQuery) => {
                 comments: obj.comments,
                 files: obj.files,
                 status: obj.status,
+                amex: obj.amex,
+                vendor: obj.vendor,
                 updated: obj.updated
             } as PartsReq
         )
@@ -119,6 +121,8 @@ export const getPartsReq = async (id: number) => {
             comments: result.comments,
             files: result.files,
             status: result.status,
+            amex: result.amex,
+            vendor: result.vendor,
             updated: result.updated
         } as PartsReq
     } else {
@@ -142,6 +146,8 @@ export const createPartsReq = async (partsReq: CreatePartsReq) => {
             urgency: partsReq.urgency,
             orderType: partsReq.orderType,
             region: partsReq.region,
+            amex: partsReq.amex,
+            vendor: partsReq.vendor,
             parts: {
                 createMany: {
                     data: partsReq.parts
@@ -220,7 +226,7 @@ export const updatePartsReq = async (id: number, user: string, updateReq: Partia
     }
 
     // Determine status of updated Parts Req
-    const status = partsUpdated && oldPartsReq?.status !== "Sourcing - Information Required" ? "Pending Approval" : updateReq.status
+    let status = partsUpdated && oldPartsReq?.status !== "Sourcing - Information Required" ? "Pending Approval" : updateReq.status
 
     // Add new parts rows
     for (const part of newParts) {
@@ -346,6 +352,22 @@ export const updatePartsReq = async (id: number, user: string, updateReq: Partia
 
         await genSystemComment(message, user, id)
     }
+    // Amex change
+    if (oldPartsReq?.amex !== updateReq.amex) {
+        if (updateReq.amex) {
+            status = "Sourcing - Pending Approval"
+        }
+
+        const message = `Amex Request Change: ${oldPartsReq?.amex} -> ${updateReq.amex}`
+
+        await genSystemComment(message, user, id)
+    }
+    // Vendor change
+    if (oldPartsReq?.vendor !== updateReq.vendor) {
+        const message = `Vendor Change: ${oldPartsReq?.vendor} -> ${updateReq.vendor}`
+
+        await genSystemComment(message, user, id)
+    }
 
     // Add new comments
     if (updateReq.comments) {
@@ -378,6 +400,8 @@ export const updatePartsReq = async (id: number, user: string, updateReq: Partia
             orderType: updateReq.orderType,
             pickup: updateReq.pickup,
             region: updateReq.region,
+            amex: updateReq.amex,
+            vendor: updateReq.vendor,
             status: status,
             updated: new Date().toISOString()
         }

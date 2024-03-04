@@ -1,5 +1,5 @@
 import { FastifyInstance } from "fastify"
-import { getAllItems, getAllLocations, getAllSalesOrders, getAllTrucks } from "../api/netsuite"
+import { getAllItems, getAllLocations, getAllSalesOrders, getAllTrucks, getAllVendors } from "../api/netsuite"
 
 async function routes(fastify: FastifyInstance) {
     // Route to get all items
@@ -28,6 +28,13 @@ async function routes(fastify: FastifyInstance) {
         const locations = await getAllLocations()
 
         res.status(200).send(locations)
+    })
+
+    // Route to get Vendors
+    fastify.get("/vendors", async (req, res) => {
+        const vendors = await getAllVendors()
+
+        res.status(200).send(vendors)
     })
 }
 

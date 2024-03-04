@@ -49,6 +49,8 @@ import Files from "./Files"
 import AddFileButton from "./AddFileButton"
 import { File as IFile } from "../../types/file"
 import Skeleton from '@mui/material/Skeleton'
+import Checkbox from '@mui/material/Checkbox'
+import { useVendors } from "../../hooks/vendor"
 
 const URGENCY = ["Unit Down", "Rush", "Standard"]
 const ORDER_TYPE = [{ type: "Rental" }, { type: "Third-Party" }, { type: "Shop Supplies" }, { type: "Truck Supplies" }, { type: "Stock", titles: ["Supply Chain", "Software"] }]
@@ -98,6 +100,7 @@ export default function EditPartsReqForm(props: Props) {
     const { data: trucks, isFetching: trucksFetching } = useTrucks()
     const { data: parts, isFetching: partsFetching } = useParts()
     const { data: warehouses, isFetching: warehousesFetching } = useWarehouses()
+    const { data: vendors, isFetching: vendorsFetching } = useVendors()
 
     const { mutateAsync: updatePartsReq } = useUpdatePartsReq()
     const { mutateAsync: uploadFiles } = useUploadFiles()
@@ -122,6 +125,8 @@ export default function EditPartsReqForm(props: Props) {
     const [newFiles, setNewFiles] = React.useState<Array<File>>([])
     const [deleteFiles, setDeleteFiles] = React.useState<Array<string>>([])
     const [disabled, setDisabled] = React.useState<boolean>(false)
+    const [amex, setAmex] = React.useState<boolean>(partsReq.amex)
+    const [vendor, setVendor] = React.useState<string>(partsReq.vendor)
 
     const partsFilter = createFilterOptions<PartOption>({
         matchFrom: "any",
@@ -159,6 +164,8 @@ export default function EditPartsReqForm(props: Props) {
                 region: region,
                 parts: rows as Array<OrderRow>,
                 comments: comments as Array<Comment>,
+                amex: amex,
+                vendor: vendor,
                 newFiles: newFiles.map((file) => file.name),
                 delFiles: deleteFiles,
                 status: status,
@@ -294,6 +301,19 @@ export default function EditPartsReqForm(props: Props) {
         ])
 
         setComment("")
+    }
+
+    const onAmexChange = () => {
+        if (amex) {
+            setAmex(false)
+            setVendor("")
+        } else {
+            setAmex(true)
+        }
+    }
+
+    const onVendorChange = (_e: React.SyntheticEvent, value: string | null) => {
+        setVendor(value ?? "")
     }
 
     // Prevent enter key from submitting form
@@ -721,6 +741,55 @@ export default function EditPartsReqForm(props: Props) {
                             <Item sx={{ marginBottom: "10px" }}>
                                 <p style={{ margin: 0 }}><b>Estimated Total Cost: </b>{calcCost(rows as Array<OrderRow>)}</p>
                             </Item>
+                            {status !== "Pending Approval" && status !== "Rejected - Adjustments Required" && status !== "Approved" &&
+                                <Item sx={{ marginBottom: "10px" }}>
+                                    <b><p style={{ margin: 0 }}>Is this an Amex Request?</p></b>
+                                    <div
+                                        style={{ display: "flex", flexDirection: "row", alignItems: "flex-end" }}
+                                    >
+                                        <Checkbox
+                                            checked={amex}
+                                            onChange={onAmexChange}
+                                            disableRipple
+                                        />
+                                        <Autocomplete
+                                            disabled={!amex}
+                                            options={vendors ? vendors : []}
+                                            loading={vendorsFetching}
+                                            onChange={onVendorChange}
+                                            value={vendor}
+                                            renderInput={(params) => <StyledTextField
+                                                {...params}
+                                                variant="standard"
+                                                label="Vendor"
+                                            />}
+                                            sx={{ width: "100%" }}
+                                            renderOption={(props, option, { inputValue }) => {
+                                                const matches = match(option, inputValue, { insideWords: true, requireMatchAll: true });
+                                                const parts = parse(option, matches);
+
+                                                return (
+                                                    <li {...props}>
+                                                        <div>
+                                                            {parts.map((part, index) => (
+                                                                <span
+                                                                    key={index}
+                                                                    style={{
+                                                                        fontWeight: part.highlight ? 700 : 400,
+                                                                        color: part.highlight ? "#23aee5" : "#fff"
+                                                                    }}
+                                                                >
+                                                                    {part.text}
+                                                                </span>
+                                                            ))}
+                                                        </div>
+                                                    </li>
+                                                );
+                                            }}
+                                        />
+                                    </div>
+                                </Item>
+                            }
                             <Item style={{ overflow: "auto" }}>
                                 <b><p style={{ margin: 0 }}>Comments:</p></b>
                                 <Divider />

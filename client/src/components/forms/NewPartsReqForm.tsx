@@ -143,6 +143,8 @@ export default function PartsReqForm() {
             comments: comments,
             files: newFiles.map((file) => file.name),
             status: "Pending Approval",
+            amex: false,
+            vendor: "",
             updated: new Date()
         }
 

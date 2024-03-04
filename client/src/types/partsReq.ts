@@ -27,6 +27,8 @@ export interface PartsReq {
     comments: Array<Comment>,
     files: Array<File>,
     status: string,
+    amex: boolean,
+    vendor: string,
     updated: Date
 }
 

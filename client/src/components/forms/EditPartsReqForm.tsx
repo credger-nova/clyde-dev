@@ -6,7 +6,7 @@ import { useSOs } from "../../hooks/so"
 import { useUnits } from "../../hooks/unit"
 import { useTrucks } from "../../hooks/truck"
 import { useParts } from "../../hooks/parts"
-import { useLocations } from "../../hooks/location"
+import { useWarehouses } from "../../hooks/warehouse"
 import { useNovaUser } from "../../hooks/user"
 import { useUpdatePartsReq } from "../../hooks/partsReq"
 import { useUploadFiles } from "../../hooks/storage"
@@ -97,7 +97,7 @@ export default function EditPartsReqForm(props: Props) {
     const { data: unitNumbers, isFetching: unitsFetching } = useUnits()
     const { data: trucks, isFetching: trucksFetching } = useTrucks()
     const { data: parts, isFetching: partsFetching } = useParts()
-    const { data: locations, isFetching: locationsFetcing } = useLocations()
+    const { data: warehouses, isFetching: warehousesFetching } = useWarehouses()
 
     const { mutateAsync: updatePartsReq } = useUpdatePartsReq()
     const { mutateAsync: uploadFiles } = useUploadFiles()
@@ -557,8 +557,8 @@ export default function EditPartsReqForm(props: Props) {
                                 <Item sx={{ marginBottom: "15px" }}>
                                     <Box>
                                         <Autocomplete
-                                            options={locations ? locations.concat("WILL CALL") : []}
-                                            loading={locationsFetcing}
+                                            options={warehouses ? warehouses.concat("WILL CALL") : []}
+                                            loading={warehousesFetching}
                                             onChange={onPickupChange}
                                             value={pickup}
                                             disableClearable

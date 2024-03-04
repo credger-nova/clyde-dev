@@ -38,6 +38,7 @@ export interface PartsReqQuery {
     part?: Array<string>,
     requester?: Array<string>,
     customer?: Array<string>,
+    location?: Array<string>,
     region?: Array<string>,
     urgency?: Array<string>,
     status?: Array<string>

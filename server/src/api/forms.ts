@@ -28,6 +28,7 @@ export const getPartsReqs = async (query: PartsReqQuery) => {
                         {}, // TODO: parts
                         query.requester && query.requester.length > 0 ? { requester: { in: query.requester } } : {},
                         query.customer && query.customer.length > 0 ? { unit: { customer: { in: query.customer } } } : {},
+                        query.location && query.location.length > 0 ? { unit: { location: { in: query.location } } } : {},
                         query.region && query.region.length > 0 ? { unit: { operationalRegion: { in: query.region } } } : {},
                         query.urgency && query.urgency.length > 0 ? { urgency: { in: query.urgency } } : {},
                         query.status && query.status.length > 0 ? { status: { in: query.status } } : {}
@@ -42,6 +43,7 @@ export const getPartsReqs = async (query: PartsReqQuery) => {
                         { truck: { contains: query.searchString ?? "", mode: "insensitive" } },
                         { requester: { contains: query.searchString ?? "", mode: "insensitive" } },
                         { unit: { customer: { contains: query.searchString ?? "", mode: "insensitive" } } },
+                        { unit: { location: { contains: query.searchString ?? "", mode: "insensitive" } } },
                         { unit: { operationalRegion: { contains: query.searchString ?? "", mode: "insensitive" } } }
                     ]
                 }

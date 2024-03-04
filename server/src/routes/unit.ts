@@ -1,5 +1,8 @@
 import { FastifyInstance, FastifyRequest } from "fastify"
-import { getAllUnits, getAllCustomers, getAllRegions, getUnit, generateUnitsLayer, getAllManagers, getCentroid } from "../api/unit"
+import {
+    getAllUnits, getAllCustomers, getAllLocations, getAllRegions, getUnit, generateUnitsLayer,
+    getAllManagers, getCentroid
+} from "../api/unit"
 import { GeoJSONFeature } from "../models/geoJson"
 
 async function routes(fastify: FastifyInstance) {
@@ -28,6 +31,13 @@ async function routes(fastify: FastifyInstance) {
         const customers = await getAllCustomers()
 
         res.status(200).send(customers)
+    })
+
+    // Get list of regions
+    fastify.get("/location", async (req, res) => {
+        const locations = await getAllLocations()
+
+        res.status(200).send(locations)
     })
 
     // Get list of regions

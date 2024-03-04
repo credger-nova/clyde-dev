@@ -12,7 +12,7 @@ import { PartsReqQuery } from "../../types/partsReq"
 
 import { useAFEs } from "../../hooks/afe"
 import { useSOs } from "../../hooks/so"
-import { useCustomers, useRegions, useUnits } from "../../hooks/unit"
+import { useCustomers, useLocations, useRegions, useUnits } from "../../hooks/unit"
 import { useTrucks } from "../../hooks/truck"
 import { useAllNovaUsers } from "../../hooks/user"
 //import { useParts } from "../../hooks/parts"
@@ -36,6 +36,7 @@ export default function SearchFilter(props: Props) {
     //const { data: parts, isFetching: partsFetching } = useParts() // TODO: add search/filter by part # - ON HOLD
     const { data: requesters, isFetching: requestersFetching } = useAllNovaUsers()
     const { data: customers, isFetching: customersFetching } = useCustomers()
+    const { data: locations, isFetching: locationsFetching } = useLocations()
     const { data: regions, isFetching: regionsFetching } = useRegions()
 
     const handleSearchStringChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -98,6 +99,13 @@ export default function SearchFilter(props: Props) {
         setPartsReqQuery(prevState => ({
             ...prevState,
             customer: value
+        }))
+    }
+
+    const handleLocationChange = (_e: React.SyntheticEvent<Element, Event>, value: Array<string>) => {
+        setPartsReqQuery(prevState => ({
+            ...prevState,
+            location: value
         }))
     }
 
@@ -421,6 +429,45 @@ export default function SearchFilter(props: Props) {
                                 {...params}
                                 variant="standard"
                                 label="Customer"
+                            />}
+                            sx={{ width: "330px" }}
+                            renderOption={(props, option, { inputValue }) => {
+                                const matches = match(option, inputValue, { insideWords: true, requireMatchAll: true });
+                                const parts = parse(option, matches);
+
+                                return (
+                                    <li {...props}>
+                                        <div>
+                                            {parts.map((part, index) => (
+                                                <span
+                                                    key={index}
+                                                    style={{
+                                                        fontWeight: part.highlight ? 700 : 400,
+                                                        color: part.highlight ? "#23aee5" : "#fff"
+                                                    }}
+                                                >
+                                                    {part.text}
+                                                </span>
+                                            ))}
+                                        </div>
+                                    </li>
+                                );
+                            }}
+                        />
+                    </Grid>
+                    <Grid>
+                        <Autocomplete
+                            multiple
+                            filterSelectedOptions
+                            limitTags={3}
+                            size="small"
+                            options={locations ? locations : []}
+                            loading={locationsFetching}
+                            onChange={handleLocationChange}
+                            renderInput={(params) => <StyledTextField
+                                {...params}
+                                variant="standard"
+                                label="Location"
                             />}
                             sx={{ width: "330px" }}
                             renderOption={(props, option, { inputValue }) => {

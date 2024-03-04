@@ -56,6 +56,23 @@ export const getAllCustomers = async () => {
     return customers
 }
 
+// Get list of locations from units
+export const getAllLocations = async () => {
+    const allUnits = await prisma.unit.findMany({
+        distinct: ["location"],
+        select: {
+            location: true
+        }
+    })
+
+    const locations = allUnits
+        .map(item => item.location)
+        .filter(item => item)
+        .sort()
+
+    return locations
+}
+
 // Get list of regions from units
 export const getAllRegions = async () => {
     const allUnits = await prisma.unit.findMany({

@@ -115,7 +115,7 @@ export default function PartsReqTable(props: Props) {
                             {partsReq.unit ?
                                 partsReq.unit.customer.length > 20 ?
                                     <Tooltip
-                                        title={partsReq.unit.location}
+                                        title={partsReq.unit.customer}
                                         componentsProps={{
                                             tooltip: {
                                                 sx: {

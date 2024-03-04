@@ -191,20 +191,36 @@ export const updatePartsReq = async (id: number, user: string, updateReq: Partia
     const existingParts = updateReq.parts ? updateReq.parts.filter(row => (row.itemNumber !== "" && row.id)) : []
     const newParts = updateReq.parts ? updateReq.parts.filter(row => (row.itemNumber !== "" && !row.id)) : []
 
-    // Update existing parts rows
+    // Check if any existing parts were updated, update where necessary
+    let partsUpdated: boolean = newParts.length > 0 ? true : false
     for (const part of existingParts) {
-        await prisma.partsReqRow.update({
+        const oldPart = await prisma.partsReqRow.findUnique({
             where: {
                 id: part.id
-            },
-            data: {
-                qty: part.qty,
-                itemNumber: part.itemNumber,
-                description: part.description,
-                cost: part.cost
             }
         })
+
+        if (oldPart?.qty !== part.qty || oldPart.itemNumber !== part.itemNumber || oldPart.description !== part.description ||
+            oldPart.cost !== part.cost) {
+            partsUpdated = true
+
+            // Update part
+            await prisma.partsReqRow.update({
+                where: {
+                    id: part.id
+                },
+                data: {
+                    qty: part.qty,
+                    itemNumber: part.itemNumber,
+                    description: part.description,
+                    cost: part.cost
+                }
+            })
+        }
     }
+
+    // Determine status of updated Parts Req
+    const status = partsUpdated && oldPartsReq?.status !== "Sourcing - Information Required" ? "Pending Approval" : updateReq.status
 
     // Add new parts rows
     for (const part of newParts) {
@@ -277,8 +293,8 @@ export const updatePartsReq = async (id: number, user: string, updateReq: Partia
 
     // Generate system comments based on what fields have changed
     // Status change
-    if (oldPartsReq?.status !== updateReq.status) {
-        const message = `Status Change: ${oldPartsReq?.status} -> ${updateReq.status}`
+    if (oldPartsReq?.status !== status) {
+        const message = `Status Change: ${oldPartsReq?.status} -> ${status}`
 
         await genSystemComment(message, user, id)
     }
@@ -362,7 +378,7 @@ export const updatePartsReq = async (id: number, user: string, updateReq: Partia
             orderType: updateReq.orderType,
             pickup: updateReq.pickup,
             region: updateReq.region,
-            status: updateReq.status,
+            status: status,
             updated: new Date().toISOString()
         }
     })

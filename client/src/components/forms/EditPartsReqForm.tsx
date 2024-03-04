@@ -1003,6 +1003,7 @@ export default function EditPartsReqForm(props: Props) {
                                     variant="contained"
                                     startIcon={<AddIcon />}
                                     onClick={onCreateRow}
+                                    disabled={partsFetching}
                                     sx={{
                                         marginTop: "5px", backgroundColor: theme.palette.primary.dark,
                                         "&.MuiButton-root:hover": { backgroundColor: "#334787" }

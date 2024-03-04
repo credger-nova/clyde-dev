@@ -6,6 +6,8 @@ import Typography from '@mui/material/Typography'
 import Divider from '@mui/material/Divider'
 import { styled } from '@mui/material/styles'
 import Skeleton from '@mui/material/Skeleton'
+import Tooltip from '@mui/material/Tooltip'
+import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline'
 
 import { calcCost } from "../../utils/helperFunctions"
 import { UNIT_PLANNING } from "../../utils/unitPlanning"
@@ -29,7 +31,7 @@ export function SkeletonCard() {
     return (
         <Card
             sx={{
-                height: "256px", width: "281px", backgroundImage: "none", margin: "0px 15px 15px 0px", padding: "5px", borderRadius: "0.5rem"
+                height: "291px", width: "331px", backgroundImage: "none", margin: "0px 15px 15px 0px", padding: "5px", borderRadius: "0.5rem"
             }}
         >
             <CardHeader
@@ -52,6 +54,14 @@ export function SkeletonCard() {
             <CardContent
                 sx={{ padding: "5px" }}
             >
+                <Skeleton
+                    animation={"wave"}
+                    sx={{ width: "80%", marginBottom: "5px" }}
+                />
+                <Skeleton
+                    animation={"wave"}
+                    sx={{ width: "80%", marginBottom: "5px" }}
+                />
                 <Skeleton
                     animation={"wave"}
                     sx={{ width: "80%", marginBottom: "5px" }}
@@ -97,7 +107,7 @@ export default function PartsReqCard(props: Props) {
         <StyledCard
             onClick={() => { setActivePartsReq(partsReq) }}
             sx={{
-                maxHeight: "250px", width: "275px", backgroundImage: "none", margin: "0px 15px 15px 0px", padding: "5px", borderRadius: "0.5rem"
+                height: "285px", width: "325px", backgroundImage: "none", margin: "0px 15px 15px 0px", padding: "5px", borderRadius: "0.5rem"
             }}
         >
             <CardHeader
@@ -111,54 +121,108 @@ export default function PartsReqCard(props: Props) {
             >
                 <div style={{ display: "flex", flexDirection: "column", width: "100%" }}>
                     <div style={{ display: "flex", flexDirection: "row", width: "100%", justifyContent: "flex-start", alignItems: "center" }}>
-                        <Typography variant="subtitle2" sx={{ width: "50%" }}>
+                        <Typography variant="subtitle2" sx={{ width: "35%" }}>
                             Class:
                         </Typography>
                         {partsReq.afe ?
-                            <Typography variant="body2" sx={{ width: "50%" }}>
+                            <Typography variant="body2" sx={{ width: "65%" }}>
                                 {`AFE ${partsReq.afe}`}
                             </Typography> : null
                         }
                         {partsReq.so ?
-                            <Typography variant="body2" sx={{ width: "50%" }}>
+                            <Typography variant="body2" sx={{ width: "65%" }}>
                                 {`SO ${partsReq.so}`}
                             </Typography> : null
                         }
                     </div>
                     <div style={{ display: "flex", flexDirection: "row", width: "100%", justifyContent: "flex-start", alignItems: "center" }}>
-                        <Typography variant="subtitle2" sx={{ width: "50%" }}>
+                        <Typography variant="subtitle2" sx={{ width: "35%" }}>
                             Related Asset:
                         </Typography>
                         {partsReq.unit ?
-                            <Typography variant="body2" sx={{ width: "50%" }}>
+                            <Typography variant="body2" sx={{ width: "65%" }}>
                                 {`Unit ${partsReq.unit.unitNumber}`}
                             </Typography> :
-                            <Typography variant="body2" sx={{ width: "50%" }}>
+                            <Typography variant="body2" sx={{ width: "65%" }}>
                                 {`Truck ${partsReq.truck}`}
                             </Typography>
                         }
                     </div>
                     <div style={{ display: "flex", flexDirection: "row", width: "100%", justifyContent: "flex-start", alignItems: "center" }}>
-                        <Typography variant="subtitle2" sx={{ width: "50%" }}>
+                        <Typography variant="subtitle2" sx={{ width: "35%" }}>
+                            Location:
+                        </Typography>
+                        {partsReq.unit ?
+                            partsReq.unit.location.length > 21 ?
+                                <Tooltip
+                                    title={partsReq.unit.location}
+                                    componentsProps={{
+                                        tooltip: {
+                                            sx: {
+                                                border: "1px solid white",
+                                                bgcolor: "background.paper"
+                                            }
+                                        }
+                                    }}
+                                >
+                                    <Typography variant="body2" sx={{ width: "65%" }}>
+                                        {`${partsReq.unit.location.slice(0, 21)}...`}
+                                    </Typography>
+                                </Tooltip> :
+                                <Typography variant="body2" sx={{ width: "65%" }}>
+                                    {partsReq.unit.location}
+                                </Typography> :
+                            null
+                        }
+                    </div>
+                    <div style={{ display: "flex", flexDirection: "row", width: "100%", justifyContent: "flex-start", alignItems: "center" }}>
+                        <Typography variant="subtitle2" sx={{ width: "35%" }}>
+                            Customer:
+                        </Typography>
+                        {partsReq.unit ?
+                            partsReq.unit.customer.length > 21 ?
+                                <Tooltip
+                                    title={partsReq.unit.customer}
+                                    componentsProps={{
+                                        tooltip: {
+                                            sx: {
+                                                border: "1px solid white",
+                                                bgcolor: "background.paper"
+                                            }
+                                        }
+                                    }}
+                                >
+                                    <Typography variant="body2" sx={{ width: "65%" }}>
+                                        {`${partsReq.unit.customer.slice(0, 21)}...`}
+                                    </Typography>
+                                </Tooltip> :
+                                <Typography variant="body2" sx={{ width: "65%" }}>
+                                    {partsReq.unit.customer}
+                                </Typography> :
+                            null
+                        }
+                    </div>
+                    <div style={{ display: "flex", flexDirection: "row", width: "100%", justifyContent: "flex-start", alignItems: "center" }}>
+                        <Typography variant="subtitle2" sx={{ width: "35%" }}>
                             Urgency:
                         </Typography>
-                        <Typography variant="body2" sx={{ width: "50%" }}>
+                        <Typography variant="body2" sx={{ width: "65%" }}>
                             {partsReq.urgency}
                         </Typography>
                     </div>
                     <div style={{ display: "flex", flexDirection: "row", width: "100%", justifyContent: "flex-start", alignItems: "center" }}>
-                        <Typography variant="subtitle2" sx={{ width: "50%" }}>
+                        <Typography variant="subtitle2" sx={{ width: "35%" }}>
                             Order Type:
                         </Typography>
-                        <Typography variant="body2" sx={{ width: "50%" }}>
+                        <Typography variant="body2" sx={{ width: "65%" }}>
                             {partsReq.orderType}
                         </Typography>
                     </div>
                     <div style={{ display: "flex", flexDirection: "row", width: "100%", justifyContent: "flex-start", alignItems: "center" }}>
-                        <Typography variant="subtitle2" sx={{ width: "50%" }}>
+                        <Typography variant="subtitle2" sx={{ width: "35%" }}>
                             Region:
                         </Typography>
-                        <Typography variant="body2" sx={{ width: "50%" }}>
+                        <Typography variant="body2" sx={{ width: "65%" }}>
                             {partsReq.region}
                         </Typography>
                     </div>
@@ -170,14 +234,19 @@ export default function PartsReqCard(props: Props) {
                     <Typography variant="caption">
                         {`Estimated Cost: ${calcCost(partsReq.parts)}`}
                     </Typography>
-                    <Typography variant="caption">
-                        {partsReq.status}
-                    </Typography>
-                    {(partsReq.unit && UNIT_PLANNING.includes(partsReq.unit.unitNumber)) &&
-                        (partsReq.status === "Pending Approval" || partsReq.status === "Rejected - Adjustments Required") ?
-                        <Typography variant="caption" sx={{ color: "red", fontWeight: 700 }}>
-                            Travis Yount Must Approve Non-PM Parts
-                        </Typography> : null
+                    {<div style={{ display: "flex", alignItems: "center" }}>
+                        {(partsReq.unit && UNIT_PLANNING.includes(partsReq.unit.unitNumber)) &&
+                            (partsReq.status === "Pending Approval" || partsReq.status === "Rejected - Adjustments Required") ?
+                            <Tooltip
+                                title="Travis Yount Must Approve All Non-PM Parts"
+                            >
+                                <ErrorOutlineIcon sx={{ color: "red", paddingRight: "3px" }} />
+                            </Tooltip> : null
+                        }
+                        <Typography variant="caption">
+                            {partsReq.status}
+                        </Typography>
+                    </div>
                     }
                 </div>
             </CardContent>

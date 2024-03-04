@@ -9,6 +9,8 @@ import Paper from '@mui/material/Paper'
 import Typography from '@mui/material/Typography'
 import { PartsReq } from '../../types/partsReq'
 import Skeleton from '@mui/material/Skeleton'
+import Tooltip from '@mui/material/Tooltip'
+import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline'
 
 import { calcCost } from '../../utils/helperFunctions'
 import { UNIT_PLANNING } from '../../utils/unitPlanning'
@@ -61,6 +63,8 @@ export default function PartsReqTable(props: Props) {
                         <StyledTableCell>Date</StyledTableCell>
                         <StyledTableCell>Class</StyledTableCell>
                         <StyledTableCell>Related Asset</StyledTableCell>
+                        <StyledTableCell>Location</StyledTableCell>
+                        <StyledTableCell>Customer</StyledTableCell>
                         <StyledTableCell>Urgency</StyledTableCell>
                         <StyledTableCell>Order Type</StyledTableCell>
                         <StyledTableCell>Region</StyledTableCell>
@@ -90,20 +94,60 @@ export default function PartsReqTable(props: Props) {
                                 <StyledTableCell>{`Unit: ${partsReq.unit.unitNumber}`}</StyledTableCell> :
                                 <StyledTableCell>{`Truck: ${partsReq.truck}`}</StyledTableCell>
                             }
+                            {partsReq.unit ?
+                                partsReq.unit.location.length > 25 ?
+                                    <Tooltip
+                                        title={partsReq.unit.location}
+                                        componentsProps={{
+                                            tooltip: {
+                                                sx: {
+                                                    border: "1px solid white",
+                                                    bgcolor: "background.paper"
+                                                }
+                                            }
+                                        }}
+                                    >
+                                        <StyledTableCell>{`${partsReq.unit.location.slice(0, 25)}...`}</StyledTableCell>
+                                    </Tooltip> :
+                                    <StyledTableCell>{partsReq.unit.location}</StyledTableCell> :
+                                <StyledTableCell />
+                            }
+                            {partsReq.unit ?
+                                partsReq.unit.customer.length > 20 ?
+                                    <Tooltip
+                                        title={partsReq.unit.location}
+                                        componentsProps={{
+                                            tooltip: {
+                                                sx: {
+                                                    border: "1px solid white",
+                                                    bgcolor: "background.paper"
+                                                }
+                                            }
+                                        }}
+                                    >
+                                        <StyledTableCell>{`${partsReq.unit.customer.slice(0, 20)}...`}</StyledTableCell>
+                                    </Tooltip> :
+                                    <StyledTableCell>{partsReq.unit.customer}</StyledTableCell> :
+                                <StyledTableCell />
+                            }
                             <StyledTableCell>{partsReq.urgency}</StyledTableCell>
                             <StyledTableCell>{partsReq.orderType}</StyledTableCell>
                             <StyledTableCell>{partsReq.region}</StyledTableCell>
                             <StyledTableCell>{calcCost(partsReq.parts)}</StyledTableCell>
                             <StyledTableCell>
-                                {(partsReq.unit && UNIT_PLANNING.includes(partsReq.unit.unitNumber)) &&
-                                    (partsReq.status === "Pending Approval" || partsReq.status === "Rejected - Adjustments Required") ?
-                                    <>
-                                        {partsReq.status + ' - '}
-                                        <Typography variant="caption" sx={{ color: "red", fontWeight: 700 }}>
-                                            Travis Yount Must Approve Non-PM Parts
-                                        </Typography>
-                                    </>
-                                    : partsReq.status
+                                {<div style={{ display: "flex", alignItems: "center" }}>
+                                    {(partsReq.unit && UNIT_PLANNING.includes(partsReq.unit.unitNumber)) &&
+                                        (partsReq.status === "Pending Approval" || partsReq.status === "Rejected - Adjustments Required") ?
+                                        <Tooltip
+                                            title="Travis Yount Must Approve All Non-PM Parts"
+                                        >
+                                            <ErrorOutlineIcon sx={{ color: "red", paddingRight: "3px" }} />
+                                        </Tooltip> : null
+                                    }
+                                    <Typography variant="caption">
+                                        {partsReq.status}
+                                    </Typography>
+                                </div>
                                 }
                             </StyledTableCell>
                         </StyledTableRow>
@@ -121,6 +165,8 @@ export default function PartsReqTable(props: Props) {
                         <StyledTableCell>Date</StyledTableCell>
                         <StyledTableCell>Class</StyledTableCell>
                         <StyledTableCell>Related Asset</StyledTableCell>
+                        <StyledTableCell>Location</StyledTableCell>
+                        <StyledTableCell>Customer</StyledTableCell>
                         <StyledTableCell>Urgency</StyledTableCell>
                         <StyledTableCell>Order Type</StyledTableCell>
                         <StyledTableCell>Region</StyledTableCell>
@@ -137,6 +183,16 @@ export default function PartsReqTable(props: Props) {
                                 key={index}
                                 sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                             >
+                                <StyledTableCell>
+                                    <Skeleton
+                                        animation="wave"
+                                    />
+                                </StyledTableCell>
+                                <StyledTableCell>
+                                    <Skeleton
+                                        animation="wave"
+                                    />
+                                </StyledTableCell>
                                 <StyledTableCell>
                                     <Skeleton
                                         animation="wave"

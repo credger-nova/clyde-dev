@@ -226,7 +226,8 @@ export const updatePartsReq = async (id: number, user: string, updateReq: Partia
     }
 
     // Determine status of updated Parts Req
-    let status = partsUpdated && oldPartsReq?.status !== "Sourcing - Information Required" ? "Pending Approval" : updateReq.status
+    let status = partsUpdated && (oldPartsReq?.status !== "Sourcing - Information Required" && updateReq.status !== "Sourcing - Information Required") ?
+        "Pending Approval" : updateReq.status
 
     // Add new parts rows
     for (const part of newParts) {

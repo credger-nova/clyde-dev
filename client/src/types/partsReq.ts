@@ -33,6 +33,7 @@ export interface PartsReq {
 }
 
 export interface PartsReqQuery {
+    title: string,
     searchString?: string,
     id?: string,
     afe?: Array<string>,

@@ -355,7 +355,7 @@ export default function PartsReqForm() {
                                             variant="standard"
                                             label="SO #"
                                         />}
-                                        disabled={afe !== null || unit !== null}
+                                        disabled={afe !== null}
                                         renderOption={(props, option, { inputValue }) => {
                                             const matches = match(option, inputValue, { insideWords: true, requireMatchAll: true });
                                             const parts = parse(option, matches);

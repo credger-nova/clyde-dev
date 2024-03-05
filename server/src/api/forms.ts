@@ -1,7 +1,21 @@
 import { prisma } from "../utils/prisma-client"
 import { CreatePartsReq, PartsReq, PartsReqQuery, UpdatePartsReq } from "../models/partsReq"
+import { TITLES } from "../utils/titles"
 
 const URGENCY_SORT = ["Unit Down", "Rush", "Standard", "Stock"]
+const ALL_STATUS = ["Pending Approval", "Rejected - Adjustments Required", "Approved", "Sourcing - Information Required", "Sourcing - Information Provided",
+    "Sourcing - Pending Approval", "Ordered - Awaiting Parts", "Completed - Parts Staged/Delivered", "Closed - Parts in Hand"]
+const OPS_MANAGER_STATUS = [
+    "Pending Approval", "Rejected - Adjustments Required", "Approved"
+]
+const SUPPLY_CHAIN_STATUS = [
+    "Sourcing - Information Required", "Sourcing - Information Provided", "Sourcing - Pending Approval", "Ordered - Awaiting Parts", "Completed - Parts Staged/Delivered"
+]
+
+const FIELD_SERVICE_TITLES = TITLES.find(item => item.group === "Field Service")?.titles ?? []
+const OPS_MANAGER_TITLES = TITLES.find(item => item.group === "Ops Manager")?.titles ?? []
+const SUPPLY_CHAIN_TITLES = TITLES.find(item => item.group === "Supply Chain")?.titles ?? []
+const IT_TITLES = TITLES.find(item => item.group === "IT")?.titles ?? []
 
 async function genSystemComment(message: string, user: string, id: number) {
     await prisma.comment.create({
@@ -14,11 +28,26 @@ async function genSystemComment(message: string, user: string, id: number) {
     })
 }
 
+function allowedStatus(title: string) {
+    if (FIELD_SERVICE_TITLES.includes(title)) {
+        return ALL_STATUS
+    } else if (OPS_MANAGER_TITLES.includes(title)) {
+        return OPS_MANAGER_STATUS
+    } else if (SUPPLY_CHAIN_TITLES.includes(title)) {
+        return SUPPLY_CHAIN_STATUS
+    }
+}
+
 // Get Parts Reqs that match the given query
 export const getPartsReqs = async (query: PartsReqQuery) => {
     const result = await prisma.partsReq.findMany({
         where: {
             AND: [
+                {
+                    status: {
+                        in: allowedStatus(query.title)
+                    }
+                },
                 {
                     AND: [
                         query.afe && query.afe.length > 0 ? { afe: { in: query.afe } } : {},

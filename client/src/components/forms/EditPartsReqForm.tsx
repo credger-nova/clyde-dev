@@ -52,11 +52,16 @@ import Skeleton from '@mui/material/Skeleton'
 import Checkbox from '@mui/material/Checkbox'
 import { useVendors } from "../../hooks/vendor"
 
+import { TITLES } from "../../utils/titles"
+
 const URGENCY = ["Unit Down", "Rush", "Standard"]
 const ORDER_TYPE = [{ type: "Rental" }, { type: "Third-Party" }, { type: "Shop Supplies" }, { type: "Truck Supplies" }, { type: "Stock", titles: ["Supply Chain", "Software"] }]
 const REGION = ["East Texas", "South Texas", "Midcon", "North Permian", "South Permian", "Pecos", "Carlsbad"]
 const STATUS = ["Rejected - Adjustments Required", "Approved", "Sourcing - Information Required", "Sourcing - Information Provided", "Sourcing - Pending Approval",
     "Ordered - Awaiting Parts", "Completed - Parts Staged/Delivered"]
+
+const FIELD_SERVICE_TITLES = TITLES.find(item => item.group === "Field Service")?.titles ?? []
+const IT_TITLES = TITLES.find(item => item.group === "IT")?.titles ?? []
 
 const Item = styled(Paper)(({ theme }) => ({
     backgroundColor: "#242424",
@@ -76,6 +81,26 @@ function CustomPopper(props: PopperProps) {
             {props.children as React.ReactNode}
         </Popper>
     )
+}
+
+function denyAccess(title: string, status: string, field?: string) {
+    // Field Service permissions
+    if (FIELD_SERVICE_TITLES.includes(title)) {
+        if (status === "Rejected - Adjustments Required") {
+            if (field !== "Status") {
+                return false
+            }
+        }
+        
+        return true
+    }
+
+    // IT permissions
+    if (IT_TITLES.includes(title)) {
+        return false
+    }
+
+    return true
 }
 
 interface Props {
@@ -381,6 +406,7 @@ export default function EditPartsReqForm(props: Props) {
                                                 </li>
                                             );
                                         }}
+                                        readOnly={denyAccess(novaUser!.title, status, "Status")}
                                     />
                                 </Box>
                             </Item>
@@ -443,6 +469,7 @@ export default function EditPartsReqForm(props: Props) {
                                                 </li>
                                             );
                                         }}
+                                        readOnly={denyAccess(novaUser!.title, status)}
                                     />
                                     <Autocomplete
                                         options={soNumbers ? soNumbers : []}
@@ -454,7 +481,7 @@ export default function EditPartsReqForm(props: Props) {
                                             variant="standard"
                                             label="SO #"
                                         />}
-                                        disabled={afe !== null || unit !== null}
+                                        disabled={afe !== null}
                                         renderOption={(props, option, { inputValue }) => {
                                             const matches = match(option, inputValue, { insideWords: true, requireMatchAll: true });
                                             const parts = parse(option, matches);
@@ -477,6 +504,7 @@ export default function EditPartsReqForm(props: Props) {
                                                 </li>
                                             );
                                         }}
+                                        readOnly={denyAccess(novaUser!.title, status)}
                                     />
                                     <b><p style={{ margin: "20px 0px 0px 0px" }}>Related Asset:</p></b>
                                     <Divider />
@@ -515,6 +543,7 @@ export default function EditPartsReqForm(props: Props) {
                                                 </li>
                                             );
                                         }}
+                                        readOnly={denyAccess(novaUser!.title, status)}
                                     />
                                     <div style={{ display: "flex", flexDirection: "row", width: "100%" }}>
                                         <p style={{ marginTop: "10px", marginRight: "10px" }}>Location:</p>
@@ -568,6 +597,7 @@ export default function EditPartsReqForm(props: Props) {
                                                 </li>
                                             );
                                         }}
+                                        readOnly={denyAccess(novaUser!.title, status)}
                                     />
                                 </Box>
                             </Item>
@@ -609,6 +639,7 @@ export default function EditPartsReqForm(props: Props) {
                                                     </li>
                                                 );
                                             }}
+                                            readOnly={denyAccess(novaUser!.title, status)}
                                         />
                                     </Box>
                                 </Item>
@@ -617,7 +648,7 @@ export default function EditPartsReqForm(props: Props) {
                                 <Box>
                                     <b><p style={{ margin: 0 }}>Urgency:</p></b>
                                     <Divider />
-                                    <FormControl>
+                                    <FormControl disabled={denyAccess(novaUser!.title, status)}>
                                         <RadioGroup row>
                                             {URGENCY.map((val) => {
                                                 return (
@@ -635,7 +666,7 @@ export default function EditPartsReqForm(props: Props) {
                                     </FormControl>
                                     <b><p style={{ margin: "20px 0px 0px 0px" }}>Order Type:</p></b>
                                     <Divider />
-                                    <FormControl disabled={unit !== null || so !== null}>
+                                    <FormControl disabled={(unit !== null || so !== null) || denyAccess(novaUser!.title, status)}>
                                         <RadioGroup row>
                                             {ORDER_TYPE.map((val) => {
                                                 const canAccess = val.titles ? (val.titles.findIndex(el => novaUser!.title.includes(el)) !== -1) : true
@@ -655,7 +686,7 @@ export default function EditPartsReqForm(props: Props) {
                                     </FormControl>
                                     <b><p style={{ margin: "20px 0px 0px 0px" }}>Operational Region:</p></b>
                                     <Divider />
-                                    <FormControl disabled={unit !== null}>
+                                    <FormControl disabled={unit !== null || denyAccess(novaUser!.title, status)}>
                                         <RadioGroup row>
                                             {REGION.map((val) => {
                                                 return (
@@ -912,7 +943,8 @@ export default function EditPartsReqForm(props: Props) {
                                                             value={row.qty}
                                                             onChange={onQtyChange(index)}
                                                             InputProps={{
-                                                                inputProps: { min: 1 }
+                                                                inputProps: { min: 1 },
+                                                                readOnly: denyAccess(novaUser!.title, status)
                                                             }}
                                                             sx={{ width: "100%" }}
                                                             helperText={!rows[index].itemNumber && " "}
@@ -1016,6 +1048,7 @@ export default function EditPartsReqForm(props: Props) {
                                                                 )
                                                             }}
                                                             PopperComponent={CustomPopper}
+                                                            readOnly={denyAccess(novaUser!.title, status)}
                                                         />
                                                     </TableCell>
                                                     <TableCell>
@@ -1025,6 +1058,9 @@ export default function EditPartsReqForm(props: Props) {
                                                             onChange={onDescriptionChange(index)}
                                                             helperText={!rows[index].itemNumber && " "}
                                                             disabled={partExists(rows[index].itemNumber)}
+                                                            InputProps={{
+                                                                readOnly: denyAccess(novaUser!.title, status)
+                                                            }}
                                                         />
                                                     </TableCell>
                                                     <TableCell>
@@ -1038,7 +1074,8 @@ export default function EditPartsReqForm(props: Props) {
                                                                 inputProps: {
                                                                     step: "0.01",
                                                                     min: 0
-                                                                }
+                                                                },
+                                                                readOnly: denyAccess(novaUser!.title, status)
                                                             }}
                                                             helperText={!rows[index].itemNumber && " "}
                                                             disabled={partExists(rows[index].itemNumber)}
@@ -1049,6 +1086,7 @@ export default function EditPartsReqForm(props: Props) {
                                                         <IconButton
                                                             onClick={() => removeRow(index)}
                                                             disableRipple
+                                                            disabled={denyAccess(novaUser!.title, status)}
                                                         >
                                                             <DeleteIcon />
                                                         </IconButton>
@@ -1072,7 +1110,7 @@ export default function EditPartsReqForm(props: Props) {
                                     variant="contained"
                                     startIcon={<AddIcon />}
                                     onClick={onCreateRow}
-                                    disabled={partsFetching}
+                                    disabled={partsFetching || denyAccess(novaUser!.title, status)}
                                     sx={{
                                         marginTop: "5px", backgroundColor: theme.palette.primary.dark,
                                         "&.MuiButton-root:hover": { backgroundColor: "#334787" }

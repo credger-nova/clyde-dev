@@ -1,4 +1,5 @@
 import * as React from "react"
+import { useAuth0 } from "@auth0/auth0-react"
 import PartsReqCard, { SkeletonCard } from "../components/supply-chain/PartsReqCard"
 import Grid from '@mui/material/Unstable_Grid2'
 import Box from '@mui/material/Box'
@@ -16,6 +17,7 @@ import { styled } from '@mui/material/styles'
 import Tooltip from '@mui/material/Tooltip'
 
 import { usePartsReqs } from "../hooks/partsReq"
+import { useNovaUser } from "../hooks/user"
 import PartsReqTable from "../components/supply-chain/PartsReqTable"
 
 const StyledToggleButtonGroup = styled(ToggleButtonGroup)(({ theme }) => ({
@@ -36,8 +38,11 @@ const StyledToggleButtonGroup = styled(ToggleButtonGroup)(({ theme }) => ({
 
 
 export default function SupplyChain() {
+    const { user } = useAuth0()
+    const { data: novaUser, isFetched } = useNovaUser(undefined, user?.email)
+
     const [activePartsReq, setActivePartsReq] = React.useState<PartsReq | null>(null)
-    const [partsReqQuery, setPartsReqQuery] = React.useState<PartsReqQuery>({})
+    const [partsReqQuery, setPartsReqQuery] = React.useState<PartsReqQuery>({ title: isFetched ? novaUser!.title : "" })
     const [open, setOpen] = React.useState<boolean>(false)
     const [uiType, setUIType] = React.useState<"card" | "table">(window.screen.width <= 600 ? "card" : "table")
     const [disabled, setDisabled] = React.useState<boolean>(window.screen.width <= 600)

@@ -103,8 +103,7 @@ const STATUS: Array<{ status: string, titles: Array<string> }> = [
     },
     {
         status: "Closed - Parts in Hand",
-        titles: (TITLES.find(item => item.group === "Field Service")?.titles ?? [])
-            .concat(TITLES.find(item => item.group === "IT")?.titles ?? [])
+        titles: TITLES.find(item => item.group === "IT")?.titles ?? []
     }
 ]
 

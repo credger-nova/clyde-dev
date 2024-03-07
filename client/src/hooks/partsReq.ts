@@ -10,7 +10,7 @@ const getAllPartsReqs = async (partsReqQuery: PartsReqQuery) => {
 }
 
 export function usePartsReqs(partsReqQuery: PartsReqQuery) {
-    return useQuery({ queryKey: ["partsReq", partsReqQuery], queryFn: () => getAllPartsReqs(partsReqQuery), enabled: !!partsReqQuery.title })
+    return useQuery({ queryKey: ["partsReq", partsReqQuery], queryFn: () => getAllPartsReqs(partsReqQuery), enabled: !!partsReqQuery.user })
 }
 
 // Get single Parts Req

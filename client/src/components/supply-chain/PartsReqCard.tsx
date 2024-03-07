@@ -232,7 +232,7 @@ export default function PartsReqCard(props: Props) {
             <CardContent sx={{ padding: "5px" }}>
                 <div style={{ display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
                     <Typography variant="caption">
-                        {`Estimated Cost: ${calcCost(partsReq.parts)}`}
+                        {`Estimated Cost: $${calcCost(partsReq.parts).toFixed(2)}`}
                     </Typography>
                     {<div style={{ display: "flex", alignItems: "center" }}>
                         {(partsReq.unit && UNIT_PLANNING.includes(partsReq.unit.unitNumber)) &&

@@ -13,11 +13,13 @@ import { useUploadFiles } from "../../hooks/storage"
 
 import { toTitleCase } from "../../utils/helperFunctions"
 import { calcCost } from "../../utils/helperFunctions"
+import { TITLES } from "../../utils/titles"
 
 import { OrderRow, PartsReq, UpdatePartsReq } from "../../types/partsReq"
 import { Unit } from "../../types/unit"
 import { Part } from "../../types/part"
 import { Comment } from "../../types/comment"
+import { NovaUser } from "../../types/novaUser"
 
 import { styled } from '@mui/material/styles'
 import Paper from '@mui/material/Paper'
@@ -52,15 +54,65 @@ import Skeleton from '@mui/material/Skeleton'
 import Checkbox from '@mui/material/Checkbox'
 import { useVendors } from "../../hooks/vendor"
 
-import { TITLES } from "../../utils/titles"
-
 const URGENCY = ["Unit Down", "Rush", "Standard"]
 const ORDER_TYPE = [{ type: "Rental" }, { type: "Third-Party" }, { type: "Shop Supplies" }, { type: "Truck Supplies" }, { type: "Stock", titles: ["Supply Chain", "Software"] }]
 const REGION = ["East Texas", "South Texas", "Midcon", "North Permian", "South Permian", "Pecos", "Carlsbad"]
-const STATUS = ["Rejected - Adjustments Required", "Approved", "Sourcing - Information Required", "Sourcing - Information Provided", "Sourcing - Pending Approval",
-    "Ordered - Awaiting Parts", "Completed - Parts Staged/Delivered"]
+const STATUS: Array<{ status: string, titles: Array<string> }> = [
+    {
+        status: "Pending Approval",
+        titles: TITLES.find(item => item.group === "IT")?.titles ?? []
+    },
+    {
+        status: "Rejected - Adjustments Required",
+        titles: (TITLES.find(item => item.group === "Ops Manager")?.titles ?? [])
+            .concat(TITLES.find(item => item.group === "Ops Director")?.titles ?? [])
+            .concat(TITLES.find(item => item.group === "SVP")?.titles ?? [])
+            .concat(TITLES.find(item => item.group === "IT")?.titles ?? [])
+    },
+    {
+        status: "Approved",
+        titles: (TITLES.find(item => item.group === "Ops Manager")?.titles ?? [])
+            .concat(TITLES.find(item => item.group === "Ops Director")?.titles ?? [])
+            .concat(TITLES.find(item => item.group === "SVP")?.titles ?? [])
+            .concat(TITLES.find(item => item.group === "IT")?.titles ?? [])
+    },
+    {
+        status: "Sourcing - Information Required",
+        titles: (TITLES.find(item => item.group === "Supply Chain")?.titles ?? [])
+            .concat(TITLES.find(item => item.group === "IT")?.titles ?? [])
+    },
+    {
+        status: "Sourcing - Information Provided",
+        titles: (TITLES.find(item => item.group === "Supply Chain")?.titles ?? [])
+            .concat(TITLES.find(item => item.group === "IT")?.titles ?? [])
+    },
+    {
+        status: "Sourcing - Pending Approval",
+        titles: (TITLES.find(item => item.group === "Supply Chain")?.titles ?? [])
+            .concat(TITLES.find(item => item.group === "IT")?.titles ?? [])
+    },
+    {
+        status: "Ordered - Awaiting Parts",
+        titles: (TITLES.find(item => item.group === "Supply Chain")?.titles ?? [])
+            .concat(TITLES.find(item => item.group === "IT")?.titles ?? [])
+    },
+    {
+        status: "Completed - Parts Staged/Delivered",
+        titles: (TITLES.find(item => item.group === "Supply Chain")?.titles ?? [])
+            .concat(TITLES.find(item => item.group === "IT")?.titles ?? [])
+    },
+    {
+        status: "Closed - Parts in Hand",
+        titles: (TITLES.find(item => item.group === "Field Service")?.titles ?? [])
+            .concat(TITLES.find(item => item.group === "IT")?.titles ?? [])
+    }
+]
 
 const FIELD_SERVICE_TITLES = TITLES.find(item => item.group === "Field Service")?.titles ?? []
+const OPS_MANAGER_TITLES = TITLES.find(item => item.group === "Ops Manager")?.titles ?? []
+const OPS_DIRECTOR_TITLES = TITLES.find(item => item.group === "Ops Director")?.titles ?? []
+const SUPPLY_CHAIN_TITLES = TITLES.find(item => item.group === "Supply Chain")?.titles ?? []
+const SVP_TITLES = TITLES.find(item => item.group === "SVP")?.titles ?? []
 const IT_TITLES = TITLES.find(item => item.group === "IT")?.titles ?? []
 
 const Item = styled(Paper)(({ theme }) => ({
@@ -83,24 +135,14 @@ function CustomPopper(props: PopperProps) {
     )
 }
 
-function denyAccess(title: string, status: string, field?: string) {
-    // Field Service permissions
-    if (FIELD_SERVICE_TITLES.includes(title)) {
-        if (status === "Rejected - Adjustments Required") {
-            if (field !== "Status") {
-                return false
-            }
-        }
-        
-        return true
-    }
+function getAvailableStatus(user: NovaUser | undefined) {
+    if (user) {
+        const status = STATUS.filter(item => item.titles.includes(user.title))
 
-    // IT permissions
-    if (IT_TITLES.includes(title)) {
-        return false
+        return status.map(item => item.status)
+    } else {
+        return []
     }
-
-    return true
 }
 
 interface Props {
@@ -215,7 +257,8 @@ export default function EditPartsReqForm(props: Props) {
     const onStatusChange = (_e: React.SyntheticEvent, value: string | null) => {
         setStatus(value ?? "")
 
-        if (["Sourcing - Information Required", "Ordered - Awaiting Parts", "Completed - Parts Staged/Delivered", "Closed - Parts in Hand"].includes(value ?? "")) {
+        if (["Sourcing - Information Required", "Ordered - Awaiting Parts", "Completed - Parts Staged/Delivered", "Closed - Parts in Hand"]
+            .includes(value ?? "")) {
             setContact(`${novaUser?.firstName} ${novaUser?.lastName}`)
         } else {
             setContact("")
@@ -359,6 +402,77 @@ export default function EditPartsReqForm(props: Props) {
         return part ? true : false
     }
 
+    function denyAccess(title: string, status: string, field?: string) {
+        // Field Service permissions
+        if (FIELD_SERVICE_TITLES.includes(title)) {
+            if (status === "Rejected - Adjustments Required") {
+                if (field !== "Status") {
+                    return false
+                }
+            }
+
+            return true
+        }
+
+        // Ops Manager permissions
+        if (OPS_MANAGER_TITLES.includes(title)) {
+            if (partsReq.status === "Pending Approval") {
+                if (field === "Status" && calcCost(rows as Array<OrderRow>) < 5000) {
+                    return false
+                }
+            }
+            if (partsReq.status === "Sourcing - Information Required") {
+                if (field !== "Status" && field !== "Amex") {
+                    return false
+                }
+            }
+
+            return true
+        }
+
+        // Ops Director permissions
+        if (OPS_DIRECTOR_TITLES.includes(title)) {
+            if (partsReq.status === "Pending Approval") {
+                if (field === "Status" && calcCost(rows as Array<OrderRow>) < 10000) {
+                    return false
+                }
+            }
+
+            return true
+        }
+
+        // SVP permissions
+        if (SVP_TITLES.includes(title)) {
+            if (partsReq.status === "Pending Approval") {
+                if (field === "Status") {
+                    return false
+                }
+            }
+
+            return true
+        }
+
+        // Supply Chain permissions
+        if (SUPPLY_CHAIN_TITLES.includes(title)) {
+            if (partsReq.status === "Approved" || partsReq.status === "Sourcing - Information Required" ||
+                partsReq.status === "Sourcing - Information Provided" || partsReq.status === "Sourcing - Pending Approval" ||
+                partsReq.status === "Ordered - Awaiting Parts" || partsReq.status === "Completed - Parts Staged/Delivered") {
+                if (field === "Status" || field === "Amex" || field === "Pickup") {
+                    return false
+                }
+            }
+
+            return true
+        }
+
+        // IT permissions
+        if (IT_TITLES.includes(title)) {
+            return false
+        }
+
+        return true
+    }
+
     if (isFetched) {
         return (
             <Box sx={{
@@ -375,7 +489,7 @@ export default function EditPartsReqForm(props: Props) {
                             <Item sx={{ marginBottom: "15px" }}>
                                 <Box>
                                     <Autocomplete
-                                        options={STATUS}
+                                        options={getAvailableStatus(novaUser)}
                                         onChange={onStatusChange}
                                         value={status}
                                         disableClearable
@@ -384,6 +498,7 @@ export default function EditPartsReqForm(props: Props) {
                                             variant="standard"
                                             label="Status"
                                         />}
+                                        //isOptionEqualToValue={(option, value) => option.status === value.status}
                                         renderOption={(props, option, { inputValue }) => {
                                             const matches = match(option, inputValue, { insideWords: true, requireMatchAll: true });
                                             const parts = parse(option, matches);
@@ -639,7 +754,7 @@ export default function EditPartsReqForm(props: Props) {
                                                     </li>
                                                 );
                                             }}
-                                            readOnly={denyAccess(novaUser!.title, status)}
+                                            readOnly={denyAccess(novaUser!.title, status, "Pickup")}
                                         />
                                     </Box>
                                 </Item>
@@ -770,7 +885,7 @@ export default function EditPartsReqForm(props: Props) {
                         </Grid>
                         <Grid xs={12} sm={4}>
                             <Item sx={{ marginBottom: "10px" }}>
-                                <p style={{ margin: 0 }}><b>Estimated Total Cost: </b>{calcCost(rows as Array<OrderRow>)}</p>
+                                <p style={{ margin: 0 }}><b>Estimated Total Cost: </b>${calcCost(rows as Array<OrderRow>).toFixed(2)}</p>
                             </Item>
                             {status !== "Pending Approval" && status !== "Rejected - Adjustments Required" && status !== "Approved" &&
                                 <Item sx={{ marginBottom: "10px" }}>
@@ -782,9 +897,10 @@ export default function EditPartsReqForm(props: Props) {
                                             checked={amex}
                                             onChange={onAmexChange}
                                             disableRipple
+                                            disabled={denyAccess(novaUser!.title, status, "Amex")}
                                         />
                                         <Autocomplete
-                                            disabled={!amex}
+                                            disabled={!amex || denyAccess(novaUser!.title, status, "Amex")}
                                             options={vendors ? vendors : []}
                                             loading={vendorsFetching}
                                             onChange={onVendorChange}
@@ -1100,7 +1216,7 @@ export default function EditPartsReqForm(props: Props) {
                                                 <TableCell sx={{ border: "none" }} />
                                                 <TableCell sx={{ border: "none" }} />
                                                 <TableCell sx={{ border: "none" }} />
-                                                <TableCell sx={{ border: "none" }}><b>{calcCost(rows as Array<OrderRow>)}</b></TableCell>
+                                                <TableCell sx={{ border: "none" }}><b>${calcCost(rows as Array<OrderRow>).toFixed(2)}</b></TableCell>
                                                 <TableCell sx={{ border: "none" }} />
                                             </TableRow>
                                         }

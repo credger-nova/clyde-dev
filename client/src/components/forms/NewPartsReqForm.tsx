@@ -599,7 +599,7 @@ export default function PartsReqForm() {
                         </Grid>
                         <Grid xs={12} sm={4}>
                             <Item sx={{ marginBottom: "10px" }}>
-                                <p style={{ margin: 0 }}><b>Estimated Total Cost: </b>{calcCost(rows as Array<OrderRow>)}</p>
+                                <p style={{ margin: 0 }}><b>Estimated Total Cost: </b>${calcCost(rows as Array<OrderRow>).toFixed(2)}</p>
                             </Item>
                             <Item style={{ overflow: "auto" }}>
                                 <b><p style={{ margin: 0 }}>Comments:</p></b>
@@ -839,7 +839,7 @@ export default function PartsReqForm() {
                                             <TableCell sx={{ border: "none" }} />
                                             <TableCell sx={{ border: "none" }} />
                                             <TableCell sx={{ border: "none" }} />
-                                            <TableCell sx={{ border: "none" }}><b>{calcCost(rows as Array<OrderRow>)}</b></TableCell>
+                                            <TableCell sx={{ border: "none" }}><b>${calcCost(rows as Array<OrderRow>).toFixed(2)}</b></TableCell>
                                             <TableCell sx={{ border: "none" }} />
                                         </TableRow>
                                     </TableBody>

@@ -1,6 +1,7 @@
 import { Unit } from "./unit";
 import { Comment } from "./comment";
 import { File } from "./file";
+import { NovaUser } from "./novaUser";
 
 export interface OrderRow {
     id: string,
@@ -33,7 +34,7 @@ export interface PartsReq {
 }
 
 export interface PartsReqQuery {
-    title: string,
+    user: NovaUser | undefined | null,
     searchString?: string,
     id?: string,
     afe?: Array<string>,

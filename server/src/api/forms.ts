@@ -1,20 +1,22 @@
 import { prisma } from "../utils/prisma-client"
 import { CreatePartsReq, PartsReq, PartsReqQuery, UpdatePartsReq } from "../models/partsReq"
 import { TITLES } from "../utils/titles"
+import { NovaUser } from "../models/novaUser"
+import { getDirectorsEmployees, getManagersEmployees } from "./kpa"
 
 const URGENCY_SORT = ["Unit Down", "Rush", "Standard", "Stock"]
 const ALL_STATUS = ["Pending Approval", "Rejected - Adjustments Required", "Approved", "Sourcing - Information Required", "Sourcing - Information Provided",
     "Sourcing - Pending Approval", "Ordered - Awaiting Parts", "Completed - Parts Staged/Delivered", "Closed - Parts in Hand"]
-const OPS_MANAGER_STATUS = [
-    "Pending Approval", "Rejected - Adjustments Required", "Approved"
-]
 const SUPPLY_CHAIN_STATUS = [
     "Sourcing - Information Required", "Sourcing - Information Provided", "Sourcing - Pending Approval", "Ordered - Awaiting Parts", "Completed - Parts Staged/Delivered"
 ]
+const SVP_STATUS = ["Pending Approval"]
 
 const FIELD_SERVICE_TITLES = TITLES.find(item => item.group === "Field Service")?.titles ?? []
 const OPS_MANAGER_TITLES = TITLES.find(item => item.group === "Ops Manager")?.titles ?? []
+const OPS_DIRECTOR_TITLES = TITLES.find(item => item.group === "Ops Director")?.titles ?? []
 const SUPPLY_CHAIN_TITLES = TITLES.find(item => item.group === "Supply Chain")?.titles ?? []
+const SVP_TITLES = TITLES.find(item => item.group === "SVP")?.titles ?? []
 const IT_TITLES = TITLES.find(item => item.group === "IT")?.titles ?? []
 
 async function genSystemComment(message: string, user: string, id: number) {
@@ -29,12 +31,36 @@ async function genSystemComment(message: string, user: string, id: number) {
 }
 
 function allowedStatus(title: string) {
-    if (FIELD_SERVICE_TITLES.includes(title)) {
+    if (FIELD_SERVICE_TITLES.includes(title) || OPS_MANAGER_TITLES.includes(title) || OPS_DIRECTOR_TITLES.includes(title)) {
         return ALL_STATUS
-    } else if (OPS_MANAGER_TITLES.includes(title)) {
-        return OPS_MANAGER_STATUS
+    } else if (SVP_TITLES.includes(title)) {
+        return SVP_STATUS
     } else if (SUPPLY_CHAIN_TITLES.includes(title)) {
         return SUPPLY_CHAIN_STATUS
+    } else if (IT_TITLES.includes(title)) {
+        return ALL_STATUS
+    }
+}
+
+async function allowedRequester(user: NovaUser | undefined | null) {
+    if (user) {
+        if (FIELD_SERVICE_TITLES.includes(user.title)) {
+            return [`${user.firstName} ${user.lastName}`]
+        } else if (OPS_MANAGER_TITLES.includes(user.title)) {
+            const employees = await getManagersEmployees(user.id)
+
+            return employees.map((employee) => `${employee.firstName} ${employee.lastName}`)
+        } else if (OPS_DIRECTOR_TITLES.includes(user.title)) {
+            const employees = await getDirectorsEmployees(user.id)
+
+            return employees.map((employee) => `${employee.firstName} ${employee.lastName}`)
+        } else if (SVP_TITLES.includes(user.title)) {
+
+        } else if (SUPPLY_CHAIN_TITLES.includes(user.title)) {
+
+        } else if (IT_TITLES.includes(user.title)) {
+
+        }
     }
 }
 
@@ -44,8 +70,11 @@ export const getPartsReqs = async (query: PartsReqQuery) => {
         where: {
             AND: [
                 {
+                    requester: {
+                        in: await allowedRequester(query.user)
+                    },
                     status: {
-                        in: allowedStatus(query.title)
+                        in: allowedStatus(query.user ? query.user.title : "")
                     }
                 },
                 {
@@ -271,7 +300,7 @@ export const updatePartsReq = async (id: number, user: string, updateReq: Partia
         })
 
         // Add system comments
-        const message = `Added (x${part.qty}): ${part.itemNumber}`
+        const message = `Added(x${part.qty}): ${part.itemNumber} `
 
         await genSystemComment(message, user, id)
     }
@@ -286,7 +315,7 @@ export const updatePartsReq = async (id: number, user: string, updateReq: Partia
             })
 
             // Add system comments
-            const message = `Removed (x${row.qty}): ${row.itemNumber}`
+            const message = `Removed(x${row.qty}): ${row.itemNumber} `
 
             await genSystemComment(message, user, id)
         }
@@ -304,7 +333,7 @@ export const updatePartsReq = async (id: number, user: string, updateReq: Partia
         })
 
         // Add system comments
-        const message = `Removed Document: ${delFile.name}`
+        const message = `Removed Document: ${delFile.name} `
 
         await genSystemComment(message, user, id)
     }
@@ -322,7 +351,7 @@ export const updatePartsReq = async (id: number, user: string, updateReq: Partia
         newFileIds.push(newFile.id)
 
         // Add system comments
-        const message = `Added Document: ${file}`
+        const message = `Added Document: ${file} `
 
         await genSystemComment(message, user, id)
     }
@@ -330,55 +359,55 @@ export const updatePartsReq = async (id: number, user: string, updateReq: Partia
     // Generate system comments based on what fields have changed
     // Status change
     if (oldPartsReq?.status !== status) {
-        const message = `Status Change: ${oldPartsReq?.status} -> ${status}`
+        const message = `Status Change: ${oldPartsReq?.status} -> ${status} `
 
         await genSystemComment(message, user, id)
     }
     // AFE change
     if (oldPartsReq?.afe !== updateReq.afe) {
-        const message = `AFE Change: ${oldPartsReq?.afe} -> ${updateReq.afe}`
+        const message = `AFE Change: ${oldPartsReq?.afe} -> ${updateReq.afe} `
 
         await genSystemComment(message, user, id)
     }
     // SO change
     if (oldPartsReq?.so !== updateReq.so) {
-        const message = `SO Change: ${oldPartsReq?.so} -> ${updateReq.so}`
+        const message = `SO Change: ${oldPartsReq?.so} -> ${updateReq.so} `
 
         await genSystemComment(message, user, id)
     }
     // Unit change
     if (oldPartsReq?.unitNumber !== updateReq.unit?.unitNumber) {
-        const message = `Unit Change: ${oldPartsReq?.unitNumber} -> ${updateReq.unit?.unitNumber}`
+        const message = `Unit Change: ${oldPartsReq?.unitNumber} -> ${updateReq.unit?.unitNumber} `
 
         await genSystemComment(message, user, id)
     }
     // Truck change
     if (oldPartsReq?.truck !== updateReq.truck) {
-        const message = `Truck Change: ${oldPartsReq?.truck} -> ${updateReq.truck}`
+        const message = `Truck Change: ${oldPartsReq?.truck} -> ${updateReq.truck} `
 
         await genSystemComment(message, user, id)
     }
     // Urgency change
     if (oldPartsReq?.urgency !== updateReq.urgency) {
-        const message = `Urgency Change: ${oldPartsReq?.urgency} -> ${updateReq.urgency}`
+        const message = `Urgency Change: ${oldPartsReq?.urgency} -> ${updateReq.urgency} `
 
         await genSystemComment(message, user, id)
     }
     // Order Type change
     if (oldPartsReq?.orderType !== updateReq.orderType) {
-        const message = `Order Type Change: ${oldPartsReq?.orderType} -> ${updateReq.orderType}`
+        const message = `Order Type Change: ${oldPartsReq?.orderType} -> ${updateReq.orderType} `
 
         await genSystemComment(message, user, id)
     }
     // Pickup Location change
     if (oldPartsReq?.pickup !== updateReq.pickup) {
-        const message = `Pick Up Location Change: ${oldPartsReq?.pickup} -> ${updateReq.pickup}`
+        const message = `Pick Up Location Change: ${oldPartsReq?.pickup} -> ${updateReq.pickup} `
 
         await genSystemComment(message, user, id)
     }
     // Region change
     if (oldPartsReq?.region !== updateReq.region) {
-        const message = `Region Change: ${oldPartsReq?.region} -> ${updateReq.region}`
+        const message = `Region Change: ${oldPartsReq?.region} -> ${updateReq.region} `
 
         await genSystemComment(message, user, id)
     }
@@ -388,13 +417,13 @@ export const updatePartsReq = async (id: number, user: string, updateReq: Partia
             status = "Sourcing - Pending Approval"
         }
 
-        const message = `Amex Request Change: ${oldPartsReq?.amex} -> ${updateReq.amex}`
+        const message = `Amex Request Change: ${oldPartsReq?.amex} -> ${updateReq.amex} `
 
         await genSystemComment(message, user, id)
     }
     // Vendor change
     if (oldPartsReq?.vendor !== updateReq.vendor) {
-        const message = `Vendor Change: ${oldPartsReq?.vendor} -> ${updateReq.vendor}`
+        const message = `Vendor Change: ${oldPartsReq?.vendor} -> ${updateReq.vendor} `
 
         await genSystemComment(message, user, id)
     }

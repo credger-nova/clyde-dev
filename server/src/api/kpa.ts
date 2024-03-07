@@ -236,3 +236,59 @@ export const getEmployee = async (id?: string, email?: string) => {
         }
     }
 }
+
+// Get all employees under a manager
+export const getManagersEmployees = async (id: string) => {
+    const postBody = {
+        token: KPA_KEY
+    }
+
+    const { data } = await axios.post(ALL_USERS_URL, postBody)
+
+    var employees = []
+
+    for (const user of data.users) {
+        if (id === user.supervisor_id) {
+            employees.push({
+                id: user.id,
+                firstName: user.firstname,
+                lastName: user.lastname,
+                email: user.email,
+                title: user.jobTitle_id,
+                region: user.lineOfBusiness_id,
+                supervisorId: user.supervisor_id,
+                managerId: user.manager_id
+            } as NovaUser)
+        }
+    }
+
+    return employees
+}
+
+// Get all employees under a director
+export const getDirectorsEmployees = async (id: string) => {
+    const postBody = {
+        token: KPA_KEY
+    }
+
+    const { data } = await axios.post(ALL_USERS_URL, postBody)
+
+    var employees = []
+
+    for (const user of data.users) {
+        if (id === user.manager_id || id === user.supervisor_id) {
+            employees.push({
+                id: user.id,
+                firstName: user.firstname,
+                lastName: user.lastname,
+                email: user.email,
+                title: user.jobTitle_id,
+                region: user.lineOfBusiness_id,
+                supervisorId: user.supervisor_id,
+                managerId: user.manager_id
+            } as NovaUser)
+        }
+    }
+
+    return employees
+}

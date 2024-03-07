@@ -15,5 +15,5 @@ export function calcCost(parts: Array<OrderRow>) {
         sum += Number(part.cost) * part.qty
     }
 
-    return `$${sum.toFixed(2)}`
+    return sum
 }

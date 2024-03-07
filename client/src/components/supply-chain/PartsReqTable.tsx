@@ -133,7 +133,7 @@ export default function PartsReqTable(props: Props) {
                             <StyledTableCell>{partsReq.urgency}</StyledTableCell>
                             <StyledTableCell>{partsReq.orderType}</StyledTableCell>
                             <StyledTableCell>{partsReq.region}</StyledTableCell>
-                            <StyledTableCell>{calcCost(partsReq.parts)}</StyledTableCell>
+                            <StyledTableCell>${calcCost(partsReq.parts).toFixed(2)}</StyledTableCell>
                             <StyledTableCell>
                                 {<div style={{ display: "flex", alignItems: "center" }}>
                                     {(partsReq.unit && UNIT_PLANNING.includes(partsReq.unit.unitNumber)) &&

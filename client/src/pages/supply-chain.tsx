@@ -42,7 +42,7 @@ export default function SupplyChain() {
     const { data: novaUser, isFetched } = useNovaUser(undefined, user?.email)
 
     const [activePartsReq, setActivePartsReq] = React.useState<PartsReq | null>(null)
-    const [partsReqQuery, setPartsReqQuery] = React.useState<PartsReqQuery>({ title: isFetched ? novaUser!.title : "" })
+    const [partsReqQuery, setPartsReqQuery] = React.useState<PartsReqQuery>({ user: isFetched ? novaUser : null })
     const [open, setOpen] = React.useState<boolean>(false)
     const [uiType, setUIType] = React.useState<"card" | "table">(window.screen.width <= 600 ? "card" : "table")
     const [disabled, setDisabled] = React.useState<boolean>(window.screen.width <= 600)

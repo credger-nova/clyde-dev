@@ -1,7 +1,5 @@
 import { FastifyInstance, FastifyRequest } from "fastify"
-import axios from "axios"
-import { NovaUser } from "../models/novaUser"
-import { getAfeNumbers, getAllEmployees, getEmployee } from "../api/kpa"
+import { getAfeNumbers, getAllEmployees, getDirectorsEmployees, getEmployee, getManagersEmployees } from "../api/kpa"
 
 async function routes(fastify: FastifyInstance) {
     // Route to get AFEs from KPA
@@ -33,6 +31,32 @@ async function routes(fastify: FastifyInstance) {
             res.status(200).send(user)
         } else {
             res.status(404).send({ error: "User not found." })
+        }
+    })
+
+    // Route to get all of a manager's employees
+    fastify.get<{ Params: { id: string } }>("/manager/:id/employees", async (req, res) => {
+        const { id } = req.params
+
+        const users = await getManagersEmployees(id)
+
+        if (users) {
+            res.status(200).send(users)
+        } else {
+            res.status(404).send({ error: "No employees found." })
+        }
+    })
+
+    // Route to get all of a director's employees
+    fastify.get<{ Params: { region: string } }>("/director/:region/employees", async (req, res) => {
+        const { region } = req.params
+
+        const users = await getDirectorsEmployees(region)
+
+        if (users) {
+            res.status(200).send(users)
+        } else {
+            res.status(404).send({ error: "No employees found." })
         }
     })
 }

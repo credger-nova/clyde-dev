@@ -33,3 +33,25 @@ export function useAllNovaUsers() {
         queryFn: getAllNovaUsers
     })
 }
+
+// Get all manager's employees
+const getManagersEmployees = async (id: string) => {
+    const { data } = await axios.get<Array<NovaUser>>(`${import.meta.env.VITE_API_BASE}/kpa/manager/${id}/employees`)
+
+    return data
+}
+
+export function useManagersEmployees(id: string) {
+    return useQuery({ queryKey: ["employees", id], queryFn: () => getManagersEmployees(id) })
+}
+
+// Get all director's employees
+const getDirectorsEmployees = async (id: string) => {
+    const { data } = await axios.get<Array<NovaUser>>(`${import.meta.env.VITE_API_BASE}/kpa/director/${id}/employees`)
+
+    return data
+}
+
+export function useDirectorsEmployees(id: string) {
+    return useQuery({ queryKey: ["employees", id], queryFn: () => getDirectorsEmployees(id) })
+}

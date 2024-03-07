@@ -73,7 +73,7 @@ export default function ProfileMenu() {
                 transformOrigin={{ horizontal: 'right', vertical: 'top' }}
                 anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
             >
-                <MenuItem >
+                <MenuItem disabled>
                     <Avatar sx={{ height: "20px!important", width: "20px!important" }} src={user?.picture} /> Profile
                 </MenuItem>
                 <Divider />

@@ -1,5 +1,5 @@
 import { prisma } from "../utils/prisma-client"
-import { CreatePartsReq, PartsReq, PartsReqQuery, UpdatePartsReq } from "../models/partsReq"
+import { CreatePartsReq, OrderRow, PartsReq, PartsReqQuery, UpdatePartsReq } from "../models/partsReq"
 import { TITLES } from "../utils/titles"
 import { NovaUser } from "../models/novaUser"
 import { getDirectorsEmployees, getManagersEmployees } from "./kpa"
@@ -61,6 +61,24 @@ async function allowedRequester(user: NovaUser | undefined | null) {
         } else if (IT_TITLES.includes(user.title)) {
 
         }
+    }
+}
+
+function determineReceived(parts: Array<OrderRow> | undefined) {
+    if (parts && Math.max(...parts.map(part => part.received)) > 0) {
+        let closed = true
+        for (const part of parts) {
+            if (part.received !== part.qty) {
+                closed = false
+            }
+        }
+        if (closed) {
+            return "Closed - Parts in Hand"
+        } else {
+            return "Completed - Parts Staged/Delivered"
+        }
+    } else {
+        return "Completed - Parts Staged/Delivered"
     }
 }
 
@@ -265,7 +283,7 @@ export const updatePartsReq = async (id: number, user: string, updateReq: Partia
         })
 
         if (oldPart?.qty !== part.qty || oldPart.itemNumber !== part.itemNumber || oldPart.description !== part.description ||
-            oldPart.cost !== part.cost) {
+            oldPart.cost !== part.cost || oldPart.received !== part.received) {
             partsUpdated = true
 
             // Update part
@@ -277,15 +295,20 @@ export const updatePartsReq = async (id: number, user: string, updateReq: Partia
                     qty: part.qty,
                     itemNumber: part.itemNumber,
                     description: part.description,
-                    cost: part.cost
+                    cost: part.cost,
+                    received: part.received
                 }
             })
         }
     }
 
     // Determine status of updated Parts Req
-    let status = partsUpdated && (oldPartsReq?.status !== "Sourcing - Information Required" && updateReq.status !== "Sourcing - Information Required") ?
+    let status = partsUpdated && (oldPartsReq?.status === "Rejected - Adjustments Required" || updateReq.status === "Rejected - Adjustments Required") ?
         "Pending Approval" : updateReq.status
+
+    if (partsUpdated && updateReq.status === "Completed - Parts Staged/Delivered") {
+        status = determineReceived(updateReq.parts)
+    }
 
     // Add new parts rows
     for (const part of newParts) {

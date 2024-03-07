@@ -186,7 +186,7 @@ export default function PartsReqForm() {
     }
 
     const onCreateRow = () => {
-        setRows([...rows, { qty: 1, itemNumber: "", description: "", cost: "" }])
+        setRows([...rows, { qty: 1, itemNumber: "", description: "", cost: "", received: 0 }])
     }
 
     function removeRow(index: number) {
@@ -822,7 +822,7 @@ export default function PartsReqForm() {
                                                             disabled={partExists(rows[index].itemNumber)}
                                                         />
                                                     </TableCell>
-                                                    <TableCell>{row.cost ? `$${(Number(row.cost) * row.qty).toFixed(2)}` : ""}</TableCell>
+                                                    <TableCell sx={{ paddingBottom: 0 }}>{row.cost ? `$${(Number(row.cost) * row.qty).toFixed(2)}` : ""}</TableCell>
                                                     <TableCell>
                                                         <IconButton
                                                             onClick={() => removeRow(index)}

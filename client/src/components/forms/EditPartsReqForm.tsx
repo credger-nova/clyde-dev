@@ -292,7 +292,7 @@ export default function EditPartsReqForm(props: Props) {
     }
 
     const onCreateRow = () => {
-        setRows([...rows, { qty: 1, itemNumber: "", description: "", cost: "" }])
+        setRows([...rows, { qty: 1, itemNumber: "", description: "", cost: "", received: 0 }])
     }
 
     function removeRow(index: number) {
@@ -358,6 +358,14 @@ export default function EditPartsReqForm(props: Props) {
         setRows(tempRows)
     }
 
+    const onReceivedChange = (index: number) => (e: React.ChangeEvent<HTMLInputElement>) => {
+        const tempRows = [...rows]
+        const row = { ...tempRows[index] }
+        row.received = Number(e.target.value)
+        tempRows[index] = row
+        setRows(tempRows)
+    }
+
     const onAddComment = () => {
         setComments((comments) => [
             ...comments,
@@ -407,6 +415,11 @@ export default function EditPartsReqForm(props: Props) {
         if (FIELD_SERVICE_TITLES.includes(title)) {
             if (status === "Rejected - Adjustments Required") {
                 if (field !== "Status") {
+                    return false
+                }
+            }
+            if (status === "Completed - Parts Staged/Delivered") {
+                if (field === "Received") {
                     return false
                 }
             }
@@ -1003,6 +1016,9 @@ export default function EditPartsReqForm(props: Props) {
                                 <Table size="small">
                                     <TableHead>
                                         <TableRow>
+                                            {partsReq.status === "Completed - Parts Staged/Delivered" ?
+                                                <TableCell width={"7%"}>Qty Received</TableCell> : null
+                                            }
                                             <TableCell width={"7%"}>Qty Needed</TableCell>
                                             <TableCell width={"25%"}>Part #</TableCell>
                                             <TableCell>Description</TableCell>
@@ -1017,6 +1033,13 @@ export default function EditPartsReqForm(props: Props) {
                                                 <TableRow
                                                     key={index}
                                                 >
+                                                    {partsReq.status === "Completed - Parts Staged/Delivered" ?
+                                                        <TableCell>
+                                                            <Skeleton
+                                                                animation={"wave"}
+                                                                sx={{ width: "100%" }}
+                                                            />
+                                                        </TableCell> : null}
                                                     <TableCell>
                                                         <Skeleton
                                                             animation={"wave"}
@@ -1052,6 +1075,22 @@ export default function EditPartsReqForm(props: Props) {
                                                 <TableRow
                                                     key={index}
                                                 >
+                                                    {partsReq.status === "Completed - Parts Staged/Delivered" ?
+                                                        <TableCell>
+                                                            <StyledTextField
+                                                                type="number"
+                                                                variant="standard"
+                                                                value={row.received}
+                                                                onChange={onReceivedChange(index)}
+                                                                InputProps={{
+                                                                    inputProps: { min: partsReq.parts[index].received, max: row.qty },
+                                                                    readOnly: denyAccess(novaUser!.title, status, "Received")
+                                                                }}
+                                                                sx={{ width: "100%" }}
+                                                                helperText={!rows[index].itemNumber && " "}
+                                                            />
+                                                        </TableCell> : null
+                                                    }
                                                     <TableCell>
                                                         <StyledTextField
                                                             type="number"
@@ -1197,7 +1236,7 @@ export default function EditPartsReqForm(props: Props) {
                                                             disabled={partExists(rows[index].itemNumber)}
                                                         />
                                                     </TableCell>
-                                                    <TableCell>{row.cost ? `$${(Number(row.cost) * row.qty).toFixed(2)}` : ""}</TableCell>
+                                                    <TableCell sx={{ paddingBottom: 0 }}>{row.cost ? `$${(Number(row.cost) * row.qty).toFixed(2)}` : ""}</TableCell>
                                                     <TableCell>
                                                         <IconButton
                                                             onClick={() => removeRow(index)}
@@ -1212,6 +1251,7 @@ export default function EditPartsReqForm(props: Props) {
                                         })}
                                         {partsFetching ? null :
                                             <TableRow>
+                                                <TableCell sx={{ border: "none" }} />
                                                 <TableCell sx={{ border: "none" }} />
                                                 <TableCell sx={{ border: "none" }} />
                                                 <TableCell sx={{ border: "none" }} />

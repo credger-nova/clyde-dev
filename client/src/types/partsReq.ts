@@ -8,7 +8,8 @@ export interface OrderRow {
     qty: number,
     itemNumber: string,
     description: string | null,
-    cost: string | null
+    cost: string | null,
+    received: number
 }
 
 export interface PartsReq {

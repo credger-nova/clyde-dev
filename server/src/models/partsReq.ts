@@ -6,7 +6,8 @@ export interface OrderRow {
     qty: number,
     itemNumber: string,
     cost: string | null,
-    description: string | null
+    description: string | null,
+    received: number
 }
 
 export interface PartsReq {

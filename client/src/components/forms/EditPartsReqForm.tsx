@@ -432,6 +432,9 @@ export default function EditPartsReqForm(props: Props) {
                 if (field === "Status" && calcCost(rows as Array<OrderRow>) < 5000) {
                     return false
                 }
+                if (field !== "Status") {
+                    return false
+                }
             }
             if (partsReq.status === "Sourcing - Information Required") {
                 if (field !== "Status" && field !== "Amex") {

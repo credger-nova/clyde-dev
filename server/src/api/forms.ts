@@ -8,7 +8,8 @@ const URGENCY_SORT = ["Unit Down", "Rush", "Standard", "Stock"]
 const ALL_STATUS = ["Pending Approval", "Rejected - Adjustments Required", "Approved", "Sourcing - Information Required", "Sourcing - Information Provided",
     "Sourcing - Pending Approval", "Ordered - Awaiting Parts", "Completed - Parts Staged/Delivered", "Closed - Parts in Hand"]
 const SUPPLY_CHAIN_STATUS = [
-    "Sourcing - Information Required", "Sourcing - Information Provided", "Sourcing - Pending Approval", "Ordered - Awaiting Parts", "Completed - Parts Staged/Delivered"
+    "Approved", "Sourcing - Information Required", "Sourcing - Information Provided", "Sourcing - Pending Approval", "Ordered - Awaiting Parts",
+    "Completed - Parts Staged/Delivered"
 ]
 const SVP_STATUS = ["Pending Approval"]
 

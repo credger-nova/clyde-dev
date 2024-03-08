@@ -109,7 +109,7 @@ export default function UnitMap(props: Props) {
     // Resize map when drawer is opened or closed
     React.useEffect(() => {
         setTimeout(() => map?.invalidateSize(), 500)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [context?.state.isDrawerOpen])
 
     return (
@@ -139,6 +139,7 @@ export default function UnitMap(props: Props) {
                                 onEachFeature={createPopup}
                                 filter={(feature) => feature.properties.manager === manager}
                                 style={createStyle(index)}
+                                key={manager}
                             />
                         </LayersControl.Overlay>
                     )

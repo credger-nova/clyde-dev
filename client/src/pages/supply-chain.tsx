@@ -107,7 +107,15 @@ export default function SupplyChain() {
                             >
                                 <Tooltip
                                     title="Cards"
-                                    arrow
+                                    enterDelay={1000}
+                                    componentsProps={{
+                                        tooltip: {
+                                            sx: {
+                                                border: "1px solid white",
+                                                bgcolor: "background.paper"
+                                            }
+                                        }
+                                    }}
                                 >
                                     <ToggleButton
                                         value="card"
@@ -117,7 +125,15 @@ export default function SupplyChain() {
                                 </Tooltip>
                                 <Tooltip
                                     title="Table"
-                                    arrow
+                                    enterDelay={1000}
+                                    componentsProps={{
+                                        tooltip: {
+                                            sx: {
+                                                border: "1px solid white",
+                                                bgcolor: "background.paper"
+                                            }
+                                        }
+                                    }}
                                 >
                                     <ToggleButton
                                         value="table"

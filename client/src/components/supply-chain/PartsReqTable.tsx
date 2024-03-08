@@ -140,6 +140,14 @@ export default function PartsReqTable(props: Props) {
                                         (partsReq.status === "Pending Approval" || partsReq.status === "Rejected - Adjustments Required") ?
                                         <Tooltip
                                             title="Travis Yount Must Approve All Non-PM Parts"
+                                            componentsProps={{
+                                                tooltip: {
+                                                    sx: {
+                                                        border: "1px solid white",
+                                                        bgcolor: "background.paper"
+                                                    }
+                                                }
+                                            }}
                                         >
                                             <ErrorOutlineIcon sx={{ color: "red", paddingRight: "3px" }} />
                                         </Tooltip> : null

@@ -30,7 +30,15 @@ export default function ProfileMenu() {
             <Tooltip
                 title="Profile"
                 placement="left"
-                arrow
+                enterDelay={3000}
+                componentsProps={{
+                    tooltip: {
+                        sx: {
+                            border: "1px solid white",
+                            bgcolor: "background.paper"
+                        }
+                    }
+                }}
             >
                 <IconButton onClick={handleClick}>
                     <Avatar src={user?.picture} />

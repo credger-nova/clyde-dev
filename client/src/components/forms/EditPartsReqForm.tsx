@@ -468,8 +468,13 @@ export default function EditPartsReqForm(props: Props) {
         if (SUPPLY_CHAIN_TITLES.includes(title)) {
             if (partsReq.status === "Approved" || partsReq.status === "Sourcing - Information Required" ||
                 partsReq.status === "Sourcing - Information Provided" || partsReq.status === "Sourcing - Pending Approval" ||
-                partsReq.status === "Ordered - Awaiting Parts" || partsReq.status === "Completed - Parts Staged/Delivered") {
-                if (field === "Status" || field === "Amex" || field === "Pickup") {
+                partsReq.status === "Ordered - Awaiting Parts") {
+                if (field === "Status" || field === "Amex") {
+                    return false
+                }
+            }
+            if (partsReq.status === "Completed - Parts Staged/Delivered" || status === "Completed - Parts Staged/Delivered") {
+                if (field === "Pickup") {
                     return false
                 }
             }

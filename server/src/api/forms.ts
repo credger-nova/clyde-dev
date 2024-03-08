@@ -6,7 +6,7 @@ import { getDirectorsEmployees, getManagersEmployees } from "./kpa"
 
 const URGENCY_SORT = ["Unit Down", "Rush", "Standard", "Stock"]
 const ALL_STATUS = ["Pending Approval", "Rejected - Adjustments Required", "Approved", "Sourcing - Information Required", "Sourcing - Information Provided",
-    "Sourcing - Pending Approval", "Ordered - Awaiting Parts", "Completed - Parts Staged/Delivered", "Closed - Parts in Hand"]
+    "Sourcing - Pending Approval", "Ordered - Awaiting Parts", "Completed - Parts Staged/Delivered", "Closed - Partially Received", "Closed - Parts in Hand"]
 const SUPPLY_CHAIN_STATUS = [
     "Approved", "Sourcing - Information Required", "Sourcing - Information Provided", "Sourcing - Pending Approval", "Ordered - Awaiting Parts",
     "Completed - Parts Staged/Delivered"
@@ -76,7 +76,7 @@ function determineReceived(parts: Array<OrderRow> | undefined) {
         if (closed) {
             return "Closed - Parts in Hand"
         } else {
-            return "Completed - Parts Staged/Delivered"
+            return "Closed - Partially Received"
         }
     } else {
         return "Completed - Parts Staged/Delivered"

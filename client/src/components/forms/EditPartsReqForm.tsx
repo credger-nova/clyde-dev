@@ -102,6 +102,10 @@ const STATUS: Array<{ status: string, titles: Array<string> }> = [
             .concat(TITLES.find(item => item.group === "IT")?.titles ?? [])
     },
     {
+        status: "Closed - Partially Received",
+        titles: TITLES.find(item => item.group === "IT")?.titles ?? []
+    },
+    {
         status: "Closed - Parts in Hand",
         titles: TITLES.find(item => item.group === "IT")?.titles ?? []
     }
@@ -417,7 +421,7 @@ export default function EditPartsReqForm(props: Props) {
                     return false
                 }
             }
-            if (status === "Completed - Parts Staged/Delivered") {
+            if (status === "Completed - Parts Staged/Delivered" || status === "Closed - Partially Received") {
                 if (field === "Received") {
                     return false
                 }
@@ -480,6 +484,9 @@ export default function EditPartsReqForm(props: Props) {
                 if (field === "Pickup") {
                     return false
                 }
+            }
+            if (field === "Rate") {
+                return false
             }
 
             return true
@@ -738,7 +745,8 @@ export default function EditPartsReqForm(props: Props) {
                             </Item>
                         </Grid>
                         <Grid xs={12} sm={4}>
-                            {(status === "Completed - Parts Staged/Delivered" || status === "Closed - Parts in Hand") &&
+                            {(status === "Completed - Parts Staged/Delivered" || status === "Closed - Partially Received" ||
+                                status === "Closed - Parts in Hand") &&
                                 <Item sx={{ marginBottom: "15px" }}>
                                     <Box>
                                         <Autocomplete
@@ -1023,7 +1031,8 @@ export default function EditPartsReqForm(props: Props) {
                                 <Table size="small">
                                     <TableHead>
                                         <TableRow>
-                                            {partsReq.status === "Completed - Parts Staged/Delivered" ?
+                                            {partsReq.status === "Completed - Parts Staged/Delivered" ||
+                                                partsReq.status === "Closed - Partially Received" ?
                                                 <TableCell width={"7%"}>Qty Received</TableCell> : null
                                             }
                                             <TableCell width={"7%"}>Qty Needed</TableCell>
@@ -1040,7 +1049,8 @@ export default function EditPartsReqForm(props: Props) {
                                                 <TableRow
                                                     key={index}
                                                 >
-                                                    {partsReq.status === "Completed - Parts Staged/Delivered" ?
+                                                    {partsReq.status === "Completed - Parts Staged/Delivered" ||
+                                                        partsReq.status === "Closed - Partially Received" ?
                                                         <TableCell>
                                                             <Skeleton
                                                                 animation={"wave"}
@@ -1082,7 +1092,8 @@ export default function EditPartsReqForm(props: Props) {
                                                 <TableRow
                                                     key={index}
                                                 >
-                                                    {partsReq.status === "Completed - Parts Staged/Delivered" ?
+                                                    {partsReq.status === "Completed - Parts Staged/Delivered" ||
+                                                        partsReq.status === "Closed - Partially Received" ?
                                                         <TableCell>
                                                             <StyledTextField
                                                                 type="number"
@@ -1237,10 +1248,10 @@ export default function EditPartsReqForm(props: Props) {
                                                                     step: "0.01",
                                                                     min: 0
                                                                 },
-                                                                readOnly: denyAccess(novaUser!.title, status)
+                                                                readOnly: denyAccess(novaUser!.title, status, "Rate")
                                                             }}
                                                             helperText={!rows[index].itemNumber && " "}
-                                                            disabled={partExists(rows[index].itemNumber)}
+                                                            disabled={partExists(rows[index].itemNumber) && denyAccess(novaUser!.title, status, "Rate")}
                                                         />
                                                     </TableCell>
                                                     <TableCell sx={{ paddingBottom: 0 }}>{row.cost ? `$${(Number(row.cost) * row.qty).toFixed(2)}` : ""}</TableCell>

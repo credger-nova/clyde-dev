@@ -14,7 +14,11 @@ import Logout from '@mui/icons-material/Logout'
 export default function ProfileMenu() {
     const { logout, user } = useAuth0()
 
-    const onLogout = () => logout()
+    const onLogout = () => logout({
+        logoutParams: {
+            returnTo: `${window.location.origin}`
+        }
+    })
 
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);

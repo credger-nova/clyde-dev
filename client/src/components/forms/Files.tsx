@@ -17,11 +17,12 @@ interface Props {
     files: Array<IFile>,
     deleteFiles: Array<string>,
     setDeleteFiles: React.Dispatch<React.SetStateAction<Array<string>>>,
-    folder: string
+    folder: string,
+    disabled: boolean
 }
 
 export default function Files(props: Props) {
-    const { newFiles, setNewFiles, files, deleteFiles, setDeleteFiles, folder } = props
+    const { newFiles, setNewFiles, files, deleteFiles, setDeleteFiles, folder, disabled } = props
 
     const { mutateAsync: getSignedURL } = useGetSignedURL()
 
@@ -89,6 +90,7 @@ export default function Files(props: Props) {
                                             <IconButton
                                                 disableRipple
                                                 onClick={() => handleRemoveNewFile(index)}
+                                                disabled={disabled}
                                                 sx={{ padding: "5px" }}
                                             >
                                                 <DeleteIcon />
@@ -140,6 +142,7 @@ export default function Files(props: Props) {
                             <IconButton
                                 disableRipple
                                 onClick={() => handleDelete(file.id)}
+                                disabled={disabled}
                                 sx={{ padding: "5px" }}
                             >
                                 {deleteFiles.includes(file.id) ?

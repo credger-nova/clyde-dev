@@ -9,7 +9,9 @@ export const SECONDARY_DARK = "#1A1E22";
 export const BACKGROUND = "#1C252F";
 export const PAPER = "#16181A";
 export const ERROR_MAIN = "#EB5959";
-export const ERROR_DARK = "#EB5959";
+export const ERROR_DARK = "#BE1010";
+export const SUCCESS_MAIN = "#1C812F"
+export const SUCCESS_DARK = "#1C812F"
 
 const theme: Theme = createTheme({
     palette: {
@@ -34,6 +36,10 @@ const theme: Theme = createTheme({
             main: ERROR_MAIN,
             dark: ERROR_DARK,
         },
+        success: {
+            main: SUCCESS_MAIN,
+            dark: SUCCESS_DARK
+        }
     },
     typography: {
         fontFamily: [

@@ -671,6 +671,7 @@ export default function PartsReqForm() {
                                 />
                                 <AddFileButton
                                     setNewFiles={setNewFiles}
+                                    disabled={false}
                                 />
                                 <Box
                                     sx={{ maxHeight: "250px", overflow: "auto" }}
@@ -682,6 +683,7 @@ export default function PartsReqForm() {
                                         deleteFiles={deleteFiles}
                                         setDeleteFiles={setDeleteFiles}
                                         folder={"parts-req"}
+                                        disabled={false}
                                     />
                                 </Box>
                             </Item>

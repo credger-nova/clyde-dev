@@ -151,7 +151,11 @@ function getAvailableStatus(user: NovaUser | undefined) {
 
 interface Props {
     partsReq: PartsReq,
-    setActivePartsReq: React.Dispatch<React.SetStateAction<PartsReq | null>>
+    setActivePartsReq: React.Dispatch<React.SetStateAction<PartsReq | null>>,
+    save: boolean,
+    setSave: React.Dispatch<React.SetStateAction<boolean>>,
+    setSaveDisabled: React.Dispatch<React.SetStateAction<boolean>>,
+    edit: boolean
 }
 
 interface PartOption extends Part {
@@ -159,7 +163,7 @@ interface PartOption extends Part {
 }
 
 export default function EditPartsReqForm(props: Props) {
-    const { partsReq, setActivePartsReq } = props
+    const { partsReq, setActivePartsReq, save, setSave, setSaveDisabled, edit } = props
 
     const { user } = useAuth0()
 
@@ -196,7 +200,6 @@ export default function EditPartsReqForm(props: Props) {
     const [files] = React.useState<Array<IFile>>(partsReq.files)
     const [newFiles, setNewFiles] = React.useState<Array<File>>([])
     const [deleteFiles, setDeleteFiles] = React.useState<Array<string>>([])
-    const [disabled, setDisabled] = React.useState<boolean>(false)
     const [amex, setAmex] = React.useState<boolean>(partsReq.amex)
     const [vendor, setVendor] = React.useState<string>(partsReq.vendor)
 
@@ -207,57 +210,64 @@ export default function EditPartsReqForm(props: Props) {
 
     React.useEffect(() => {
         if (!requester || !orderDate || !urgency || !orderType || !(rows.length > 0)) {
-            setDisabled(true)
+            setSaveDisabled(true)
         } else {
             if (!rows[0].itemNumber) {
-                setDisabled(true)
+                setSaveDisabled(true)
             } else {
-                setDisabled(false)
+                setSaveDisabled(false)
             }
         }
-    }, [requester, orderDate, afe, so, urgency, orderType, rows, setDisabled])
+    }, [requester, orderDate, afe, so, urgency, orderType, rows, setSaveDisabled])
 
-    const handleSubmit = async (event: React.SyntheticEvent) => {
-        event.preventDefault()
+    React.useEffect(() => {
+        async function update() {
+            const updateReq = {
+                user: `${novaUser?.firstName} ${novaUser?.lastName}`,
+                updateReq: {
+                    id: partsReq.id,
+                    contact: contact,
+                    billable: billable,
+                    afe: afe,
+                    so: so,
+                    unit: unit,
+                    truck: truck,
+                    urgency: urgency,
+                    orderType: orderType,
+                    pickup: pickup,
+                    region: region,
+                    parts: rows as Array<OrderRow>,
+                    comments: comments as Array<Comment>,
+                    amex: amex,
+                    vendor: vendor,
+                    newFiles: newFiles.map((file) => file.name),
+                    delFiles: deleteFiles,
+                    status: status,
+                    delRows: delRows
+                } as UpdatePartsReq
+            }
 
-        const updateReq = {
-            user: `${novaUser?.firstName} ${novaUser?.lastName}`,
-            updateReq: {
-                id: partsReq.id,
-                contact: contact,
-                billable: billable,
-                afe: afe,
-                so: so,
-                unit: unit,
-                truck: truck,
-                urgency: urgency,
-                orderType: orderType,
-                pickup: pickup,
-                region: region,
-                parts: rows as Array<OrderRow>,
-                comments: comments as Array<Comment>,
-                amex: amex,
-                vendor: vendor,
-                newFiles: newFiles.map((file) => file.name),
-                delFiles: deleteFiles,
-                status: status,
-                delRows: delRows
-            } as UpdatePartsReq
+            await updatePartsReq(updateReq).then(async (res) => {
+                for (let i = 0; i < newFiles.length; i++) {
+                    const formData = new FormData()
+                    formData.append("bucket", import.meta.env.VITE_BUCKET)
+                    formData.append("folder", "parts-req")
+                    formData.append("file", newFiles[i], `${res.files[i].id}.${res.files[i].name.split(".").pop()}`)
+
+                    await uploadFiles({ formData })
+                }
+            }).then(() => {
+                setActivePartsReq(null)
+                setSave(false)
+            })
         }
 
-        await updatePartsReq(updateReq).then(async (res) => {
-            for (let i = 0; i < newFiles.length; i++) {
-                const formData = new FormData()
-                formData.append("bucket", import.meta.env.VITE_BUCKET)
-                formData.append("folder", "parts-req")
-                formData.append("file", newFiles[i], `${res.files[i].id}.${res.files[i].name.split(".").pop()}`)
-
-                await uploadFiles({ formData })
-            }
-        })
-
-        setActivePartsReq(null)
-    }
+        if (save) {
+            console.log("save")
+            update()
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [save])
 
     const onStatusChange = (_e: React.SyntheticEvent, value: string | null) => {
         setStatus(value ?? "")
@@ -276,14 +286,16 @@ export default function EditPartsReqForm(props: Props) {
     const onSoChange = (_e: React.SyntheticEvent, value: string | null) => {
         setSo(value ?? null)
 
-        setOrderType(value ? "Third-Party" : null)
+        setOrderType(value ? billable ? "Rental" : "Third-Party" : null)
     }
     const onUnitNumberChange = (_e: React.SyntheticEvent, value: Unit | null) => {
         setUnit(value ?? null)
 
-        onSoChange(_e, null)
+        if (!billable) {
+            onSoChange(_e, null)
+        }
 
-        setOrderType(value ? "Rental" : null)
+        setOrderType(value ? "Rental" : so ? "Third-Party" : null)
         setRegion(value ? value.operationalRegion ? toTitleCase(value.operationalRegion) : null : null)
     }
     const onTruckChange = (_e: React.SyntheticEvent, value: string | null) => {
@@ -436,6 +448,14 @@ export default function EditPartsReqForm(props: Props) {
     }
 
     function denyAccess(title: string, status: string, field?: string) {
+        if (!edit) {
+            return true
+        }
+
+        if (field === "Comment" || field === "Document") {
+            return false
+        }
+
         // Field Service permissions
         if (FIELD_SERVICE_TITLES.includes(title)) {
             if (status === "Rejected - Adjustments Required") {
@@ -529,7 +549,6 @@ export default function EditPartsReqForm(props: Props) {
                 overflow: "auto", border: "5px solid", borderColor: "background.paper"
             }}>
                 <form
-                    onSubmit={handleSubmit}
                     onKeyDown={handleKeyDown}
                     style={{ display: "flex", flexDirection: "column", alignItems: "center" }}
                 >
@@ -1011,10 +1030,11 @@ export default function EditPartsReqForm(props: Props) {
                                         label="New Comment"
                                         value={comment}
                                         onChange={onCommentChange}
+                                        disabled={denyAccess(novaUser!.title, status, "Comment")}
                                     />
                                     <IconButton
                                         onClick={onAddComment}
-                                        disabled={!comment}
+                                        disabled={!comment || denyAccess(novaUser!.title, status, "Comment")}
                                     >
                                         <AddIcon />
                                     </IconButton>
@@ -1047,6 +1067,7 @@ export default function EditPartsReqForm(props: Props) {
                                 />
                                 <AddFileButton
                                     setNewFiles={setNewFiles}
+                                    disabled={denyAccess(novaUser!.title, status, "Document")}
                                 />
                                 <Box
                                     sx={{ maxHeight: "250px", overflow: "auto" }}
@@ -1058,6 +1079,7 @@ export default function EditPartsReqForm(props: Props) {
                                         deleteFiles={deleteFiles}
                                         setDeleteFiles={setDeleteFiles}
                                         folder={"parts-req"}
+                                        disabled={denyAccess(novaUser!.title, status, "Document")}
                                     />
                                 </Box>
                             </Item>
@@ -1334,24 +1356,6 @@ export default function EditPartsReqForm(props: Props) {
                             </Item>
                         </Grid>
                     </Grid>
-                    <div style={{ display: "flex", justifyContent: "flex-end", width: "100%", padding: "15px 15px 0px 0px" }}>
-                        <Button
-                            onClick={() => { setActivePartsReq(null) }}
-                            variant="outlined"
-                            color="error"
-                            sx={{ marginRight: "10px", "&.MuiButton-root:hover": { backgroundColor: "#334787" } }}
-                        >
-                            Cancel
-                        </Button>
-                        <Button
-                            variant="outlined"
-                            type="submit"
-                            disabled={disabled}
-                            sx={{ "&.MuiButton-root:hover": { backgroundColor: "#334787" } }}
-                        >
-                            Save
-                        </Button>
-                    </div>
                 </form>
             </Box >
         )

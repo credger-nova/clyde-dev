@@ -52,11 +52,11 @@ async function allowedRequester(user: NovaUser | undefined | null) {
         } else if (OPS_MANAGER_TITLES.includes(user.title)) {
             const employees = await getManagersEmployees(user.id)
 
-            return employees.map((employee) => `${employee.firstName} ${employee.lastName}`)
+            return employees.map((employee) => `${employee.firstName} ${employee.lastName}`).concat(`${user.firstName} ${user.lastName}`)
         } else if (OPS_DIRECTOR_TITLES.includes(user.title)) {
             const employees = await getDirectorsEmployees(user.id)
 
-            return employees.map((employee) => `${employee.firstName} ${employee.lastName}`)
+            return employees.map((employee) => `${employee.firstName} ${employee.lastName}`).concat(`${user.firstName} ${user.lastName}`)
         } else if (SC_DIRECTOR_TITLES.includes(user.title)) {
 
         } else if (SVP_TITLES.includes(user.title)) {

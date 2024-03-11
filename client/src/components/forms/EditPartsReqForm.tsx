@@ -1270,7 +1270,10 @@ export default function EditPartsReqForm(props: Props) {
                                         })}
                                         {partsFetching ? null :
                                             <TableRow>
-                                                <TableCell sx={{ border: "none" }} />
+                                                {partsReq.status === "Completed - Parts Staged/Delivered" ||
+                                                    partsReq.status === "Closed - Partially Received" ?
+                                                    <TableCell sx={{ border: "none" }} /> : null
+                                                }
                                                 <TableCell sx={{ border: "none" }} />
                                                 <TableCell sx={{ border: "none" }} />
                                                 <TableCell sx={{ border: "none" }} />

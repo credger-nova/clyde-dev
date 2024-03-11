@@ -404,6 +404,26 @@ export default function EditPartsReqForm(props: Props) {
         }
     }
 
+    // Check Status options to determine if they should be disabled
+    const getOptionDisabled = (option: string) => {
+        if (option === "Completed - Parts Staged/Delivered") {
+            if (noRate(rows)) {
+                return true
+            }
+        }
+
+        return false
+    }
+
+    function noRate(rows: Array<Omit<OrderRow, "id">>) {
+        for (const item of rows) {
+            if (!item.cost) {
+                return true
+            }
+        }
+        return false
+    }
+
     function getPart(itemNumber: string): Part {
         const part = parts?.find((el) => el.itemNumber.toUpperCase() === itemNumber.toUpperCase())
 
@@ -521,6 +541,7 @@ export default function EditPartsReqForm(props: Props) {
                                         options={getAvailableStatus(novaUser)}
                                         onChange={onStatusChange}
                                         value={status}
+                                        getOptionDisabled={getOptionDisabled}
                                         disableClearable
                                         renderInput={(params) => <StyledTextField
                                             {...params}
@@ -533,21 +554,25 @@ export default function EditPartsReqForm(props: Props) {
                                             const parts = parse(option, matches);
 
                                             return (
-                                                <li {...props}>
-                                                    <div>
-                                                        {parts.map((part, index) => (
-                                                            <span
-                                                                key={index}
-                                                                style={{
-                                                                    fontWeight: part.highlight ? 700 : 400,
-                                                                    color: part.highlight ? "#23aee5" : "#fff"
-                                                                }}
-                                                            >
-                                                                {part.text}
-                                                            </span>
-                                                        ))}
-                                                    </div>
-                                                </li>
+                                                noRate(rows) && option === "Completed - Parts Staged/Delivered" ?
+                                                    <li {...props}>
+                                                        {option}
+                                                    </li> :
+                                                    <li {...props}>
+                                                        <div>
+                                                            {parts.map((part, index) => (
+                                                                <span
+                                                                    key={index}
+                                                                    style={{
+                                                                        fontWeight: part.highlight ? 700 : 400,
+                                                                        color: part.highlight ? "#23aee5" : "#fff"
+                                                                    }}
+                                                                >
+                                                                    {part.text}
+                                                                </span>
+                                                            ))}
+                                                        </div>
+                                                    </li>
                                             );
                                         }}
                                         readOnly={denyAccess(novaUser!.title, status, "Status")}
@@ -572,6 +597,12 @@ export default function EditPartsReqForm(props: Props) {
                                             InputProps={{ readOnly: true }}
                                         />
                                     }
+                                    <StyledTextField
+                                        variant="standard"
+                                        label="Order Date"
+                                        value={new Date(orderDate).toLocaleDateString()}
+                                        InputProps={{ readOnly: true }}
+                                    />
                                     <div style={{ display: "flex", alignItems: "center" }}>
                                         <Checkbox
                                             checked={billable}
@@ -581,12 +612,6 @@ export default function EditPartsReqForm(props: Props) {
                                         />
                                         <b><p style={{ margin: 0 }}>Billable to Customer for Nova Unit?</p></b>
                                     </div>
-                                    <StyledTextField
-                                        variant="standard"
-                                        label="Order Date"
-                                        value={new Date(orderDate).toLocaleDateString()}
-                                        InputProps={{ readOnly: true }}
-                                    />
                                     <b><p style={{ margin: "20px 0px 0px 0px" }}>Class:</p></b>
                                     <Divider />
                                     <Autocomplete

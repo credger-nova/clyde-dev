@@ -17,6 +17,7 @@ export interface PartsReq {
     requester: string,
     contact: string,
     date: Date,
+    billable: boolean,
     afe: string | null,
     so: string | null,
     unit: Unit | null,

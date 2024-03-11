@@ -145,6 +145,7 @@ export const getPartsReqs = async (query: PartsReqQuery) => {
                 requester: obj.requester,
                 contact: obj.contact,
                 date: obj.date,
+                billable: obj.billable,
                 afe: obj.afe,
                 so: obj.so,
                 unit: obj.unit,
@@ -165,7 +166,8 @@ export const getPartsReqs = async (query: PartsReqQuery) => {
     })
 
     // Sort by Urgency and Date
-    partsReqs.sort((a, b) => URGENCY_SORT.indexOf(a.urgency) - URGENCY_SORT.indexOf(b.urgency) || a.date.getTime() - b.date.getTime())
+    partsReqs.sort((a, b) => URGENCY_SORT.indexOf(a.urgency) - URGENCY_SORT.indexOf(b.urgency) || a.date.getTime() - b.date.getTime() ||
+        ALL_STATUS.indexOf(a.status) - ALL_STATUS.indexOf(b.status))
 
     return partsReqs
 }
@@ -190,6 +192,7 @@ export const getPartsReq = async (id: number) => {
             requester: result.requester,
             contact: result.contact,
             date: result.date,
+            billable: result.billable,
             afe: result.afe,
             so: result.so,
             unit: result.unit,
@@ -220,6 +223,7 @@ export const createPartsReq = async (partsReq: CreatePartsReq) => {
         data: {
             requester: partsReq.requester,
             date: partsReq.date,
+            billable: partsReq.billable,
             afe: partsReq.afe,
             so: partsReq.so,
             unitNumber: partsReq.unit ? partsReq.unit.unitNumber : null,

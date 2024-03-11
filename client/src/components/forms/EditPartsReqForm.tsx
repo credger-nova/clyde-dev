@@ -10,6 +10,7 @@ import { useWarehouses } from "../../hooks/warehouse"
 import { useNovaUser } from "../../hooks/user"
 import { useUpdatePartsReq } from "../../hooks/partsReq"
 import { useUploadFiles } from "../../hooks/storage"
+import { useVendors } from "../../hooks/vendor"
 
 import { toTitleCase } from "../../utils/helperFunctions"
 import { calcCost } from "../../utils/helperFunctions"
@@ -52,7 +53,6 @@ import AddFileButton from "./AddFileButton"
 import { File as IFile } from "../../types/file"
 import Skeleton from '@mui/material/Skeleton'
 import Checkbox from '@mui/material/Checkbox'
-import { useVendors } from "../../hooks/vendor"
 
 const URGENCY = ["Unit Down", "Rush", "Standard"]
 const ORDER_TYPE = [{ type: "Rental" }, { type: "Third-Party" }, { type: "Shop Supplies" }, { type: "Truck Supplies" }, { type: "Stock", titles: ["Supply Chain", "Software"] }]
@@ -180,6 +180,7 @@ export default function EditPartsReqForm(props: Props) {
     const [requester] = React.useState<string>(partsReq.requester)
     const [contact, setContact] = React.useState<string>(partsReq.contact)
     const [orderDate] = React.useState<Date>(partsReq.date)
+    const [billable] = React.useState<boolean>(partsReq.billable)
     const [afe, setAfe] = React.useState<string | null>(partsReq.afe)
     const [so, setSo] = React.useState<string | null>(partsReq.so)
     const [unit, setUnit] = React.useState<Unit | null>(partsReq.unit)
@@ -205,8 +206,7 @@ export default function EditPartsReqForm(props: Props) {
     })
 
     React.useEffect(() => {
-        if (!requester || !orderDate ||
-            !urgency || !orderType || !(rows.length > 0)) {
+        if (!requester || !orderDate || !urgency || !orderType || !(rows.length > 0)) {
             setDisabled(true)
         } else {
             if (!rows[0].itemNumber) {
@@ -225,6 +225,7 @@ export default function EditPartsReqForm(props: Props) {
             updateReq: {
                 id: partsReq.id,
                 contact: contact,
+                billable: billable,
                 afe: afe,
                 so: so,
                 unit: unit,
@@ -571,6 +572,15 @@ export default function EditPartsReqForm(props: Props) {
                                             InputProps={{ readOnly: true }}
                                         />
                                     }
+                                    <div style={{ display: "flex", alignItems: "center" }}>
+                                        <Checkbox
+                                            checked={billable}
+                                            disableRipple
+                                            readOnly
+                                            sx={{ paddingLeft: 0 }}
+                                        />
+                                        <b><p style={{ margin: 0 }}>Billable to Customer for Nova Unit?</p></b>
+                                    </div>
                                     <StyledTextField
                                         variant="standard"
                                         label="Order Date"

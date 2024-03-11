@@ -47,6 +47,7 @@ import theme from "../../css/theme"
 import Popper, { PopperProps } from '@mui/material/Popper'
 import Files from "./Files"
 import AddFileButton from "./AddFileButton"
+import Checkbox from '@mui/material/Checkbox'
 
 const URGENCY = ["Unit Down", "Rush", "Standard"]
 const ORDER_TYPE = [{ type: "Rental" }, { type: "Third-Party" }, { type: "Shop Supplies" }, { type: "Truck Supplies" }, { type: "Stock", titles: ["Supply Chain", "Software"] }]
@@ -92,6 +93,7 @@ export default function PartsReqForm() {
 
     const [requester] = React.useState<string | undefined>(`${novaUser?.firstName} ${novaUser?.lastName}`)
     const [orderDate] = React.useState<Date>(new Date())
+    const [billable, setBillable] = React.useState<boolean>(false)
     const [afe, setAfe] = React.useState<string | null>(null)
     const [so, setSo] = React.useState<string | null>(null)
     const [unit, setUnit] = React.useState<Unit | null>(null)
@@ -112,8 +114,7 @@ export default function PartsReqForm() {
     })
 
     React.useEffect(() => {
-        if (!requester || !orderDate ||
-            !urgency || !orderType || !(rows.length > 0)) {
+        if (!requester || !orderDate || !urgency || !orderType || (billable && !unit) || !(rows.length > 0)) {
             setDisableSubmit(true)
         } else {
             if (!rows[0].itemNumber) {
@@ -122,7 +123,7 @@ export default function PartsReqForm() {
                 setDisableSubmit(false)
             }
         }
-    }, [requester, orderDate, afe, so, urgency, orderType, rows])
+    }, [requester, orderDate, billable, unit, afe, so, urgency, orderType, rows])
 
     const handleSubmit = async (event: React.SyntheticEvent) => {
         event.preventDefault()
@@ -131,6 +132,7 @@ export default function PartsReqForm() {
             requester: requester ? requester : "",
             contact: "",
             date: orderDate,
+            billable: billable,
             afe: afe,
             so: so,
             unit: unit,
@@ -162,20 +164,30 @@ export default function PartsReqForm() {
         window.location.href = ".."
     }
 
+    const onBillableChange = () => {
+        setBillable(!billable)
+
+        if (billable && unit) {
+            setSo(null)
+        }
+    }
+
     const onAfeChange = (_e: React.SyntheticEvent, value: string | null) => {
         setAfe(value ?? null)
     }
     const onSoChange = (_e: React.SyntheticEvent, value: string | null) => {
         setSo(value ?? null)
 
-        setOrderType(value ? "Third-Party" : null)
+        setOrderType(value ? billable ? "Rental" : "Third-Party" : null)
     }
     const onUnitNumberChange = (_e: React.SyntheticEvent, value: Unit | null) => {
         setUnit(value ?? null)
 
-        onSoChange(_e, null)
+        if (!billable) {
+            onSoChange(_e, null)
+        }
 
-        setOrderType(value ? "Rental" : null)
+        setOrderType(value ? "Rental" : so ? "Third-Party" : null)
         setRegion(value ? value.operationalRegion ? toTitleCase(value.operationalRegion) : null : null)
     }
     const onTruckChange = (_e: React.SyntheticEvent, value: string | null) => {
@@ -308,7 +320,17 @@ export default function PartsReqForm() {
                                         label="Order Date"
                                         value={orderDate.toLocaleDateString()}
                                         InputProps={{ readOnly: true }}
+                                        sx={{ marginBottom: "10px" }}
                                     />
+                                    <div style={{ display: "flex", alignItems: "center" }}>
+                                        <Checkbox
+                                            checked={billable}
+                                            onChange={onBillableChange}
+                                            disableRipple
+                                            sx={{ paddingLeft: 0 }}
+                                        />
+                                        <b><p style={{ margin: 0 }}>Billable to Customer for Nova Unit?</p></b>
+                                    </div>
                                     <b><p style={{ margin: "20px 0px 0px 0px" }}>Class:</p></b>
                                     <Divider />
                                     <Autocomplete
@@ -355,7 +377,7 @@ export default function PartsReqForm() {
                                             variant="standard"
                                             label="SO #"
                                         />}
-                                        disabled={afe !== null || unit !== null}
+                                        disabled={afe !== null || (!billable && unit !== null)}
                                         renderOption={(props, option, { inputValue }) => {
                                             const matches = match(option, inputValue, { insideWords: true, requireMatchAll: true });
                                             const parts = parse(option, matches);

@@ -87,6 +87,16 @@ function determineReceived(parts: Array<OrderRow> | undefined) {
     }
 }
 
+function calcCost(parts: Array<OrderRow>) {
+    let sum = 0
+
+    for (const part of parts) {
+        sum += Number(part.cost) * part.qty
+    }
+
+    return sum
+}
+
 // Get Parts Reqs that match the given query
 export const getPartsReqs = async (query: PartsReqQuery) => {
     const result = await prisma.partsReq.findMany({
@@ -312,7 +322,8 @@ export const updatePartsReq = async (id: number, user: string, updateReq: Partia
     }
 
     // Determine status of updated Parts Req
-    let status = partsUpdated && (oldPartsReq?.status === "Rejected - Adjustments Required" || updateReq.status === "Rejected - Adjustments Required") ?
+    let status = partsUpdated && (calcCost(updateReq.parts ?? []) > 5000) ||
+        (oldPartsReq?.status === "Rejected - Adjustments Required" || updateReq.status === "Rejected - Adjustments Required") ?
         "Pending Approval" : updateReq.status
 
     if (partsUpdated && updateReq.status === "Completed - Parts Staged/Delivered") {

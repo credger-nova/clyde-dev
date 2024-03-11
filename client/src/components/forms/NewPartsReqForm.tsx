@@ -112,7 +112,7 @@ export default function PartsReqForm() {
     })
 
     React.useEffect(() => {
-        if (!requester || !orderDate || (!unit && !truck) ||
+        if (!requester || !orderDate ||
             !urgency || !orderType || !(rows.length > 0)) {
             setDisableSubmit(true)
         } else {
@@ -122,7 +122,7 @@ export default function PartsReqForm() {
                 setDisableSubmit(false)
             }
         }
-    }, [requester, orderDate, afe, so, unit, truck, urgency, orderType, rows])
+    }, [requester, orderDate, afe, so, urgency, orderType, rows])
 
     const handleSubmit = async (event: React.SyntheticEvent) => {
         event.preventDefault()
@@ -355,7 +355,7 @@ export default function PartsReqForm() {
                                             variant="standard"
                                             label="SO #"
                                         />}
-                                        disabled={afe !== null}
+                                        disabled={afe !== null || unit !== null}
                                         renderOption={(props, option, { inputValue }) => {
                                             const matches = match(option, inputValue, { insideWords: true, requireMatchAll: true });
                                             const parts = parse(option, matches);

@@ -10,8 +10,7 @@ import { useCreatePartsReq } from "../../hooks/partsReq"
 import { useUploadFiles } from "../../hooks/storage"
 import { useNovaUser } from "../../hooks/user"
 
-import { toTitleCase } from "../../utils/helperFunctions"
-import { calcCost } from "../../utils/helperFunctions"
+import { toTitleCase, calcCost, svpApprovalRequired } from "../../utils/helperFunctions"
 
 import { OrderRow, CreatePartsReq } from "../../types/partsReq"
 import { Part } from "../../types/part"
@@ -38,7 +37,6 @@ import TableRow from '@mui/material/TableRow'
 import AddIcon from '@mui/icons-material/Add'
 import DeleteIcon from '@mui/icons-material/Delete'
 import { StyledTextField } from "../common/TextField"
-import { UNIT_PLANNING } from "../../utils/unitPlanning"
 import Loader from "../common/Loader"
 import InputAdornment from '@mui/material/InputAdornment'
 import parse from 'autosuggest-highlight/parse'
@@ -48,6 +46,8 @@ import Popper, { PopperProps } from '@mui/material/Popper'
 import Files from "./Files"
 import AddFileButton from "./AddFileButton"
 import Checkbox from '@mui/material/Checkbox'
+import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline'
+import Tooltip from '@mui/material/Tooltip'
 
 const URGENCY = ["Unit Down", "Rush", "Standard"]
 const ORDER_TYPE = [{ type: "Rental" }, { type: "Third-Party" }, { type: "Shop Supplies" }, { type: "Truck Supplies" }, { type: "Stock", titles: ["Supply Chain", "Software"] }]
@@ -560,7 +560,7 @@ export default function PartsReqForm() {
                                 </Box>
                             </Item>
                             <Item sx={{
-                                marginTop: "15px", border: unit ? UNIT_PLANNING.includes(unit.unitNumber) ?
+                                marginTop: "15px", border: unit ? svpApprovalRequired(unit, rows as Array<OrderRow>) ?
                                     "3px solid red" :
                                     "3px solid transparent" :
                                     "3px solid transparent"
@@ -569,7 +569,7 @@ export default function PartsReqForm() {
                                     <b><p style={{ margin: 0 }}>Unit Planning Approval Status:</p></b>
                                     <Divider />
                                     {unit ?
-                                        UNIT_PLANNING.includes(unit.unitNumber) ?
+                                        svpApprovalRequired(unit, rows as Array<OrderRow>) ?
                                             <b><p style={{ marginTop: "5px", color: "red" }}>Travis Yount Must Approve Non-PM Parts</p></b> :
                                             <p style={{ marginTop: "5px" }}>No Additional Approval Needed</p> :
                                         <p style={{ marginTop: "5px" }}>No Additional Approval Needed</p>
@@ -853,12 +853,31 @@ export default function PartsReqForm() {
                                                     </TableCell>
                                                     <TableCell sx={{ paddingBottom: 0 }}>{row.cost ? `$${(Number(row.cost) * row.qty).toFixed(2)}` : ""}</TableCell>
                                                     <TableCell>
-                                                        <IconButton
-                                                            onClick={() => removeRow(index)}
-                                                            disableRipple
-                                                        >
-                                                            <DeleteIcon />
-                                                        </IconButton>
+                                                        <div style={{ display: "flex", flexDirection: "row", justifyContent: "flex-end", alignItems: "center" }}>
+                                                            {unit && svpApprovalRequired(unit, rows as Array<OrderRow>) && rows[index].mode !== "PM PARTS" ?
+                                                                <Tooltip
+                                                                    title={"Non PM Part"}
+                                                                    componentsProps={{
+                                                                        tooltip: {
+                                                                            sx: {
+                                                                                border: "1px solid white",
+                                                                                bgcolor: "background.paper"
+                                                                            }
+                                                                        }
+                                                                    }}
+                                                                >
+                                                                    <ErrorOutlineIcon
+                                                                        sx={{ color: "red" }}
+                                                                    />
+                                                                </Tooltip> : null
+                                                            }
+                                                            <IconButton
+                                                                onClick={() => removeRow(index)}
+                                                                disableRipple
+                                                            >
+                                                                <DeleteIcon />
+                                                            </IconButton>
+                                                        </div>
                                                     </TableCell>
                                                 </TableRow>
                                             )

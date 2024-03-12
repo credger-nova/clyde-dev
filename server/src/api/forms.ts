@@ -1,6 +1,7 @@
 import { prisma } from "../utils/prisma-client"
 import { CreatePartsReq, OrderRow, PartsReq, PartsReqQuery, UpdatePartsReq } from "../models/partsReq"
 import { TITLES } from "../utils/titles"
+import { UNIT_PLANNING } from "../utils/unitPlanning"
 import { NovaUser } from "../models/novaUser"
 import { getDirectorsEmployees, getManagersEmployees } from "./kpa"
 
@@ -97,6 +98,36 @@ function calcCost(parts: Array<OrderRow>) {
     return sum
 }
 
+export function getThreshold(hp: number) {
+    if (hp >= 101 && hp < 400) {
+        return 2000
+    } else if (hp >= 401 && hp < 1000) {
+        return 3000
+    } else if (hp >= 1000) {
+        return 5000
+    } else {
+        return 0
+    }
+}
+
+export function getNonPM(rows: Array<OrderRow>) {
+    const nonPM = rows.filter((row) => row.mode !== "PM PARTS")
+
+    return nonPM.length > 0
+}
+
+function svpApprovalRequired(unitNumber: string, hp: number, rows: Array<OrderRow>) {
+    if (
+        UNIT_PLANNING.includes(unitNumber) &&
+        getThreshold(hp) <= calcCost(rows) &&
+        getNonPM(rows)
+    ) {
+        return true
+    } else {
+        return false
+    }
+}
+
 // Get Parts Reqs that match the given query
 export const getPartsReqs = async (query: PartsReqQuery) => {
     const result = await prisma.partsReq.findMany({
@@ -148,7 +179,7 @@ export const getPartsReqs = async (query: PartsReqQuery) => {
         }
     })
 
-    const partsReqs = result.map((obj) => {
+    let partsReqs = result.map((obj) => {
         return (
             {
                 id: obj.id,
@@ -174,6 +205,11 @@ export const getPartsReqs = async (query: PartsReqQuery) => {
             } as PartsReq
         )
     })
+
+    // Filter SVP results to only units that require SVP privileges
+    if (SVP_TITLES.includes(query.user!.title)) {
+        partsReqs = partsReqs.filter((partsReq) => partsReq.unit && svpApprovalRequired(partsReq.unit.unitNumber, Number(partsReq.unit.oemHP), partsReq.parts))
+    }
 
     // Sort by Urgency and Date
     partsReqs.sort((a, b) => URGENCY_SORT.indexOf(a.urgency) - URGENCY_SORT.indexOf(b.urgency) || a.date.getTime() - b.date.getTime() ||

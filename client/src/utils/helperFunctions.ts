@@ -1,4 +1,6 @@
 import { OrderRow } from "../types/partsReq"
+import { Unit } from "../types/unit"
+import { UNIT_PLANNING } from "./unitPlanning"
 
 export function toTitleCase(text: string): string {
     const newText = text.split(" ")
@@ -16,4 +18,38 @@ export function calcCost(parts: Array<OrderRow>) {
     }
 
     return sum
+}
+
+export function getThreshold(hp: number) {
+    if (hp >= 101 && hp < 400) {
+        return 2000
+    } else if (hp >= 401 && hp < 1000) {
+        return 3000
+    } else if (hp >= 1000) {
+        return 5000
+    } else {
+        return 0
+    }
+}
+
+export function getNonPM(rows: Array<OrderRow>) {
+    const nonPM = rows.filter((row) => row.mode !== "PM PARTS")
+
+    return nonPM.length > 0
+}
+
+export function svpApprovalRequired(unit: Unit | null, rows: Array<OrderRow>) {
+    if (unit) {
+        if (
+            UNIT_PLANNING.includes(unit.unitNumber) &&
+            getThreshold(unit.oemHP) <= calcCost(rows as Array<OrderRow>) &&
+            getNonPM(rows as Array<OrderRow>)
+        ) {
+            return true
+        } else {
+            return false
+        }
+    } else {
+        return false
+    }
 }

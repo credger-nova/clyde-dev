@@ -12,8 +12,7 @@ import { useUpdatePartsReq } from "../../hooks/partsReq"
 import { useUploadFiles } from "../../hooks/storage"
 import { useVendors } from "../../hooks/vendor"
 
-import { toTitleCase } from "../../utils/helperFunctions"
-import { calcCost } from "../../utils/helperFunctions"
+import { svpApprovalRequired, toTitleCase, calcCost } from "../../utils/helperFunctions"
 import { TITLES } from "../../utils/titles"
 
 import { OrderRow, PartsReq, UpdatePartsReq } from "../../types/partsReq"
@@ -42,7 +41,6 @@ import TableRow from '@mui/material/TableRow'
 import AddIcon from '@mui/icons-material/Add'
 import DeleteIcon from '@mui/icons-material/Delete'
 import { StyledTextField } from "../common/TextField"
-import { UNIT_PLANNING } from "../../utils/unitPlanning"
 import InputAdornment from '@mui/material/InputAdornment'
 import parse from 'autosuggest-highlight/parse'
 import match from 'autosuggest-highlight/match'
@@ -53,6 +51,8 @@ import AddFileButton from "./AddFileButton"
 import { File as IFile } from "../../types/file"
 import Skeleton from '@mui/material/Skeleton'
 import Checkbox from '@mui/material/Checkbox'
+import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline'
+import Tooltip from '@mui/material/Tooltip'
 
 const URGENCY = ["Unit Down", "Rush", "Standard"]
 const ORDER_TYPE = [{ type: "Rental" }, { type: "Third-Party" }, { type: "Shop Supplies" }, { type: "Truck Supplies" }, { type: "Stock", titles: ["Supply Chain", "Software"] }]
@@ -478,7 +478,8 @@ export default function EditPartsReqForm(props: Props) {
         // Ops Manager permissions
         if (OPS_MANAGER_TITLES.includes(title)) {
             if (partsReq.status === "Pending Approval") {
-                if (field === "Status" && calcCost(rows as Array<OrderRow>) < 5000) {
+                if (field === "Status" && calcCost(rows as Array<OrderRow>) < 5000 &&
+                    !svpApprovalRequired(unit, rows as Array<OrderRow>)) {
                     return false
                 }
                 if (field !== "Status") {
@@ -503,7 +504,8 @@ export default function EditPartsReqForm(props: Props) {
         // Ops Director permissions
         if (OPS_DIRECTOR_TITLES.includes(title)) {
             if (partsReq.status === "Pending Approval") {
-                if (field === "Status" && calcCost(rows as Array<OrderRow>) < 10000) {
+                if (field === "Status" && calcCost(rows as Array<OrderRow>) < 10000 &&
+                    !svpApprovalRequired(unit, rows as Array<OrderRow>)) {
                     return false
                 }
             }
@@ -918,7 +920,7 @@ export default function EditPartsReqForm(props: Props) {
                                 </Box>
                             </Item>
                             <Item sx={{
-                                marginTop: "15px", border: unit ? UNIT_PLANNING.includes(unit.unitNumber) ?
+                                marginTop: "15px", border: unit ? svpApprovalRequired(unit, rows as Array<OrderRow>) ?
                                     "3px solid red" :
                                     "3px solid transparent" :
                                     "3px solid transparent"
@@ -927,7 +929,7 @@ export default function EditPartsReqForm(props: Props) {
                                     <b><p style={{ margin: 0 }}>Unit Planning Approval Status:</p></b>
                                     <Divider />
                                     {unit ?
-                                        UNIT_PLANNING.includes(unit.unitNumber) ?
+                                        svpApprovalRequired(unit, rows as Array<OrderRow>) ?
                                             <b><p style={{ marginTop: "5px", color: "red" }}>Travis Yount Must Approve Non-PM Parts</p></b> :
                                             <p style={{ marginTop: "5px" }}>No Additional Approval Needed</p> :
                                         <p style={{ marginTop: "5px" }}>No Additional Approval Needed</p>
@@ -1330,13 +1332,32 @@ export default function EditPartsReqForm(props: Props) {
                                                     </TableCell>
                                                     <TableCell sx={{ paddingBottom: 0 }}>{row.cost ? `$${(Number(row.cost) * row.qty).toFixed(2)}` : ""}</TableCell>
                                                     <TableCell>
-                                                        <IconButton
-                                                            onClick={() => removeRow(index)}
-                                                            disableRipple
-                                                            disabled={denyAccess(novaUser!.title, status)}
-                                                        >
-                                                            <DeleteIcon />
-                                                        </IconButton>
+                                                        <div style={{ display: "flex", flexDirection: "row", justifyContent: "flex-end", alignItems: "center" }}>
+                                                            {unit && svpApprovalRequired(unit, rows as Array<OrderRow>) && rows[index].mode !== "PM PARTS" ?
+                                                                <Tooltip
+                                                                    title={"Non PM Part"}
+                                                                    componentsProps={{
+                                                                        tooltip: {
+                                                                            sx: {
+                                                                                border: "1px solid white",
+                                                                                bgcolor: "background.paper"
+                                                                            }
+                                                                        }
+                                                                    }}
+                                                                >
+                                                                    <ErrorOutlineIcon
+                                                                        sx={{ color: "red" }}
+                                                                    />
+                                                                </Tooltip> : null
+                                                            }
+                                                            <IconButton
+                                                                onClick={() => removeRow(index)}
+                                                                disableRipple
+                                                                disabled={denyAccess(novaUser!.title, status)}
+                                                            >
+                                                                <DeleteIcon />
+                                                            </IconButton>
+                                                        </div>
                                                     </TableCell>
                                                 </TableRow>
                                             )

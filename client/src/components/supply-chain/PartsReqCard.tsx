@@ -9,8 +9,7 @@ import Skeleton from '@mui/material/Skeleton'
 import Tooltip from '@mui/material/Tooltip'
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline'
 
-import { calcCost } from "../../utils/helperFunctions"
-import { UNIT_PLANNING } from "../../utils/unitPlanning"
+import { calcCost, svpApprovalRequired } from "../../utils/helperFunctions"
 
 interface Props {
     partsReq: PartsReq,
@@ -236,7 +235,7 @@ export default function PartsReqCard(props: Props) {
                         {`Estimated Cost: $${calcCost(partsReq.parts).toFixed(2)}`}
                     </Typography>
                     {<div style={{ display: "flex", alignItems: "center" }}>
-                        {(partsReq.unit && UNIT_PLANNING.includes(partsReq.unit.unitNumber)) &&
+                        {svpApprovalRequired(partsReq.unit, partsReq.parts) &&
                             (partsReq.status === "Pending Approval" || partsReq.status === "Rejected - Adjustments Required") ?
                             <Tooltip
                                 title="Travis Yount Must Approve All Non-PM Parts"

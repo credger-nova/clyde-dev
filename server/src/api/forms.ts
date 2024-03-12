@@ -322,8 +322,8 @@ export const updatePartsReq = async (id: number, user: string, updateReq: Partia
     }
 
     // Determine status of updated Parts Req
-    let status = partsUpdated && (calcCost(updateReq.parts ?? []) > 5000) ||
-        (oldPartsReq?.status === "Rejected - Adjustments Required" || updateReq.status === "Rejected - Adjustments Required") ?
+    let status = partsUpdated && ((calcCost(updateReq.parts ?? []) > 5000) ||
+        (oldPartsReq?.status === "Rejected - Adjustments Required" || updateReq.status === "Rejected - Adjustments Required")) ?
         "Pending Approval" : updateReq.status
 
     if (partsUpdated && updateReq.status === "Completed - Parts Staged/Delivered") {

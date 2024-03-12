@@ -4,7 +4,8 @@ export interface NetsuitePart {
     values: {
         itemid: string,
         salesdescription: string,
-        cost: string
+        averagecost: string,
+        custitem_order_mode: Array<{ value: string, text: string }>
     }
 }
 
@@ -12,5 +13,6 @@ export interface Part {
     id: string,
     itemNumber: string,
     description: string,
-    cost: string
+    cost: string,
+    mode: string
 }

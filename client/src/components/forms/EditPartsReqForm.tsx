@@ -1233,7 +1233,8 @@ export default function EditPartsReqForm(props: Props) {
                                                                         itemNumber: `Add "${inputValue}"`,
                                                                         id: inputValue,
                                                                         description: "",
-                                                                        cost: ""
+                                                                        cost: "",
+                                                                        mode: ""
                                                                     })
                                                                 }
 

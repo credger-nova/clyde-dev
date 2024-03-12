@@ -760,7 +760,8 @@ export default function PartsReqForm() {
                                                                         itemNumber: `Add "${inputValue}"`,
                                                                         id: inputValue,
                                                                         description: "",
-                                                                        cost: ""
+                                                                        cost: "",
+                                                                        mode: ""
                                                                     })
                                                                 }
 

@@ -143,9 +143,10 @@ export default function PartsReqCard(props: Props) {
                             <Typography variant="body2" sx={{ width: "65%" }}>
                                 {`Unit ${partsReq.unit.unitNumber}`}
                             </Typography> :
-                            <Typography variant="body2" sx={{ width: "65%" }}>
-                                {`Truck ${partsReq.truck}`}
-                            </Typography>
+                            partsReq.truck ?
+                                <Typography variant="body2" sx={{ width: "65%" }}>
+                                    {`Truck ${partsReq.truck}`}
+                                </Typography> : null
                         }
                     </div>
                     <div style={{ display: "flex", flexDirection: "row", width: "100%", justifyContent: "flex-start", alignItems: "center" }}>

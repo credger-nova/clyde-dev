@@ -92,7 +92,9 @@ export default function PartsReqTable(props: Props) {
                             }
                             {partsReq.unit ?
                                 <StyledTableCell>{`Unit: ${partsReq.unit.unitNumber}`}</StyledTableCell> :
-                                <StyledTableCell>{`Truck: ${partsReq.truck}`}</StyledTableCell>
+                                partsReq.truck ?
+                                    <StyledTableCell>{`Truck: ${partsReq.truck}`}</StyledTableCell> :
+                                    <StyledTableCell />
                             }
                             {partsReq.unit ?
                                 partsReq.unit.location.length > 25 ?

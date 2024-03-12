@@ -496,7 +496,7 @@ export const updatePartsReq = async (id: number, user: string, updateReq: Partia
             contact: updateReq.contact,
             afe: updateReq.afe,
             so: updateReq.so,
-            unitNumber: updateReq.unit?.unitNumber,
+            unitNumber: updateReq.unit ? updateReq.unit.unitNumber : null,
             truck: updateReq.truck,
             urgency: updateReq.urgency,
             orderType: updateReq.orderType,

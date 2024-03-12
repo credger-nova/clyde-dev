@@ -9,6 +9,7 @@ export interface OrderRow {
     itemNumber: string,
     description: string | null,
     cost: string | null,
+    mode: string,
     received: number
 }
 

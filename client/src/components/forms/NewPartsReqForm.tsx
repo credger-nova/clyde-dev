@@ -198,7 +198,7 @@ export default function PartsReqForm() {
     }
 
     const onCreateRow = () => {
-        setRows([...rows, { qty: 1, itemNumber: "", description: "", cost: "", received: 0 }])
+        setRows([...rows, { qty: 1, itemNumber: "", description: "", cost: "", mode: "", received: 0 }])
     }
 
     function removeRow(index: number) {
@@ -225,19 +225,23 @@ export default function PartsReqForm() {
                 row.itemNumber = part.itemNumber
                 row.description = part.description
                 row.cost = part.cost
+                row.mode = part.mode
             } else {
                 row.itemNumber = value
                 row.description = ""
                 row.cost = ""
+                row.mode = ""
             }
         } else if (value && value.inputValue) {
             row.itemNumber = value.inputValue
             row.description = ""
             row.cost = ""
+            row.mode = ""
         } else {
             row.itemNumber = value?.itemNumber ? value.itemNumber : ""
             row.description = value?.description ? value.description : ""
             row.cost = value?.cost ? value.cost : ""
+            row.mode = value?.mode ? value.mode : ""
         }
 
         tempRows[index] = row

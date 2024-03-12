@@ -315,7 +315,8 @@ export const updatePartsReq = async (id: number, user: string, updateReq: Partia
                     itemNumber: part.itemNumber,
                     description: part.description,
                     cost: part.cost,
-                    received: part.received
+                    received: part.received,
+                    mode: part.mode
                 }
             })
         }
@@ -338,6 +339,7 @@ export const updatePartsReq = async (id: number, user: string, updateReq: Partia
                 itemNumber: part.itemNumber,
                 description: part.description,
                 cost: part.cost,
+                mode: part.mode,
                 partsReqId: id
             }
         })

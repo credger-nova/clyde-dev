@@ -7,7 +7,8 @@ export interface OrderRow {
     itemNumber: string,
     cost: string | null,
     description: string | null,
-    received: number
+    received: number,
+    mode: string
 }
 
 export interface PartsReq {

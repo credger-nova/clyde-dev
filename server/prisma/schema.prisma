@@ -104,6 +104,7 @@ model PartsReqRow {
   description String?
   cost        String?
   received    Int       @default(0)
+  mode        String    @default("")
   partsReq    PartsReq? @relation(fields: [partsReqId], references: [id], onDelete: Cascade)
   partsReqId  Int?      @map("parts_req_id")
 

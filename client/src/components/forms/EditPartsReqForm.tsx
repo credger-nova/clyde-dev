@@ -263,7 +263,6 @@ export default function EditPartsReqForm(props: Props) {
         }
 
         if (save) {
-            console.log("save")
             update()
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -309,7 +308,7 @@ export default function EditPartsReqForm(props: Props) {
     }
 
     const onCreateRow = () => {
-        setRows([...rows, { qty: 1, itemNumber: "", description: "", cost: "", received: 0 }])
+        setRows([...rows, { qty: 1, itemNumber: "", description: "", cost: "", mode: "", received: 0 }])
     }
 
     function removeRow(index: number) {
@@ -340,19 +339,23 @@ export default function EditPartsReqForm(props: Props) {
                 row.itemNumber = part.itemNumber
                 row.description = part.description
                 row.cost = part.cost
+                row.mode = part.mode
             } else {
                 row.itemNumber = value
                 row.description = ""
                 row.cost = ""
+                row.mode = ""
             }
         } else if (value && value.inputValue) {
             row.itemNumber = value.inputValue
             row.description = ""
             row.cost = ""
+            row.mode = ""
         } else {
             row.itemNumber = value?.itemNumber ? value.itemNumber : ""
             row.description = value?.description ? value.description : ""
             row.cost = value?.cost ? value.cost : ""
+            row.mode = value?.mode ? value.mode : ""
         }
 
         tempRows[index] = row

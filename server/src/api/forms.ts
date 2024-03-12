@@ -281,6 +281,9 @@ export const createPartsReq = async (partsReq: CreatePartsReq) => {
 
 // Update existing Parts Req
 export const updatePartsReq = async (id: number, user: string, updateReq: Partial<UpdatePartsReq>) => {
+    // Flag to determine if anything was updated
+    let updated: boolean = false
+
     // Get existing version of the Parts Req for comment generation
     const oldPartsReq = await prisma.partsReq.findUnique({
         where: {
@@ -331,8 +334,13 @@ export const updatePartsReq = async (id: number, user: string, updateReq: Partia
         status = determineReceived(updateReq.parts)
     }
 
+    if (partsUpdated) {
+        updated = true
+    }
+
     // Add new parts rows
     for (const part of newParts) {
+        updated = true
         await prisma.partsReqRow.create({
             data: {
                 qty: part.qty,
@@ -351,7 +359,8 @@ export const updatePartsReq = async (id: number, user: string, updateReq: Partia
     }
 
     // Delete parts rows
-    if (updateReq.delRows) {
+    if (updateReq.delRows && updateReq.delRows.length > 0) {
+        updated = true
         for (const row of updateReq.delRows) {
             await prisma.partsReqRow.delete({
                 where: {
@@ -368,6 +377,7 @@ export const updatePartsReq = async (id: number, user: string, updateReq: Partia
 
     // Mark files as deleted
     for (const file of updateReq.delFiles ?? []) {
+        updated = true
         const delFile = await prisma.file.update({
             where: {
                 id: file
@@ -386,6 +396,7 @@ export const updatePartsReq = async (id: number, user: string, updateReq: Partia
     const newFileIds = []
     // Create new files
     for (const file of updateReq.newFiles ?? []) {
+        updated = true
         const newFile = await prisma.file.create({
             data: {
                 name: file,
@@ -404,60 +415,70 @@ export const updatePartsReq = async (id: number, user: string, updateReq: Partia
     // Generate system comments based on what fields have changed
     // Status change
     if (oldPartsReq?.status !== status) {
+        updated = true
         const message = `Status Change: ${oldPartsReq?.status} -> ${status} `
 
         await genSystemComment(message, user, id)
     }
     // AFE change
     if (oldPartsReq?.afe !== updateReq.afe) {
+        updated = true
         const message = `AFE Change: ${oldPartsReq?.afe} -> ${updateReq.afe} `
 
         await genSystemComment(message, user, id)
     }
     // SO change
     if (oldPartsReq?.so !== updateReq.so) {
+        updated = true
         const message = `SO Change: ${oldPartsReq?.so} -> ${updateReq.so} `
 
         await genSystemComment(message, user, id)
     }
     // Unit change
     if (oldPartsReq?.unitNumber !== updateReq.unit?.unitNumber) {
+        updated = true
         const message = `Unit Change: ${oldPartsReq?.unitNumber} -> ${updateReq.unit?.unitNumber} `
 
         await genSystemComment(message, user, id)
     }
     // Truck change
     if (oldPartsReq?.truck !== updateReq.truck) {
+        updated = true
         const message = `Truck Change: ${oldPartsReq?.truck} -> ${updateReq.truck} `
 
         await genSystemComment(message, user, id)
     }
     // Urgency change
     if (oldPartsReq?.urgency !== updateReq.urgency) {
+        updated = true
         const message = `Urgency Change: ${oldPartsReq?.urgency} -> ${updateReq.urgency} `
 
         await genSystemComment(message, user, id)
     }
     // Order Type change
     if (oldPartsReq?.orderType !== updateReq.orderType) {
+        updated = true
         const message = `Order Type Change: ${oldPartsReq?.orderType} -> ${updateReq.orderType} `
 
         await genSystemComment(message, user, id)
     }
     // Pickup Location change
     if (oldPartsReq?.pickup !== updateReq.pickup) {
+        updated = true
         const message = `Pick Up Location Change: ${oldPartsReq?.pickup} -> ${updateReq.pickup} `
 
         await genSystemComment(message, user, id)
     }
     // Region change
     if (oldPartsReq?.region !== updateReq.region) {
+        updated = true
         const message = `Region Change: ${oldPartsReq?.region} -> ${updateReq.region} `
 
         await genSystemComment(message, user, id)
     }
     // Amex change
     if (oldPartsReq?.amex !== updateReq.amex) {
+        updated = true
         if (updateReq.amex) {
             status = "Sourcing - Pending Approval"
         }
@@ -468,6 +489,7 @@ export const updatePartsReq = async (id: number, user: string, updateReq: Partia
     }
     // Vendor change
     if (oldPartsReq?.vendor !== updateReq.vendor) {
+        updated = true
         const message = `Vendor Change: ${oldPartsReq?.vendor} -> ${updateReq.vendor} `
 
         await genSystemComment(message, user, id)
@@ -477,6 +499,7 @@ export const updatePartsReq = async (id: number, user: string, updateReq: Partia
     if (updateReq.comments) {
         for (const comment of updateReq.comments) {
             if (!comment.id) {
+                updated = true
                 await prisma.comment.create({
                     data: {
                         comment: comment.comment,
@@ -487,6 +510,11 @@ export const updatePartsReq = async (id: number, user: string, updateReq: Partia
                 })
             }
         }
+    }
+
+    // Check to see if anything was updated during a Rejected status update
+    if (updated && oldPartsReq?.status === "Rejected - Adjustments Required") {
+        status = "Pending Approval"
     }
 
     // Update parts req fields

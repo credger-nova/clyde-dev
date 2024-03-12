@@ -908,10 +908,10 @@ export default function PartsReqForm() {
                     </Grid>
                     <div style={{ display: "flex", justifyContent: "flex-end", width: "100%", padding: "15px 15px 0px 0px" }}>
                         <Button
-                            variant="outlined"
+                            variant="contained"
                             type="submit"
                             disabled={disableSubmit}
-                            sx={{ "&.MuiButton-root:hover": { backgroundColor: "#334787" } }}
+                            sx={{ backgroundColor: theme.palette.primary.dark }}
                         >
                             Submit
                         </Button>

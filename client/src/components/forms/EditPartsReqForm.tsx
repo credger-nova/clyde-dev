@@ -482,6 +482,12 @@ export default function EditPartsReqForm(props: Props) {
                     return false
                 }
             }
+            if (partsReq.status === "Rejected - Adjustments Required" &&
+                partsReq.requester === `${novaUser!.firstName} ${novaUser!.lastName}`) {
+                if (field !== "Status") {
+                    return false
+                }
+            }
             if (partsReq.status === "Sourcing - Information Required") {
                 if (field !== "Status" && field !== "Amex") {
                     return false
@@ -495,6 +501,12 @@ export default function EditPartsReqForm(props: Props) {
         if (OPS_DIRECTOR_TITLES.includes(title)) {
             if (partsReq.status === "Pending Approval") {
                 if (field === "Status" && calcCost(rows as Array<OrderRow>) < 10000) {
+                    return false
+                }
+            }
+            if (partsReq.status === "Rejected - Adjustments Required" &&
+                partsReq.requester === `${novaUser!.firstName} ${novaUser!.lastName}`) {
+                if (field !== "Status") {
                     return false
                 }
             }

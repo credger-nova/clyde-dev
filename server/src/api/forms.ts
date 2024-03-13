@@ -6,16 +6,16 @@ import { NovaUser } from "../models/novaUser"
 import { getDirectorsEmployees, getManagersEmployees } from "./kpa"
 
 const URGENCY_SORT = ["Unit Down", "Rush", "Standard", "Stock"]
-const MANAGER_STATUS_SORT = ["Pending Approval", "Rejected - Adjustments Required", "Approved", "Ordered - Awaiting Parts", "Completed - Parts Staged/Delivered",
+const MANAGER_STATUS_SORT = ["Pending Approval", "Quote Provided - Pending Approval", "Rejected - Adjustments Required", "Approved", "Ordered - Awaiting Parts", "Completed - Parts Staged/Delivered",
     "Sourcing - Information Required", "Sourcing - Information Provided", "Sourcing - Pending Approval", "Closed - Partially Received", "Closed - Parts in Hand"]
 
-const ALL_STATUS = ["Pending Approval", "Rejected - Adjustments Required", "Approved", "Sourcing - Information Required", "Sourcing - Information Provided",
-    "Sourcing - Pending Approval", "Ordered - Awaiting Parts", "Completed - Parts Staged/Delivered", "Closed - Partially Received", "Closed - Parts in Hand"]
+const ALL_STATUS = ["Pending Approval", "Pending Quote", "Quote Provided - Pending Approval", "Rejected - Adjustments Required", "Approved", "Sourcing - Information Required",
+    "Sourcing - Information Provided", "Sourcing - Pending Approval", "Ordered - Awaiting Parts", "Completed - Parts Staged/Delivered", "Closed - Partially Received", "Closed - Parts in Hand"]
 const SUPPLY_CHAIN_STATUS = [
-    "Approved", "Sourcing - Information Required", "Sourcing - Information Provided", "Sourcing - Pending Approval", "Ordered - Awaiting Parts",
+    "Pending Quote", "Approved", "Sourcing - Information Required", "Sourcing - Information Provided", "Sourcing - Pending Approval", "Ordered - Awaiting Parts",
     "Completed - Parts Staged/Delivered"
 ]
-const SVP_STATUS = ["Pending Approval"]
+const SVP_STATUS = ["Pending Approval", "Quote Provided - Pending Approval"]
 
 const FIELD_SERVICE_TITLES = TITLES.find(item => item.group === "Field Service")?.titles ?? []
 const OPS_MANAGER_TITLES = TITLES.find(item => item.group === "Ops Manager")?.titles ?? []
@@ -190,6 +190,7 @@ export const getPartsReqs = async (query: PartsReqQuery) => {
                 contact: obj.contact,
                 date: obj.date,
                 billable: obj.billable,
+                quoteOnly: obj.quoteOnly,
                 afe: obj.afe,
                 so: obj.so,
                 unit: obj.unit,
@@ -218,9 +219,10 @@ export const getPartsReqs = async (query: PartsReqQuery) => {
     if (OPS_MANAGER_TITLES.includes(query.user!.title) || OPS_DIRECTOR_TITLES.includes(query.user!.title) || IT_TITLES.includes(query.user!.title)) {
         partsReqs.sort((a, b) => MANAGER_STATUS_SORT.indexOf(a.status) - MANAGER_STATUS_SORT.indexOf(b.status) || URGENCY_SORT.indexOf(a.urgency) - URGENCY_SORT.indexOf(b.urgency)
             || a.date.getTime() - b.date.getTime())
+    } else if (SUPPLY_CHAIN_TITLES.includes(query.user!.title)) {
+        partsReqs.sort((a, b) => SUPPLY_CHAIN_STATUS.indexOf(a.status) - SUPPLY_CHAIN_STATUS.indexOf(b.status) || URGENCY_SORT.indexOf(a.urgency) - URGENCY_SORT.indexOf(b.urgency) || a.date.getTime() - b.date.getTime())
     } else {
-        partsReqs.sort((a, b) => URGENCY_SORT.indexOf(a.urgency) - URGENCY_SORT.indexOf(b.urgency) || a.date.getTime() - b.date.getTime() ||
-            ALL_STATUS.indexOf(a.status) - ALL_STATUS.indexOf(b.status))
+        partsReqs.sort((a, b) => ALL_STATUS.indexOf(a.status) - ALL_STATUS.indexOf(b.status) || URGENCY_SORT.indexOf(a.urgency) - URGENCY_SORT.indexOf(b.urgency) || a.date.getTime() - b.date.getTime())
     }
 
     return partsReqs
@@ -247,6 +249,7 @@ export const getPartsReq = async (id: number) => {
             contact: result.contact,
             date: result.date,
             billable: result.billable,
+            quoteOnly: result.quoteOnly,
             afe: result.afe,
             so: result.so,
             unit: result.unit,
@@ -278,6 +281,7 @@ export const createPartsReq = async (partsReq: CreatePartsReq) => {
             requester: partsReq.requester,
             date: partsReq.date,
             billable: partsReq.billable,
+            quoteOnly: partsReq.quoteOnly,
             afe: partsReq.afe,
             so: partsReq.so,
             unitNumber: partsReq.unit ? partsReq.unit.unitNumber : null,
@@ -568,6 +572,7 @@ export const updatePartsReq = async (id: number, user: string, updateReq: Partia
         },
         data: {
             contact: updateReq.contact,
+            quoteOnly: updateReq.quoteOnly,
             afe: updateReq.afe,
             so: updateReq.so,
             unitNumber: updateReq.unit ? updateReq.unit.unitNumber : null,

@@ -63,6 +63,15 @@ const STATUS: Array<{ status: string, titles: Array<string> }> = [
         titles: TITLES.find(item => item.group === "IT")?.titles ?? []
     },
     {
+        status: "Pending Quote",
+        titles: TITLES.find(item => item.group === "IT")?.titles ?? []
+    },
+    {
+        status: "Quote Provided - Pending Approval",
+        titles: (TITLES.find(item => item.group === "Supply Chain")?.titles ?? [])
+            .concat(TITLES.find(item => item.group === "IT")?.titles ?? [])
+    },
+    {
         status: "Rejected - Adjustments Required",
         titles: (TITLES.find(item => item.group === "Ops Manager")?.titles ?? [])
             .concat(TITLES.find(item => item.group === "Ops Director")?.titles ?? [])
@@ -139,9 +148,13 @@ function CustomPopper(props: PopperProps) {
     )
 }
 
-function getAvailableStatus(user: NovaUser | undefined) {
+function getAvailableStatus(user: NovaUser | undefined, quoteOnly: boolean) {
     if (user) {
-        const status = STATUS.filter(item => item.titles.includes(user.title))
+        if (quoteOnly) {
+            return ["Quote Provided - Pending Approval"]
+        }
+
+        const status = STATUS.filter(item => item.titles.includes(user.title) && item.status !== "Quote Provided - Pending Approval")
 
         return status.map(item => item.status)
     } else {
@@ -421,7 +434,7 @@ export default function EditPartsReqForm(props: Props) {
 
     // Check Status options to determine if they should be disabled
     const getOptionDisabled = (option: string) => {
-        if (option === "Completed - Parts Staged/Delivered") {
+        if (option === "Completed - Parts Staged/Delivered" || option === "Quote Provided - Pending Approval") {
             if (noRate(rows)) {
                 return true
             }
@@ -503,7 +516,7 @@ export default function EditPartsReqForm(props: Props) {
 
         // Ops Director permissions
         if (OPS_DIRECTOR_TITLES.includes(title)) {
-            if (partsReq.status === "Pending Approval") {
+            if (partsReq.status === "Pending Approval" || partsReq.status === "Quote Provided - Pending Approval") {
                 if (field === "Status" && calcCost(rows as Array<OrderRow>) < 10000 &&
                     !svpApprovalRequired(unit, rows as Array<OrderRow>)) {
                     return false
@@ -521,7 +534,7 @@ export default function EditPartsReqForm(props: Props) {
 
         // SVP permissions
         if (SVP_TITLES.includes(title)) {
-            if (partsReq.status === "Pending Approval") {
+            if (partsReq.status === "Pending Approval" || partsReq.status === "Quote Provided - Pending Approval") {
                 if (field === "Status") {
                     return false
                 }
@@ -532,7 +545,7 @@ export default function EditPartsReqForm(props: Props) {
 
         // Supply Chain permissions
         if (SUPPLY_CHAIN_TITLES.includes(title) || SC_DIRECTOR_TITLES.includes(title)) {
-            if (partsReq.status === "Approved" || partsReq.status === "Sourcing - Information Required" ||
+            if (partsReq.status === "Pending Quote" || partsReq.status === "Approved" || partsReq.status === "Sourcing - Information Required" ||
                 partsReq.status === "Sourcing - Information Provided" || partsReq.status === "Sourcing - Pending Approval" ||
                 partsReq.status === "Ordered - Awaiting Parts") {
                 if (field === "Status" || field === "Amex") {
@@ -544,7 +557,7 @@ export default function EditPartsReqForm(props: Props) {
                     return false
                 }
             }
-            if (field === "Rate") {
+            if (field === "Item" || field === "Description" || field === "Rate") {
                 return false
             }
 
@@ -574,7 +587,7 @@ export default function EditPartsReqForm(props: Props) {
                             <Item sx={{ marginBottom: "15px" }}>
                                 <Box>
                                     <Autocomplete
-                                        options={getAvailableStatus(novaUser)}
+                                        options={getAvailableStatus(novaUser, partsReq.status === "Pending Quote")}
                                         onChange={onStatusChange}
                                         value={status}
                                         getOptionDisabled={getOptionDisabled}
@@ -590,7 +603,7 @@ export default function EditPartsReqForm(props: Props) {
                                             const parts = parse(option, matches);
 
                                             return (
-                                                noRate(rows) && option === "Completed - Parts Staged/Delivered" ?
+                                                noRate(rows) && (option === "Completed - Parts Staged/Delivered" || option === "Quote Provided - Pending Approval") ?
                                                     <li {...props}>
                                                         {option}
                                                     </li> :
@@ -1297,7 +1310,7 @@ export default function EditPartsReqForm(props: Props) {
                                                                 )
                                                             }}
                                                             PopperComponent={CustomPopper}
-                                                            readOnly={denyAccess(novaUser!.title, status)}
+                                                            readOnly={denyAccess(novaUser!.title, status, "Item")}
                                                         />
                                                     </TableCell>
                                                     <TableCell>
@@ -1308,7 +1321,7 @@ export default function EditPartsReqForm(props: Props) {
                                                             helperText={!rows[index].itemNumber && " "}
                                                             disabled={partExists(rows[index].itemNumber)}
                                                             InputProps={{
-                                                                readOnly: denyAccess(novaUser!.title, status)
+                                                                readOnly: denyAccess(novaUser!.title, status, "Description")
                                                             }}
                                                         />
                                                     </TableCell>

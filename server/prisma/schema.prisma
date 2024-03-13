@@ -117,6 +117,7 @@ model PartsReq {
   contact    String        @default("")
   date       DateTime      @db.Timestamptz(6)
   billable   Boolean       @default(false)
+  quoteOnly  Boolean       @default(false) @map("quote_only")
   afe        String?
   so         String?
   unitNumber String?       @map("unit_number")

@@ -94,6 +94,7 @@ export default function PartsReqForm() {
     const [requester] = React.useState<string | undefined>(`${novaUser?.firstName} ${novaUser?.lastName}`)
     const [orderDate] = React.useState<Date>(new Date())
     const [billable, setBillable] = React.useState<boolean>(false)
+    const [quoteOnly, setQuoteOnly] = React.useState<boolean>(false)
     const [afe, setAfe] = React.useState<string | null>(null)
     const [so, setSo] = React.useState<string | null>(null)
     const [unit, setUnit] = React.useState<Unit | null>(null)
@@ -133,6 +134,7 @@ export default function PartsReqForm() {
             contact: "",
             date: orderDate,
             billable: billable,
+            quoteOnly: quoteOnly,
             afe: afe,
             so: so,
             unit: unit,
@@ -144,7 +146,7 @@ export default function PartsReqForm() {
             parts: rows,
             comments: comments,
             files: newFiles.map((file) => file.name),
-            status: "Pending Approval",
+            status: quoteOnly ? "Pending Quote" : "Pending Approval",
             amex: false,
             vendor: "",
             updated: new Date()
@@ -162,6 +164,10 @@ export default function PartsReqForm() {
         })
 
         window.location.href = ".."
+    }
+
+    const onQuoteChange = () => {
+        setQuoteOnly(!quoteOnly)
     }
 
     const onBillableChange = () => {
@@ -326,6 +332,15 @@ export default function PartsReqForm() {
                                         InputProps={{ readOnly: true }}
                                         sx={{ marginBottom: "10px" }}
                                     />
+                                    <div style={{ display: "flex", alignItems: "center" }}>
+                                        <Checkbox
+                                            checked={quoteOnly}
+                                            onChange={onQuoteChange}
+                                            disableRipple
+                                            sx={{ paddingLeft: 0 }}
+                                        />
+                                        <b><p style={{ margin: 0 }}>Quote Only?</p></b>
+                                    </div>
                                     <div style={{ display: "flex", alignItems: "center" }}>
                                         <Checkbox
                                             checked={billable}

@@ -517,7 +517,7 @@ export default function EditPartsReqForm(props: Props) {
         // Ops Director permissions
         if (OPS_DIRECTOR_TITLES.includes(title)) {
             if (partsReq.status === "Pending Approval" || partsReq.status === "Quote Provided - Pending Approval") {
-                if (field === "Status" && calcCost(rows as Array<OrderRow>) < 10000 &&
+                if (field === "Status" && (calcCost(rows as Array<OrderRow>) < 10000 || partsReq.afe) &&
                     !svpApprovalRequired(unit, rows as Array<OrderRow>)) {
                     return false
                 }

@@ -53,7 +53,7 @@ export default function PartsReqTable(props: Props) {
     const { partsReqs, fetching, setActivePartsReq } = props
 
     return !fetching ? (
-        <TableContainer component={Paper}>
+        <TableContainer component={Paper} sx={{height: "100%"}}>
             <Table size="small" aria-label="Unit Status" stickyHeader>
                 <TableHead>
                     <StyledTableRow>

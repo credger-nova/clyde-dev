@@ -35,7 +35,7 @@ interface Props {
 
 export default function UnitStatus(props: Props) {
     return (
-        <TableContainer component={Paper}>
+        <TableContainer component={Paper} sx={{ margin: "20px" }}>
             <Table size="small" aria-label="Unit Status" stickyHeader>
                 <TableHead>
                     <StyledTableRow>

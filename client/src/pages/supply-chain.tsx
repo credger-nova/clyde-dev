@@ -1,5 +1,5 @@
 import * as React from "react"
-import { useAuth0 } from "@auth0/auth0-react"
+
 import PartsReqCard, { SkeletonCard } from "../components/supply-chain/PartsReqCard"
 import Grid from '@mui/material/Unstable_Grid2'
 import Box from '@mui/material/Box'
@@ -15,10 +15,12 @@ import AppsIcon from '@mui/icons-material/Apps'
 import TableRowsIcon from '@mui/icons-material/TableRows'
 import { styled } from '@mui/material/styles'
 import Tooltip from '@mui/material/Tooltip'
+import TablePagination from '@mui/material/TablePagination'
+import PartsReqTable from "../components/supply-chain/PartsReqTable"
 
+import { useAuth0 } from "@auth0/auth0-react"
 import { usePartsReqs } from "../hooks/partsReq"
 import { useNovaUser } from "../hooks/user"
-import PartsReqTable from "../components/supply-chain/PartsReqTable"
 
 const StyledToggleButtonGroup = styled(ToggleButtonGroup)(({ theme }) => ({
     [`& .${toggleButtonGroupClasses.grouped}`]: {
@@ -46,6 +48,8 @@ export default function SupplyChain() {
     const [open, setOpen] = React.useState<boolean>(false)
     const [uiType, setUIType] = React.useState<"card" | "table">(window.screen.width <= 600 ? "card" : "table")
     const [disabled, setDisabled] = React.useState<boolean>(window.screen.width <= 600)
+    const [page, setPage] = React.useState<number>(0)
+    const [itemsPerPage, setItemsPerPage] = React.useState<number>(20)
 
     const { data: partsReqs, isFetching: partsReqsFetching } = usePartsReqs(partsReqQuery)
 
@@ -69,124 +73,140 @@ export default function SupplyChain() {
         }
     }
 
-    return (
-        <div className="page-container">
-            <Box sx={{ width: "100%", maxHeight: "100%", margin: "0px 15px", padding: "0px 10px" }}>
-                <Box sx={{ marginBottom: "20px" }}>
-                    <Collapse
-                        in={open}
-                    >
-                        <SearchFilter
-                            partsReqQuery={partsReqQuery}
-                            setPartsReqQuery={setPartsReqQuery}
-                        />
-                    </Collapse>
-                    <div
-                        style={{ display: "flex", justifyContent: "space-between" }}
-                    >
-                        <div className="collapse-button" onClick={handleOpenChange}>
-                            Search and Filter
-                            {open ?
-                                <ExpandLessIcon
-                                    sx={{ height: "20px" }}
-                                /> :
-                                <ExpandMoreIcon
-                                    sx={{ height: "20px" }}
-                                />
-                            }
-                        </div>
-                        <Box
-                            sx={{
-                                backgroundColor: "background.paper", borderBottomRightRadius: "0.5rem", borderBottomLeftRadius: "0.5rem"
-                            }}
-                        >
-                            <StyledToggleButtonGroup
-                                value={uiType}
-                                exclusive
-                                onChange={handleUIChange}
-                            >
-                                <Tooltip
-                                    title="Cards"
-                                    enterDelay={1000}
-                                    componentsProps={{
-                                        tooltip: {
-                                            sx: {
-                                                border: "1px solid white",
-                                                bgcolor: "background.paper"
-                                            }
-                                        }
-                                    }}
-                                >
-                                    <ToggleButton
-                                        value="card"
-                                    >
-                                        <AppsIcon />
-                                    </ToggleButton>
-                                </Tooltip>
-                                <Tooltip
-                                    title="Table"
-                                    enterDelay={1000}
-                                    componentsProps={{
-                                        tooltip: {
-                                            sx: {
-                                                border: "1px solid white",
-                                                bgcolor: "background.paper"
-                                            }
-                                        }
-                                    }}
-                                >
-                                    <ToggleButton
-                                        value="table"
-                                        disabled={disabled}
-                                    >
-                                        <TableRowsIcon />
-                                    </ToggleButton>
-                                </Tooltip>
-                            </StyledToggleButtonGroup>
-                        </Box>
-                    </div>
-                </Box>
-                <Box>
-                    {uiType === "card" ?
-                        <Grid
-                            container
-                            direction="row"
-                            justifyContent="flex-start"
-                            sx={{ width: "100%" }}
-                        >
-                            {partsReqsFetching ? Array(10).fill(0).map((_, index) => {
-                                return (
-                                    <Grid
-                                        key={index}
-                                    >
-                                        <SkeletonCard />
-                                    </Grid>
-                                )
-                            }) : partsReqs?.map((partsReq) => {
-                                return (
-                                    <Grid
-                                        key={partsReq.id}
-                                    >
-                                        <PartsReqCard
-                                            partsReq={partsReq}
-                                            setActivePartsReq={setActivePartsReq}
-                                        />
-                                    </Grid>
-                                )
-                            })}
-                        </Grid> :
-                        <PartsReqTable
-                            partsReqs={partsReqs}
-                            fetching={partsReqsFetching}
-                            setActivePartsReq={setActivePartsReq}
-                        />
-                    }
+    const handlePageChange = (_event: React.MouseEvent<HTMLButtonElement> | null, newPage: number) => {
+        setPage(newPage)
+    }
 
-                </Box>
+    const handleChangeItemsPerPage = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+        setItemsPerPage(parseInt(event.target.value, 10))
+        setPage(0)
+    }
+
+    return (
+        <div className="page-container" style={{ flexDirection: "column" }}>
+            <Box sx={{ marginBottom: "20px" }}>
+                <Collapse
+                    in={open}
+                    sx={{ margin: "0px 20px" }}
+                >
+                    <SearchFilter
+                        partsReqQuery={partsReqQuery}
+                        setPartsReqQuery={setPartsReqQuery}
+                    />
+                </Collapse>
+                <div
+                    style={{ display: "flex", justifyContent: "space-between", margin: "0px 20px" }}
+                >
+                    <div className="collapse-button" onClick={handleOpenChange}>
+                        Search and Filter
+                        {open ?
+                            <ExpandLessIcon
+                                sx={{ height: "20px" }}
+                            /> :
+                            <ExpandMoreIcon
+                                sx={{ height: "20px" }}
+                            />
+                        }
+                    </div>
+                    <Box
+                        sx={{
+                            backgroundColor: "background.paper", borderBottomRightRadius: "0.5rem", borderBottomLeftRadius: "0.5rem"
+                        }}
+                    >
+                        <StyledToggleButtonGroup
+                            value={uiType}
+                            exclusive
+                            onChange={handleUIChange}
+                        >
+                            <Tooltip
+                                title="Cards"
+                                enterDelay={1000}
+                                componentsProps={{
+                                    tooltip: {
+                                        sx: {
+                                            border: "1px solid white",
+                                            bgcolor: "background.paper"
+                                        }
+                                    }
+                                }}
+                            >
+                                <ToggleButton
+                                    value="card"
+                                >
+                                    <AppsIcon />
+                                </ToggleButton>
+                            </Tooltip>
+                            <Tooltip
+                                title="Table"
+                                enterDelay={1000}
+                                componentsProps={{
+                                    tooltip: {
+                                        sx: {
+                                            border: "1px solid white",
+                                            bgcolor: "background.paper"
+                                        }
+                                    }
+                                }}
+                            >
+                                <ToggleButton
+                                    value="table"
+                                    disabled={disabled}
+                                >
+                                    <TableRowsIcon />
+                                </ToggleButton>
+                            </Tooltip>
+                        </StyledToggleButtonGroup>
+                    </Box>
+                </div>
+            </Box>
+            <Box sx={{ height: "calc(100% - 74px - 52px)", margin: "0px 20px" }}>
+                {uiType === "card" ?
+                    <Grid
+                        container
+                        direction="row"
+                        justifyContent="flex-start"
+                        sx={{ width: "100%" }}
+                    >
+                        {partsReqsFetching ? Array(10).fill(0).map((_, index) => {
+                            return (
+                                <Grid
+                                    key={index}
+                                >
+                                    <SkeletonCard />
+                                </Grid>
+                            )
+                        }) : partsReqs?.slice(page * itemsPerPage, page * itemsPerPage + itemsPerPage).map((partsReq) => {
+                            return (
+                                <Grid
+                                    key={partsReq.id}
+                                >
+                                    <PartsReqCard
+                                        partsReq={partsReq}
+                                        setActivePartsReq={setActivePartsReq}
+                                    />
+                                </Grid>
+                            )
+                        })}
+                    </Grid> :
+                    <PartsReqTable
+                        partsReqs={partsReqs?.slice(page * itemsPerPage, page * itemsPerPage + itemsPerPage)}
+                        fetching={partsReqsFetching}
+                        setActivePartsReq={setActivePartsReq}
+                    />
+                }
                 <EditDialog
                     partsReq={activePartsReq!}
                     open={activePartsReq !== null}
                     setActivePartsReq={setActivePartsReq}
+                />
+                <TablePagination
+                    count={partsReqs ? partsReqs.length : 0}
+                    page={page}
+                    onPageChange={handlePageChange}
+                    rowsPerPage={itemsPerPage}
+                    onRowsPerPageChange={handleChangeItemsPerPage}
+                    rowsPerPageOptions={[10, 20, 50, 100]}
+                    component="div"
                 />
             </Box>
         </div>

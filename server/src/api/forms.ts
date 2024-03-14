@@ -6,6 +6,9 @@ import { NovaUser } from "../models/novaUser"
 import { getDirectorsEmployees, getManagersEmployees } from "./kpa"
 
 const URGENCY_SORT = ["Unit Down", "Rush", "Standard", "Stock"]
+const FIELD_SERVICE_SORT = ["Rejected - Adjustments Required", "Completed - Parts Staged/Delivered", "Closed - Partially Received", "Pending Approval", "Pending Quote",
+    "Quote Provided - Pending Approval", "Approved", "Sourcing - Information Required", "Sourcing - Information Provided", "Sourcing - Pending Approval", "Ordered - Awaiting Parts",
+    "Closed - Parts in Hand"]
 const MANAGER_STATUS_SORT = ["Pending Approval", "Quote Provided - Pending Approval", "Rejected - Adjustments Required", "Approved", "Ordered - Awaiting Parts", "Completed - Parts Staged/Delivered",
     "Sourcing - Information Required", "Sourcing - Information Provided", "Sourcing - Pending Approval", "Closed - Partially Received", "Closed - Parts in Hand"]
 
@@ -216,7 +219,10 @@ export const getPartsReqs = async (query: PartsReqQuery) => {
     }
 
     // Sort based on title
-    if (OPS_MANAGER_TITLES.includes(query.user!.title) || OPS_DIRECTOR_TITLES.includes(query.user!.title)) {
+    if (FIELD_SERVICE_TITLES.includes(query.user!.title)) {
+        partsReqs.sort((a, b) => FIELD_SERVICE_SORT.indexOf(a.status) - FIELD_SERVICE_SORT.indexOf(b.status) ||
+            URGENCY_SORT.indexOf(a.urgency) - URGENCY_SORT.indexOf(b.urgency) || a.date.getTime() - b.date.getTime())
+    } else if (OPS_MANAGER_TITLES.includes(query.user!.title) || OPS_DIRECTOR_TITLES.includes(query.user!.title)) {
         partsReqs.sort((a, b) => MANAGER_STATUS_SORT.indexOf(a.status) - MANAGER_STATUS_SORT.indexOf(b.status) ||
             URGENCY_SORT.indexOf(a.urgency) - URGENCY_SORT.indexOf(b.urgency) || a.date.getTime() - b.date.getTime())
     } else if (SUPPLY_CHAIN_TITLES.includes(query.user!.title)) {

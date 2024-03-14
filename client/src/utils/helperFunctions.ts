@@ -21,11 +21,11 @@ export function calcCost(parts: Array<OrderRow>) {
 }
 
 export function getThreshold(hp: number) {
-    if (hp >= 101 && hp < 400) {
+    if (hp > 100 && hp <= 400) {
         return 2000
-    } else if (hp >= 401 && hp < 1000) {
+    } else if (hp > 400 && hp <= 1000) {
         return 3000
-    } else if (hp >= 1000) {
+    } else if (hp > 1000) {
         return 5000
     } else {
         return 0

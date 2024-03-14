@@ -102,11 +102,11 @@ function calcCost(parts: Array<OrderRow>) {
 }
 
 export function getThreshold(hp: number) {
-    if (hp >= 101 && hp < 400) {
+    if (hp > 100 && hp <= 400) {
         return 2000
-    } else if (hp >= 401 && hp < 1000) {
+    } else if (hp > 400 && hp <= 1000) {
         return 3000
-    } else if (hp >= 1000) {
+    } else if (hp > 1000) {
         return 5000
     } else {
         return 0
@@ -216,13 +216,15 @@ export const getPartsReqs = async (query: PartsReqQuery) => {
     }
 
     // Sort based on title
-    if (OPS_MANAGER_TITLES.includes(query.user!.title) || OPS_DIRECTOR_TITLES.includes(query.user!.title) || IT_TITLES.includes(query.user!.title)) {
-        partsReqs.sort((a, b) => MANAGER_STATUS_SORT.indexOf(a.status) - MANAGER_STATUS_SORT.indexOf(b.status) || URGENCY_SORT.indexOf(a.urgency) - URGENCY_SORT.indexOf(b.urgency)
-            || a.date.getTime() - b.date.getTime())
+    if (OPS_MANAGER_TITLES.includes(query.user!.title) || OPS_DIRECTOR_TITLES.includes(query.user!.title)) {
+        partsReqs.sort((a, b) => MANAGER_STATUS_SORT.indexOf(a.status) - MANAGER_STATUS_SORT.indexOf(b.status) ||
+            URGENCY_SORT.indexOf(a.urgency) - URGENCY_SORT.indexOf(b.urgency) || a.date.getTime() - b.date.getTime())
     } else if (SUPPLY_CHAIN_TITLES.includes(query.user!.title)) {
-        partsReqs.sort((a, b) => SUPPLY_CHAIN_STATUS.indexOf(a.status) - SUPPLY_CHAIN_STATUS.indexOf(b.status) || URGENCY_SORT.indexOf(a.urgency) - URGENCY_SORT.indexOf(b.urgency) || a.date.getTime() - b.date.getTime())
+        partsReqs.sort((a, b) => SUPPLY_CHAIN_STATUS.indexOf(a.status) - SUPPLY_CHAIN_STATUS.indexOf(b.status) ||
+            URGENCY_SORT.indexOf(a.urgency) - URGENCY_SORT.indexOf(b.urgency) || a.date.getTime() - b.date.getTime())
     } else {
-        partsReqs.sort((a, b) => ALL_STATUS.indexOf(a.status) - ALL_STATUS.indexOf(b.status) || URGENCY_SORT.indexOf(a.urgency) - URGENCY_SORT.indexOf(b.urgency) || a.date.getTime() - b.date.getTime())
+        partsReqs.sort((a, b) => ALL_STATUS.indexOf(a.status) - ALL_STATUS.indexOf(b.status) || URGENCY_SORT.indexOf(a.urgency) - URGENCY_SORT.indexOf(b.urgency) ||
+            a.date.getTime() - b.date.getTime())
     }
 
     return partsReqs

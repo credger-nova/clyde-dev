@@ -33,7 +33,7 @@ export default function App() {
             <Map />
           </PrivateRoute>
         } />
-        <Route path="supply-chain" element={
+        <Route path="supply-chain/*" element={
           <PrivateRoute>
             <SupplyChain />
           </PrivateRoute>

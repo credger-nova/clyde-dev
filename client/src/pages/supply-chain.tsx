@@ -4,7 +4,7 @@ import PartsReqCard, { SkeletonCard } from "../components/supply-chain/PartsReqC
 import Grid from '@mui/material/Unstable_Grid2'
 import Box from '@mui/material/Box'
 import EditDialog from "../components/supply-chain/EditDialog"
-import { PartsReq, PartsReqQuery } from "../types/partsReq"
+import { PartsReqQuery } from "../types/partsReq"
 import SearchFilter from "../components/supply-chain/SearchFilter"
 import Collapse from '@mui/material/Collapse'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
@@ -17,6 +17,7 @@ import { styled } from '@mui/material/styles'
 import Tooltip from '@mui/material/Tooltip'
 import TablePagination from '@mui/material/TablePagination'
 import PartsReqTable from "../components/supply-chain/PartsReqTable"
+import { Routes, Route } from "react-router-dom"
 
 import { useAuth0 } from "@auth0/auth0-react"
 import { usePartsReqs } from "../hooks/partsReq"
@@ -43,7 +44,6 @@ export default function SupplyChain() {
     const { user } = useAuth0()
     const { data: novaUser, isFetched } = useNovaUser(undefined, user?.email)
 
-    const [activePartsReq, setActivePartsReq] = React.useState<PartsReq | null>(null)
     const [partsReqQuery, setPartsReqQuery] = React.useState<PartsReqQuery>({ user: isFetched ? novaUser : null })
     const [open, setOpen] = React.useState<boolean>(false)
     const [uiType, setUIType] = React.useState<"card" | "table">(window.screen.width <= 600 ? "card" : "table")
@@ -182,7 +182,6 @@ export default function SupplyChain() {
                                 >
                                     <PartsReqCard
                                         partsReq={partsReq}
-                                        setActivePartsReq={setActivePartsReq}
                                     />
                                 </Grid>
                             )
@@ -191,14 +190,14 @@ export default function SupplyChain() {
                     <PartsReqTable
                         partsReqs={partsReqs?.slice(page * itemsPerPage, page * itemsPerPage + itemsPerPage)}
                         fetching={partsReqsFetching}
-                        setActivePartsReq={setActivePartsReq}
                     />
                 }
-                <EditDialog
-                    partsReq={activePartsReq!}
-                    open={activePartsReq !== null}
-                    setActivePartsReq={setActivePartsReq}
-                />
+                <Routes>
+                    <Route path="/:id" element={
+                        <EditDialog />
+                    }>
+                    </Route>
+                </Routes>
                 <TablePagination
                     count={partsReqs ? partsReqs.length : 0}
                     page={page}

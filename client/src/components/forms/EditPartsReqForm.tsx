@@ -11,6 +11,7 @@ import { useNovaUser } from "../../hooks/user"
 import { useUpdatePartsReq } from "../../hooks/partsReq"
 import { useUploadFiles } from "../../hooks/storage"
 import { useVendors } from "../../hooks/vendor"
+import { useNavigate } from "react-router-dom"
 
 import { svpApprovalRequired, toTitleCase, calcCost } from "../../utils/helperFunctions"
 import { TITLES } from "../../utils/titles"
@@ -164,11 +165,12 @@ function getAvailableStatus(user: NovaUser | undefined, quoteOnly: boolean) {
 
 interface Props {
     partsReq: PartsReq,
-    setActivePartsReq: React.Dispatch<React.SetStateAction<PartsReq | null>>,
     save: boolean,
     setSave: React.Dispatch<React.SetStateAction<boolean>>,
     setSaveDisabled: React.Dispatch<React.SetStateAction<boolean>>,
-    edit: boolean
+    edit: boolean,
+    reset: boolean,
+    setReset: React.Dispatch<React.SetStateAction<boolean>>
 }
 
 interface PartOption extends Part {
@@ -176,9 +178,10 @@ interface PartOption extends Part {
 }
 
 export default function EditPartsReqForm(props: Props) {
-    const { partsReq, setActivePartsReq, save, setSave, setSaveDisabled, edit } = props
+    const { partsReq, save, setSave, setSaveDisabled, edit, reset, setReset } = props
 
     const { user } = useAuth0()
+    const navigate = useNavigate()
 
     const { data: novaUser, isFetched } = useNovaUser(undefined, user?.email)
 
@@ -233,6 +236,33 @@ export default function EditPartsReqForm(props: Props) {
         }
     }, [requester, orderDate, afe, so, urgency, orderType, rows, setSaveDisabled])
 
+    // If user cancels an edit session, reset state
+    React.useEffect(() => {
+        if (reset) {
+            setStatus(partsReq.status)
+            setContact(partsReq.contact)
+            setAfe(partsReq.afe)
+            setSo(partsReq.so)
+            setUnit(partsReq.unit)
+            setTruck(partsReq.truck)
+            setUrgency(partsReq.urgency)
+            setOrderType(partsReq.orderType)
+            setPickup(partsReq.pickup)
+            setRegion(partsReq.region)
+            setRows(partsReq.parts)
+            setDelRows([])
+            setComment("")
+            setComments(partsReq.comments)
+            setNewFiles([])
+            setDeleteFiles([])
+            setAmex(partsReq.amex)
+            setVendor(partsReq.vendor)
+
+            setReset(false)
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [reset])
+
     React.useEffect(() => {
         async function update() {
             const updateReq = {
@@ -270,7 +300,7 @@ export default function EditPartsReqForm(props: Props) {
                     await uploadFiles({ formData })
                 }
             }).then(() => {
-                setActivePartsReq(null)
+                navigate("../")
                 setSave(false)
             })
         }

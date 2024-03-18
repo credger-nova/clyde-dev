@@ -1,3 +1,7 @@
+import { PartsReq } from '../../types/partsReq'
+
+import { useNavigate } from 'react-router-dom'
+
 import { styled } from '@mui/material/styles'
 import Table from '@mui/material/Table'
 import TableBody from '@mui/material/TableBody'
@@ -7,7 +11,6 @@ import TableHead from '@mui/material/TableHead'
 import TableRow from '@mui/material/TableRow'
 import Paper from '@mui/material/Paper'
 import Typography from '@mui/material/Typography'
-import { PartsReq } from '../../types/partsReq'
 import Skeleton from '@mui/material/Skeleton'
 import Tooltip from '@mui/material/Tooltip'
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline'
@@ -45,15 +48,16 @@ const tableBodyStyles = {
 
 interface Props {
     partsReqs: Array<PartsReq> | undefined,
-    fetching: boolean,
-    setActivePartsReq: React.Dispatch<React.SetStateAction<PartsReq | null>>
+    fetching: boolean
 }
 
 export default function PartsReqTable(props: Props) {
-    const { partsReqs, fetching, setActivePartsReq } = props
+    const { partsReqs, fetching } = props
+
+    const navigate = useNavigate()
 
     return !fetching ? (
-        <TableContainer component={Paper} sx={{height: "100%"}}>
+        <TableContainer component={Paper} sx={{ height: "100%" }}>
             <Table size="small" aria-label="Unit Status" stickyHeader>
                 <TableHead>
                     <StyledTableRow>
@@ -77,7 +81,7 @@ export default function PartsReqTable(props: Props) {
                     {partsReqs?.map((partsReq) => (
                         <StyledTableRow
                             key={partsReq.id}
-                            onClick={() => setActivePartsReq(partsReq)}
+                            onClick={() => navigate(`${partsReq.id}`)}
                             sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                         >
                             <StyledTableCell>{partsReq.id}</StyledTableCell>
@@ -163,7 +167,7 @@ export default function PartsReqTable(props: Props) {
                     ))}
                 </TableBody>
             </Table>
-        </TableContainer>
+        </TableContainer >
     ) :
         <TableContainer component={Paper}>
             <Table size="small" aria-label="Unit Status" stickyHeader>

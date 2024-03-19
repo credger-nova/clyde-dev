@@ -296,7 +296,7 @@ export const createPartsReq = async (partsReq: CreatePartsReq) => {
             truck: partsReq.truck,
             urgency: partsReq.urgency,
             orderType: partsReq.orderType,
-            region: partsReq.region,
+            region: partsReq.region ?? "",
             amex: partsReq.amex,
             vendor: partsReq.vendor,
             parts: {

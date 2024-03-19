@@ -185,7 +185,7 @@ export default function PartsReqCard(props: Props) {
                             <Typography variant="subtitle2" sx={{ width: "35%" }}>
                                 Customer:
                             </Typography>
-                            {partsReq.unit ?
+                            {partsReq.unit && partsReq.unit.customer ?
                                 partsReq.unit.customer.length > 21 ?
                                     <Tooltip
                                         title={partsReq.unit.customer}

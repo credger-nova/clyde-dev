@@ -48,10 +48,10 @@ async function routes(fastify: FastifyInstance) {
     })
 
     // Route to get all of a director's employees
-    fastify.get<{ Params: { region: string } }>("/director/:region/employees", async (req, res) => {
-        const { region } = req.params
+    fastify.get<{ Params: { id: string } }>("/director/:id/employees", async (req, res) => {
+        const { id } = req.params
 
-        const users = await getDirectorsEmployees(region)
+        const users = await getDirectorsEmployees(id)
 
         if (users) {
             res.status(200).send(users)

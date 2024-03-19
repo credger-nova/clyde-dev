@@ -58,7 +58,7 @@ export default function PartsReqTable(props: Props) {
 
     return !fetching ? (
         <TableContainer component={Paper} sx={{ height: "100%" }}>
-            <Table size="small" aria-label="Unit Status" stickyHeader>
+            <Table size="small" aria-label="Parts Reqs" stickyHeader>
                 <TableHead>
                     <StyledTableRow>
                         <StyledTableCell>ID</StyledTableCell>
@@ -190,7 +190,7 @@ export default function PartsReqTable(props: Props) {
                 <TableBody
                     sx={tableBodyStyles}
                 >
-                    {Array(15).fill(0).map((_, index) => {
+                    {Array(20).fill(0).map((_, index) => {
                         return (
                             <StyledTableRow
                                 key={index}

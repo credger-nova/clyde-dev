@@ -167,7 +167,7 @@ export default function SupplyChain() {
                         justifyContent="flex-start"
                         sx={{ width: "100%" }}
                     >
-                        {partsReqsFetching ? Array(10).fill(0).map((_, index) => {
+                        {partsReqsFetching ? Array(20).fill(0).map((_, index) => {
                             return (
                                 <Grid
                                     key={index}

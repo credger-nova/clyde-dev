@@ -21,7 +21,7 @@ export default function Home() {
 
     return (
         <div className="page-container">
-            {novaUser &&
+            {novaUser?.title === "Software Developer" &&
                 <Box sx={{ width: "100%", height: "100%" }}>
                     <Grid
                         container

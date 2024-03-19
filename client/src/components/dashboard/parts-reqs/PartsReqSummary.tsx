@@ -3,7 +3,7 @@ import { TITLES } from "../../../utils/titles"
 
 import Box from '@mui/material/Box'
 import Divider from '@mui/material/Divider'
-import SummaryTable from './SummaryTable'
+//import SummaryTable from './SummaryTable'
 
 const ALLOWED_GROUPS = [
     "Ops Manager",
@@ -25,10 +25,10 @@ export default function PartsReqSummary(props: Props) {
         <Box sx={{ display: "flex", flexDirection: "column" }}>
             <h4 style={{ margin: 0, width: "100%", textAlign: "center" }}>Parts Reqs</h4>
             <Divider sx={{ width: "100%", marginBottom: "10px" }} />
-            {userType && ALLOWED_GROUPS.includes(userType.group) && <SummaryTable
+            {userType && ALLOWED_GROUPS.includes(userType.group) && /*<SummaryTable
                 novaUser={novaUser}
                 group={userType.group}
-            />}
+    />*/null}
         </Box>
     )
 }

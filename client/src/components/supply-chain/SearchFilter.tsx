@@ -23,11 +23,13 @@ const STATUS = ["Pending Approval", "Rejected - Adjustments Required", "Approved
 
 interface Props {
     partsReqQuery: PartsReqQuery,
-    setPartsReqQuery: React.Dispatch<React.SetStateAction<PartsReqQuery>>
+    setPartsReqQuery: React.Dispatch<React.SetStateAction<PartsReqQuery>>,
+    initialStatuses: Array<string>,
+    initialRequesters: Array<NovaUser>
 }
 
 export default function SearchFilter(props: Props) {
-    const { partsReqQuery, setPartsReqQuery } = props
+    const { partsReqQuery, setPartsReqQuery, initialStatuses, initialRequesters } = props
 
     const { data: afeNumbers, isFetching: afeFetching } = useAFEs()
     const { data: soNumbers, isFetching: soFetching } = useSOs()
@@ -345,6 +347,7 @@ export default function SearchFilter(props: Props) {
                             limitTags={3}
                             size="small"
                             options={STATUS}
+                            defaultValue={initialStatuses ?? []}
                             onChange={handleStatusChange}
                             renderInput={(params) => <StyledTextField
                                 {...params}
@@ -383,6 +386,7 @@ export default function SearchFilter(props: Props) {
                             limitTags={3}
                             size="small"
                             options={requesters ? requesters : []}
+                            defaultValue={initialRequesters ?? []}
                             getOptionLabel={(option: NovaUser) => `${option.firstName} ${option.lastName}`}
                             loading={requestersFetching}
                             onChange={handleRequesterChange}

@@ -22,6 +22,8 @@ import { Routes, Route } from "react-router-dom"
 import { useAuth0 } from "@auth0/auth0-react"
 import { usePartsReqs } from "../hooks/partsReq"
 import { useNovaUser } from "../hooks/user"
+import { useLocation } from "react-router-dom"
+import { NovaUser } from "../types/novaUser"
 
 const StyledToggleButtonGroup = styled(ToggleButtonGroup)(({ theme }) => ({
     [`& .${toggleButtonGroupClasses.grouped}`]: {
@@ -43,8 +45,14 @@ const StyledToggleButtonGroup = styled(ToggleButtonGroup)(({ theme }) => ({
 export default function SupplyChain() {
     const { user } = useAuth0()
     const { data: novaUser, isFetched } = useNovaUser(undefined, user?.email)
+    const { state } = useLocation()
+    const { statuses, requesters } = state ?? {}
 
-    const [partsReqQuery, setPartsReqQuery] = React.useState<PartsReqQuery>({ user: isFetched ? novaUser : null })
+    const [partsReqQuery, setPartsReqQuery] = React.useState<PartsReqQuery>({
+        user: isFetched ? novaUser : null,
+        status: statuses ?? [],
+        requester: requesters ? requesters.map((user: NovaUser) => `${user.firstName} ${user.lastName}`) : []
+    })
     const [open, setOpen] = React.useState<boolean>(false)
     const [uiType, setUIType] = React.useState<"card" | "table">(window.screen.width <= 600 ? "card" : "table")
     const [disabled, setDisabled] = React.useState<boolean>(window.screen.width <= 600)
@@ -92,6 +100,8 @@ export default function SupplyChain() {
                     <SearchFilter
                         partsReqQuery={partsReqQuery}
                         setPartsReqQuery={setPartsReqQuery}
+                        initialStatuses={statuses}
+                        initialRequesters={requesters}
                     />
                 </Collapse>
                 <div

@@ -5,6 +5,7 @@ import { PartsReq, PartsReqQuery } from "../../../types/partsReq"
 
 import { useManagersEmployees, useDirectorsEmployees } from "../../../hooks/user"
 import { usePartsReqs } from "../../../hooks/partsReq"
+import { useNavigate } from "react-router-dom"
 
 import Accordion from '@mui/material/Accordion'
 import AccordionDetails from '@mui/material/AccordionDetails'
@@ -71,6 +72,7 @@ export default function SummaryTable(props: Props) {
     const { data: managersEmployees, isFetching: managersEmployeesFetching } = useManagersEmployees(novaUser)
     const { data: directorsEmployees, isFetching: directorsEmployeesFetching } = useDirectorsEmployees(novaUser)
     const { data: partsReqs } = usePartsReqs(partsReqQuery)
+    const navigate = useNavigate()
 
     React.useEffect(() => {
         if (!managersEmployeesFetching && group !== "Supply Chain Director") {
@@ -82,6 +84,33 @@ export default function SummaryTable(props: Props) {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [managersEmployeesFetching])
 
+    const handleClick = (statusGroup: string, requesters?: Array<NovaUser>) => {
+        let statuses: Array<string> = []
+        if (statusGroup === "Pending Quote") {
+            statuses = ["Pending Quote"]
+        } else if (statusGroup === "Pending Approval") {
+            statuses = ["Pending Quote", "Pending Approval", "Quote Provided - Pending Approval"]
+        } else if (statusGroup === "Rejected") {
+            statuses = ["Rejected - Adjustments Required"]
+        } else if (statusGroup === "Approved") {
+            statuses = ["Approved"]
+        } else if (statusGroup === "Sourcing") {
+            statuses = ["Sourcing - Information Required", "Sourcing - Information Provided", "Sourcing - Pending Approval"]
+        } else if (statusGroup === "Parts Ordered") {
+            statuses = ["Ordered - Awaiting Parts"]
+        } else if (statusGroup === "Parts Staged") {
+            statuses = ["Completed - Parts Staged/Delivered"]
+        } else if (statusGroup === "Closed") {
+            statuses = ["Closed - Partially Received", "Closed - Parts in Hand"]
+        }
+
+        console.log(statuses)
+
+        console.log(requesters)
+
+        navigate("/supply-chain", { state: { statuses: statuses, requesters: requesters } })
+    }
+
     if (group === "Field Service") {
         return (
             <Paper sx={{ padding: "5px" }}>
@@ -89,13 +118,15 @@ export default function SummaryTable(props: Props) {
                     {STATUS_GROUPS.map((statusGroup) => {
                         return (
                             <Grid xs={12} sm={4} spacing={2}>
-                                <Item sx={{
-                                    margin: "5px", display: "flex", alignItems: "center", justifyContent: "space-between", cursor: "pointer",
-                                    transition: "transform 0.1s ease-in-out",
-                                    "&:hover": {
-                                        transform: "scale3d(1.03, 1.03, 1)"
-                                    }
-                                }}>
+                                <Item
+                                    onClick={() => handleClick(statusGroup)}
+                                    sx={{
+                                        margin: "5px", display: "flex", alignItems: "center", justifyContent: "space-between", cursor: "pointer",
+                                        transition: "transform 0.1s ease-in-out",
+                                        "&:hover": {
+                                            transform: "scale3d(1.03, 1.03, 1)"
+                                        }
+                                    }}>
                                     <Typography>
                                         {`${statusGroup}:`}
                                     </Typography>
@@ -140,13 +171,15 @@ export default function SummaryTable(props: Props) {
                                 {STATUS_GROUPS.map((statusGroup) => {
                                     return (
                                         <Grid xs={12} sm={4} spacing={2}>
-                                            <Item sx={{
-                                                margin: "5px", display: "flex", alignItems: "center", justifyContent: "space-between", cursor: "pointer",
-                                                transition: "transform 0.1s ease-in-out",
-                                                "&:hover": {
-                                                    transform: "scale3d(1.05, 1.05, 1)"
-                                                }
-                                            }}>
+                                            <Item
+                                                onClick={() => handleClick(statusGroup, [employee])}
+                                                sx={{
+                                                    margin: "5px", display: "flex", alignItems: "center", justifyContent: "space-between", cursor: "pointer",
+                                                    transition: "transform 0.1s ease-in-out",
+                                                    "&:hover": {
+                                                        transform: "scale3d(1.05, 1.05, 1)"
+                                                    }
+                                                }}>
                                                 <Typography>
                                                     {`${statusGroup}:`}
                                                 </Typography>
@@ -194,13 +227,15 @@ export default function SummaryTable(props: Props) {
                                 {STATUS_GROUPS.map((statusGroup) => {
                                     return (
                                         <Grid xs={12} sm={4} spacing={2}>
-                                            <Item sx={{
-                                                margin: "5px", display: "flex", alignItems: "center", justifyContent: "space-between", cursor: "pointer",
-                                                transition: "transform 0.1s ease-in-out",
-                                                "&:hover": {
-                                                    transform: "scale3d(1.05, 1.05, 1)"
-                                                }
-                                            }}>
+                                            <Item
+                                                onClick={() => handleClick(statusGroup, directorsEmployees.filter((subordinate) => subordinate.supervisorId === employee.id).concat(employee))}
+                                                sx={{
+                                                    margin: "5px", display: "flex", alignItems: "center", justifyContent: "space-between", cursor: "pointer",
+                                                    transition: "transform 0.1s ease-in-out",
+                                                    "&:hover": {
+                                                        transform: "scale3d(1.05, 1.05, 1)"
+                                                    }
+                                                }}>
                                                 <Typography>
                                                     {`${statusGroup}:`}
                                                 </Typography>
@@ -244,13 +279,15 @@ export default function SummaryTable(props: Props) {
                                             {STATUS_GROUPS.map((statusGroup) => {
                                                 return (
                                                     <Grid xs={12} sm={4} spacing={2}>
-                                                        <Item sx={{
-                                                            margin: "5px", display: "flex", alignItems: "center", justifyContent: "space-between", cursor: "pointer",
-                                                            transition: "transform 0.1s ease-in-out",
-                                                            "&:hover": {
-                                                                transform: "scale3d(1.05, 1.05, 1)"
-                                                            }
-                                                        }}>
+                                                        <Item
+                                                            onClick={() => handleClick(statusGroup, [user])}
+                                                            sx={{
+                                                                margin: "5px", display: "flex", alignItems: "center", justifyContent: "space-between", cursor: "pointer",
+                                                                transition: "transform 0.1s ease-in-out",
+                                                                "&:hover": {
+                                                                    transform: "scale3d(1.05, 1.05, 1)"
+                                                                }
+                                                            }}>
                                                             <Typography>
                                                                 {`${statusGroup}:`}
                                                             </Typography>
@@ -277,13 +314,15 @@ export default function SummaryTable(props: Props) {
                     {SC_GROUPS.map((statusGroup) => {
                         return (
                             <Grid xs={12} sm={4} spacing={2}>
-                                <Item sx={{
-                                    margin: "5px", display: "flex", alignItems: "center", justifyContent: "space-between", cursor: "pointer",
-                                    transition: "transform 0.1s ease-in-out",
-                                    "&:hover": {
-                                        transform: "scale3d(1.03, 1.03, 1)"
-                                    }
-                                }}>
+                                <Item
+                                    onClick={() => handleClick(statusGroup)}
+                                    sx={{
+                                        margin: "5px", display: "flex", alignItems: "center", justifyContent: "space-between", cursor: "pointer",
+                                        transition: "transform 0.1s ease-in-out",
+                                        "&:hover": {
+                                            transform: "scale3d(1.03, 1.03, 1)"
+                                        }
+                                    }}>
                                     <Typography>
                                         {`${statusGroup}:`}
                                     </Typography>
@@ -304,13 +343,15 @@ export default function SummaryTable(props: Props) {
                     {STATUS_GROUPS.map((statusGroup) => {
                         return (
                             <Grid xs={12} sm={4} spacing={2}>
-                                <Item sx={{
-                                    margin: "5px", display: "flex", alignItems: "center", justifyContent: "space-between", cursor: "pointer",
-                                    transition: "transform 0.1s ease-in-out",
-                                    "&:hover": {
-                                        transform: "scale3d(1.03, 1.03, 1)"
-                                    }
-                                }}>
+                                <Item
+                                    onClick={() => handleClick(statusGroup)}
+                                    sx={{
+                                        margin: "5px", display: "flex", alignItems: "center", justifyContent: "space-between", cursor: "pointer",
+                                        transition: "transform 0.1s ease-in-out",
+                                        "&:hover": {
+                                            transform: "scale3d(1.03, 1.03, 1)"
+                                        }
+                                    }}>
                                     <Typography>
                                         {`${statusGroup}:`}
                                     </Typography>

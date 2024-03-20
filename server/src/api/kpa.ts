@@ -244,6 +244,7 @@ export const getManagersEmployees = async (id: string) => {
     }
 
     const { data } = await axios.post(ALL_USERS_URL, postBody)
+    const titles = await getJobTitles()
 
     var employees = []
 
@@ -262,6 +263,20 @@ export const getManagersEmployees = async (id: string) => {
         }
     }
 
+    for (const user of employees) {
+        const res = titles.find(obj => obj.id === user.title)
+
+        // Remove employees with no title
+        if (res) {
+            user.title = res.title
+        } else {
+            const index = employees.indexOf(user)
+            if (index > -1) {
+                employees.splice(index, 1)
+            }
+        }
+    }
+
     return employees
 }
 
@@ -272,6 +287,7 @@ export const getDirectorsEmployees = async (id: string) => {
     }
 
     const { data } = await axios.post(ALL_USERS_URL, postBody)
+    const titles = await getJobTitles()
 
     var employees = []
 
@@ -287,6 +303,20 @@ export const getDirectorsEmployees = async (id: string) => {
                 supervisorId: user.supervisor_id,
                 managerId: user.manager_id
             } as NovaUser)
+        }
+    }
+
+    for (const user of employees) {
+        const res = titles.find(obj => obj.id === user.title)
+
+        // Remove employees with no title
+        if (res) {
+            user.title = res.title
+        } else {
+            const index = employees.indexOf(user)
+            if (index > -1) {
+                employees.splice(index, 1)
+            }
         }
     }
 

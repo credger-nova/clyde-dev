@@ -35,23 +35,23 @@ export function useAllNovaUsers() {
 }
 
 // Get all manager's employees
-const getManagersEmployees = async (id: string) => {
-    const { data } = await axios.get<Array<NovaUser>>(`${import.meta.env.VITE_API_BASE}/kpa/manager/${id}/employees`)
+const getManagersEmployees = async (user: NovaUser) => {
+    const { data } = await axios.get<Array<NovaUser>>(`${import.meta.env.VITE_API_BASE}/kpa/manager/${user.id}/employees`)
 
     return data
 }
 
-export function useManagersEmployees(id: string) {
-    return useQuery({ queryKey: ["employees", id], queryFn: () => getManagersEmployees(id) })
+export function useManagersEmployees(user: NovaUser) {
+    return useQuery({ queryKey: ["employees", user.id], queryFn: () => getManagersEmployees(user), enabled: user.title.includes("Manager") })
 }
 
 // Get all director's employees
-const getDirectorsEmployees = async (id: string) => {
-    const { data } = await axios.get<Array<NovaUser>>(`${import.meta.env.VITE_API_BASE}/kpa/director/${id}/employees`)
+const getDirectorsEmployees = async (user: NovaUser) => {
+    const { data } = await axios.get<Array<NovaUser>>(`${import.meta.env.VITE_API_BASE}/kpa/director/${user.id}/employees`)
 
     return data
 }
 
-export function useDirectorsEmployees(id: string) {
-    return useQuery({ queryKey: ["employees", id], queryFn: () => getDirectorsEmployees(id) })
+export function useDirectorsEmployees(user: NovaUser) {
+    return useQuery({ queryKey: ["employees", user.id], queryFn: () => getDirectorsEmployees(user), enabled: user.title.includes("Director") })
 }

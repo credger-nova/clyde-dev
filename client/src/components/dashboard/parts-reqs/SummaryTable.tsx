@@ -1,9 +1,9 @@
 import * as React from "react"
 
 import { NovaUser } from "../../../types/novaUser"
-import { PartsReqQuery } from "../../../types/partsReq"
+import { PartsReq, PartsReqQuery } from "../../../types/partsReq"
 
-import { useManagersEmployees } from "../../../hooks/user"
+import { useManagersEmployees, useDirectorsEmployees } from "../../../hooks/user"
 import { usePartsReqs } from "../../../hooks/partsReq"
 
 import Accordion from '@mui/material/Accordion'
@@ -12,36 +12,16 @@ import AccordionSummary from '@mui/material/AccordionSummary'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import Divider from '@mui/material/Divider'
 import { styled } from '@mui/material/styles'
-import Table from '@mui/material/Table'
-import TableBody from '@mui/material/TableBody'
-import TableCell, { tableCellClasses } from '@mui/material/TableCell'
-import TableContainer from '@mui/material/TableContainer'
-import TableHead from '@mui/material/TableHead'
-import TableRow from '@mui/material/TableRow'
 import Paper from '@mui/material/Paper'
 import Typography from '@mui/material/Typography'
+import Grid from '@mui/material/Unstable_Grid2'
 
-const StyledTableCell = styled(TableCell)(({ theme }) => ({
-    [`&.${tableCellClasses.head}`]: {
-        backgroundColor: theme.palette.common.black,
-        color: theme.palette.common.white,
-    },
-    [`&.${tableCellClasses.body}`]: {
-        fontSize: 14,
-    },
-}))
-
-const StyledTableRow = styled(TableRow)(({ theme }) => ({
-    '&:nth-of-type(odd)': {
-        backgroundColor: theme.palette.action.hover,
-    },
-    // hide last border
-    '&:last-child td, &:last-child th': {
-        border: 0,
-    },
-    '&:hover': {
-        background: '#334787ad'
-    }
+const Item = styled(Paper)(({ theme }) => ({
+    backgroundColor: "#242424",
+    ...theme.typography.body2,
+    padding: theme.spacing(1),
+    textAlign: "left",
+    color: "white"
 }))
 
 interface Props {
@@ -49,16 +29,51 @@ interface Props {
     group: string
 }
 
+const STATUS_GROUPS = ["Pending Approval", "Rejected", "Approved", "Sourcing", "Parts Ordered", "Parts Staged", "Closed"]
+const SC_GROUPS = ["Pending Quote", "Approved", "Sourcing", "Parts Ordered", "Parts Staged"]
+
+function calcStatus(partsReqs: Array<PartsReq>, statusGroup: string, requester?: string, requesterGroup?: Array<string>) {
+    let filtered: Array<PartsReq> = []
+
+    if (statusGroup === "Pending Quote") {
+        filtered = partsReqs.filter((partsReq) => partsReq.status === "Pending Quote")
+    } else if (statusGroup === "Pending Approval") {
+        filtered = partsReqs.filter((partsReq) => partsReq.status === "Pending Approval" || partsReq.status === "Pending Quote" || partsReq.status === "Quote Provided - Pending Approval")
+    } else if (statusGroup === "Rejected") {
+        filtered = partsReqs.filter((partsReq) => partsReq.status === "Rejected - Adjustments Required")
+    } else if (statusGroup === "Approved") {
+        filtered = partsReqs.filter((partsReq) => partsReq.status === "Approved")
+    } else if (statusGroup === "Sourcing") {
+        filtered = partsReqs.filter((partsReq) => partsReq.status === "Sourcing - Information Required" || partsReq.status === "Sourcing - Information Provided" || partsReq.status === "Sourcing - Pending Approval")
+    } else if (statusGroup === "Parts Ordered") {
+        filtered = partsReqs.filter((partsReq) => partsReq.status === "Ordered - Awaiting Parts")
+    } else if (statusGroup === "Parts Staged") {
+        filtered = partsReqs.filter((partsReq) => partsReq.status === "Completed - Parts Staged/Delivered")
+    } else if (statusGroup === "Closed") {
+        filtered = partsReqs.filter((partsReq) => partsReq.status === "Closed - Partially Received" || partsReq.status === "Closed - Parts in Hand")
+    }
+
+    if (requester) {
+        filtered = filtered.filter((partsReq) => partsReq.requester === requester)
+    }
+    if (requesterGroup) {
+        filtered = filtered.filter((partsReq) => requesterGroup.includes(partsReq.requester))
+    }
+
+    return filtered.length
+}
+
 export default function SummaryTable(props: Props) {
     const { novaUser, group } = props
 
     const [partsReqQuery, setPartsReqQuery] = React.useState<PartsReqQuery>({ user: novaUser })
 
-    const { data: managersEmployees, isFetching: managersEmployeesFetching } = useManagersEmployees(novaUser.id)
-    const { data: partsReqs, isFetching: partsReqsFetching } = usePartsReqs(partsReqQuery)
+    const { data: managersEmployees, isFetching: managersEmployeesFetching } = useManagersEmployees(novaUser)
+    const { data: directorsEmployees, isFetching: directorsEmployeesFetching } = useDirectorsEmployees(novaUser)
+    const { data: partsReqs } = usePartsReqs(partsReqQuery)
 
     React.useEffect(() => {
-        if (!managersEmployeesFetching) {
+        if (!managersEmployeesFetching && group !== "Supply Chain Director") {
             setPartsReqQuery(prevState => ({
                 ...prevState,
                 requester: managersEmployees?.map((employee) => `${employee.firstName} ${employee.lastName}`)
@@ -67,7 +82,34 @@ export default function SummaryTable(props: Props) {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [managersEmployeesFetching])
 
-    if (group === "Ops Manager") {
+    if (group === "Field Service") {
+        return (
+            <Paper sx={{ padding: "5px" }}>
+                <Grid container>
+                    {STATUS_GROUPS.map((statusGroup) => {
+                        return (
+                            <Grid xs={12} sm={4} spacing={2}>
+                                <Item sx={{
+                                    margin: "5px", display: "flex", alignItems: "center", justifyContent: "space-between", cursor: "pointer",
+                                    transition: "transform 0.1s ease-in-out",
+                                    "&:hover": {
+                                        transform: "scale3d(1.03, 1.03, 1)"
+                                    }
+                                }}>
+                                    <Typography>
+                                        {`${statusGroup}:`}
+                                    </Typography>
+                                    <Typography>
+                                        {partsReqs ? calcStatus(partsReqs, statusGroup, `${novaUser.firstName} ${novaUser.lastName}`) : 0}
+                                    </Typography>
+                                </Item>
+                            </Grid>
+                        )
+                    })}
+                </Grid>
+            </Paper>
+        )
+    } else if (group === "Ops Manager") {
         return (
             !managersEmployeesFetching ? managersEmployees?.map((employee) => {
                 return (
@@ -94,17 +136,193 @@ export default function SummaryTable(props: Props) {
                         </AccordionSummary>
                         <AccordionDetails>
                             <Divider />
-                            <TableContainer component={Paper}>
-                                <Table size="small" aria-label={`${employee.firstName} ${employee.lastName} Parts Reqs`}>
-                                    <TableHead>
-
-                                    </TableHead>
-                                </Table>
-                            </TableContainer>
+                            <Grid container>
+                                {STATUS_GROUPS.map((statusGroup) => {
+                                    return (
+                                        <Grid xs={12} sm={4} spacing={2}>
+                                            <Item sx={{
+                                                margin: "5px", display: "flex", alignItems: "center", justifyContent: "space-between", cursor: "pointer",
+                                                transition: "transform 0.1s ease-in-out",
+                                                "&:hover": {
+                                                    transform: "scale3d(1.05, 1.05, 1)"
+                                                }
+                                            }}>
+                                                <Typography>
+                                                    {`${statusGroup}:`}
+                                                </Typography>
+                                                <Typography>
+                                                    {partsReqs ? calcStatus(partsReqs, statusGroup, `${employee.firstName} ${employee.lastName}`) : 0}
+                                                </Typography>
+                                            </Item>
+                                        </Grid>
+                                    )
+                                })}
+                            </Grid>
                         </AccordionDetails>
                     </Accordion>
                 )
             }) : null // TODO: add skeleton
+        )
+    } else if (group === "Ops Director") {
+        return (
+            !directorsEmployeesFetching ? directorsEmployees?.map((employee) => {
+                return (
+                    employee.title.includes("Manager") && <Accordion
+                        key={employee.id}
+                        disableGutters
+                    >
+                        <AccordionSummary
+                            expandIcon={<ExpandMoreIcon />}
+                            sx={{
+                                flexDirection: "row-reverse",
+                                "& .MuiAccordionSummary-content": {
+                                    margin: 0
+                                },
+                                "&.MuiAccordionSummary-root": {
+                                    minHeight: 0,
+                                    margin: "5px 0px"
+                                }
+                            }}
+                        >
+                            <div>
+                                <b>{`${employee.firstName} ${employee.lastName}`}</b>
+                            </div>
+                        </AccordionSummary>
+                        <AccordionDetails>
+                            <Divider />
+                            <Grid container>
+                                {STATUS_GROUPS.map((statusGroup) => {
+                                    return (
+                                        <Grid xs={12} sm={4} spacing={2}>
+                                            <Item sx={{
+                                                margin: "5px", display: "flex", alignItems: "center", justifyContent: "space-between", cursor: "pointer",
+                                                transition: "transform 0.1s ease-in-out",
+                                                "&:hover": {
+                                                    transform: "scale3d(1.05, 1.05, 1)"
+                                                }
+                                            }}>
+                                                <Typography>
+                                                    {`${statusGroup}:`}
+                                                </Typography>
+                                                <Typography>
+                                                    {partsReqs ? calcStatus(partsReqs, statusGroup, undefined, directorsEmployees.filter((subordinate) => subordinate.supervisorId === employee.id)
+                                                        .map((user) => `${user.firstName} ${user.lastName}`).concat(`${employee.firstName} ${employee.lastName}`)) : 0}
+                                                </Typography>
+                                            </Item>
+                                        </Grid>
+                                    )
+                                })}
+                            </Grid>
+                        </AccordionDetails>
+                        {directorsEmployees.filter((subordinate) => subordinate.supervisorId === employee.id).map((user) => {
+                            return (
+                                <Accordion
+                                    key={user.id}
+                                    disableGutters
+                                    sx={{ marginLeft: "20px" }}
+                                >
+                                    <AccordionSummary
+                                        expandIcon={<ExpandMoreIcon />}
+                                        sx={{
+                                            flexDirection: "row-reverse",
+                                            "& .MuiAccordionSummary-content": {
+                                                margin: 0
+                                            },
+                                            "&.MuiAccordionSummary-root": {
+                                                minHeight: 0,
+                                                margin: "5px 0px"
+                                            }
+                                        }}
+                                    >
+                                        <div>
+                                            {`${user.firstName} ${user.lastName}`}
+                                        </div>
+                                    </AccordionSummary>
+                                    <AccordionDetails>
+                                        <Divider />
+                                        <Grid container>
+                                            {STATUS_GROUPS.map((statusGroup) => {
+                                                return (
+                                                    <Grid xs={12} sm={4} spacing={2}>
+                                                        <Item sx={{
+                                                            margin: "5px", display: "flex", alignItems: "center", justifyContent: "space-between", cursor: "pointer",
+                                                            transition: "transform 0.1s ease-in-out",
+                                                            "&:hover": {
+                                                                transform: "scale3d(1.05, 1.05, 1)"
+                                                            }
+                                                        }}>
+                                                            <Typography>
+                                                                {`${statusGroup}:`}
+                                                            </Typography>
+                                                            <Typography>
+                                                                {partsReqs ? calcStatus(partsReqs, statusGroup, `${user.firstName} ${user.lastName}`) : 0}
+                                                            </Typography>
+                                                        </Item>
+                                                    </Grid>
+                                                )
+                                            })}
+                                        </Grid>
+                                    </AccordionDetails>
+                                </Accordion>
+                            )
+                        })}
+                    </Accordion>
+                )
+            }) : null
+        )
+    } else if (group === "Supply Chain") {
+        return (
+            <Paper sx={{ padding: "5px" }}>
+                <Grid container>
+                    {SC_GROUPS.map((statusGroup) => {
+                        return (
+                            <Grid xs={12} sm={4} spacing={2}>
+                                <Item sx={{
+                                    margin: "5px", display: "flex", alignItems: "center", justifyContent: "space-between", cursor: "pointer",
+                                    transition: "transform 0.1s ease-in-out",
+                                    "&:hover": {
+                                        transform: "scale3d(1.03, 1.03, 1)"
+                                    }
+                                }}>
+                                    <Typography>
+                                        {`${statusGroup}:`}
+                                    </Typography>
+                                    <Typography>
+                                        {partsReqs ? calcStatus(partsReqs, statusGroup) : 0}
+                                    </Typography>
+                                </Item>
+                            </Grid>
+                        )
+                    })}
+                </Grid>
+            </Paper>
+        )
+    } else if (group === "Supply Chain Director" || group === "IT") {
+        return (
+            <Paper sx={{ padding: "5px" }}>
+                <Grid container>
+                    {STATUS_GROUPS.map((statusGroup) => {
+                        return (
+                            <Grid xs={12} sm={4} spacing={2}>
+                                <Item sx={{
+                                    margin: "5px", display: "flex", alignItems: "center", justifyContent: "space-between", cursor: "pointer",
+                                    transition: "transform 0.1s ease-in-out",
+                                    "&:hover": {
+                                        transform: "scale3d(1.03, 1.03, 1)"
+                                    }
+                                }}>
+                                    <Typography>
+                                        {`${statusGroup}:`}
+                                    </Typography>
+                                    <Typography>
+                                        {partsReqs ? calcStatus(partsReqs, statusGroup) : 0}
+                                    </Typography>
+                                </Item>
+                            </Grid>
+                        )
+                    })}
+                </Grid>
+            </Paper>
         )
     } else {
         return null

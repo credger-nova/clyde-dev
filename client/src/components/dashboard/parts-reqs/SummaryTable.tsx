@@ -16,6 +16,19 @@ import { styled } from '@mui/material/styles'
 import Paper from '@mui/material/Paper'
 import Typography from '@mui/material/Typography'
 import Grid from '@mui/material/Unstable_Grid2'
+import Skeleton from '@mui/material/Skeleton'
+
+interface Props {
+    novaUser: NovaUser,
+    group: string
+}
+
+interface StatusProps {
+    statuses: Array<string>
+}
+
+const STATUS_GROUPS = ["Pending Approval", "Rejected", "Approved", "Sourcing", "Parts Ordered", "Parts Staged", "Closed"]
+const SC_GROUPS = ["Pending Quote", "Approved", "Sourcing", "Parts Ordered", "Parts Staged"]
 
 const Item = styled(Paper)(({ theme }) => ({
     backgroundColor: "#242424",
@@ -25,13 +38,68 @@ const Item = styled(Paper)(({ theme }) => ({
     color: "white"
 }))
 
-interface Props {
-    novaUser: NovaUser,
-    group: string
+function StatusSkeleton(props: StatusProps) {
+    const { statuses } = props
+
+    return (
+        <Paper sx={{ padding: "5px" }}>
+            <Grid container>
+                {statuses.map(() => {
+                    return (
+                        <Grid xs={12} sm={4} spacing={2}>
+                            <Item sx={{ margin: "5px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                                <Skeleton
+                                    animation="wave"
+                                    width="100%"
+                                />
+                            </Item>
+                        </Grid>
+                    )
+                })}
+            </Grid>
+        </Paper>
+    )
 }
 
-const STATUS_GROUPS = ["Pending Approval", "Rejected", "Approved", "Sourcing", "Parts Ordered", "Parts Staged", "Closed"]
-const SC_GROUPS = ["Pending Quote", "Approved", "Sourcing", "Parts Ordered", "Parts Staged"]
+function AccordionSkeleton(props: StatusProps) {
+    const { statuses } = props
+
+    return (
+        Array(5).fill(0).map((_i, index) => {
+            return (
+                <Accordion
+                    key={index}
+                    disableGutters
+                >
+                    <AccordionSummary
+                        expandIcon={<ExpandMoreIcon />}
+                        sx={{
+                            flexDirection: "row-reverse",
+                            "& .MuiAccordionSummary-content": {
+                                margin: 0
+                            },
+                            "&.MuiAccordionSummary-root": {
+                                minHeight: 0,
+                                margin: "5px 0px"
+                            }
+                        }}
+                    >
+                        <Skeleton
+                            animation="wave"
+                            width="25%"
+                        />
+                    </AccordionSummary>
+                    <AccordionDetails>
+                        <Divider />
+                        <StatusSkeleton
+                            statuses={statuses}
+                        />
+                    </AccordionDetails>
+                </Accordion>
+            )
+        })
+    )
+}
 
 function calcStatus(partsReqs: Array<PartsReq>, statusGroup: string, requester?: string, requesterGroup?: Array<string>) {
     let filtered: Array<PartsReq> = []
@@ -71,7 +139,7 @@ export default function SummaryTable(props: Props) {
 
     const { data: managersEmployees, isFetching: managersEmployeesFetching } = useManagersEmployees(novaUser)
     const { data: directorsEmployees, isFetching: directorsEmployeesFetching } = useDirectorsEmployees(novaUser)
-    const { data: partsReqs } = usePartsReqs(partsReqQuery)
+    const { data: partsReqs, isFetching: partsReqsFetching } = usePartsReqs(partsReqQuery)
     const navigate = useNavigate()
 
     React.useEffect(() => {
@@ -108,7 +176,7 @@ export default function SummaryTable(props: Props) {
     }
 
     if (group === "Field Service") {
-        return (
+        return !partsReqsFetching ? (
             <Paper sx={{ padding: "5px" }}>
                 <Grid container>
                     {STATUS_GROUPS.map((statusGroup) => {
@@ -135,10 +203,12 @@ export default function SummaryTable(props: Props) {
                     })}
                 </Grid>
             </Paper>
-        )
+        ) : <StatusSkeleton
+            statuses={STATUS_GROUPS}
+        />
     } else if (group === "Ops Manager") {
         return (
-            !managersEmployeesFetching ? managersEmployees?.map((employee) => {
+            !managersEmployeesFetching && !partsReqsFetching ? managersEmployees?.map((employee) => {
                 return (
                     <Accordion
                         key={employee.id}
@@ -190,11 +260,14 @@ export default function SummaryTable(props: Props) {
                         </AccordionDetails>
                     </Accordion>
                 )
-            }) : null // TODO: add skeleton
+            }) :
+                <AccordionSkeleton
+                    statuses={STATUS_GROUPS}
+                />
         )
     } else if (group === "Ops Director") {
         return (
-            !directorsEmployeesFetching ? directorsEmployees?.map((employee) => {
+            !directorsEmployeesFetching && !partsReqsFetching ? directorsEmployees?.map((employee) => {
                 return (
                     employee.title.includes("Manager") && <Accordion
                         key={employee.id}
@@ -301,10 +374,13 @@ export default function SummaryTable(props: Props) {
                         })}
                     </Accordion>
                 )
-            }) : null
+            }) :
+                <AccordionSkeleton
+                    statuses={STATUS_GROUPS}
+                />
         )
     } else if (group === "Supply Chain") {
-        return (
+        return !partsReqsFetching ? (
             <Paper sx={{ padding: "5px" }}>
                 <Grid container>
                     {SC_GROUPS.map((statusGroup) => {
@@ -331,9 +407,12 @@ export default function SummaryTable(props: Props) {
                     })}
                 </Grid>
             </Paper>
-        )
+        ) :
+            <StatusSkeleton
+                statuses={STATUS_GROUPS}
+            />
     } else if (group === "Supply Chain Director" || group === "IT") {
-        return (
+        return !partsReqsFetching ? (
             <Paper sx={{ padding: "5px" }}>
                 <Grid container>
                     {STATUS_GROUPS.map((statusGroup) => {
@@ -360,7 +439,10 @@ export default function SummaryTable(props: Props) {
                     })}
                 </Grid>
             </Paper>
-        )
+        ) :
+            <StatusSkeleton
+                statuses={STATUS_GROUPS}
+            />
     } else {
         return null
     }

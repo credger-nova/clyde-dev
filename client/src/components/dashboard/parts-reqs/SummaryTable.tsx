@@ -104,10 +104,6 @@ export default function SummaryTable(props: Props) {
             statuses = ["Closed - Partially Received", "Closed - Parts in Hand"]
         }
 
-        console.log(statuses)
-
-        console.log(requesters)
-
         navigate("/supply-chain", { state: { statuses: statuses, requesters: requesters } })
     }
 

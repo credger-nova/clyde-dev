@@ -7,12 +7,12 @@ import { getDirectorsEmployees, getManagersEmployees } from "./kpa"
 
 const URGENCY_SORT = ["Unit Down", "Rush", "Standard", "Stock"]
 const FIELD_SERVICE_SORT = ["Rejected - Adjustments Required", "Completed - Parts Staged/Delivered", "Closed - Partially Received", "Pending Approval", "Pending Quote",
-    "Quote Provided - Pending Approval", "Approved", "Sourcing - Information Required", "Sourcing - Information Provided", "Sourcing - Pending Approval", "Ordered - Awaiting Parts",
+    "Quote Provided - Pending Approval", "Approved - On Hold", "Approved", "Sourcing - Information Required", "Sourcing - Information Provided", "Sourcing - Pending Approval", "Ordered - Awaiting Parts",
     "Closed - Parts in Hand"]
-const MANAGER_STATUS_SORT = ["Pending Approval", "Quote Provided - Pending Approval", "Rejected - Adjustments Required", "Approved", "Ordered - Awaiting Parts", "Completed - Parts Staged/Delivered",
+const MANAGER_STATUS_SORT = ["Pending Approval", "Quote Provided - Pending Approval", "Rejected - Adjustments Required", "Approved - On Hold", "Approved", "Ordered - Awaiting Parts", "Completed - Parts Staged/Delivered",
     "Sourcing - Information Required", "Sourcing - Information Provided", "Sourcing - Pending Approval", "Closed - Partially Received", "Closed - Parts in Hand"]
 
-const ALL_STATUS = ["Pending Approval", "Pending Quote", "Quote Provided - Pending Approval", "Rejected - Adjustments Required", "Approved", "Sourcing - Information Required",
+const ALL_STATUS = ["Pending Approval", "Pending Quote", "Quote Provided - Pending Approval", "Rejected - Adjustments Required", "Approved - On Hold", "Approved", "Sourcing - Information Required",
     "Sourcing - Information Provided", "Sourcing - Pending Approval", "Ordered - Awaiting Parts", "Completed - Parts Staged/Delivered", "Closed - Partially Received", "Closed - Parts in Hand"]
 const SUPPLY_CHAIN_STATUS = [
     "Pending Quote", "Approved", "Sourcing - Information Required", "Sourcing - Information Provided", "Sourcing - Pending Approval", "Ordered - Awaiting Parts",

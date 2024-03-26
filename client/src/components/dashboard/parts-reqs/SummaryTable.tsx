@@ -111,7 +111,7 @@ function calcStatus(partsReqs: Array<PartsReq>, statusGroup: string, requester?:
     } else if (statusGroup === "Rejected") {
         filtered = partsReqs.filter((partsReq) => partsReq.status === "Rejected - Adjustments Required")
     } else if (statusGroup === "Approved") {
-        filtered = partsReqs.filter((partsReq) => partsReq.status === "Approved")
+        filtered = partsReqs.filter((partsReq) => partsReq.status === "Approved" || partsReq.status === "Approved - On Hold")
     } else if (statusGroup === "Sourcing") {
         filtered = partsReqs.filter((partsReq) => partsReq.status === "Sourcing - Information Required" || partsReq.status === "Sourcing - Information Provided" || partsReq.status === "Sourcing - Pending Approval")
     } else if (statusGroup === "Parts Ordered") {
@@ -161,7 +161,7 @@ export default function SummaryTable(props: Props) {
         } else if (statusGroup === "Rejected") {
             statuses = ["Rejected - Adjustments Required"]
         } else if (statusGroup === "Approved") {
-            statuses = ["Approved"]
+            statuses = ["Approved", "Approved - On Hold"]
         } else if (statusGroup === "Sourcing") {
             statuses = ["Sourcing - Information Required", "Sourcing - Information Provided", "Sourcing - Pending Approval"]
         } else if (statusGroup === "Parts Ordered") {

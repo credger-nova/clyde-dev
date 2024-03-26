@@ -80,6 +80,13 @@ const STATUS: Array<{ status: string, titles: Array<string> }> = [
             .concat(TITLES.find(item => item.group === "IT")?.titles ?? [])
     },
     {
+        status: "Approved - On Hold",
+        titles: (TITLES.find(item => item.group === "Ops Manager")?.titles ?? [])
+            .concat(TITLES.find(item => item.group === "Ops Director")?.titles ?? [])
+            .concat(TITLES.find(item => item.group === "SVP")?.titles ?? [])
+            .concat(TITLES.find(item => item.group === "IT")?.titles ?? [])
+    },
+    {
         status: "Approved",
         titles: (TITLES.find(item => item.group === "Ops Manager")?.titles ?? [])
             .concat(TITLES.find(item => item.group === "Ops Director")?.titles ?? [])

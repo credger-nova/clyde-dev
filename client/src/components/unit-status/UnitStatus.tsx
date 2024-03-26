@@ -58,7 +58,7 @@ export default function UnitStatus(props: Props) {
                             <StyledTableCell>
                                 <div style={{ display: "flex", alignItems: "center" }}>
                                     <CircleIcon sx={{
-                                        color: param.status === "Stopped" ? "red" : param.status === "Cold" ? "deepskyblue" : "green",
+                                        color: param.status === "Stopped" ? "red" : param.status === "Cold" ? "deepskyblue" : param.status === "Running" ? "green" : "gray",
                                         fontSize: "1.25rem",
                                         marginRight: "5px"
                                     }} />

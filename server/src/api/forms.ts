@@ -5,7 +5,7 @@ import { UNIT_PLANNING } from "../utils/unitPlanning"
 import { NovaUser } from "../models/novaUser"
 import { getDirectorsEmployees, getManagersEmployees } from "./kpa"
 
-const URGENCY_SORT = ["Unit Down", "Rush", "Standard", "Stock"]
+const URGENCY_SORT = ["Unit Down", "Unit Set", "Rush", "Standard", "Stock"]
 const FIELD_SERVICE_SORT = ["Rejected - Adjustments Required", "Completed - Parts Staged/Delivered", "Closed - Partially Received", "Pending Approval", "Pending Quote",
     "Quote Provided - Pending Approval", "Approved - On Hold", "Approved", "Sourcing - Information Required", "Sourcing - Information Provided", "Sourcing - Pending Approval", "Ordered - Awaiting Parts",
     "Closed - Parts in Hand"]

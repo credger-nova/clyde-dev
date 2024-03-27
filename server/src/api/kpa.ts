@@ -98,16 +98,19 @@ export const getAllEmployees = async () => {
     var employees = []
 
     for (const user of data.users) {
-        employees.push({
-            id: user.id,
-            firstName: user.firstname,
-            lastName: user.lastname,
-            email: user.email,
-            title: user.jobTitle_id,
-            region: user.lineOfBusiness_id,
-            supervisorId: user.supervisor_id,
-            managerId: user.manager_id
-        } as NovaUser)
+        // Only add active employees
+        if (!user.terminationDate) {
+            employees.push({
+                id: user.id,
+                firstName: user.firstname,
+                lastName: user.lastname,
+                email: user.email,
+                title: user.jobTitle_id,
+                region: user.lineOfBusiness_id,
+                supervisorId: user.supervisor_id,
+                managerId: user.manager_id
+            } as NovaUser)
+        }
     }
 
     for (const user of employees) {
@@ -187,16 +190,19 @@ export const getEmployee = async (id?: string, email?: string) => {
         var users = []
 
         for (const user of data.users) {
-            users.push({
-                id: user.id,
-                firstName: user.firstname,
-                lastName: user.lastname,
-                email: user.email,
-                title: user.jobTitle_id,
-                region: user.lineOfBusiness_id,
-                supervisorId: user.supervisor_id,
-                managerId: user.manager_id
-            } as NovaUser)
+            // Only add active employees
+            if (!user.terminationDate) {
+                users.push({
+                    id: user.id,
+                    firstName: user.firstname,
+                    lastName: user.lastname,
+                    email: user.email,
+                    title: user.jobTitle_id,
+                    region: user.lineOfBusiness_id,
+                    supervisorId: user.supervisor_id,
+                    managerId: user.manager_id
+                } as NovaUser)
+            }
         }
 
         for (const user of users) {
@@ -249,17 +255,20 @@ export const getManagersEmployees = async (id: string) => {
     var employees = []
 
     for (const user of data.users) {
-        if (id === user.supervisor_id) {
-            employees.push({
-                id: user.id,
-                firstName: user.firstname,
-                lastName: user.lastname,
-                email: user.email,
-                title: user.jobTitle_id,
-                region: user.lineOfBusiness_id,
-                supervisorId: user.supervisor_id,
-                managerId: user.manager_id
-            } as NovaUser)
+        // Only add active employees
+        if (!user.terminationDate) {
+            if (id === user.supervisor_id) {
+                employees.push({
+                    id: user.id,
+                    firstName: user.firstname,
+                    lastName: user.lastname,
+                    email: user.email,
+                    title: user.jobTitle_id,
+                    region: user.lineOfBusiness_id,
+                    supervisorId: user.supervisor_id,
+                    managerId: user.manager_id
+                } as NovaUser)
+            }
         }
     }
 
@@ -292,17 +301,20 @@ export const getDirectorsEmployees = async (id: string) => {
     var employees = []
 
     for (const user of data.users) {
-        if (id === user.manager_id || id === user.supervisor_id) {
-            employees.push({
-                id: user.id,
-                firstName: user.firstname,
-                lastName: user.lastname,
-                email: user.email,
-                title: user.jobTitle_id,
-                region: user.lineOfBusiness_id,
-                supervisorId: user.supervisor_id,
-                managerId: user.manager_id
-            } as NovaUser)
+        // Only add active employees
+        if (!user.terminationDate) {
+            if (id === user.manager_id || id === user.supervisor_id) {
+                employees.push({
+                    id: user.id,
+                    firstName: user.firstname,
+                    lastName: user.lastname,
+                    email: user.email,
+                    title: user.jobTitle_id,
+                    region: user.lineOfBusiness_id,
+                    supervisorId: user.supervisor_id,
+                    managerId: user.manager_id
+                } as NovaUser)
+            }
         }
     }
 

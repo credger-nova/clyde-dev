@@ -547,6 +547,11 @@ export default function EditPartsReqForm(props: Props) {
                     return false
                 }
             }
+            if (status === "Completed - Parts Staged/Delivered" || status === "Closed - Partially Received") {
+                if (field === "Received") {
+                    return false
+                }
+            }
 
             return true
         }
@@ -562,6 +567,11 @@ export default function EditPartsReqForm(props: Props) {
             if (partsReq.status === "Rejected - Adjustments Required" &&
                 partsReq.requester === `${novaUser!.firstName} ${novaUser!.lastName}`) {
                 if (field !== "Status") {
+                    return false
+                }
+            }
+            if (status === "Completed - Parts Staged/Delivered" || status === "Closed - Partially Received") {
+                if (field === "Received") {
                     return false
                 }
             }

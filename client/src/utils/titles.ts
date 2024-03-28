@@ -6,6 +6,7 @@ export const TITLES: Array<{ group: string, titles: Array<string> }> = [
             "Field Service Technician - Lead",
             "Field Service Technician - Senior",
             "Field Service Technician - Third Party",
+            "Field Service Technician- Third Party",
             "Field Service Technician - Third Party Lead"
         ]
     },

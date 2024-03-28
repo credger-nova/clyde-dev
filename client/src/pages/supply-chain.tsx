@@ -46,12 +46,13 @@ export default function SupplyChain() {
     const { user } = useAuth0()
     const { data: novaUser, isFetched } = useNovaUser(undefined, user?.email)
     const { state } = useLocation()
-    const { statuses, requesters } = state ?? {}
+    const { statuses, requesters, region } = state ?? {}
 
     const [partsReqQuery, setPartsReqQuery] = React.useState<PartsReqQuery>({
         user: isFetched ? novaUser : null,
         status: statuses ?? [],
-        requester: requesters ? requesters.map((user: NovaUser) => `${user.firstName} ${user.lastName}`) : []
+        requester: requesters ? requesters.map((user: NovaUser) => `${user.firstName} ${user.lastName}`) : [],
+        region: region ? [region.toUpperCase()] : []
     })
     const [open, setOpen] = React.useState<boolean>(false)
     const [uiType, setUIType] = React.useState<"card" | "table">(window.screen.width <= 600 ? "card" : "table")
@@ -102,6 +103,7 @@ export default function SupplyChain() {
                         setPartsReqQuery={setPartsReqQuery}
                         initialStatuses={statuses}
                         initialRequesters={requesters}
+                        initialRegion={region}
                     />
                 </Collapse>
                 <div

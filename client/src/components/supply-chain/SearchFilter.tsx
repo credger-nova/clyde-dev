@@ -25,11 +25,12 @@ interface Props {
     partsReqQuery: PartsReqQuery,
     setPartsReqQuery: React.Dispatch<React.SetStateAction<PartsReqQuery>>,
     initialStatuses: Array<string>,
-    initialRequesters: Array<NovaUser>
+    initialRequesters: Array<NovaUser>,
+    initialRegion: string
 }
 
 export default function SearchFilter(props: Props) {
-    const { partsReqQuery, setPartsReqQuery, initialStatuses, initialRequesters } = props
+    const { partsReqQuery, setPartsReqQuery, initialStatuses, initialRequesters, initialRegion } = props
 
     const { data: afeNumbers, isFetching: afeFetching } = useAFEs()
     const { data: soNumbers, isFetching: soFetching } = useSOs()
@@ -505,6 +506,7 @@ export default function SearchFilter(props: Props) {
                             limitTags={3}
                             size="small"
                             options={regions ? regions : []}
+                            defaultValue={initialRegion ? [initialRegion.toUpperCase()] : []}
                             loading={regionsFetching}
                             onChange={handleRegionChange}
                             renderInput={(params) => <StyledTextField

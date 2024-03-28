@@ -5,6 +5,7 @@ import { PartsReq, PartsReqQuery } from "../../../types/partsReq"
 
 import { useManagersEmployees, useDirectorsEmployees } from "../../../hooks/user"
 import { usePartsReqs } from "../../../hooks/partsReq"
+import { useRegions } from "../../../hooks/unit"
 import { useNavigate } from "react-router-dom"
 
 import Accordion from '@mui/material/Accordion'
@@ -17,6 +18,7 @@ import Paper from '@mui/material/Paper'
 import Typography from '@mui/material/Typography'
 import Grid from '@mui/material/Unstable_Grid2'
 import Skeleton from '@mui/material/Skeleton'
+import { toTitleCase } from "../../../utils/helperFunctions"
 
 interface Props {
     novaUser: NovaUser,
@@ -101,7 +103,7 @@ function AccordionSkeleton(props: StatusProps) {
     )
 }
 
-function calcStatus(partsReqs: Array<PartsReq>, statusGroup: string, requester?: string, requesterGroup?: Array<string>) {
+function calcStatus(partsReqs: Array<PartsReq>, statusGroup: string, requester?: string, requesterGroup?: Array<string>, region?: string) {
     let filtered: Array<PartsReq> = []
 
     if (statusGroup === "Pending Quote") {
@@ -128,6 +130,9 @@ function calcStatus(partsReqs: Array<PartsReq>, statusGroup: string, requester?:
     if (requesterGroup) {
         filtered = filtered.filter((partsReq) => requesterGroup.includes(partsReq.requester))
     }
+    if (region) {
+        filtered = filtered.filter((partsReqs) => partsReqs.region === region)
+    }
 
     return filtered.length
 }
@@ -140,6 +145,7 @@ export default function SummaryTable(props: Props) {
     const { data: managersEmployees, isFetching: managersEmployeesFetching } = useManagersEmployees(novaUser)
     const { data: directorsEmployees, isFetching: directorsEmployeesFetching } = useDirectorsEmployees(novaUser)
     const { data: partsReqs, isFetching: partsReqsFetching } = usePartsReqs(partsReqQuery)
+    const { data: regions, isFetching: regionsFetching } = useRegions()
     const navigate = useNavigate()
 
     React.useEffect(() => {
@@ -152,7 +158,7 @@ export default function SummaryTable(props: Props) {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [managersEmployeesFetching])
 
-    const handleClick = (statusGroup: string, requesters?: Array<NovaUser>) => {
+    const handleClick = (statusGroup: string, requesters?: Array<NovaUser>, region?: string) => {
         let statuses: Array<string> = []
         if (statusGroup === "Pending Quote") {
             statuses = ["Pending Quote"]
@@ -172,7 +178,7 @@ export default function SummaryTable(props: Props) {
             statuses = ["Closed - Partially Received", "Closed - Parts in Hand"]
         }
 
-        navigate("/supply-chain", { state: { statuses: statuses, requesters: requesters } })
+        navigate("/supply-chain", { state: { statuses: statuses, requesters: requesters, region: region } })
     }
 
     if (group === "Field Service") {
@@ -380,38 +386,126 @@ export default function SummaryTable(props: Props) {
                 />
         )
     } else if (group === "Supply Chain") {
-        return !partsReqsFetching ? (
-            <Paper sx={{ padding: "5px" }}>
-                <Grid container>
-                    {SC_GROUPS.map((statusGroup) => {
-                        return (
-                            <Grid xs={12} sm={4} spacing={2}>
-                                <Item
-                                    onClick={() => handleClick(statusGroup)}
-                                    sx={{
-                                        margin: "5px", display: "flex", alignItems: "center", justifyContent: "space-between", cursor: "pointer",
-                                        transition: "transform 0.1s ease-in-out",
-                                        "&:hover": {
-                                            transform: "scale3d(1.03, 1.03, 1)"
-                                        }
-                                    }}>
-                                    <Typography>
-                                        {`${statusGroup}:`}
-                                    </Typography>
-                                    <Typography>
-                                        {partsReqs ? calcStatus(partsReqs, statusGroup) : 0}
-                                    </Typography>
-                                </Item>
+        return (
+            !partsReqsFetching && !regionsFetching ? regions?.map((region) => {
+                region = toTitleCase(region)
+                return (
+                    <Accordion
+                        key={region}
+                        disableGutters
+                    >
+                        <AccordionSummary
+                            expandIcon={<ExpandMoreIcon />}
+                            sx={{
+                                flexDirection: "row-reverse",
+                                "& .MuiAccordionSummary-content": {
+                                    margin: 0
+                                },
+                                "&.MuiAccordionSummary-root": {
+                                    minHeight: 0,
+                                    margin: "5px 0px"
+                                }
+                            }}
+                        >
+                            <div>
+                                {region}
+                            </div>
+                        </AccordionSummary>
+                        <AccordionDetails>
+                            <Divider />
+                            <Grid container>
+                                {SC_GROUPS.map((statusGroup) => {
+                                    return (
+                                        <Grid xs={12} sm={4} spacing={2}>
+                                            <Item
+                                                onClick={() => handleClick(statusGroup, undefined, region)}
+                                                sx={{
+                                                    margin: "5px", display: "flex", alignItems: "center", justifyContent: "space-between", cursor: "pointer",
+                                                    transition: "transform 0.1s ease-in-out",
+                                                    "&:hover": {
+                                                        transform: "scale3d(1.05, 1.05, 1)"
+                                                    }
+                                                }}>
+                                                <Typography>
+                                                    {`${statusGroup}:`}
+                                                </Typography>
+                                                <Typography>
+                                                    {partsReqs ? calcStatus(partsReqs, statusGroup, undefined, undefined, region) : 0}
+                                                </Typography>
+                                            </Item>
+                                        </Grid>
+                                    )
+                                })}
                             </Grid>
-                        )
-                    })}
-                </Grid>
-            </Paper>
-        ) :
-            <StatusSkeleton
-                statuses={STATUS_GROUPS}
-            />
-    } else if (group === "Supply Chain Director" || group === "IT") {
+                        </AccordionDetails>
+                    </Accordion>
+                )
+            }) :
+                <AccordionSkeleton
+                    statuses={SC_GROUPS}
+                />
+        )
+    } else if (group === "Supply Chain Director") {
+        return (
+            !partsReqsFetching && !regionsFetching ? regions?.map((region) => {
+                region = toTitleCase(region)
+                return (
+                    <Accordion
+                        key={region}
+                        disableGutters
+                    >
+                        <AccordionSummary
+                            expandIcon={<ExpandMoreIcon />}
+                            sx={{
+                                flexDirection: "row-reverse",
+                                "& .MuiAccordionSummary-content": {
+                                    margin: 0
+                                },
+                                "&.MuiAccordionSummary-root": {
+                                    minHeight: 0,
+                                    margin: "5px 0px"
+                                }
+                            }}
+                        >
+                            <div>
+                                {region}
+                            </div>
+                        </AccordionSummary>
+                        <AccordionDetails>
+                            <Divider />
+                            <Grid container>
+                                {STATUS_GROUPS.map((statusGroup) => {
+                                    return (
+                                        <Grid xs={12} sm={4} spacing={2}>
+                                            <Item
+                                                onClick={() => handleClick(statusGroup, undefined, region)}
+                                                sx={{
+                                                    margin: "5px", display: "flex", alignItems: "center", justifyContent: "space-between", cursor: "pointer",
+                                                    transition: "transform 0.1s ease-in-out",
+                                                    "&:hover": {
+                                                        transform: "scale3d(1.05, 1.05, 1)"
+                                                    }
+                                                }}>
+                                                <Typography>
+                                                    {`${statusGroup}:`}
+                                                </Typography>
+                                                <Typography>
+                                                    {partsReqs ? calcStatus(partsReqs, statusGroup, undefined, undefined, region) : 0}
+                                                </Typography>
+                                            </Item>
+                                        </Grid>
+                                    )
+                                })}
+                            </Grid>
+                        </AccordionDetails>
+                    </Accordion>
+                )
+            }) :
+                <AccordionSkeleton
+                    statuses={STATUS_GROUPS}
+                />
+        )
+    } else if (group === "IT") {
         return !partsReqsFetching ? (
             <Paper sx={{ padding: "5px" }}>
                 <Grid container>

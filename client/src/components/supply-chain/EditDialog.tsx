@@ -84,7 +84,12 @@ export default function EditDialog() {
                         variant="contained"
                         onClick={handleClose}
                         startIcon={<CloseIcon />}
-                        sx={{ backgroundColor: theme.palette.error.dark, "&.MuiButton-root:hover": { backgroundColor: theme.palette.error.dark } }}
+                        sx={{
+                            backgroundColor: theme.palette.error.dark,
+                            "&.MuiButton-root:hover": {
+                                backgroundColor: theme.palette.error.dark
+                            }
+                        }}
                     >
                         Close
                     </Button>
@@ -92,12 +97,17 @@ export default function EditDialog() {
                         variant="contained"
                         onClick={() => handleGeneratePDF(partsReq.id)}
                         startIcon={pdfLoading ?
-                            <CircularProgress 
+                            <CircularProgress
                                 size={20}
                             /> :
                             <PictureAsPdfIcon />
                         }
-                        sx={{ backgroundColor: theme.palette.primary.dark }}
+                        sx={{
+                            backgroundColor: theme.palette.primary.dark,
+                            "&.MuiButton-root:hover": {
+                                backgroundColor: theme.palette.primary.dark
+                            }
+                        }}
                     >
                         {pdfLoading ? "Exporting" : "Export PDF"}
                     </Button>
@@ -105,7 +115,12 @@ export default function EditDialog() {
                         variant="contained"
                         onClick={() => setEdit(!edit)}
                         startIcon={<EditIcon />}
-                        sx={{ backgroundColor: theme.palette.primary.dark }}
+                        sx={{
+                            backgroundColor: theme.palette.primary.dark,
+                            "&.MuiButton-root:hover": {
+                                backgroundColor: theme.palette.primary.dark
+                            }
+                        }}
                     >
                         Edit
                     </Button>
@@ -117,7 +132,12 @@ export default function EditDialog() {
                         variant="contained"
                         onClick={handleCancel}
                         startIcon={<CloseIcon />}
-                        sx={{ backgroundColor: theme.palette.error.dark, "&.MuiButton-root:hover": { backgroundColor: theme.palette.error.dark } }}
+                        sx={{
+                            backgroundColor: theme.palette.error.dark,
+                            "&.MuiButton-root:hover": {
+                                backgroundColor: theme.palette.error.dark
+                            }
+                        }}
                     >
                         Cancel
                     </Button>
@@ -126,7 +146,12 @@ export default function EditDialog() {
                         onClick={handleSave}
                         disabled={saveDisabled}
                         startIcon={<SaveIcon />}
-                        sx={{ backgroundColor: theme.palette.primary.dark }}
+                        sx={{
+                            backgroundColor: theme.palette.primary.dark,
+                            "&.MuiButton-root:hover": {
+                                backgroundColor: theme.palette.primary.dark
+                            }
+                        }}
                     >
                         Save
                     </Button>

@@ -57,7 +57,10 @@ export default function FormList(props: Props) {
                                             variant="contained"
                                             startIcon={<EditNoteIcon />}
                                             sx={{
-                                                backgroundColor: theme.palette.primary.dark, "&.MuiButton-root:hover": { backgroundColor: "#334787" }
+                                                backgroundColor: theme.palette.primary.dark,
+                                                "&.MuiButton-root:hover": {
+                                                    backgroundColor: theme.palette.primary.dark
+                                                }
                                             }}
                                         >
                                             Fill Out
@@ -82,7 +85,10 @@ export default function FormList(props: Props) {
                                             variant="contained"
                                             startIcon={<EditNoteIcon />}
                                             sx={{
-                                                backgroundColor: theme.palette.primary.dark, "&.MuiButton-root:hover": { backgroundColor: "#334787" }
+                                                backgroundColor: theme.palette.primary.dark,
+                                                "&.MuiButton-root:hover": {
+                                                    backgroundColor: theme.palette.primary.dark
+                                                }
                                             }}
                                         >
                                             Fill Out

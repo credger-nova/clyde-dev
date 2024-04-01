@@ -24,7 +24,9 @@ export default function AddFileButton(props: Props) {
             disabled={disabled}
             sx={{
                 width: "100%", backgroundColor: theme.palette.primary.dark, marginBottom: "10px",
-                "&.MuiButton-root:hover": { backgroundColor: "#334787" }
+                "&.MuiButton-root:hover": {
+                    backgroundColor: theme.palette.primary.dark
+                }
             }}
         >
             Add Document(s)

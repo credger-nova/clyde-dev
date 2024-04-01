@@ -1445,7 +1445,9 @@ export default function EditPartsReqForm(props: Props) {
                                     disabled={partsFetching || denyAccess(novaUser!.title, status)}
                                     sx={{
                                         marginTop: "5px", backgroundColor: theme.palette.primary.dark,
-                                        "&.MuiButton-root:hover": { backgroundColor: "#334787" }
+                                        "&.MuiButton-root:hover": {
+                                            backgroundColor: theme.palette.primary.dark
+                                        }
                                     }}
                                 >
                                     Add Item

@@ -1,6 +1,8 @@
 import { prisma } from "../utils/prisma-client"
 import { GeoJSONFeature } from "../models/geoJson"
 
+const REGION_SORT = ["CARLSBAD", "PECOS", "NORTH PERMIAN", "SOUTH PERMIAN", "EAST TEXAS", "SOUTH TEXAS", "MIDCON"]
+
 // Function to format and return coordinates of a unit
 const formatCoordinates = (coords: string | null) => {
     if (coords) {
@@ -85,7 +87,7 @@ export const getAllRegions = async () => {
     const regions = allUnits
         .map(item => item.operationalRegion)
         .filter(item => item)
-        .sort()
+        .sort((a, b) => REGION_SORT.indexOf(a ?? "") - REGION_SORT.indexOf(b ?? ""))
 
     return regions
 }

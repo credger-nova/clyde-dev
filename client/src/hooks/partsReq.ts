@@ -57,3 +57,32 @@ export function useUpdatePartsReq() {
         }
     })
 }
+
+// Generate PDF for a Parts Req
+const generatePartsReqPDF = async (id: number) => {
+    const { data } = await axios.get(`${import.meta.env.VITE_API_BASE}/forms/parts-req/export/${id}`,
+        {
+            responseType: "arraybuffer",
+            responseEncoding: "binary",
+            headers:
+            {
+                "Accept": "*",
+                "Content-Disposition": "attachment; filename=test.pdf"
+            }
+        })
+
+    return data
+}
+
+export function useGeneratePDF() {
+    return useMutation({
+        mutationFn: generatePartsReqPDF, onSuccess: data => {
+            console.log(data)
+            const blob = new Blob([data], { type: "application/pdf" })
+
+            const url = URL.createObjectURL(blob)
+
+            window.open(url)
+        }
+    })
+}

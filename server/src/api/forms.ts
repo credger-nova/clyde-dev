@@ -1,8 +1,9 @@
-import { prisma } from "../utils/prisma-client"
-import { CreatePartsReq, OrderRow, PartsReq, PartsReqQuery, UpdatePartsReq } from "../models/partsReq"
 import { TITLES } from "../utils/titles"
 import { UNIT_PLANNING } from "../utils/unitPlanning"
+import { CreatePartsReq, OrderRow, PartsReq, PartsReqQuery, UpdatePartsReq } from "../models/partsReq"
 import { NovaUser } from "../models/novaUser"
+
+import { prisma } from "../utils/prisma-client"
 import { getDirectorsEmployees, getManagersEmployees } from "./kpa"
 
 const URGENCY_SORT = ["Unit Down", "Unit Set", "Rush", "Standard", "Stock"]

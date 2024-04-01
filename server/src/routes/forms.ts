@@ -1,6 +1,9 @@
-import { FastifyInstance, FastifyRequest } from "fastify"
 import { CreatePartsReq, PartsReqQuery, UpdatePartsReq } from "../models/partsReq"
+
+import { FastifyInstance, FastifyRequest } from "fastify"
 import { createPartsReq, getPartsReq, getPartsReqs, updatePartsReq } from "../api/forms"
+import { generatePartsReqPDF } from "../api/pdf"
+import { Readable } from "stream"
 
 async function routes(fastify: FastifyInstance) {
     // POST request to get Parts Reqs with requirements defined in body
@@ -43,7 +46,21 @@ async function routes(fastify: FastifyInstance) {
 
         res.status(201).send(updatedPartsReq)
     })
-}
 
+    // Generate a PDF for a Parts Req
+    fastify.get<{ Params: { id: string } }>("/parts-req/export/:id", async (req, res) => {
+        const { id } = req.params
+
+        const partsReq = await getPartsReq(Number(id))
+
+        if (partsReq) {
+            const pdf = await generatePartsReqPDF(partsReq)
+
+            return res.status(200).send(pdf) // TODO: figure out why this only works with return and not res.status().send()
+        } else {
+            res.status(404).send({ error: `No Parts Requisition with id: ${req.params.id} found.` })
+        }
+    })
+}
 
 export default routes

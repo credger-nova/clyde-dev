@@ -3,7 +3,7 @@ import * as React from "react"
 import theme from "../../css/theme"
 
 import { useParams, useNavigate } from "react-router-dom"
-import { usePartsReq } from "../../hooks/partsReq"
+import { usePartsReq, useGeneratePDF } from "../../hooks/partsReq"
 
 import Dialog from '@mui/material/Dialog'
 import DialogActions from '@mui/material/DialogActions'
@@ -14,8 +14,11 @@ import Button from '@mui/material/Button'
 import EditIcon from '@mui/icons-material/Edit'
 import CloseIcon from '@mui/icons-material/Close'
 import SaveIcon from '@mui/icons-material/Save'
+import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf'
 
 export default function EditDialog() {
+    const { mutateAsync: generatePDF } = useGeneratePDF()
+
     const { id } = useParams()
     const navigate = useNavigate()
     const { data: partsReq } = usePartsReq(Number(id))
@@ -76,6 +79,14 @@ export default function EditDialog() {
                         sx={{ backgroundColor: theme.palette.error.dark, "&.MuiButton-root:hover": { backgroundColor: theme.palette.error.dark } }}
                     >
                         Close
+                    </Button>
+                    <Button
+                        variant="contained"
+                        onClick={() => generatePDF(partsReq.id)}
+                        startIcon={<PictureAsPdfIcon />}
+                        sx={{ backgroundColor: theme.palette.primary.dark }}
+                    >
+                        Export PDF
                     </Button>
                     <Button
                         variant="contained"

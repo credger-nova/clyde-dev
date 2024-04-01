@@ -393,6 +393,8 @@ export default function SummaryTable(props: Props) {
                     <Accordion
                         key={region}
                         disableGutters
+                        defaultExpanded={novaUser.region.includes(region) ||
+                            `${novaUser.firstName} ${novaUser.lastName}` === "Chris Brooks"}
                     >
                         <AccordionSummary
                             expandIcon={<ExpandMoreIcon />}
@@ -453,6 +455,7 @@ export default function SummaryTable(props: Props) {
                     <Accordion
                         key={region}
                         disableGutters
+                        defaultExpanded
                     >
                         <AccordionSummary
                             expandIcon={<ExpandMoreIcon />}

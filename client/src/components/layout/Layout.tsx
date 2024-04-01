@@ -87,7 +87,9 @@ export default function Layout({ children }: Props) {
                                 style={{ height: "3.5em", marginLeft: "5px" }}
                             />
                         </Link>
-                        <h3>
+                        <h3
+                            style={{ margin: "0px 0px 20px 0px", fontSize: "40px", fontWeight: 100, color: "orange" }}
+                        >
                             {ENV === "test" ? "TEST" : null}
                         </h3>
                     </div>

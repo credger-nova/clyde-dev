@@ -149,7 +149,7 @@ export default function SummaryTable(props: Props) {
     const navigate = useNavigate()
 
     React.useEffect(() => {
-        if (!managersEmployeesFetching && group !== "Supply Chain Director") {
+        if (!managersEmployeesFetching && group !== "Supply Chain Management") {
             setPartsReqQuery(prevState => ({
                 ...prevState,
                 requester: managersEmployees?.map((employee) => `${employee.firstName} ${employee.lastName}`)
@@ -447,7 +447,7 @@ export default function SummaryTable(props: Props) {
                     statuses={SC_GROUPS}
                 />
         )
-    } else if (group === "Supply Chain Director") {
+    } else if (group === "Supply Chain Management" || group === "Executive Management") {
         return (
             !partsReqsFetching && !regionsFetching ? regions?.map((region) => {
                 region = toTitleCase(region)

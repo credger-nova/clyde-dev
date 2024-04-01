@@ -131,9 +131,10 @@ const STATUS: Array<{ status: string, titles: Array<string> }> = [
 const FIELD_SERVICE_TITLES = TITLES.find(item => item.group === "Field Service")?.titles ?? []
 const OPS_MANAGER_TITLES = TITLES.find(item => item.group === "Ops Manager")?.titles ?? []
 const OPS_DIRECTOR_TITLES = TITLES.find(item => item.group === "Ops Director")?.titles ?? []
-const SC_DIRECTOR_TITLES = TITLES.find(item => item.group === "Supply Chain Director")?.titles ?? []
-const SUPPLY_CHAIN_TITLES = TITLES.find(item => item.group === "Supply Chain")?.titles ?? []
 const SVP_TITLES = TITLES.find(item => item.group === "SVP")?.titles ?? []
+const SUPPLY_CHAIN_TITLES = TITLES.find(item => item.group === "Supply Chain")?.titles ?? []
+const SC_MANAGEMENT_TITLES = TITLES.find(item => item.group === "Supply Chain Management")?.titles ?? []
+const EXEC_TITLES = TITLES.find(item => item.group === "Executive Management")?.titles ?? []
 const IT_TITLES = TITLES.find(item => item.group === "IT")?.titles ?? []
 
 const Item = styled(Paper)(({ theme }) => ({
@@ -591,7 +592,7 @@ export default function EditPartsReqForm(props: Props) {
         }
 
         // Supply Chain permissions
-        if (SUPPLY_CHAIN_TITLES.includes(title) || SC_DIRECTOR_TITLES.includes(title)) {
+        if (SUPPLY_CHAIN_TITLES.includes(title) || SC_MANAGEMENT_TITLES.includes(title)) {
             if (partsReq.status === "Pending Quote" || partsReq.status === "Approved" || partsReq.status === "Sourcing - Information Required" ||
                 partsReq.status === "Sourcing - Information Provided" || partsReq.status === "Sourcing - Pending Approval" ||
                 partsReq.status === "Ordered - Awaiting Parts") {
@@ -608,6 +609,11 @@ export default function EditPartsReqForm(props: Props) {
                 return false
             }
 
+            return true
+        }
+
+        // Exec management permissions
+        if (EXEC_TITLES.includes(title)) {
             return true
         }
 

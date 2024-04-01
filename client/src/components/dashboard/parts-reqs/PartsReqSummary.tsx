@@ -20,7 +20,8 @@ const ALLOWED_GROUPS = [
     "Ops Manager",
     "Ops Director",
     "Supply Chain",
-    "Supply Chain Director",
+    "Supply Chain Management",
+    "Executive Management",
     "IT"
 ]
 

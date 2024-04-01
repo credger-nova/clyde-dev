@@ -33,7 +33,6 @@ export const TITLES: Array<{ group: string, titles: Array<string> }> = [
             "Analyst - Supply Chain & Analysis",
             "Associate - Supply Chain",
             "Coordinator - Supply Chain",
-            "Manager - Supply Chain",
             "Parts Runner - Supply Chain",
             "Supervisor - Supply Chain",
             "Warehouse Associate - Supply Chain",
@@ -41,9 +40,17 @@ export const TITLES: Array<{ group: string, titles: Array<string> }> = [
         ]
     },
     {
-        group: "Supply Chain Director",
+        group: "Supply Chain Management",
         titles: [
+            "Manager - Supply Chain",
             "Director - Supply Chain and Analysis"
+        ]
+    },
+    {
+        group: "Executive Management",
+        titles: [
+            "Chief Financial Officer",
+            "President and Chief Executive Officer"
         ]
     },
     {

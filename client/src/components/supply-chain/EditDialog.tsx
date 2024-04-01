@@ -15,6 +15,7 @@ import EditIcon from '@mui/icons-material/Edit'
 import CloseIcon from '@mui/icons-material/Close'
 import SaveIcon from '@mui/icons-material/Save'
 import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf'
+import CircularProgress from '@mui/material/CircularProgress'
 
 export default function EditDialog() {
     const { mutateAsync: generatePDF } = useGeneratePDF()
@@ -27,6 +28,7 @@ export default function EditDialog() {
     const [save, setSave] = React.useState<boolean>(false)
     const [saveDisabled, setSaveDisabled] = React.useState<boolean>(true)
     const [reset, setReset] = React.useState<boolean>(false)
+    const [pdfLoading, setPDFLoading] = React.useState<boolean>(false)
 
     const handleSave = () => {
         setSave(true)
@@ -44,6 +46,12 @@ export default function EditDialog() {
         setEdit(false)
 
         setReset(true)
+    }
+
+    const handleGeneratePDF = async (id: number) => {
+        setPDFLoading(true)
+
+        generatePDF(id).then(() => setPDFLoading(false))
     }
 
     return (partsReq && (
@@ -82,11 +90,16 @@ export default function EditDialog() {
                     </Button>
                     <Button
                         variant="contained"
-                        onClick={() => generatePDF(partsReq.id)}
-                        startIcon={<PictureAsPdfIcon />}
+                        onClick={() => handleGeneratePDF(partsReq.id)}
+                        startIcon={pdfLoading ?
+                            <CircularProgress 
+                                size={20}
+                            /> :
+                            <PictureAsPdfIcon />
+                        }
                         sx={{ backgroundColor: theme.palette.primary.dark }}
                     >
-                        Export PDF
+                        {pdfLoading ? "Exporting" : "Export PDF"}
                     </Button>
                     <Button
                         variant="contained"

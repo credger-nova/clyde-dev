@@ -77,7 +77,6 @@ const generatePartsReqPDF = async (id: number) => {
 export function useGeneratePDF() {
     return useMutation({
         mutationFn: generatePartsReqPDF, onSuccess: data => {
-            console.log(data)
             const blob = new Blob([data], { type: "application/pdf" })
 
             const url = URL.createObjectURL(blob)

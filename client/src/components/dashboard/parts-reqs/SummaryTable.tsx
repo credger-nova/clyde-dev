@@ -29,7 +29,7 @@ interface StatusProps {
     statuses: Array<string>
 }
 
-const STATUS_GROUPS = ["Pending Approval", "Rejected", "Approved", "Sourcing", "Parts Ordered", "Parts Staged", "Closed"]
+const STATUS_GROUPS = ["Pending Approval", "Pending Quote", "Rejected", "Approved", "Sourcing", "Parts Ordered", "Parts Staged", "Closed"]
 const SC_GROUPS = ["Pending Quote", "Approved", "Sourcing", "Parts Ordered", "Parts Staged"]
 
 const Item = styled(Paper)(({ theme }) => ({
@@ -109,7 +109,7 @@ function calcStatus(partsReqs: Array<PartsReq>, statusGroup: string, requester?:
     if (statusGroup === "Pending Quote") {
         filtered = partsReqs.filter((partsReq) => partsReq.status === "Pending Quote")
     } else if (statusGroup === "Pending Approval") {
-        filtered = partsReqs.filter((partsReq) => partsReq.status === "Pending Approval" || partsReq.status === "Pending Quote" || partsReq.status === "Quote Provided - Pending Approval")
+        filtered = partsReqs.filter((partsReq) => partsReq.status === "Pending Approval" || partsReq.status === "Quote Provided - Pending Approval")
     } else if (statusGroup === "Rejected") {
         filtered = partsReqs.filter((partsReq) => partsReq.status === "Rejected - Adjustments Required")
     } else if (statusGroup === "Approved") {
@@ -163,7 +163,7 @@ export default function SummaryTable(props: Props) {
         if (statusGroup === "Pending Quote") {
             statuses = ["Pending Quote"]
         } else if (statusGroup === "Pending Approval") {
-            statuses = ["Pending Quote", "Pending Approval", "Quote Provided - Pending Approval"]
+            statuses = ["Pending Approval", "Quote Provided - Pending Approval"]
         } else if (statusGroup === "Rejected") {
             statuses = ["Rejected - Adjustments Required"]
         } else if (statusGroup === "Approved") {

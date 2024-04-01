@@ -50,6 +50,8 @@ type Props = {
 export default function Layout({ children }: Props) {
     const { state, dispatch } = useUIState()
 
+    const ENV = import.meta.env.VITE_ENV
+
     const onDrawerToggle = () => {
         dispatch({ type: "TOGGLE_DRAWER", payload: !state.isDrawerOpen })
     }
@@ -85,6 +87,9 @@ export default function Layout({ children }: Props) {
                                 style={{ height: "3.5em", marginLeft: "5px" }}
                             />
                         </Link>
+                        <h3>
+                            {ENV === "test" ? "TEST" : null}
+                        </h3>
                     </div>
                     <div style={{ display: "flex", alignItems: "center" }}>
                         <ProfileMenu />

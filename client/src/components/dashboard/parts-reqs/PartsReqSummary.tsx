@@ -37,7 +37,7 @@ export default function PartsReqSummary(props: Props) {
         userType && ALLOWED_GROUPS.includes(userType.group) &&
         <Item>
             <Box sx={{ display: "flex", flexDirection: "column" }}>
-                <h4 style={{ margin: 0, width: "100%", textAlign: "center" }}>Parts Reqs</h4>
+                <h4 style={{ margin: 0, width: "100%", textAlign: "center" }}>Parts Requisitions</h4>
                 <Divider sx={{ width: "100%", marginBottom: "10px" }} />
                 <SummaryTable
                     novaUser={novaUser}

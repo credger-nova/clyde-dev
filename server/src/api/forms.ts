@@ -4,7 +4,7 @@ import { CreatePartsReq, OrderRow, PartsReq, PartsReqQuery, UpdatePartsReq } fro
 import { NovaUser } from "../models/novaUser"
 
 import { prisma } from "../utils/prisma-client"
-import { getDirectorsEmployees, getManagersEmployees } from "./kpa"
+import { getAfeCost, getDirectorsEmployees, getManagersEmployees } from "./kpa"
 
 const URGENCY_SORT = ["Unit Down", "Unit Set", "Rush", "Standard", "Stock"]
 const FIELD_SERVICE_SORT = ["Rejected - Adjustments Required", "Completed - Parts Staged/Delivered", "Closed - Partially Received", "Pending Approval", "Pending Quote",
@@ -139,6 +139,17 @@ function svpApprovalRequired(unitNumber: string, hp: number, rows: Array<OrderRo
     } else {
         return false
     }
+}
+
+async function autoApprove(afeNumber: string, prCost: number) {
+    if (afeNumber) {
+        const cost = await getAfeCost(afeNumber)
+        if (cost && cost > prCost) {
+            return true
+        }
+    }
+
+    return false
 }
 
 // Get Parts Reqs that match the given query
@@ -325,7 +336,7 @@ export const createPartsReq = async (partsReq: CreatePartsReq) => {
                     })
                 }
             },
-            status: partsReq.status,
+            status: await autoApprove(partsReq.afe, calcCost(partsReq.parts as Array<OrderRow>)) ? "Approved" : "Pending Approval",
             updated: partsReq.updated
         }
     })

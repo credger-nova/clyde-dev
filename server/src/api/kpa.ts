@@ -11,11 +11,12 @@ const ALL_USERS_URL = "https://api.kpaehs.com/v1/users.list"
 const JOB_TITLES_URL = "https://api.kpaehs.com/v1/jobtitles.list"
 const REGIONS_URL = "https://api.kpaehs.com/v1/linesofbusiness.list"
 const LIMIT = 100
+const AFE_FORM_ID = 217334
 
-async function getPages(): Promise<number> {
+async function getPages(formId: number): Promise<number> {
     const postBody = {
         token: KPA_KEY,
-        form_id: 217334,
+        form_id: formId,
         limit: LIMIT,
         skip_field_id_mapping_json: true
     }
@@ -60,12 +61,12 @@ async function getRegions(): Promise<Array<{ id: string, name: string }>> {
 // Get all AFE numbers
 export const getAfeNumbers = async () => {
     var afeNums: Array<string> = [];
-    const pages = await getPages()
+    const pages = await getPages(AFE_FORM_ID)
 
     for (var i = 1; i < pages + 1; i++) {
         const { data } = await axios.post(RESPONSES_URL, {
             token: process.env.KPA_KEY,
-            form_id: 217334,
+            form_id: AFE_FORM_ID,
             limit: LIMIT,
             skip_field_id_mapping_json: true,
             columns: [
@@ -82,6 +83,42 @@ export const getAfeNumbers = async () => {
     afeNums = afeNums.filter(value => /^-?\d+\.?\d*$/.test(value))
 
     return afeNums
+}
+
+// Get total cost of parts for given AFE
+export const getAfeCost = async (afeNumber: string) => {
+    const afes: Array<{ number: string, cost: string }> = []
+    const pages = await getPages(AFE_FORM_ID)
+
+    for (var i = 1; i < pages; i++) {
+        const { data } = await axios.post(RESPONSES_URL, {
+            token: process.env.KPA_KEY,
+            form_id: AFE_FORM_ID,
+            limit: LIMIT,
+            skip_field_id_mapping_json: true,
+            columns: [
+                "og42wkqwer5ufiwx", // AFE Number
+                "9mkkjj2kphiv0dgl", // Total parts cost
+            ],
+            page: i
+        })
+
+        for (const obj of data.responses) {
+            // Reassign keys
+            delete Object.assign(obj, { ['number']: obj['og42wkqwer5ufiwx'] })['og42wkqwer5ufiwx']
+            delete Object.assign(obj, { ['cost']: obj['9mkkjj2kphiv0dgl'] })['9mkkjj2kphiv0dgl']
+
+            afes.push(obj)
+        }
+    }
+
+    const afe = afes.find(afe => afe.number === afeNumber)
+
+    if (afe) {
+        return Number(afe.cost)
+    } else {
+        return null
+    }
 }
 
 // Get all employees

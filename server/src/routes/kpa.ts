@@ -1,5 +1,5 @@
 import { FastifyInstance, FastifyRequest } from "fastify"
-import { getAfeNumbers, getAllEmployees, getDirectorsEmployees, getEmployee, getManagersEmployees } from "../api/kpa"
+import { getAfeCost, getAfeNumbers, getAllEmployees, getDirectorsEmployees, getEmployee, getManagersEmployees } from "../api/kpa"
 
 async function routes(fastify: FastifyInstance) {
     // Route to get AFEs from KPA
@@ -7,6 +7,19 @@ async function routes(fastify: FastifyInstance) {
         const afeNums = await getAfeNumbers()
 
         res.status(200).send(afeNums)
+    })
+
+    // Route to get cost of an AFE
+    fastify.get<{ Params: { afeNumber: string } }>("/afe/cost/:afeNumber", async (req, res) => {
+        const { afeNumber } = req.params
+
+        const cost = await getAfeCost(afeNumber)
+
+        if (cost) {
+            res.status(200).send(cost)
+        } else {
+            res.status(404).send({ error: `No AFE #${afeNumber} found.` })
+        }
     })
 
     // Get all Employees

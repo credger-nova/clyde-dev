@@ -353,7 +353,7 @@ export default function EditPartsReqForm(props: Props) {
         setStatus(value ?? "")
 
         if (["Sourcing - Information Required", "Ordered - Awaiting Parts", "Completed - Parts Staged/Delivered", "Closed - Parts in Hand"]
-            .includes(value ?? "")) {
+            .includes(value ?? "") && !partsReq.contact) {
             setContact(`${novaUser?.firstName} ${novaUser?.lastName}`)
         } else {
             setContact("")

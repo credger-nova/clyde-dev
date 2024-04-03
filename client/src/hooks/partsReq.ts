@@ -85,3 +85,14 @@ export function useGeneratePDF() {
         }
     })
 }
+
+// Get sum of PR costs with an associated AFE #
+const sumPrWithAfe = async (afeNumber: string) => {
+    const { data } = await axios.get<number>(`${import.meta.env.VITE_API_BASE}/forms/parts-req/cost/${afeNumber}`)
+
+    return data
+}
+
+export function useSumPrWithAfe(afeNumber: string) {
+    return useQuery({ queryKey: ["AFE sum", afeNumber], queryFn: () => sumPrWithAfe(afeNumber), enabled: !!afeNumber })
+}

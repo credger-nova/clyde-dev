@@ -1,7 +1,7 @@
 import { CreatePartsReq, PartsReqQuery, UpdatePartsReq } from "../models/partsReq"
 
 import { FastifyInstance, FastifyRequest } from "fastify"
-import { createPartsReq, getPartsReq, getPartsReqs, updatePartsReq } from "../api/forms"
+import { createPartsReq, getPartsReq, getPartsReqs, sumPrWithAfe, updatePartsReq } from "../api/forms"
 import { generatePartsReqPDF } from "../api/pdf"
 import { Readable } from "stream"
 
@@ -60,6 +60,15 @@ async function routes(fastify: FastifyInstance) {
         } else {
             res.status(404).send({ error: `No Parts Requisition with id: ${req.params.id} found.` })
         }
+    })
+
+    // Get cost sum of PRs with an associated AFE #
+    fastify.get<{ Params: { afeNumber: string } }>("/parts-req/cost/:afeNumber", async (req, res) => {
+        const { afeNumber } = req.params
+
+        const cost = await sumPrWithAfe(afeNumber)
+
+        return cost
     })
 }
 

@@ -86,7 +86,7 @@ export const getAfeNumbers = async () => {
 }
 
 // Get total cost of parts for given AFE
-export const getAfeCost = async (afeNumber: string) => {
+export const getAfeAmount = async (afeNumber: string) => {
     const afes: Array<{ number: string, cost: string }> = []
     const pages = await getPages(AFE_FORM_ID)
 

@@ -4,7 +4,7 @@ import { CreatePartsReq, OrderRow, PartsReq, PartsReqQuery, UpdatePartsReq } fro
 import { NovaUser } from "../models/novaUser"
 
 import { prisma } from "../utils/prisma-client"
-import { getAfeCost, getDirectorsEmployees, getManagersEmployees } from "./kpa"
+import { getAfeAmount, getDirectorsEmployees, getManagersEmployees } from "./kpa"
 
 const URGENCY_SORT = ["Unit Down", "Unit Set", "Rush", "Standard", "Stock"]
 const FIELD_SERVICE_SORT = ["Rejected - Adjustments Required", "Completed - Parts Staged/Delivered", "Closed - Partially Received", "Pending Approval", "Pending Quote",
@@ -143,8 +143,10 @@ function svpApprovalRequired(unitNumber: string, hp: number, rows: Array<OrderRo
 
 async function autoApprove(afeNumber: string, prCost: number) {
     if (afeNumber) {
-        const cost = await getAfeCost(afeNumber)
-        if (cost && cost > prCost) {
+        const afeAmount = await getAfeAmount(afeNumber)
+        const existingCost = await sumPrWithAfe(afeNumber)
+
+        if (afeAmount && (prCost <= (afeAmount - existingCost))) {
             return true
         }
     }
@@ -628,4 +630,25 @@ export const updatePartsReq = async (id: number, user: string, updateReq: Partia
     })
 
     return updatedPartsReq
+}
+
+// Function to find the sum of PR costs with an associated AFE
+export const sumPrWithAfe = async (afeNumber: string) => {
+    let sum = 0
+
+    const partsReqs = await prisma.partsReq.findMany({
+        where: {
+            afe: afeNumber,
+            status: { notIn: ["Pending Approval", "Pending Quote", "Quote Provided - Pending Approval", "Rejected - Adjustments Required", "Rejected - Closed"] }
+        },
+        include: {
+            parts: true
+        }
+    })
+
+    for (const partsReq of partsReqs) {
+        sum += calcCost(partsReq.parts as Array<OrderRow>)
+    }
+
+    return sum
 }

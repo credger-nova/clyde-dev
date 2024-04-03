@@ -1,14 +1,14 @@
 import * as React from "react"
 
 import { useAuth0 } from "@auth0/auth0-react"
-import { useAFEs } from "../../hooks/afe"
+import { useAFEs, useAFEAmount } from "../../hooks/afe"
 import { useSOs } from "../../hooks/so"
 import { useUnits } from "../../hooks/unit"
 import { useTrucks } from "../../hooks/truck"
 import { useParts } from "../../hooks/parts"
 import { useWarehouses } from "../../hooks/warehouse"
 import { useNovaUser } from "../../hooks/user"
-import { useUpdatePartsReq } from "../../hooks/partsReq"
+import { useUpdatePartsReq, useSumPrWithAfe } from "../../hooks/partsReq"
 import { useUploadFiles } from "../../hooks/storage"
 import { useVendors } from "../../hooks/vendor"
 import { useNavigate } from "react-router-dom"
@@ -235,6 +235,10 @@ export default function EditPartsReqForm(props: Props) {
     const [deleteFiles, setDeleteFiles] = React.useState<Array<string>>([])
     const [amex, setAmex] = React.useState<boolean>(partsReq.amex)
     const [vendor, setVendor] = React.useState<string>(partsReq.vendor)
+    const [prExceedsAfe, setPrExceedsAfe] = React.useState<boolean>(false)
+
+    const { data: afeAmount } = useAFEAmount(afe ?? null)
+    const { data: afeExistingAmount } = useSumPrWithAfe(afe ?? "")
 
     const partsFilter = createFilterOptions<PartOption>({
         matchFrom: "any",
@@ -252,6 +256,16 @@ export default function EditPartsReqForm(props: Props) {
             }
         }
     }, [requester, orderDate, afe, so, urgency, orderType, rows, setSaveDisabled])
+
+    React.useEffect(() => {
+        if (afeAmount) {
+            if (calcCost(rows as Array<OrderRow>) <= afeAmount - afeExistingAmount!) {
+                setPrExceedsAfe(false)
+            } else {
+                setPrExceedsAfe(true)
+            }
+        }
+    }, [afeAmount, afeExistingAmount, rows])
 
     // If user cancels an edit session, reset state
     React.useEffect(() => {
@@ -1059,8 +1073,15 @@ export default function EditPartsReqForm(props: Props) {
                             </Item>
                         </Grid>
                         <Grid xs={12} sm={4}>
-                            <Item sx={{ marginBottom: "10px" }}>
+                            <Item sx={{
+                                marginBottom: "10px", border: ["Pending Approval", "Pending Quote", "Quote Provided - Pending Approval", "Rejected - Adjustments Required", "Rejected - Closed"].includes(status) &&
+                                    prExceedsAfe ? "3px solid red" : "3px solid transparent"
+                            }}>
                                 <p style={{ margin: 0 }}><b>Estimated Total Cost: </b>${calcCost(rows as Array<OrderRow>).toFixed(2)}</p>
+                                {["Pending Approval", "Pending Quote", "Quote Provided - Pending Approval", "Rejected - Adjustments Required", "Rejected - Closed"].includes(status) &&
+                                    prExceedsAfe &&
+                                    <b><p style={{ margin: "5px 0px 0px", color: "red" }}>Estimated Cost Exceeds Available AFE Amount</p></b>
+                                }
                             </Item>
                             {status !== "Pending Approval" && status !== "Rejected - Adjustments Required" && status !== "Approved" &&
                                 <Item sx={{ marginBottom: "10px" }}>

@@ -1,12 +1,12 @@
 import * as React from "react"
 
 import { useAuth0 } from "@auth0/auth0-react"
-import { useAFEs } from "../../hooks/afe"
+import { useAFEs, useAFEAmount } from "../../hooks/afe"
 import { useSOs } from "../../hooks/so"
 import { useUnits } from "../../hooks/unit"
 import { useTrucks } from "../../hooks/truck"
 import { useParts } from "../../hooks/parts"
-import { useCreatePartsReq } from "../../hooks/partsReq"
+import { useCreatePartsReq, useSumPrWithAfe } from "../../hooks/partsReq"
 import { useUploadFiles } from "../../hooks/storage"
 import { useNovaUser } from "../../hooks/user"
 
@@ -108,6 +108,10 @@ export default function PartsReqForm() {
     const [newFiles, setNewFiles] = React.useState<Array<File>>([])
     const [deleteFiles, setDeleteFiles] = React.useState<Array<string>>([])
     const [disableSubmit, setDisableSubmit] = React.useState<boolean>(true)
+    const [prExceedsAfe, setPrExceedsAfe] = React.useState<boolean>(false)
+
+    const { data: afeAmount } = useAFEAmount(afe ?? null)
+    const { data: afeExistingAmount } = useSumPrWithAfe(afe ?? "")
 
     const partsFilter = createFilterOptions<PartOption>({
         matchFrom: "any",
@@ -125,6 +129,16 @@ export default function PartsReqForm() {
             }
         }
     }, [requester, orderDate, billable, unit, afe, so, urgency, orderType, rows])
+
+    React.useEffect(() => {
+        if (afeAmount) {
+            if (calcCost(rows as Array<OrderRow>) <= afeAmount - afeExistingAmount!) {
+                setPrExceedsAfe(false)
+            } else {
+                setPrExceedsAfe(true)
+            }
+        }
+    }, [afeAmount, afeExistingAmount, rows])
 
     const handleSubmit = async (event: React.SyntheticEvent) => {
         event.preventDefault()
@@ -639,8 +653,13 @@ export default function PartsReqForm() {
                             </Item>
                         </Grid>
                         <Grid xs={12} sm={4}>
-                            <Item sx={{ marginBottom: "10px" }}>
+                            <Item sx={{
+                                marginBottom: "10px", border: prExceedsAfe ? "3px solid red" : "3px solid transparent"
+                            }}>
                                 <p style={{ margin: 0 }}><b>Estimated Total Cost: </b>${calcCost(rows as Array<OrderRow>).toFixed(2)}</p>
+                                {prExceedsAfe &&
+                                    <b><p style={{ margin: "5px 0px 0px", color: "red" }}>Estimated Cost Exceeds Available AFE Amount</p></b>
+                                }
                             </Item>
                             <Item style={{ overflow: "auto" }}>
                                 <b><p style={{ margin: 0 }}>Comments:</p></b>

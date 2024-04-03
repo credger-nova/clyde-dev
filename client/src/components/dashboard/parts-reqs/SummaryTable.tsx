@@ -44,7 +44,7 @@ function StatusSkeleton(props: StatusProps) {
     const { statuses } = props
 
     return (
-        <Paper sx={{ padding: "5px" }}>
+        <Paper sx={{ padding: "5px", minWidth: "fit-conent", maxWidth: "100%" }}>
             <Grid container>
                 {statuses.map(() => {
                     return (
@@ -183,7 +183,7 @@ export default function SummaryTable(props: Props) {
 
     if (group === "Field Service") {
         return !partsReqsFetching ? (
-            <Paper sx={{ padding: "5px" }}>
+            <Paper sx={{ padding: "5px", minWidth: "fit-conent", maxWidth: "100%" }}>
                 <Grid container>
                     {STATUS_GROUPS.map((statusGroup) => {
                         return (
@@ -452,56 +452,57 @@ export default function SummaryTable(props: Props) {
             !partsReqsFetching && !regionsFetching ? regions?.map((region) => {
                 region = toTitleCase(region)
                 return (
-                    <Accordion
-                        key={region}
-                        disableGutters
-                        defaultExpanded
-                    >
-                        <AccordionSummary
-                            expandIcon={<ExpandMoreIcon />}
-                            sx={{
-                                flexDirection: "row-reverse",
-                                "& .MuiAccordionSummary-content": {
-                                    margin: 0
-                                },
-                                "&.MuiAccordionSummary-root": {
-                                    minHeight: 0,
-                                    margin: "5px 0px"
-                                }
-                            }}
+                    <Grid xs={12} sm={6} sx={{ padding: "2px" }} key={region}>
+                        <Accordion
+                            disableGutters
+                            defaultExpanded
                         >
-                            <div>
-                                {region}
-                            </div>
-                        </AccordionSummary>
-                        <AccordionDetails>
-                            <Divider />
-                            <Grid container>
-                                {STATUS_GROUPS.map((statusGroup) => {
-                                    return (
-                                        <Grid xs={12} sm={4} spacing={2}>
-                                            <Item
-                                                onClick={() => handleClick(statusGroup, undefined, region)}
-                                                sx={{
-                                                    margin: "5px", display: "flex", alignItems: "center", justifyContent: "space-between", cursor: "pointer",
-                                                    transition: "transform 0.1s ease-in-out",
-                                                    "&:hover": {
-                                                        transform: "scale3d(1.05, 1.05, 1)"
-                                                    }
-                                                }}>
-                                                <Typography>
-                                                    {`${statusGroup}:`}
-                                                </Typography>
-                                                <Typography>
-                                                    {partsReqs ? calcStatus(partsReqs, statusGroup, undefined, undefined, region) : 0}
-                                                </Typography>
-                                            </Item>
-                                        </Grid>
-                                    )
-                                })}
-                            </Grid>
-                        </AccordionDetails>
-                    </Accordion>
+                            <AccordionSummary
+                                expandIcon={<ExpandMoreIcon />}
+                                sx={{
+                                    flexDirection: "row-reverse",
+                                    "& .MuiAccordionSummary-content": {
+                                        margin: 0
+                                    },
+                                    "&.MuiAccordionSummary-root": {
+                                        minHeight: 0,
+                                        margin: "5px 0px"
+                                    }
+                                }}
+                            >
+                                <div>
+                                    {region}
+                                </div>
+                            </AccordionSummary>
+                            <AccordionDetails>
+                                <Divider />
+                                <Grid container>
+                                    {STATUS_GROUPS.map((statusGroup) => {
+                                        return (
+                                            <Grid xs={12} sm={4} spacing={2}>
+                                                <Item
+                                                    onClick={() => handleClick(statusGroup, undefined, region)}
+                                                    sx={{
+                                                        margin: "5px", display: "flex", alignItems: "center", justifyContent: "space-between", cursor: "pointer",
+                                                        transition: "transform 0.1s ease-in-out",
+                                                        "&:hover": {
+                                                            transform: "scale3d(1.03, 1.03, 1)"
+                                                        }
+                                                    }}>
+                                                    <Typography>
+                                                        {`${statusGroup}:`}
+                                                    </Typography>
+                                                    <Typography>
+                                                        {partsReqs ? calcStatus(partsReqs, statusGroup, undefined, undefined, region) : 0}
+                                                    </Typography>
+                                                </Item>
+                                            </Grid>
+                                        )
+                                    })}
+                                </Grid>
+                            </AccordionDetails>
+                        </Accordion>
+                    </Grid>
                 )
             }) :
                 <AccordionSkeleton
@@ -510,7 +511,7 @@ export default function SummaryTable(props: Props) {
         )
     } else if (group === "IT") {
         return !partsReqsFetching ? (
-            <Paper sx={{ padding: "5px" }}>
+            <Paper sx={{ padding: "5px", minWidth: "fit-conent", maxWidth: "100%" }}>
                 <Grid container>
                     {STATUS_GROUPS.map((statusGroup) => {
                         return (

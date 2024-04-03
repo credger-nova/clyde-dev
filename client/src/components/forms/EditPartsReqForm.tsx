@@ -1081,11 +1081,17 @@ export default function EditPartsReqForm(props: Props) {
                         </Grid>
                         <Grid xs={12} sm={4}>
                             <Item sx={{
-                                marginBottom: "10px", border: ["Pending Approval", "Pending Quote", "Quote Provided - Pending Approval", "Rejected - Adjustments Required", "Rejected - Closed"].includes(status) &&
+                                marginBottom: "10px", border: [
+                                    "Pending Approval", "Pending Quote", "Quote Provided - Pending Approval", "Rejected - Adjustments Required",
+                                    "Sourcing - Information Required"
+                                ].includes(status) &&
                                     prExceedsAfe ? "3px solid red" : "3px solid transparent"
                             }}>
                                 <p style={{ margin: 0 }}><b>Estimated Total Cost: </b>${calcCost(rows as Array<OrderRow>).toFixed(2)}</p>
-                                {["Pending Approval", "Pending Quote", "Quote Provided - Pending Approval", "Rejected - Adjustments Required", "Rejected - Closed"].includes(status) &&
+                                {[
+                                    "Pending Approval", "Pending Quote", "Quote Provided - Pending Approval", "Rejected - Adjustments Required",
+                                    "Sourcing - Information Required"
+                                ].includes(status) &&
                                     prExceedsAfe &&
                                     <b><p style={{ margin: "5px 0px 0px", color: "red" }}>Estimated Cost Exceeds Available AFE Amount</p></b>
                                 }

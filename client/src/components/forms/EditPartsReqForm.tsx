@@ -96,6 +96,7 @@ const STATUS: Array<{ status: string, titles: Array<string> }> = [
     {
         status: "Sourcing - Information Required",
         titles: (TITLES.find(item => item.group === "Supply Chain")?.titles ?? [])
+            .concat(TITLES.find(item => item.group === "Ops Manager")?.titles ?? [])
             .concat(TITLES.find(item => item.group === "IT")?.titles ?? [])
     },
     {
@@ -157,13 +158,21 @@ function CustomPopper(props: PopperProps) {
     )
 }
 
-function getAvailableStatus(user: NovaUser | undefined, quoteOnly: boolean) {
+function getAvailableStatus(user: NovaUser | undefined, currStatus: string) {
     if (user) {
-        if (quoteOnly) {
+        if (currStatus === "Quote Only") {
             return ["Quote Provided - Pending Approval"]
         }
 
-        const status = STATUS.filter(item => item.titles.includes(user.title) && item.status !== "Quote Provided - Pending Approval")
+        if (currStatus === "Sourcing - Information Required" && OPS_MANAGER_TITLES.includes(user.title)) {
+            return ["Sourcing - Information Provided"]
+        }
+
+        let status = STATUS.filter(item => item.titles.includes(user.title) && item.status !== "Quote Provided - Pending Approval")
+
+        if (OPS_MANAGER_TITLES.includes(user.title)) {
+            status = status.filter(item => !item.status.includes("Sourcing"))
+        }
 
         return status.map(item => item.status)
     } else {
@@ -544,7 +553,7 @@ export default function EditPartsReqForm(props: Props) {
                 }
             }
             if (partsReq.status === "Sourcing - Information Required") {
-                if (field !== "Status" && field !== "Amex") {
+                if (field !== "Amex") {
                     return false
                 }
             }
@@ -640,7 +649,7 @@ export default function EditPartsReqForm(props: Props) {
                             <Item sx={{ marginBottom: "15px" }}>
                                 <Box>
                                     <Autocomplete
-                                        options={getAvailableStatus(novaUser, partsReq.status === "Pending Quote")}
+                                        options={getAvailableStatus(novaUser, partsReq.status)}
                                         onChange={onStatusChange}
                                         value={status}
                                         getOptionDisabled={getOptionDisabled}

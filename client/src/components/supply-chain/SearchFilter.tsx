@@ -18,8 +18,9 @@ import { useAllNovaUsers } from "../../hooks/user"
 //import { useParts } from "../../hooks/parts"
 
 const URGENCY = ["Unit Down", "Unit Set", "Rush", "Standard"]
-const STATUS = ["Pending Approval", "Rejected - Adjustments Required", "Approved - On Hold", "Approved", "Sourcing - Information Required", "Sourcing - Information Provided",
-    "Sourcing - Pending Approval", "Ordered - Awaiting Parts", "Completed - Parts Staged/Delivered", "Closed - Partially Received", "Closed - Parts in Hand"]
+const STATUS = ["Pending Approval", "Pending Quote", "Quote Provided - Pending Approval", "Rejected - Adjustments Required", "Approved - On Hold", "Approved", "Sourcing - Information Required",
+    "Sourcing - Information Provided", "Sourcing - Pending Approval", "Ordered - Awaiting Parts", "Completed - Parts Staged/Delivered", "Closed - Partially Received", "Closed - Parts in Hand",
+    "Rejected - Closed"]
 
 interface Props {
     partsReqQuery: PartsReqQuery,

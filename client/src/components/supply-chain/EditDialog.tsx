@@ -115,6 +115,7 @@ export default function EditDialog() {
                         variant="contained"
                         onClick={() => setEdit(!edit)}
                         startIcon={<EditIcon />}
+                        disabled={partsReq.status === "Closed - Parts in Hand" || partsReq.status === "Rejected - Closed"}
                         sx={{
                             backgroundColor: theme.palette.primary.dark,
                             "&.MuiButton-root:hover": {

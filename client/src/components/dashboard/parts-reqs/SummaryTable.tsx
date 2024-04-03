@@ -121,7 +121,7 @@ function calcStatus(partsReqs: Array<PartsReq>, statusGroup: string, requester?:
     } else if (statusGroup === "Parts Staged") {
         filtered = partsReqs.filter((partsReq) => partsReq.status === "Completed - Parts Staged/Delivered")
     } else if (statusGroup === "Closed") {
-        filtered = partsReqs.filter((partsReq) => partsReq.status === "Closed - Partially Received" || partsReq.status === "Closed - Parts in Hand")
+        filtered = partsReqs.filter((partsReq) => partsReq.status === "Closed - Partially Received" || partsReq.status === "Closed - Parts in Hand" || partsReq.status === "Rejected - Closed")
     }
 
     if (requester) {
@@ -175,7 +175,7 @@ export default function SummaryTable(props: Props) {
         } else if (statusGroup === "Parts Staged") {
             statuses = ["Completed - Parts Staged/Delivered"]
         } else if (statusGroup === "Closed") {
-            statuses = ["Closed - Partially Received", "Closed - Parts in Hand"]
+            statuses = ["Closed - Partially Received", "Closed - Parts in Hand", "Rejected - Closed"]
         }
 
         navigate("/supply-chain", { state: { statuses: statuses, requesters: requesters, region: region } })

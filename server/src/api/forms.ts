@@ -9,12 +9,12 @@ import { getAfeAmount, getDirectorsEmployees, getManagersEmployees } from "./kpa
 const URGENCY_SORT = ["Unit Down", "Unit Set", "Rush", "Standard", "Stock"]
 const FIELD_SERVICE_SORT = ["Rejected - Adjustments Required", "Completed - Parts Staged/Delivered", "Closed - Partially Received", "Pending Approval", "Pending Quote",
     "Quote Provided - Pending Approval", "Approved - On Hold", "Approved", "Sourcing - Information Required", "Sourcing - Information Provided", "Sourcing - Pending Approval", "Ordered - Awaiting Parts",
-    "Closed - Parts in Hand"]
+    "Closed - Parts in Hand", "Rejected - Closed"]
 const MANAGER_STATUS_SORT = ["Pending Approval", "Quote Provided - Pending Approval", "Rejected - Adjustments Required", "Approved - On Hold", "Approved", "Ordered - Awaiting Parts", "Completed - Parts Staged/Delivered",
-    "Sourcing - Information Required", "Sourcing - Information Provided", "Sourcing - Pending Approval", "Closed - Partially Received", "Closed - Parts in Hand"]
+    "Sourcing - Information Required", "Sourcing - Information Provided", "Sourcing - Pending Approval", "Closed - Partially Received", "Closed - Parts in Hand", "Rejected - Closed"]
 
 const ALL_STATUS = ["Pending Approval", "Pending Quote", "Quote Provided - Pending Approval", "Rejected - Adjustments Required", "Approved - On Hold", "Approved", "Sourcing - Information Required",
-    "Sourcing - Information Provided", "Sourcing - Pending Approval", "Ordered - Awaiting Parts", "Completed - Parts Staged/Delivered", "Closed - Partially Received", "Closed - Parts in Hand"]
+    "Sourcing - Information Provided", "Sourcing - Pending Approval", "Ordered - Awaiting Parts", "Completed - Parts Staged/Delivered", "Closed - Partially Received", "Closed - Parts in Hand", "Rejected - Closed"]
 const SUPPLY_CHAIN_STATUS = [
     "Pending Quote", "Approved", "Sourcing - Information Required", "Sourcing - Information Provided", "Sourcing - Pending Approval", "Ordered - Awaiting Parts",
     "Completed - Parts Staged/Delivered"

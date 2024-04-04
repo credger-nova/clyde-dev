@@ -594,6 +594,9 @@ export default function EditPartsReqForm(props: Props) {
                     !svpApprovalRequired(unit, rows as Array<OrderRow>)) {
                     return false
                 }
+                if (field !== "Status") {
+                    return false
+                }
             }
             if (partsReq.status === "Rejected - Adjustments Required" &&
                 partsReq.requester === `${novaUser!.firstName} ${novaUser!.lastName}`) {

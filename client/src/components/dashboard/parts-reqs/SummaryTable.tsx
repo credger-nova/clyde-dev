@@ -152,7 +152,7 @@ export default function SummaryTable(props: Props) {
         if (!managersEmployeesFetching && group !== "Supply Chain Management") {
             setPartsReqQuery(prevState => ({
                 ...prevState,
-                requester: managersEmployees?.map((employee) => `${employee.firstName} ${employee.lastName}`)
+                requester: managersEmployees?.map((employee) => `${employee.firstName} ${employee.lastName}`).concat(`${novaUser.firstName} ${novaUser.lastName}`)
             }))
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -214,62 +214,96 @@ export default function SummaryTable(props: Props) {
         />
     } else if (group === "Ops Manager") {
         return (
-            !managersEmployeesFetching && !partsReqsFetching ? managersEmployees?.map((employee) => {
-                return (
-                    <Accordion
-                        key={employee.id}
-                        disableGutters
-                    >
-                        <AccordionSummary
-                            expandIcon={<ExpandMoreIcon />}
-                            sx={{
-                                flexDirection: "row-reverse",
-                                "& .MuiAccordionSummary-content": {
-                                    margin: 0
-                                },
-                                "&.MuiAccordionSummary-root": {
-                                    minHeight: 0,
-                                    margin: "5px 0px"
-                                }
-                            }}
-                        >
-                            <div>
-                                {`${employee.firstName} ${employee.lastName}`}
-                            </div>
-                        </AccordionSummary>
-                        <AccordionDetails>
-                            <Divider />
-                            <Grid container>
-                                {STATUS_GROUPS.map((statusGroup) => {
-                                    return (
-                                        <Grid xs={12} sm={4} spacing={2}>
-                                            <Item
-                                                onClick={() => handleClick(statusGroup, [employee])}
-                                                sx={{
-                                                    margin: "5px", display: "flex", alignItems: "center", justifyContent: "space-between", cursor: "pointer",
-                                                    transition: "transform 0.1s ease-in-out",
-                                                    "&:hover": {
-                                                        transform: "scale3d(1.05, 1.05, 1)"
-                                                    }
-                                                }}>
-                                                <Typography>
-                                                    {`${statusGroup}:`}
-                                                </Typography>
-                                                <Typography>
-                                                    {partsReqs ? calcStatus(partsReqs, statusGroup, `${employee.firstName} ${employee.lastName}`) : 0}
-                                                </Typography>
-                                            </Item>
-                                        </Grid>
-                                    )
-                                })}
-                            </Grid>
-                        </AccordionDetails>
-                    </Accordion>
-                )
-            }) :
-                <AccordionSkeleton
+            <>
+                {!partsReqsFetching ? (
+                    <Paper sx={{ padding: "5px", minWidth: "fit-conent", maxWidth: "100%" }}>
+                        <Grid container>
+                            {STATUS_GROUPS.map((statusGroup) => {
+                                return (
+                                    <Grid xs={12} sm={4} spacing={2}>
+                                        <Item
+                                            onClick={() => handleClick(statusGroup, [novaUser])}
+                                            sx={{
+                                                margin: "5px", display: "flex", alignItems: "center", justifyContent: "space-between", cursor: "pointer",
+                                                transition: "transform 0.1s ease-in-out",
+                                                "&:hover": {
+                                                    transform: "scale3d(1.03, 1.03, 1)"
+                                                }
+                                            }}>
+                                            <Typography>
+                                                {`${statusGroup}:`}
+                                            </Typography>
+                                            <Typography>
+                                                {partsReqs ? calcStatus(partsReqs, statusGroup, `${novaUser.firstName} ${novaUser.lastName}`) : 0}
+                                            </Typography>
+                                        </Item>
+                                    </Grid>
+                                )
+                            })}
+                        </Grid>
+                    </Paper>
+                ) : <StatusSkeleton
                     statuses={STATUS_GROUPS}
                 />
+                }
+                {!managersEmployeesFetching && !partsReqsFetching ? managersEmployees?.map((employee) => {
+                    return (
+                        <Accordion
+                            key={employee.id}
+                            disableGutters
+                        >
+                            <AccordionSummary
+                                expandIcon={<ExpandMoreIcon />}
+                                sx={{
+                                    flexDirection: "row-reverse",
+                                    "& .MuiAccordionSummary-content": {
+                                        margin: 0
+                                    },
+                                    "&.MuiAccordionSummary-root": {
+                                        minHeight: 0,
+                                        margin: "5px 0px"
+                                    }
+                                }}
+                            >
+                                <div>
+                                    {`${employee.firstName} ${employee.lastName}`}
+                                </div>
+                            </AccordionSummary>
+                            <AccordionDetails>
+                                <Divider />
+                                <Grid container>
+                                    {STATUS_GROUPS.map((statusGroup) => {
+                                        return (
+                                            <Grid xs={12} sm={4} spacing={2}>
+                                                <Item
+                                                    onClick={() => handleClick(statusGroup, [employee])}
+                                                    sx={{
+                                                        margin: "5px", display: "flex", alignItems: "center", justifyContent: "space-between", cursor: "pointer",
+                                                        transition: "transform 0.1s ease-in-out",
+                                                        "&:hover": {
+                                                            transform: "scale3d(1.05, 1.05, 1)"
+                                                        }
+                                                    }}>
+                                                    <Typography>
+                                                        {`${statusGroup}:`}
+                                                    </Typography>
+                                                    <Typography>
+                                                        {partsReqs ? calcStatus(partsReqs, statusGroup, `${employee.firstName} ${employee.lastName}`) : 0}
+                                                    </Typography>
+                                                </Item>
+                                            </Grid>
+                                        )
+                                    })}
+                                </Grid>
+                            </AccordionDetails>
+                        </Accordion>
+                    )
+                }) :
+                    <AccordionSkeleton
+                        statuses={STATUS_GROUPS}
+                    />
+                }
+            </>
         )
     } else if (group === "Ops Director") {
         return (

@@ -243,6 +243,7 @@ export default function EditPartsReqForm(props: Props) {
     const [amex, setAmex] = React.useState<boolean>(partsReq.amex)
     const [vendor, setVendor] = React.useState<string>(partsReq.vendor)
     const [prExceedsAfe, setPrExceedsAfe] = React.useState<boolean>(false)
+    const [needsComment, setNeedsComment] = React.useState<boolean>(false)
 
     const { data: afeAmount } = useAFEAmount(afe ?? null)
     const { data: afeExistingAmount } = useSumPrWithAfe(afe ?? "")
@@ -253,7 +254,7 @@ export default function EditPartsReqForm(props: Props) {
     })
 
     React.useEffect(() => {
-        if (!requester || !orderDate || !urgency || !orderType || !(rows.length > 0)) {
+        if (!requester || !orderDate || !urgency || !orderType || !(rows.length > 0) || needsComment) {
             setSaveDisabled(true)
         } else {
             if (!rows[0].itemNumber) {
@@ -262,7 +263,7 @@ export default function EditPartsReqForm(props: Props) {
                 setSaveDisabled(false)
             }
         }
-    }, [requester, orderDate, afe, so, urgency, orderType, rows, setSaveDisabled])
+    }, [requester, orderDate, afe, so, urgency, orderType, rows, needsComment, setSaveDisabled])
 
     React.useEffect(() => {
         if (afeAmount) {
@@ -273,6 +274,20 @@ export default function EditPartsReqForm(props: Props) {
             }
         }
     }, [afeAmount, afeExistingAmount, rows])
+
+    // Check if a comment is needed if the PR is being set to Rejected - Closed
+    React.useEffect(() => {
+        if (status === "Rejected - Closed") {
+            const newComments = (comments as Array<Comment>).filter(comment => !comment.id)
+            if (newComments.length === 0) {
+                setNeedsComment(true)
+            } else {
+                setNeedsComment(false)
+            }
+        } else {
+            setNeedsComment(false)
+        }
+    }, [status, comments, setNeedsComment])
 
     // If user cancels an edit session, reset state
     React.useEffect(() => {
@@ -1165,6 +1180,8 @@ export default function EditPartsReqForm(props: Props) {
                                         value={comment}
                                         onChange={onCommentChange}
                                         disabled={denyAccess(novaUser!.title, status, "Comment")}
+                                        error={needsComment}
+                                        helperText={needsComment && "Please enter a reason for rejecting"}
                                     />
                                     <IconButton
                                         onClick={onAddComment}

@@ -171,7 +171,7 @@ function getAvailableStatus(user: NovaUser | undefined, currStatus: string) {
             return ["Quote Provided - Pending Approval"]
         }
 
-        if (currStatus === "Sourcing - Information Required" && OPS_MANAGER_TITLES.includes(user.title)) {
+        if (currStatus === "Sourcing - Information Required" && (OPS_MANAGER_TITLES.includes(user.title) || FIELD_SERVICE_TITLES.includes(user.title))) {
             return ["Sourcing - Information Provided"]
         }
 
@@ -544,6 +544,11 @@ export default function EditPartsReqForm(props: Props) {
         if (FIELD_SERVICE_TITLES.includes(title)) {
             if (status === "Rejected - Adjustments Required") {
                 if (field !== "Status") {
+                    return false
+                }
+            }
+            if (partsReq.status === "Sourcing - Information Required") {
+                if (field !== "Amex") {
                     return false
                 }
             }

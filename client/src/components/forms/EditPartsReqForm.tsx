@@ -167,7 +167,7 @@ function CustomPopper(props: PopperProps) {
 
 function getAvailableStatus(user: NovaUser | undefined, currStatus: string) {
     if (user) {
-        if (currStatus === "Quote Only") {
+        if (currStatus === "Pending Quote") {
             return ["Quote Provided - Pending Approval"]
         }
 

@@ -593,6 +593,11 @@ export default function EditPartsReqForm(props: Props) {
                     return false
                 }
             }
+            if (status === "Approved - On Hold") {
+                if (field !== "Amex") {
+                    return false
+                }
+            }
             if (partsReq.status === "Sourcing - Information Required") {
                 if (field !== "Amex") {
                     return false
@@ -621,6 +626,11 @@ export default function EditPartsReqForm(props: Props) {
             if (partsReq.status === "Rejected - Adjustments Required" &&
                 partsReq.requester === `${novaUser!.firstName} ${novaUser!.lastName}`) {
                 if (field !== "Status") {
+                    return false
+                }
+            }
+            if (status === "Approved - On Hold") {
+                if (field !== "Amex") {
                     return false
                 }
             }

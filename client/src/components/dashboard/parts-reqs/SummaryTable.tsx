@@ -481,7 +481,7 @@ export default function SummaryTable(props: Props) {
                     statuses={SC_GROUPS}
                 />
         )
-    } else if (group === "Supply Chain Management" || group === "Executive Management") {
+    } else if (group === "Supply Chain Management" || group === "SVP" || group === "Executive Management") {
         return (
             !partsReqsFetching && !regionsFetching ? regions?.map((region) => {
                 region = toTitleCase(region)

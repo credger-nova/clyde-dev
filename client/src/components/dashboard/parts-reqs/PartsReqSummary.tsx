@@ -20,6 +20,7 @@ const ALLOWED_GROUPS = [
     "Field Service",
     "Ops Manager",
     "Ops Director",
+    "SVP",
     "Supply Chain",
     "Supply Chain Management",
     "Executive Management",

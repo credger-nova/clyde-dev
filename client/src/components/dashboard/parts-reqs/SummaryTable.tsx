@@ -281,7 +281,7 @@ export default function SummaryTable(props: Props) {
                                                         margin: "5px", display: "flex", alignItems: "center", justifyContent: "space-between", cursor: "pointer",
                                                         transition: "transform 0.1s ease-in-out",
                                                         "&:hover": {
-                                                            transform: "scale3d(1.05, 1.05, 1)"
+                                                            transform: "scale3d(1.03, 1.03, 1)"
                                                         }
                                                     }}>
                                                     <Typography>
@@ -342,7 +342,7 @@ export default function SummaryTable(props: Props) {
                                                     margin: "5px", display: "flex", alignItems: "center", justifyContent: "space-between", cursor: "pointer",
                                                     transition: "transform 0.1s ease-in-out",
                                                     "&:hover": {
-                                                        transform: "scale3d(1.05, 1.05, 1)"
+                                                        transform: "scale3d(1.03, 1.03, 1)"
                                                     }
                                                 }}>
                                                 <Typography>
@@ -394,7 +394,7 @@ export default function SummaryTable(props: Props) {
                                                                 margin: "5px", display: "flex", alignItems: "center", justifyContent: "space-between", cursor: "pointer",
                                                                 transition: "transform 0.1s ease-in-out",
                                                                 "&:hover": {
-                                                                    transform: "scale3d(1.05, 1.05, 1)"
+                                                                    transform: "scale3d(1.03, 1.03, 1)"
                                                                 }
                                                             }}>
                                                             <Typography>
@@ -459,7 +459,7 @@ export default function SummaryTable(props: Props) {
                                                     margin: "5px", display: "flex", alignItems: "center", justifyContent: "space-between", cursor: "pointer",
                                                     transition: "transform 0.1s ease-in-out",
                                                     "&:hover": {
-                                                        transform: "scale3d(1.05, 1.05, 1)"
+                                                        transform: "scale3d(1.03, 1.03, 1)"
                                                     }
                                                 }}>
                                                 <Typography>

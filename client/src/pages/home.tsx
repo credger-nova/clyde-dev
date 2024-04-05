@@ -9,8 +9,6 @@ import Box from '@mui/material/Box'
 import Grid from '@mui/material/Unstable_Grid2'
 import PartsReqSummary from "../components/dashboard/parts-reqs/PartsReqSummary"
 
-const SC_GROUPS = ["Supply Chain", "Supply Chain Management"]
-
 export default function Home() {
     const { user } = useAuth0()
     const { data: novaUser, isFetched } = useNovaUser(undefined, user?.email)
@@ -31,7 +29,7 @@ export default function Home() {
                         container
                         direction="row"
                     >
-                        <Grid xs={12} sm={SC_GROUPS.includes(userGroup ?? "") ? 12 : 6} sx={{ padding: "20px" }}>
+                        <Grid xs={12} sm={userGroup === "Supply Chain Management" ? 12 : 6} sx={{ padding: "20px" }}>
                             <PartsReqSummary
                                 novaUser={novaUser}
                             />

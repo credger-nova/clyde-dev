@@ -46,9 +46,9 @@ function StatusSkeleton(props: StatusProps) {
     return (
         <Paper sx={{ padding: "5px", minWidth: "fit-conent", maxWidth: "100%" }}>
             <Grid container>
-                {statuses.map(() => {
+                {statuses.map((status) => {
                     return (
-                        <Grid xs={12} sm={4} spacing={2}>
+                        <Grid xs={12} sm={4} spacing={2} key={status}>
                             <Item sx={{ margin: "5px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
                                 <Skeleton
                                     animation="wave"
@@ -187,7 +187,7 @@ export default function SummaryTable(props: Props) {
                 <Grid container>
                     {STATUS_GROUPS.map((statusGroup) => {
                         return (
-                            <Grid xs={12} sm={4} spacing={2}>
+                            <Grid xs={12} sm={4} spacing={2} key={statusGroup}>
                                 <Item
                                     onClick={() => handleClick(statusGroup)}
                                     sx={{
@@ -220,7 +220,7 @@ export default function SummaryTable(props: Props) {
                         <Grid container>
                             {STATUS_GROUPS.map((statusGroup) => {
                                 return (
-                                    <Grid xs={12} sm={4} spacing={2}>
+                                    <Grid xs={12} sm={4} spacing={2} key={statusGroup}>
                                         <Item
                                             onClick={() => handleClick(statusGroup, [novaUser])}
                                             sx={{
@@ -274,7 +274,7 @@ export default function SummaryTable(props: Props) {
                                 <Grid container>
                                     {STATUS_GROUPS.map((statusGroup) => {
                                         return (
-                                            <Grid xs={12} sm={4} spacing={2}>
+                                            <Grid xs={12} sm={4} spacing={2} key={statusGroup}>
                                                 <Item
                                                     onClick={() => handleClick(statusGroup, [employee])}
                                                     sx={{
@@ -307,7 +307,147 @@ export default function SummaryTable(props: Props) {
         )
     } else if (group === "Ops Director") {
         return (
-            !directorsEmployeesFetching && !partsReqsFetching ? directorsEmployees?.map((employee) => {
+            novaUser.region.length > 1 ? novaUser.region.map((region) => {
+                return (
+                    <Accordion
+                        key={region}
+                        disableGutters
+                    >
+                        <AccordionSummary
+                            expandIcon={<ExpandMoreIcon />}
+                            sx={{
+                                flexDirection: "row-reverse",
+                                "& .MuiAccordionSummary-content": {
+                                    margin: 0
+                                },
+                                "&.MuiAccordionSummary-root": {
+                                    minHeight: 0,
+                                    margin: "5px 0px"
+                                }
+                            }}
+                        >
+                            <div>
+                                <b>{region}</b>
+                            </div>
+                        </AccordionSummary>
+                        <AccordionDetails>
+                            {
+                                !directorsEmployeesFetching && !partsReqsFetching ? directorsEmployees?.map((employee) => {
+                                    return (
+                                        employee.title.includes("Manager") && employee.region.includes(region) && <Accordion
+                                            key={employee.id}
+                                            disableGutters
+                                        >
+                                            <AccordionSummary
+                                                expandIcon={<ExpandMoreIcon />}
+                                                sx={{
+                                                    flexDirection: "row-reverse",
+                                                    "& .MuiAccordionSummary-content": {
+                                                        margin: 0
+                                                    },
+                                                    "&.MuiAccordionSummary-root": {
+                                                        minHeight: 0,
+                                                        margin: "5px 0px"
+                                                    }
+                                                }}
+                                            >
+                                                <div>
+                                                    <b>{`${employee.firstName} ${employee.lastName}`}</b>
+                                                </div>
+                                            </AccordionSummary>
+                                            <AccordionDetails>
+                                                <Divider />
+                                                <Grid container>
+                                                    {STATUS_GROUPS.map((statusGroup) => {
+                                                        return (
+                                                            <Grid xs={12} sm={4} spacing={2} key={statusGroup}>
+                                                                <Item
+                                                                    onClick={() => handleClick(statusGroup, directorsEmployees.filter((subordinate) => subordinate.supervisorId === employee.id).concat(employee))}
+                                                                    sx={{
+                                                                        margin: "5px", display: "flex", alignItems: "center", justifyContent: "space-between", cursor: "pointer",
+                                                                        transition: "transform 0.1s ease-in-out",
+                                                                        "&:hover": {
+                                                                            transform: "scale3d(1.03, 1.03, 1)"
+                                                                        }
+                                                                    }}>
+                                                                    <Typography>
+                                                                        {`${statusGroup}:`}
+                                                                    </Typography>
+                                                                    <Typography>
+                                                                        {partsReqs ? calcStatus(partsReqs, statusGroup, undefined, directorsEmployees.filter((subordinate) => subordinate.supervisorId === employee.id)
+                                                                            .map((user) => `${user.firstName} ${user.lastName}`).concat(`${employee.firstName} ${employee.lastName}`)) : 0}
+                                                                    </Typography>
+                                                                </Item>
+                                                            </Grid>
+                                                        )
+                                                    })}
+                                                </Grid>
+                                            </AccordionDetails>
+                                            {directorsEmployees.filter((subordinate) => subordinate.supervisorId === employee.id).map((user) => {
+                                                return (
+                                                    <Accordion
+                                                        key={user.id}
+                                                        disableGutters
+                                                        sx={{ marginLeft: "20px" }}
+                                                    >
+                                                        <AccordionSummary
+                                                            expandIcon={<ExpandMoreIcon />}
+                                                            sx={{
+                                                                flexDirection: "row-reverse",
+                                                                "& .MuiAccordionSummary-content": {
+                                                                    margin: 0
+                                                                },
+                                                                "&.MuiAccordionSummary-root": {
+                                                                    minHeight: 0,
+                                                                    margin: "5px 0px"
+                                                                }
+                                                            }}
+                                                        >
+                                                            <div>
+                                                                {`${user.firstName} ${user.lastName}`}
+                                                            </div>
+                                                        </AccordionSummary>
+                                                        <AccordionDetails>
+                                                            <Divider />
+                                                            <Grid container>
+                                                                {STATUS_GROUPS.map((statusGroup) => {
+                                                                    return (
+                                                                        <Grid xs={12} sm={4} spacing={2} key={statusGroup}>
+                                                                            <Item
+                                                                                onClick={() => handleClick(statusGroup, [user])}
+                                                                                sx={{
+                                                                                    margin: "5px", display: "flex", alignItems: "center", justifyContent: "space-between", cursor: "pointer",
+                                                                                    transition: "transform 0.1s ease-in-out",
+                                                                                    "&:hover": {
+                                                                                        transform: "scale3d(1.03, 1.03, 1)"
+                                                                                    }
+                                                                                }}>
+                                                                                <Typography>
+                                                                                    {`${statusGroup}:`}
+                                                                                </Typography>
+                                                                                <Typography>
+                                                                                    {partsReqs ? calcStatus(partsReqs, statusGroup, `${user.firstName} ${user.lastName}`) : 0}
+                                                                                </Typography>
+                                                                            </Item>
+                                                                        </Grid>
+                                                                    )
+                                                                })}
+                                                            </Grid>
+                                                        </AccordionDetails>
+                                                    </Accordion>
+                                                )
+                                            })}
+                                        </Accordion>
+                                    )
+                                }) :
+                                    <AccordionSkeleton
+                                        statuses={STATUS_GROUPS}
+                                    />
+                            }
+                        </AccordionDetails>
+                    </Accordion>
+                )
+            }) : !directorsEmployeesFetching && !partsReqsFetching ? directorsEmployees?.map((employee) => {
                 return (
                     employee.title.includes("Manager") && <Accordion
                         key={employee.id}
@@ -335,7 +475,7 @@ export default function SummaryTable(props: Props) {
                             <Grid container>
                                 {STATUS_GROUPS.map((statusGroup) => {
                                     return (
-                                        <Grid xs={12} sm={4} spacing={2}>
+                                        <Grid xs={12} sm={4} spacing={2} key={statusGroup}>
                                             <Item
                                                 onClick={() => handleClick(statusGroup, directorsEmployees.filter((subordinate) => subordinate.supervisorId === employee.id).concat(employee))}
                                                 sx={{
@@ -387,7 +527,7 @@ export default function SummaryTable(props: Props) {
                                         <Grid container>
                                             {STATUS_GROUPS.map((statusGroup) => {
                                                 return (
-                                                    <Grid xs={12} sm={4} spacing={2}>
+                                                    <Grid xs={12} sm={4} spacing={2} key={statusGroup}>
                                                         <Item
                                                             onClick={() => handleClick(statusGroup, [user])}
                                                             sx={{
@@ -452,7 +592,7 @@ export default function SummaryTable(props: Props) {
                             <Grid container>
                                 {SC_GROUPS.map((statusGroup) => {
                                     return (
-                                        <Grid xs={12} sm={4} spacing={2}>
+                                        <Grid xs={12} sm={4} spacing={2} key={statusGroup}>
                                             <Item
                                                 onClick={() => handleClick(statusGroup, undefined, region)}
                                                 sx={{
@@ -513,7 +653,7 @@ export default function SummaryTable(props: Props) {
                                 <Grid container>
                                     {STATUS_GROUPS.map((statusGroup) => {
                                         return (
-                                            <Grid xs={12} sm={4} spacing={2}>
+                                            <Grid xs={12} sm={4} spacing={2} key={statusGroup}>
                                                 <Item
                                                     onClick={() => handleClick(statusGroup, undefined, region)}
                                                     sx={{
@@ -549,7 +689,7 @@ export default function SummaryTable(props: Props) {
                 <Grid container>
                     {STATUS_GROUPS.map((statusGroup) => {
                         return (
-                            <Grid xs={12} sm={4} spacing={2}>
+                            <Grid xs={12} sm={4} spacing={2} key={statusGroup}>
                                 <Item
                                     onClick={() => handleClick(statusGroup)}
                                     sx={{

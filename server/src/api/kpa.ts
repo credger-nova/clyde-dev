@@ -288,6 +288,7 @@ export const getManagersEmployees = async (id: string) => {
 
     const { data } = await axios.post(ALL_USERS_URL, postBody)
     const titles = await getJobTitles()
+    const regions = await getRegions()
 
     var employees = []
 
@@ -321,6 +322,16 @@ export const getManagersEmployees = async (id: string) => {
                 employees.splice(index, 1)
             }
         }
+
+        // Add employee's regions
+        const regionRes = regions.filter(obj => user.region.includes(obj.id))
+
+        const regionNames = []
+        for (const region of regionRes) {
+            regionNames.push(region.name)
+        }
+
+        user.region = regionNames
     }
 
     return employees
@@ -334,6 +345,7 @@ export const getDirectorsEmployees = async (id: string) => {
 
     const { data } = await axios.post(ALL_USERS_URL, postBody)
     const titles = await getJobTitles()
+    const regions = await getRegions()
 
     var employees = []
 
@@ -367,6 +379,16 @@ export const getDirectorsEmployees = async (id: string) => {
                 employees.splice(index, 1)
             }
         }
+
+        // Add employee's regions
+        const regionRes = regions.filter(obj => user.region.includes(obj.id))
+
+        const regionNames = []
+        for (const region of regionRes) {
+            regionNames.push(region.name)
+        }
+
+        user.region = regionNames
     }
 
     return employees

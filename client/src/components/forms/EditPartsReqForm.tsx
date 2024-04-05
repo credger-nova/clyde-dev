@@ -65,7 +65,9 @@ const STATUS: Array<{ status: string, titles: Array<string> }> = [
     },
     {
         status: "Pending Quote",
-        titles: TITLES.find(item => item.group === "IT")?.titles ?? []
+        titles: (TITLES.find(item => item.group === "Ops Manager")?.titles ?? [])
+            .concat(TITLES.find(item => item.group === "Ops Director")?.titles ?? [])
+            .concat(TITLES.find(item => item.group === "IT")?.titles ?? [])
     },
     {
         status: "Quote Provided - Pending Approval",
@@ -593,7 +595,7 @@ export default function EditPartsReqForm(props: Props) {
                     return false
                 }
             }
-            if (status === "Approved - On Hold") {
+            if (partsReq.status === "Approved - On Hold") {
                 if (field !== "Amex") {
                     return false
                 }
@@ -629,7 +631,7 @@ export default function EditPartsReqForm(props: Props) {
                     return false
                 }
             }
-            if (status === "Approved - On Hold") {
+            if (partsReq.status === "Approved - On Hold") {
                 if (field !== "Amex") {
                     return false
                 }

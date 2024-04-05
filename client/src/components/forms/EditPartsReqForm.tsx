@@ -369,11 +369,9 @@ export default function EditPartsReqForm(props: Props) {
     const onStatusChange = (_e: React.SyntheticEvent, value: string | null) => {
         setStatus(value ?? "")
 
-        if (["Sourcing - Information Required", "Ordered - Awaiting Parts", "Completed - Parts Staged/Delivered", "Closed - Parts in Hand"]
+        if (["Sourcing - Information Required", "Ordered - Awaiting Parts", "Completed - Parts Staged/Delivered"]
             .includes(value ?? "") && !partsReq.contact) {
             setContact(`${novaUser?.firstName} ${novaUser?.lastName}`)
-        } else {
-            setContact("")
         }
     }
 

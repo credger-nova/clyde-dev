@@ -208,7 +208,15 @@ export default function PartsReqForm() {
         }
 
         setOrderType(value ? "Rental" : so ? "Third-Party" : null)
-        setRegion(value ? value.operationalRegion ? toTitleCase(value.operationalRegion) : null : null)
+        setRegion(
+            value ?
+                value.operationalRegion ?
+                    toTitleCase(value.operationalRegion) :
+                    novaUser ?
+                        novaUser.region[0] :
+                        null :
+                null
+        )
     }
     const onTruckChange = (_e: React.SyntheticEvent, value: string | null) => {
         setTruck(value ?? null)

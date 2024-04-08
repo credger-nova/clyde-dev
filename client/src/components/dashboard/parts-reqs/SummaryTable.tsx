@@ -3,22 +3,25 @@ import * as React from "react"
 import { NovaUser } from "../../../types/novaUser"
 import { PartsReq, PartsReqQuery } from "../../../types/partsReq"
 
+import { toTitleCase } from "../../../utils/helperFunctions"
+
 import { useManagersEmployees, useDirectorsEmployees } from "../../../hooks/user"
 import { usePartsReqs } from "../../../hooks/partsReq"
 import { useRegions } from "../../../hooks/unit"
 import { useNavigate } from "react-router-dom"
 
+import { styled } from '@mui/material/styles'
 import Accordion from '@mui/material/Accordion'
 import AccordionDetails from '@mui/material/AccordionDetails'
 import AccordionSummary from '@mui/material/AccordionSummary'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import Divider from '@mui/material/Divider'
-import { styled } from '@mui/material/styles'
 import Paper from '@mui/material/Paper'
 import Typography from '@mui/material/Typography'
 import Grid from '@mui/material/Unstable_Grid2'
 import Skeleton from '@mui/material/Skeleton'
-import { toTitleCase } from "../../../utils/helperFunctions"
+import Switch from '@mui/material/Switch'
+import FormControlLabel from '@mui/material/FormControlLabel'
 
 interface Props {
     novaUser: NovaUser,
@@ -103,6 +106,12 @@ function AccordionSkeleton(props: StatusProps) {
     )
 }
 
+const StyledSwitch = styled(Switch)(() => ({
+    '& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track': {
+        backgroundColor: "#00ff00",
+    },
+}))
+
 function calcStatus(partsReqs: Array<PartsReq>, statusGroup: string, requester?: string, requesterGroup?: Array<string>, region?: string) {
     let filtered: Array<PartsReq> = []
 
@@ -141,6 +150,7 @@ export default function SummaryTable(props: Props) {
     const { novaUser, group } = props
 
     const [partsReqQuery, setPartsReqQuery] = React.useState<PartsReqQuery>({ user: novaUser })
+    const [managerOnly, setManagerOnly] = React.useState<Array<string>>([])
 
     const { data: managersEmployees, isFetching: managersEmployeesFetching } = useManagersEmployees(novaUser)
     const { data: directorsEmployees, isFetching: directorsEmployeesFetching } = useDirectorsEmployees(novaUser)
@@ -179,6 +189,16 @@ export default function SummaryTable(props: Props) {
         }
 
         navigate("/supply-chain", { state: { statuses: statuses, requesters: requesters, region: region } })
+    }
+
+    const handleManagerOnlyChange = (event: React.ChangeEvent<HTMLInputElement>, manager: string) => {
+        if (event.target.checked) {
+            setManagerOnly([...managerOnly, manager])
+        } else {
+            const tempManagers = [...managerOnly]
+            tempManagers.splice(tempManagers.indexOf(manager), 1)
+            setManagerOnly(tempManagers)
+        }
     }
 
     if (group === "Field Service") {
@@ -356,6 +376,16 @@ export default function SummaryTable(props: Props) {
                                                 </div>
                                             </AccordionSummary>
                                             <AccordionDetails>
+                                                <FormControlLabel
+                                                    control={
+                                                        <StyledSwitch
+                                                            checked={managerOnly.includes(`${employee.firstName} ${employee.lastName}`)}
+                                                            onChange={(event) => handleManagerOnlyChange(event, `${employee.firstName} ${employee.lastName}`)}
+                                                            size="medium"
+                                                        />
+                                                    }
+                                                    label={<Typography variant="body2">Submitted By Manager Only</Typography>}
+                                                />
                                                 <Divider />
                                                 <Grid container>
                                                     {STATUS_GROUPS.map((statusGroup) => {
@@ -374,8 +404,11 @@ export default function SummaryTable(props: Props) {
                                                                         {`${statusGroup}:`}
                                                                     </Typography>
                                                                     <Typography>
-                                                                        {partsReqs ? calcStatus(partsReqs, statusGroup, undefined, directorsEmployees.filter((subordinate) => subordinate.supervisorId === employee.id)
-                                                                            .map((user) => `${user.firstName} ${user.lastName}`).concat(`${employee.firstName} ${employee.lastName}`)) : 0}
+                                                                        {partsReqs ? calcStatus(partsReqs, statusGroup, undefined, managerOnly.includes(`${employee.firstName} ${employee.lastName}`) ?
+                                                                            [`${employee.firstName} ${employee.lastName}`] :
+                                                                            directorsEmployees.filter((subordinate) => subordinate.supervisorId === employee.id)
+                                                                                .map((user) => `${user.firstName} ${user.lastName}`).concat(`${employee.firstName} ${employee.lastName}`)
+                                                                        ) : 0}
                                                                     </Typography>
                                                                 </Item>
                                                             </Grid>

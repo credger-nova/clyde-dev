@@ -250,6 +250,11 @@ export default function EditPartsReqForm(props: Props) {
     const { data: afeAmount } = useAFEAmount(afe ?? null)
     const { data: afeExistingAmount } = useSumPrWithAfe(afe ?? "")
 
+    const afeFilter = createFilterOptions<{ number: string, unit: string, location: string | null }>({
+        matchFrom: "any",
+        stringify: (option) => option.number + option.unit + (option.location ?? "")
+    })
+
     const partsFilter = createFilterOptions<PartOption>({
         matchFrom: "any",
         limit: 500
@@ -375,19 +380,26 @@ export default function EditPartsReqForm(props: Props) {
         }
     }
 
-    const onAfeChange = (_e: React.SyntheticEvent, value: string | null) => {
-        setAfe(value ?? null)
+    const onAfeChange = (_e: React.SyntheticEvent, value: { number: string, unit: string, location: string | null } | null) => {
+        setAfe(value ? value.number : null)
+
+        if (value) {
+            const unit = unitNumbers ? unitNumbers.find(obj => obj.unitNumber === value.unit) : null
+            onUnitNumberChange(undefined, unit ?? null)
+        } else {
+            onUnitNumberChange(undefined, null)
+        }
     }
     const onSoChange = (_e: React.SyntheticEvent, value: string | null) => {
         setSo(value ?? null)
 
         setOrderType(value ? billable ? "Rental" : "Third-Party" : null)
     }
-    const onUnitNumberChange = (_e: React.SyntheticEvent, value: Unit | null) => {
+    const onUnitNumberChange = (_e: React.SyntheticEvent | undefined, value: Unit | null) => {
         setUnit(value ?? null)
 
         if (!billable) {
-            onSoChange(_e, null)
+            onSoChange(_e!, null)
         }
 
         setOrderType(value ? "Rental" : so ? "Third-Party" : null)
@@ -781,23 +793,63 @@ export default function EditPartsReqForm(props: Props) {
                                     <Divider />
                                     <Autocomplete
                                         options={afeNumbers ? afeNumbers : []}
+                                        getOptionLabel={(option) => option.number}
                                         onChange={onAfeChange}
                                         loading={afeFetching}
-                                        value={afe}
+                                        value={afeNumbers?.find(el => el.number === afe)}
                                         renderInput={(params) => <StyledTextField
                                             {...params}
                                             variant="standard"
                                             label="AFE #"
                                         />}
                                         disabled={so !== null}
+                                        filterOptions={afeFilter}
                                         renderOption={(props, option, { inputValue }) => {
-                                            const matches = match(option, inputValue, { insideWords: true, requireMatchAll: true });
-                                            const parts = parse(option, matches);
+                                            // Get matches in AFE number
+                                            const afeNumberMatches = match(option.number, inputValue, { insideWords: true })
+                                            // Get parts from AFE number matches
+                                            const afeNumberParts = parse(option.number, afeNumberMatches)
+
+                                            // Get matches in unit number
+                                            const unitNumberMatches = match(option.unit, inputValue, { insideWords: true })
+                                            // Get parts from unit number matches
+                                            const unitNumberParts = parse(option.unit, unitNumberMatches)
+
+                                            // Get matches in location
+                                            const locationMatches = match(option.location ?? "", inputValue, { insideWords: true })
+                                            // Get parts from location matches
+                                            const locationParts = parse(option.location ?? "", locationMatches)
 
                                             return (
-                                                <li {...props}>
-                                                    <div>
-                                                        {parts.map((part, index) => (
+                                                <li {...props} style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+                                                    <div style={{ width: "20%", marginRight: "5px" }}>
+                                                        {afeNumberParts.map((part, index) => (
+                                                            <span
+                                                                key={index}
+                                                                style={{
+                                                                    fontWeight: part.highlight ? 700 : 400,
+                                                                    color: part.highlight ? "#23aee5" : "#fff"
+                                                                }}
+                                                            >
+                                                                {part.text}
+                                                            </span>
+                                                        ))}
+                                                    </div>
+                                                    <div style={{ width: "30%" }}>
+                                                        {unitNumberParts.map((part, index) => (
+                                                            <span
+                                                                key={index}
+                                                                style={{
+                                                                    fontWeight: part.highlight ? 700 : 400,
+                                                                    color: part.highlight ? "#23aee5" : "#fff"
+                                                                }}
+                                                            >
+                                                                {part.text}
+                                                            </span>
+                                                        ))}
+                                                    </div>
+                                                    <div style={{ width: "100%" }}>
+                                                        {locationParts.map((part, index) => (
                                                             <span
                                                                 key={index}
                                                                 style={{
@@ -810,7 +862,7 @@ export default function EditPartsReqForm(props: Props) {
                                                         ))}
                                                     </div>
                                                 </li>
-                                            );
+                                            )
                                         }}
                                         readOnly={denyAccess(novaUser!.title, status)}
                                     />
@@ -863,7 +915,7 @@ export default function EditPartsReqForm(props: Props) {
                                             variant="standard"
                                             label="Unit #"
                                         />}
-                                        disabled={truck !== null}
+                                        disabled={truck !== null || afe !== null}
                                         renderOption={(props, option, { inputValue }) => {
                                             const matches = match(option.unitNumber, inputValue, { insideWords: true, requireMatchAll: true });
                                             const parts = parse(option.unitNumber, matches);

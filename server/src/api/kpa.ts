@@ -1,6 +1,7 @@
 import axios from "axios"
 import dotenv from "dotenv"
 import { NovaUser } from "../models/novaUser"
+import { getUnit } from "./unit"
 
 dotenv.config()
 
@@ -58,9 +59,9 @@ async function getRegions(): Promise<Array<{ id: string, name: string }>> {
     return regions
 }
 
-// Get all AFE numbers
+// Get all active AFEs
 export const getAfeNumbers = async () => {
-    var afeNums: Array<string> = [];
+    var afes: Array<{ number: string, unit: string, location: string | null }> = [];
     const pages = await getPages(AFE_FORM_ID)
 
     for (var i = 1; i < pages + 1; i++) {
@@ -70,19 +71,34 @@ export const getAfeNumbers = async () => {
             limit: LIMIT,
             skip_field_id_mapping_json: true,
             columns: [
-                "og42wkqwer5ufiwx" // AFE Number
+                "og42wkqwer5ufiwx", // AFE Number
+                "mm4e5mhm1hjw1fu3"  // Unit Number
             ],
             page: i
         })
 
+        // Reassign keys
         for (const obj of data.responses) {
-            afeNums.push(obj.og42wkqwer5ufiwx)
+            delete Object.assign(obj, { ['number']: obj['og42wkqwer5ufiwx'] })['og42wkqwer5ufiwx']
+            delete Object.assign(obj, { ['unit']: obj['mm4e5mhm1hjw1fu3'] })['mm4e5mhm1hjw1fu3']
+
+            afes.push(obj)
         }
     }
 
-    afeNums = afeNums.filter(value => /^-?\d+\.?\d*$/.test(value))
+    afes = afes.filter(afe => /^-?\d+\.?\d*$/.test(afe.number))
 
-    return afeNums
+    for (var afe of afes) {
+        const unit = await getUnit(afe.unit)
+
+        if (unit) {
+            afe.location = unit.location
+        } else {
+            afe.location = ""
+        }
+    }
+
+    return afes
 }
 
 // Get total cost of parts for given AFE
@@ -103,8 +119,8 @@ export const getAfeAmount = async (afeNumber: string) => {
             page: i
         })
 
+        // Reassign keys
         for (const obj of data.responses) {
-            // Reassign keys
             delete Object.assign(obj, { ['number']: obj['og42wkqwer5ufiwx'] })['og42wkqwer5ufiwx']
             delete Object.assign(obj, { ['cost']: obj['9mkkjj2kphiv0dgl'] })['9mkkjj2kphiv0dgl']
 

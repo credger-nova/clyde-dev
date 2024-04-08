@@ -382,6 +382,7 @@ export default function SummaryTable(props: Props) {
                                                             checked={managerOnly.includes(`${employee.firstName} ${employee.lastName}`)}
                                                             onChange={(event) => handleManagerOnlyChange(event, `${employee.firstName} ${employee.lastName}`)}
                                                             size="medium"
+                                                            disableRipple
                                                         />
                                                     }
                                                     label={<Typography variant="body2">Submitted By Manager Only</Typography>}

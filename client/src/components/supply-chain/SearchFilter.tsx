@@ -1,12 +1,6 @@
 import * as React from "react"
 
-import Grid from '@mui/material/Unstable_Grid2'
-import Box from '@mui/material/Box'
-import Autocomplete from '@mui/material/Autocomplete'
-import { StyledTextField } from "../common/TextField"
 import { Unit } from "../../types/unit"
-import parse from 'autosuggest-highlight/parse'
-import match from 'autosuggest-highlight/match'
 import { NovaUser } from "../../types/novaUser"
 import { PartsReqQuery } from "../../types/partsReq"
 
@@ -16,6 +10,13 @@ import { useCustomers, useLocations, useRegions, useUnits } from "../../hooks/un
 import { useTrucks } from "../../hooks/truck"
 import { useAllNovaUsers } from "../../hooks/user"
 //import { useParts } from "../../hooks/parts"
+
+import Grid from '@mui/material/Unstable_Grid2'
+import Box from '@mui/material/Box'
+import Autocomplete from '@mui/material/Autocomplete'
+import { StyledTextField } from "../common/TextField"
+import parse from 'autosuggest-highlight/parse'
+import match from 'autosuggest-highlight/match'
 
 const URGENCY = ["Unit Down", "Unit Set", "Rush", "Standard"]
 const STATUS = ["Pending Approval", "Pending Quote", "Quote Provided - Pending Approval", "Rejected - Adjustments Required", "Approved - On Hold", "Approved", "Sourcing - Information Required",
@@ -50,10 +51,10 @@ export default function SearchFilter(props: Props) {
         }))
     }
 
-    const handleAfeChange = (_e: React.SyntheticEvent<Element, Event>, value: Array<string>) => {
+    const handleAfeChange = (_e: React.SyntheticEvent<Element, Event>, value: Array<{ number: string, unit: string, location: string | null }>) => {
         setPartsReqQuery(prevState => ({
             ...prevState,
-            afe: value
+            afe: value.map((val) => val.number)
         }))
     }
 
@@ -154,6 +155,7 @@ export default function SearchFilter(props: Props) {
                             limitTags={3}
                             size="small"
                             options={afeNumbers ? afeNumbers : []}
+                            getOptionLabel={(option) => option.number}
                             loading={afeFetching}
                             onChange={handleAfeChange}
                             renderInput={(params) => <StyledTextField
@@ -163,8 +165,8 @@ export default function SearchFilter(props: Props) {
                             />}
                             sx={{ width: "330px" }}
                             renderOption={(props, option, { inputValue }) => {
-                                const matches = match(option, inputValue, { insideWords: true, requireMatchAll: true });
-                                const parts = parse(option, matches);
+                                const matches = match(option.number, inputValue, { insideWords: true, requireMatchAll: true });
+                                const parts = parse(option.number, matches);
 
                                 return (
                                     <li {...props}>

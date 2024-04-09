@@ -124,13 +124,15 @@ function calcStatus(partsReqs: Array<PartsReq>, statusGroup: string, requester?:
     } else if (statusGroup === "Approved") {
         filtered = partsReqs.filter((partsReq) => partsReq.status === "Approved" || partsReq.status === "Approved - On Hold")
     } else if (statusGroup === "Sourcing") {
-        filtered = partsReqs.filter((partsReq) => partsReq.status === "Sourcing - Information Required" || partsReq.status === "Sourcing - Information Provided" || partsReq.status === "Sourcing - Pending Approval")
+        filtered = partsReqs.filter((partsReq) => partsReq.status === "Sourcing - Information Required" || partsReq.status === "Sourcing - Information Provided" ||
+            partsReq.status === "Sourcing - Pending Amex Approval" || partsReq.status === "Sourcing - Amex Approved")
     } else if (statusGroup === "Parts Ordered") {
         filtered = partsReqs.filter((partsReq) => partsReq.status === "Ordered - Awaiting Parts")
     } else if (statusGroup === "Parts Staged") {
         filtered = partsReqs.filter((partsReq) => partsReq.status === "Completed - Parts Staged/Delivered")
     } else if (statusGroup === "Closed") {
-        filtered = partsReqs.filter((partsReq) => partsReq.status === "Closed - Partially Received" || partsReq.status === "Closed - Parts in Hand" || partsReq.status === "Rejected - Closed")
+        filtered = partsReqs.filter((partsReq) => partsReq.status === "Closed - Partially Received" || partsReq.status === "Closed - Parts in Hand" ||
+            partsReq.status === "Rejected - Closed")
     }
 
     if (requester) {
@@ -179,7 +181,7 @@ export default function SummaryTable(props: Props) {
         } else if (statusGroup === "Approved") {
             statuses = ["Approved", "Approved - On Hold"]
         } else if (statusGroup === "Sourcing") {
-            statuses = ["Sourcing - Information Required", "Sourcing - Information Provided", "Sourcing - Pending Approval"]
+            statuses = ["Sourcing - Information Required", "Sourcing - Information Provided", "Sourcing - Pending Amex Approval", "Sourcing - Amex Approved"]
         } else if (statusGroup === "Parts Ordered") {
             statuses = ["Ordered - Awaiting Parts"]
         } else if (statusGroup === "Parts Staged") {
@@ -244,7 +246,7 @@ export default function SummaryTable(props: Props) {
                                     onChange={(event) => handleManagerOnlyChange(event, `${novaUser.firstName} ${novaUser.lastName}`)}
                                     size="medium"
                                     disableRipple
-                                    sx={{marginLeft: "10px"}}
+                                    sx={{ marginLeft: "10px" }}
                                 />
                             }
                             label={<Typography variant="body2">Submitted By Me Only</Typography>}

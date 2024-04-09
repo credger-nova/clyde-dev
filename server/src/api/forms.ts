@@ -8,16 +8,18 @@ import { getAfeAmount, getDirectorsEmployees, getManagersEmployees } from "./kpa
 
 const URGENCY_SORT = ["Unit Down", "Unit Set", "Rush", "Standard", "Stock"]
 const FIELD_SERVICE_SORT = ["Rejected - Adjustments Required", "Completed - Parts Staged/Delivered", "Closed - Partially Received", "Pending Approval", "Pending Quote",
-    "Quote Provided - Pending Approval", "Approved - On Hold", "Approved", "Sourcing - Information Required", "Sourcing - Information Provided", "Sourcing - Pending Approval", "Ordered - Awaiting Parts",
+    "Quote Provided - Pending Approval", "Approved - On Hold", "Approved", "Sourcing - Information Required", "Sourcing - Information Provided", "Sourcing - Pending Amex Approval",
+    "Sourcing - Amex Approved", "Ordered - Awaiting Parts", "Closed - Parts in Hand", "Rejected - Closed"]
+const MANAGER_STATUS_SORT = ["Pending Approval", "Quote Provided - Pending Approval", "Rejected - Adjustments Required", "Approved - On Hold", "Approved", "Ordered - Awaiting Parts",
+    "Completed - Parts Staged/Delivered", "Sourcing - Information Required", "Sourcing - Information Provided", "Sourcing - Pending Amex Approval", "Closed - Partially Received",
     "Closed - Parts in Hand", "Rejected - Closed"]
-const MANAGER_STATUS_SORT = ["Pending Approval", "Quote Provided - Pending Approval", "Rejected - Adjustments Required", "Approved - On Hold", "Approved", "Ordered - Awaiting Parts", "Completed - Parts Staged/Delivered",
-    "Sourcing - Information Required", "Sourcing - Information Provided", "Sourcing - Pending Approval", "Closed - Partially Received", "Closed - Parts in Hand", "Rejected - Closed"]
 
-const ALL_STATUS = ["Pending Approval", "Pending Quote", "Quote Provided - Pending Approval", "Rejected - Adjustments Required", "Approved - On Hold", "Approved", "Sourcing - Information Required",
-    "Sourcing - Information Provided", "Sourcing - Pending Approval", "Ordered - Awaiting Parts", "Completed - Parts Staged/Delivered", "Closed - Partially Received", "Closed - Parts in Hand", "Rejected - Closed"]
+const ALL_STATUS = ["Pending Approval", "Pending Quote", "Quote Provided - Pending Approval", "Rejected - Adjustments Required", "Approved - On Hold", "Approved",
+    "Sourcing - Information Required", "Sourcing - Information Provided", "Sourcing - Pending Amex Approval", "Sourcing - Amex Approved", "Ordered - Awaiting Parts",
+    "Completed - Parts Staged/Delivered", "Closed - Partially Received", "Closed - Parts in Hand", "Rejected - Closed"]
 const SUPPLY_CHAIN_STATUS = [
-    "Pending Quote", "Approved", "Sourcing - Information Required", "Sourcing - Information Provided", "Sourcing - Pending Approval", "Ordered - Awaiting Parts",
-    "Completed - Parts Staged/Delivered"
+    "Pending Quote", "Approved", "Sourcing - Information Required", "Sourcing - Information Provided", "Sourcing - Pending Amex Approval", "Sourcing - Amex Approved",
+    "Ordered - Awaiting Parts", "Completed - Parts Staged/Delivered"
 ]
 const SVP_STATUS = ["Pending Approval", "Quote Provided - Pending Approval"]
 
@@ -151,6 +153,15 @@ async function autoApprove(afeNumber: string, prCost: number) {
         }
     }
 
+    return false
+}
+
+function noRate(rows: Array<Omit<OrderRow, "id">>) {
+    for (const item of rows) {
+        if (!item.cost) {
+            return true
+        }
+    }
     return false
 }
 
@@ -555,8 +566,9 @@ export const updatePartsReq = async (id: number, user: string, updateReq: Partia
     // Amex change
     if (oldPartsReq?.amex !== updateReq.amex) {
         updated = true
-        if (updateReq.amex) {
-            status = "Sourcing - Pending Approval"
+        if (updateReq.amex && !noRate(updateReq.parts as Array<Omit<OrderRow, "id">>) && !oldPartsReq?.amex &&
+            calcCost(updateReq.parts ?? []) > 500) {
+            status = "Sourcing - Pending Amex Approval"
         }
 
         const message = `Amex Request Change: ${oldPartsReq?.amex} -> ${updateReq.amex} `

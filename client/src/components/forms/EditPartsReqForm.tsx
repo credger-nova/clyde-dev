@@ -104,8 +104,9 @@ const STATUS: Array<{ status: string, titles: Array<string> }> = [
     },
     {
         status: "Sourcing - Information Required",
-        titles: (TITLES.find(item => item.group === "Supply Chain")?.titles ?? [])
-            .concat(TITLES.find(item => item.group === "Ops Manager")?.titles ?? [])
+        titles: (TITLES.find(item => item.group === "Ops Manager")?.titles ?? [])
+            .concat(TITLES.find(item => item.group === "Supply Chain")?.titles ?? [])
+            .concat(TITLES.find(item => item.group === "Supply Chain Management")?.titles ?? [])
             .concat(TITLES.find(item => item.group === "IT")?.titles ?? [])
     },
     {
@@ -114,8 +115,8 @@ const STATUS: Array<{ status: string, titles: Array<string> }> = [
             .concat(TITLES.find(item => item.group === "IT")?.titles ?? [])
     },
     {
-        status: "Sourcing - Pending Approval",
-        titles: (TITLES.find(item => item.group === "Supply Chain")?.titles ?? [])
+        status: "Sourcing - Amex Approved",
+        titles: (TITLES.find(item => item.group === "Supply Chain Management")?.titles ?? [])
             .concat(TITLES.find(item => item.group === "IT")?.titles ?? [])
     },
     {
@@ -667,11 +668,40 @@ export default function EditPartsReqForm(props: Props) {
         }
 
         // Supply Chain permissions
-        if (SUPPLY_CHAIN_TITLES.includes(title) || SC_MANAGEMENT_TITLES.includes(title)) {
+        if (SUPPLY_CHAIN_TITLES.includes(title)) {
             if (partsReq.status === "Pending Quote" || partsReq.status === "Approved" || partsReq.status === "Sourcing - Information Required" ||
-                partsReq.status === "Sourcing - Information Provided" || partsReq.status === "Sourcing - Pending Approval" ||
-                partsReq.status === "Ordered - Awaiting Parts") {
+                partsReq.status === "Sourcing - Information Provided" || partsReq.status === "Ordered - Awaiting Parts") {
                 if (field === "Status" || field === "Amex") {
+                    return false
+                }
+            }
+            if (partsReq.status === "Sourcing - Amex Approved") {
+                if (field === "Status") {
+                    return false
+                }
+            }
+            if (partsReq.status === "Completed - Parts Staged/Delivered" || status === "Completed - Parts Staged/Delivered") {
+                if (field === "Pickup") {
+                    return false
+                }
+            }
+            if (field === "Item" || field === "Description" || field === "Rate") {
+                return false
+            }
+
+            return true
+        }
+
+        // Supply Chain management permissions
+        if (SC_MANAGEMENT_TITLES.includes(title)) {
+            if (partsReq.status === "Pending Quote" || partsReq.status === "Approved" || partsReq.status === "Sourcing - Information Required" ||
+                partsReq.status === "Sourcing - Information Provided" || partsReq.status === "Ordered - Awaiting Parts") {
+                if (field === "Status" || field === "Amex") {
+                    return false
+                }
+            }
+            if (partsReq.status === "Sourcing - Pending Amex Approval") {
+                if (field === "Status") {
                     return false
                 }
             }
@@ -731,7 +761,11 @@ export default function EditPartsReqForm(props: Props) {
                                             const parts = parse(option, matches);
 
                                             return (
-                                                noRate(rows) && (option === "Completed - Parts Staged/Delivered" || option === "Quote Provided - Pending Approval") ?
+                                                noRate(rows) &&
+                                                    (
+                                                        option === "Ordered - Awaiting Parts" || option === "Completed - Parts Staged/Delivered" ||
+                                                        option === "Quote Provided - Pending Approval"
+                                                    ) ?
                                                     <li {...props}>
                                                         {option}
                                                     </li> :
@@ -1181,7 +1215,9 @@ export default function EditPartsReqForm(props: Props) {
                                     <b><p style={{ margin: "5px 0px 0px", color: "red" }}>Estimated Cost Exceeds Available AFE Amount</p></b>
                                 }
                             </Item>
-                            {status !== "Pending Approval" && status !== "Rejected - Adjustments Required" && status !== "Approved" &&
+                            {!["Pending Approval", "Pending Quote", "Quote Provided - Pending Approval", "Rejected - Adjustments Required",
+                                "Approved - On Hold", "Rejected - Closed"
+                            ].includes(status) &&
                                 <Item sx={{ marginBottom: "10px" }}>
                                     <b><p style={{ margin: 0 }}>Is this an Amex Request?</p></b>
                                     <div
@@ -1191,7 +1227,7 @@ export default function EditPartsReqForm(props: Props) {
                                             checked={amex}
                                             onChange={onAmexChange}
                                             disableRipple
-                                            disabled={denyAccess(novaUser!.title, status, "Amex")}
+                                            disabled={denyAccess(novaUser!.title, status, "Amex") || noRate(rows)}
                                         />
                                         <Autocomplete
                                             disabled={!amex || denyAccess(novaUser!.title, status, "Amex")}
@@ -1264,7 +1300,9 @@ export default function EditPartsReqForm(props: Props) {
                                                 >
                                                     <div style={{ display: "flex", flexDirection: "column" }}>
                                                         <p style={{ margin: "0px" }}>{comment.comment}</p>
-                                                        <i style={{ color: "#838385" }}>{comment.name} - {new Date(comment.timestamp).toLocaleDateString()} {new Date(comment.timestamp).toLocaleTimeString()}</i>
+                                                        <i style={{ color: "#838385" }}>
+                                                            {comment.name} - {new Date(comment.timestamp).toLocaleDateString()} {new Date(comment.timestamp).toLocaleTimeString()}
+                                                        </i>
                                                     </div>
                                                 </Box>
                                             )

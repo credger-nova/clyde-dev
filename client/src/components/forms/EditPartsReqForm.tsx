@@ -669,6 +669,9 @@ export default function EditPartsReqForm(props: Props) {
 
         // Supply Chain permissions
         if (SUPPLY_CHAIN_TITLES.includes(title)) {
+            if (partsReq.status === "Approved") {
+                return false
+            }
             if (partsReq.status === "Pending Quote" || partsReq.status === "Approved" || partsReq.status === "Sourcing - Information Required" ||
                 partsReq.status === "Sourcing - Information Provided" || partsReq.status === "Ordered - Awaiting Parts") {
                 if (field === "Status" || field === "Amex") {

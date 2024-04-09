@@ -237,6 +237,18 @@ export default function SummaryTable(props: Props) {
             <>
                 {!partsReqsFetching ? (
                     <Paper sx={{ padding: "5px", minWidth: "fit-conent", maxWidth: "100%" }}>
+                        <FormControlLabel
+                            control={
+                                <StyledSwitch
+                                    checked={managerOnly.includes(`${novaUser.firstName} ${novaUser.lastName}`)}
+                                    onChange={(event) => handleManagerOnlyChange(event, `${novaUser.firstName} ${novaUser.lastName}`)}
+                                    size="medium"
+                                    disableRipple
+                                    sx={{marginLeft: "10px"}}
+                                />
+                            }
+                            label={<Typography variant="body2">Submitted By Me Only</Typography>}
+                        />
                         <Grid container>
                             {STATUS_GROUPS.map((statusGroup) => {
                                 return (
@@ -254,7 +266,11 @@ export default function SummaryTable(props: Props) {
                                                 {`${statusGroup}:`}
                                             </Typography>
                                             <Typography>
-                                                {partsReqs ? calcStatus(partsReqs, statusGroup, `${novaUser.firstName} ${novaUser.lastName}`) : 0}
+                                                {partsReqs ? calcStatus(partsReqs, statusGroup, undefined, managerOnly.includes(`${novaUser.firstName} ${novaUser.lastName}`) ?
+                                                    [`${novaUser.firstName} ${novaUser.lastName}`] :
+                                                    managersEmployees?.filter((subordinate) => subordinate.supervisorId === novaUser.id)
+                                                        .map((user) => `${user.firstName} ${user.lastName}`).concat(`${novaUser.firstName} ${novaUser.lastName}`)
+                                                ) : 0}
                                             </Typography>
                                         </Item>
                                     </Grid>

@@ -505,6 +505,17 @@ export default function SummaryTable(props: Props) {
                             </div>
                         </AccordionSummary>
                         <AccordionDetails>
+                            <FormControlLabel
+                                control={
+                                    <StyledSwitch
+                                        checked={managerOnly.includes(`${employee.firstName} ${employee.lastName}`)}
+                                        onChange={(event) => handleManagerOnlyChange(event, `${employee.firstName} ${employee.lastName}`)}
+                                        size="medium"
+                                        disableRipple
+                                    />
+                                }
+                                label={<Typography variant="body2">Submitted By Manager Only</Typography>}
+                            />
                             <Divider />
                             <Grid container>
                                 {STATUS_GROUPS.map((statusGroup) => {
@@ -523,8 +534,11 @@ export default function SummaryTable(props: Props) {
                                                     {`${statusGroup}:`}
                                                 </Typography>
                                                 <Typography>
-                                                    {partsReqs ? calcStatus(partsReqs, statusGroup, undefined, directorsEmployees.filter((subordinate) => subordinate.supervisorId === employee.id)
-                                                        .map((user) => `${user.firstName} ${user.lastName}`).concat(`${employee.firstName} ${employee.lastName}`)) : 0}
+                                                    {partsReqs ? calcStatus(partsReqs, statusGroup, undefined, managerOnly.includes(`${employee.firstName} ${employee.lastName}`) ?
+                                                        [`${employee.firstName} ${employee.lastName}`] :
+                                                        directorsEmployees.filter((subordinate) => subordinate.supervisorId === employee.id)
+                                                            .map((user) => `${user.firstName} ${user.lastName}`).concat(`${employee.firstName} ${employee.lastName}`)
+                                                    ) : 0}
                                                 </Typography>
                                             </Item>
                                         </Grid>

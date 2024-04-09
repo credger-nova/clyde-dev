@@ -47,6 +47,12 @@ export const TITLES: Array<{ group: string, titles: Array<string> }> = [
         ]
     },
     {
+        group: "Admin",
+        titles: [
+            "Revenue Analyst"
+        ]
+    },
+    {
         group: "Executive Management",
         titles: [
             "Director - Business Development",

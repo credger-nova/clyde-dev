@@ -29,6 +29,7 @@ const OPS_DIRECTOR_TITLES = TITLES.find(item => item.group === "Ops Director")?.
 const SVP_TITLES = TITLES.find(item => item.group === "SVP")?.titles ?? []
 const SUPPLY_CHAIN_TITLES = TITLES.find(item => item.group === "Supply Chain")?.titles ?? []
 const SC_MANAGEMENT_TITLES = TITLES.find(item => item.group === "Supply Chain Management")?.titles ?? []
+const ADMIN_TITLES = TITLES.find(item => item.group === "Admin")?.titles ?? []
 const EXEC_TITLES = TITLES.find(item => item.group === "Executive Management")?.titles ?? []
 const IT_TITLES = TITLES.find(item => item.group === "IT")?.titles ?? []
 
@@ -51,6 +52,8 @@ function allowedStatus(title: string) {
     } else if (SUPPLY_CHAIN_TITLES.includes(title)) {
         return SUPPLY_CHAIN_STATUS
     } else if (SC_MANAGEMENT_TITLES.includes(title)) {
+        return ALL_STATUS
+    } else if (ADMIN_TITLES.includes(title)) {
         return ALL_STATUS
     } else if (EXEC_TITLES.includes(title)) {
         return ALL_STATUS
@@ -76,6 +79,8 @@ async function allowedRequester(user: NovaUser | undefined | null) {
         } else if (SUPPLY_CHAIN_TITLES.includes(user.title)) {
 
         } else if (SC_MANAGEMENT_TITLES.includes(user.title)) {
+
+        } else if (ADMIN_TITLES.includes(user.title)) {
 
         } else if (EXEC_TITLES.includes(user.title)) {
 

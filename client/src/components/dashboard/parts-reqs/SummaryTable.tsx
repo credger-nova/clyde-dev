@@ -749,7 +749,7 @@ export default function SummaryTable(props: Props) {
                     statuses={STATUS_GROUPS}
                 />
         )
-    } else if (group === "IT") {
+    } else if (group === "IT" || group === "Admin") {
         return !partsReqsFetching ? (
             <Paper sx={{ padding: "5px", minWidth: "fit-conent", maxWidth: "100%" }}>
                 <Grid container>

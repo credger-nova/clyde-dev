@@ -23,6 +23,7 @@ const ALLOWED_GROUPS = [
     "SVP",
     "Supply Chain",
     "Supply Chain Management",
+    "Admin",
     "Executive Management",
     "IT"
 ]

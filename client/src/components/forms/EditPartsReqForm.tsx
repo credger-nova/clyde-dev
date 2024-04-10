@@ -647,6 +647,11 @@ export default function EditPartsReqForm(props: Props) {
                     return false
                 }
             }
+            if (partsReq.status === "Sourcing - Information Required") {
+                if (field !== "Amex") {
+                    return false
+                }
+            }
             if (status === "Completed - Parts Staged/Delivered" || status === "Closed - Partially Received") {
                 if (field === "Received") {
                     return false

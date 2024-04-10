@@ -71,6 +71,7 @@ model Unit {
   parameters             Parameter[]
   weeklyDowntimes        WeeklyDowntime[]
   partsReqs              PartsReq[]
+  afes                   AFE[]
 
   @@map("unit")
 }
@@ -157,4 +158,33 @@ model File {
   partsReqId Int?      @map("parts_req_id")
 
   @@map("file")
+}
+
+model AFE {
+  id         String @id @default(uuid())
+  number     String
+  unitNumber String @map("unit_number")
+  amount     String
+  unit       Unit?  @relation(fields: [unitNumber], references: [unitNumber], onDelete: Cascade)
+
+  @@map("afe")
+}
+
+model User {
+  id              String    @id @default(uuid())
+  firstName       String    @map("first_name")
+  lastName        String    @map("last_name")
+  email           String
+  cellPhone       String    @map("cell_phone")
+  terminationDate DateTime? @map("termination_date")
+  jobTitle        String    @map("job_title")
+  region          String
+  managerId       String?   @map("manager_id")
+  manager         User?     @relation("Manager", fields: [managerId], references: [id])
+  managers        User[]    @relation("Manager")
+  supervisorId    String?   @map("supervisor_id")
+  supervisor      User?     @relation("Supervisor", fields: [supervisorId], references: [id])
+  supervisors     User[]    @relation("Supervisor")
+
+  @@map("user")
 }

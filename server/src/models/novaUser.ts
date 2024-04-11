@@ -3,8 +3,10 @@ export interface NovaUser {
     firstName: string,
     lastName: string,
     email: string,
-    title: string,
+    cellPhone: string,
+    terminationDate?: Date,
+    jobTitle: string,
     region: Array<string>,
-    supervisorId?: string,
-    managerId?: string
+    supervisorId: string,
+    managerId: string
 }

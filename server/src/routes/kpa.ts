@@ -1,76 +1,55 @@
 import { FastifyInstance, FastifyRequest } from "fastify"
-import { getAfeAmount, getAfeNumbers, getAllEmployees, getDirectorsEmployees, getEmployee, getManagersEmployees } from "../api/kpa"
+import { getAllEmployees, getDirectorsEmployees, getEmployee, getManagersEmployees } from "../api/kpa/employee"
+import { getAllAfe } from "../api/kpa/afe"
 
 async function routes(fastify: FastifyInstance) {
-    // Route to get AFEs from KPA
-    fastify.get("/afe", async (req, res) => {
-        const afeNums = await getAfeNumbers()
+    // Route to get all employees
+    fastify.get("/employee/all", async (req: FastifyRequest<{ Querystring: { active?: "true" | "false" } }>, res) => {
+        const { active } = req.query
 
-        res.status(200).send(afeNums)
-    })
-
-    // Route to get cost of an AFE
-    fastify.get<{ Params: { afeNumber: string } }>("/afe/cost/:afeNumber", async (req, res) => {
-        const { afeNumber } = req.params
-
-        const cost = await getAfeAmount(afeNumber)
-
-        if (cost) {
-            res.status(200).send(cost)
-        } else {
-            res.status(404).send({ error: `No AFE #${afeNumber} found.` })
-        }
-    })
-
-    // Get all Employees
-    fastify.get("/employee/all", async (req, res) => {
-        const employees = await getAllEmployees()
+        const employees = await getAllEmployees(active)
 
         res.status(200).send(employees)
     })
 
-    // Route to get single Employee by id/email
-    fastify.get("/employee", async (req: FastifyRequest<{
-        Querystring: {
-            id?: string,
-            email?: string
-        }
-    }>, res) => {
-        const { id, email } = req.query
+    // Route to get employee by email
+    fastify.get("/employee/:email", async (req: FastifyRequest<{ Params: { email: string } }>, res) => {
+        const { email } = req.params
 
-        const user = await getEmployee(id, email)
+        const employee = await getEmployee(email)
 
-        if (user) {
-            res.status(200).send(user)
+        if (employee) {
+            res.status(200).send(employee)
         } else {
-            res.status(404).send({ error: "User not found." })
+            res.status(404).send({ error: `Employee with email: ${email} not found` })
         }
     })
 
-    // Route to get all of a manager's employees
-    fastify.get<{ Params: { id: string } }>("/manager/:id/employees", async (req, res) => {
+    // Route to get all employees under a manager
+    fastify.get("/manager/:id/employees", async (req: FastifyRequest<{ Params: { id: string }, Querystring: { active: "true" | "false" } }>, res) => {
         const { id } = req.params
+        const { active } = req.query
 
-        const users = await getManagersEmployees(id)
+        const employees = await getManagersEmployees(id, active)
 
-        if (users) {
-            res.status(200).send(users)
-        } else {
-            res.status(404).send({ error: "No employees found." })
-        }
+        res.status(200).send(employees)
     })
 
-    // Route to get all of a director's employees
-    fastify.get<{ Params: { id: string } }>("/director/:id/employees", async (req, res) => {
+    // Route to get all employees under a director
+    fastify.get("/director/:id/employees", async (req: FastifyRequest<{ Params: { id: string }, Querystring: { active: "true" | "false" } }>, res) => {
         const { id } = req.params
+        const { active } = req.query
 
-        const users = await getDirectorsEmployees(id)
+        const employees = await getDirectorsEmployees(id, active)
 
-        if (users) {
-            res.status(200).send(users)
-        } else {
-            res.status(404).send({ error: "No employees found." })
-        }
+        res.status(200).send(employees)
+    })
+
+    // Route to get all AFEs
+    fastify.get("/afe", async (req, res) => {
+        const afes = await getAllAfe()
+
+        res.status(200).send(afes)
     })
 }
 

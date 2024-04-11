@@ -3,7 +3,6 @@ import { CreatePartsReq, PartsReqQuery, UpdatePartsReq } from "../models/partsRe
 import { FastifyInstance, FastifyRequest } from "fastify"
 import { createPartsReq, getPartsReq, getPartsReqs, sumPrWithAfe, updatePartsReq } from "../api/forms"
 import { generatePartsReqPDF } from "../api/pdf"
-import { Readable } from "stream"
 
 async function routes(fastify: FastifyInstance) {
     // POST request to get Parts Reqs with requirements defined in body

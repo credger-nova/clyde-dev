@@ -679,7 +679,11 @@ export default function EditPartsReqForm(props: Props) {
             }
             if (partsReq.status === "Pending Quote" || partsReq.status === "Approved" || partsReq.status === "Sourcing - Information Required" ||
                 partsReq.status === "Sourcing - Information Provided" || partsReq.status === "Ordered - Awaiting Parts") {
-                if (field === "Status" || field === "Amex") {
+                if (field === "Status" || field === "Amex" ||
+                    (partsReq.status === "Sourcing - Information Provided" &&
+                        (field === "Needed" || field === "Item" || field === "Description" || field === "Rate")
+                    )
+                ) {
                     return false
                 }
             }
@@ -1434,7 +1438,7 @@ export default function EditPartsReqForm(props: Props) {
                                                             onChange={onQtyChange(index)}
                                                             InputProps={{
                                                                 inputProps: { min: 1 },
-                                                                readOnly: denyAccess(novaUser!.title, status)
+                                                                readOnly: denyAccess(novaUser!.title, status, "Needed")
                                                             }}
                                                             sx={{ width: "100%" }}
                                                             helperText={!rows[index].itemNumber && " "}

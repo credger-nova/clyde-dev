@@ -422,7 +422,7 @@ export const updatePartsReq = async (id: number, user: string, updateReq: Partia
         (oldPartsReq?.status === "Rejected - Adjustments Required" || updateReq.status === "Rejected - Adjustments Required")) ?
         "Pending Approval" : updateReq.status
 
-    if (partsUpdated && oldPartsReq?.status === "Approved") {
+    if (partsUpdated && (oldPartsReq?.status === "Approved" || oldPartsReq?.status === "Sourcing - Information Provided")) {
         status = "Pending Approval"
     }
 

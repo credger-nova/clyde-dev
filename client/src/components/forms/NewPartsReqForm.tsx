@@ -1,7 +1,7 @@
 import * as React from "react"
 
 import { useAuth0 } from "@auth0/auth0-react"
-import { useAFEs, useAFEAmount } from "../../hooks/afe"
+import { useAFEs } from "../../hooks/afe"
 import { useSOs } from "../../hooks/so"
 import { useUnits } from "../../hooks/unit"
 import { useTrucks } from "../../hooks/truck"
@@ -16,6 +16,8 @@ import { OrderRow, CreatePartsReq } from "../../types/partsReq"
 import { Part } from "../../types/part"
 import { Comment } from "../../types/comment"
 import { Unit } from "../../types/unit"
+import { NovaUser } from "../../types/novaUser"
+import { AFE } from "../../types/afe"
 
 import { styled } from '@mui/material/styles'
 import Paper from '@mui/material/Paper'
@@ -80,9 +82,9 @@ interface PartOption extends Part {
 export default function PartsReqForm() {
     const { user } = useAuth0()
 
-    const { data: novaUser, isFetched } = useNovaUser(undefined, user?.email)
+    const { data: novaUser, isFetched } = useNovaUser(user?.email)
 
-    const { data: afeNumbers, isFetching: afeFetching } = useAFEs()
+    const { data: afes, isFetching: afeFetching } = useAFEs()
     const { data: soNumbers, isFetching: soFetching } = useSOs()
     const { data: unitNumbers, isFetching: unitsFetching } = useUnits()
     const { data: trucks, isFetching: trucksFetching } = useTrucks()
@@ -91,11 +93,11 @@ export default function PartsReqForm() {
     const { mutateAsync: createPartsReq } = useCreatePartsReq()
     const { mutateAsync: uploadFiles } = useUploadFiles()
 
-    const [requester] = React.useState<string | undefined>(`${novaUser?.firstName} ${novaUser?.lastName}`)
+    const [requester] = React.useState<NovaUser | undefined>(novaUser)
     const [orderDate] = React.useState<Date>(new Date())
     const [billable, setBillable] = React.useState<boolean>(false)
     const [quoteOnly, setQuoteOnly] = React.useState<boolean>(false)
-    const [afe, setAfe] = React.useState<string | null>(null)
+    const [afe, setAfe] = React.useState<AFE | null>(null)
     const [so, setSo] = React.useState<string | null>(null)
     const [unit, setUnit] = React.useState<Unit | null>(null)
     const [truck, setTruck] = React.useState<string | null>(null)
@@ -110,12 +112,11 @@ export default function PartsReqForm() {
     const [disableSubmit, setDisableSubmit] = React.useState<boolean>(true)
     const [prExceedsAfe, setPrExceedsAfe] = React.useState<boolean>(false)
 
-    const { data: afeAmount } = useAFEAmount(afe ?? null)
-    const { data: afeExistingAmount } = useSumPrWithAfe(afe ?? "")
+    const { data: afeExistingAmount } = useSumPrWithAfe(afe ? afe.number : "")
 
-    const afeFilter = createFilterOptions<{ number: string, unit: string, location: string | null }>({
+    const afeFilter = createFilterOptions<AFE>({
         matchFrom: "any",
-        stringify: (option) => option.number + option.unit + (option.location ?? "")
+        stringify: (option) => option.number + option.unit.unitNumber + (option.unit.location ?? "")
     })
 
     const partsFilter = createFilterOptions<PartOption>({
@@ -136,32 +137,32 @@ export default function PartsReqForm() {
     }, [requester, orderDate, billable, unit, afe, so, urgency, orderType, rows])
 
     React.useEffect(() => {
-        if (afeAmount) {
-            if (calcCost(rows as Array<OrderRow>) <= afeAmount - afeExistingAmount!) {
+        if (afe) {
+            if (calcCost(rows as Array<OrderRow>) <= Number(afe.amount) - afeExistingAmount!) {
                 setPrExceedsAfe(false)
             } else {
                 setPrExceedsAfe(true)
             }
         }
-    }, [afeAmount, afeExistingAmount, rows])
+    }, [afe, afeExistingAmount, rows])
 
     const handleSubmit = async (event: React.SyntheticEvent) => {
         event.preventDefault()
 
         const partsReq: CreatePartsReq = {
-            requester: requester ? requester : "",
-            contact: "",
+            requester: requester!,
+            contact: undefined,
             date: orderDate,
             billable: billable,
             quoteOnly: quoteOnly,
-            afe: afe,
-            so: so,
-            unit: unit,
-            truck: truck,
-            urgency: urgency,
-            orderType: orderType,
+            afe: afe ?? undefined,
+            so: so ?? undefined,
+            unit: unit ?? undefined,
+            truck: truck ?? undefined,
+            urgency: urgency ?? "",
+            orderType: orderType ?? "",
             pickup: "",
-            region: region,
+            region: region ?? "",
             parts: rows,
             comments: comments,
             files: newFiles.map((file) => file.name),
@@ -197,12 +198,15 @@ export default function PartsReqForm() {
         }
     }
 
-    const onAfeChange = (_e: React.SyntheticEvent, value: { number: string, unit: string, location: string | null } | null) => {
-        setAfe(value ? value.number : null)
+    const onAfeChange = (_e: React.SyntheticEvent, value: AFE | null) => {
+        setAfe(value ?? null)
+
+        console.log(value)
 
         if (value) {
-            const unit = unitNumbers ? unitNumbers.find(obj => obj.unitNumber === value.unit) : null
+            const unit = unitNumbers ? unitNumbers.find(obj => obj.unitNumber === value.unit.unitNumber) : undefined
             onUnitNumberChange(undefined, unit ?? null)
+            onTruckChange(undefined, null)
         } else {
             onUnitNumberChange(undefined, null)
         }
@@ -230,7 +234,7 @@ export default function PartsReqForm() {
                 null
         )
     }
-    const onTruckChange = (_e: React.SyntheticEvent, value: string | null) => {
+    const onTruckChange = (_e: React.SyntheticEvent | undefined, value: string | null) => {
         setTruck(value ?? null)
     }
     const onCommentChange = (e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
@@ -356,7 +360,7 @@ export default function PartsReqForm() {
                                     <StyledTextField
                                         variant="standard"
                                         label="Parts Requester"
-                                        defaultValue={requester}
+                                        value={`${requester?.firstName} ${requester?.lastName}`}
                                         InputProps={{ readOnly: true }}
                                     />
                                     <StyledTextField
@@ -387,17 +391,17 @@ export default function PartsReqForm() {
                                     <b><p style={{ margin: "20px 0px 0px 0px" }}>Class:</p></b>
                                     <Divider />
                                     <Autocomplete
-                                        options={afeNumbers ? afeNumbers : []}
+                                        options={afes ? afes : []}
                                         getOptionLabel={(option) => option.number}
                                         onChange={onAfeChange}
                                         loading={afeFetching}
-                                        value={afeNumbers?.find(el => el.number === afe)}
+                                        value={afe}
                                         renderInput={(params) => <StyledTextField
                                             {...params}
                                             variant="standard"
                                             label="AFE #"
                                         />}
-                                        disabled={so !== null}
+                                        disabled={!!so}
                                         filterOptions={afeFilter}
                                         renderOption={(props, option, { inputValue }) => {
                                             // Get matches in AFE number
@@ -406,14 +410,14 @@ export default function PartsReqForm() {
                                             const afeNumberParts = parse(option.number, afeNumberMatches)
 
                                             // Get matches in unit number
-                                            const unitNumberMatches = match(option.unit, inputValue, { insideWords: true })
+                                            const unitNumberMatches = match(option.unit.unitNumber, inputValue, { insideWords: true })
                                             // Get parts from unit number matches
-                                            const unitNumberParts = parse(option.unit, unitNumberMatches)
+                                            const unitNumberParts = parse(option.unit.unitNumber, unitNumberMatches)
 
                                             // Get matches in location
-                                            const locationMatches = match(option.location ?? "", inputValue, { insideWords: true })
+                                            const locationMatches = match(option.unit.location ?? "", inputValue, { insideWords: true })
                                             // Get parts from location matches
-                                            const locationParts = parse(option.location ?? "", locationMatches)
+                                            const locationParts = parse(option.unit.location ?? "", locationMatches)
 
                                             return (
                                                 <li {...props} style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
@@ -470,7 +474,7 @@ export default function PartsReqForm() {
                                             variant="standard"
                                             label="SO #"
                                         />}
-                                        disabled={afe !== null || (!billable && unit !== null)}
+                                        disabled={!!afe || (!billable && !!unit)}
                                         renderOption={(props, option, { inputValue }) => {
                                             const matches = match(option, inputValue, { insideWords: true, requireMatchAll: true });
                                             const parts = parse(option, matches);
@@ -507,7 +511,7 @@ export default function PartsReqForm() {
                                             variant="standard"
                                             label="Unit #"
                                         />}
-                                        disabled={truck !== null || afe !== null}
+                                        disabled={!!truck || !!afe}
                                         renderOption={(props, option, { inputValue }) => {
                                             const matches = match(option.unitNumber, inputValue, { insideWords: true, requireMatchAll: true });
                                             const parts = parse(option.unitNumber, matches);
@@ -560,7 +564,7 @@ export default function PartsReqForm() {
                                             variant="standard"
                                             label="Truck #"
                                         />}
-                                        disabled={unit !== null}
+                                        disabled={!!unit}
                                         renderOption={(props, option, { inputValue }) => {
                                             const matches = match(option, inputValue, { insideWords: true, requireMatchAll: true });
                                             const parts = parse(option, matches);
@@ -610,10 +614,10 @@ export default function PartsReqForm() {
                                     </FormControl>
                                     <b><p style={{ margin: "20px 0px 0px 0px" }}>Order Type:</p></b>
                                     <Divider />
-                                    <FormControl disabled={unit !== null || so !== null}>
+                                    <FormControl disabled={!!unit || !!so}>
                                         <RadioGroup row>
                                             {ORDER_TYPE.map((val) => {
-                                                const canAccess = val.titles ? (val.titles.findIndex(el => novaUser!.title.includes(el)) !== -1) : true
+                                                const canAccess = val.titles ? (val.titles.findIndex(el => novaUser!.jobTitle.includes(el)) !== -1) : true
 
                                                 return canAccess ? (
                                                     <FormControlLabel
@@ -630,7 +634,7 @@ export default function PartsReqForm() {
                                     </FormControl>
                                     <b><p style={{ margin: "20px 0px 0px 0px" }}>Operational Region:</p></b>
                                     <Divider />
-                                    <FormControl disabled={unit !== null}>
+                                    <FormControl disabled={!!unit}>
                                         <RadioGroup row>
                                             {REGION.map((val) => {
                                                 return (

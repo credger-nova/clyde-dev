@@ -1,7 +1,7 @@
 import * as React from "react"
 
 import { useAuth0 } from "@auth0/auth0-react"
-import { useAFEs, useAFEAmount } from "../../hooks/afe"
+import { useAFEs } from "../../hooks/afe"
 import { useSOs } from "../../hooks/so"
 import { useUnits } from "../../hooks/unit"
 import { useTrucks } from "../../hooks/truck"
@@ -174,13 +174,13 @@ function getAvailableStatus(user: NovaUser | undefined, currStatus: string) {
             return ["Quote Provided - Pending Approval"]
         }
 
-        if (currStatus === "Sourcing - Information Required" && (OPS_MANAGER_TITLES.includes(user.title) || FIELD_SERVICE_TITLES.includes(user.title))) {
+        if (currStatus === "Sourcing - Information Required" && (OPS_MANAGER_TITLES.includes(user.jobTitle) || FIELD_SERVICE_TITLES.includes(user.jobTitle))) {
             return ["Sourcing - Information Provided"]
         }
 
-        let status = STATUS.filter(item => item.titles.includes(user.title) && item.status !== "Quote Provided - Pending Approval")
+        let status = STATUS.filter(item => item.titles.includes(user.jobTitle) && item.status !== "Quote Provided - Pending Approval")
 
-        if (OPS_MANAGER_TITLES.includes(user.title)) {
+        if (OPS_MANAGER_TITLES.includes(user.jobTitle)) {
             status = status.filter(item => !item.status.includes("Sourcing"))
         }
 
@@ -210,7 +210,7 @@ export default function EditPartsReqForm(props: Props) {
     const { user } = useAuth0()
     const navigate = useNavigate()
 
-    const { data: novaUser, isFetched } = useNovaUser(undefined, user?.email)
+    const { data: novaUser, isFetched } = useNovaUser(user?.email)
 
     const { data: afeNumbers, isFetching: afeFetching } = useAFEs()
     const { data: soNumbers, isFetching: soFetching } = useSOs()

@@ -1,7 +1,8 @@
-import { PartsReqQuery } from "../models/partsReq"
+import { PartsReqQuery, CreatePartsReq, UpdatePartsReq } from "../models/partsReq"
+import { NovaUser } from "../models/novaUser"
 
 import { FastifyInstance, FastifyRequest } from "fastify"
-import { getPartsReqs, getPartsReq, sumPrWithAfe } from "../api/forms"
+import { createPartsReq, updatePartsReq, getPartsReqs, getPartsReq, sumPrWithAfe } from "../api/forms"
 import { getAfeByNumber } from "../api/kpa/afe"
 import { generatePartsReqPDF } from "../api/pdf"
 
@@ -26,6 +27,21 @@ async function routes(fastify: FastifyInstance) {
         } else {
             res.status(404).send({ error: `No Parts Requisition with id: ${id} found.` })
         }
+    })
+
+    // Create a Parts Req form
+    fastify.post("/parts-req/create", async (req: FastifyRequest<{ Body: { partsReq: CreatePartsReq } }>, res) => {
+        const { partsReq } = req.body
+        const createdPartsReq = await createPartsReq(partsReq)
+        res.status(201).send(createdPartsReq)
+    })
+
+    // Update a Parts Req form
+    fastify.put("/parts-req/:id", async (req: FastifyRequest<{ Params: { id: string }, Body: { user: NovaUser, updateReq: Partial<UpdatePartsReq> } }>, res) => {
+        const { id } = req.params
+        const { user, updateReq } = req.body
+        const updatedPartsReq = await updatePartsReq(Number(id), user, updateReq)
+        res.status(201).send(updatedPartsReq)
     })
 
     // Get cost sum of PRs with an associated AFE #

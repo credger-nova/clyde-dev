@@ -31,7 +31,7 @@ WHERE a.number = b.afe;
 
 -- Copy column old column data to new columns
 UPDATE "parts_req" SET afe_id = afe WHERE afe IS NOT NULL;
-UPDATE "parts_req" SET contact_id = contact WHERE contact_id IS NOT NULL;
+UPDATE "parts_req" SET contact_id = contact WHERE contact IS NOT NULL;
 UPDATE "parts_req" SET requester_id = requester;
 
 -- Drop old columns

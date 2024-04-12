@@ -6,10 +6,10 @@ export interface OrderRow {
     id: string,
     qty: number,
     itemNumber: string,
-    cost: string | null,
     description: string | null,
-    received: number,
-    mode: string
+    cost: string | null,
+    mode: string,
+    received: number
 }
 
 export interface PartsReq {

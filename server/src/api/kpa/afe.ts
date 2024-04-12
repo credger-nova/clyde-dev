@@ -24,3 +24,25 @@ export const getAllAfe = async () => {
 
     return tyepdAfes
 }
+
+export const getAfeByNumber = async (afeNumber: string) => {
+    const afe = await prisma.aFE.findFirst({
+        where: {
+            number: afeNumber
+        },
+        include: {
+            unit: true
+        }
+    })
+
+    if (afe) {
+        return {
+            id: afe.id,
+            number: afe.number,
+            amount: afe.amount,
+            unit: afe.unit
+        } as AFE
+    } else {
+        return null
+    }
+}

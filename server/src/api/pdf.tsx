@@ -282,7 +282,7 @@ function PartsReqPDF(props: PartsReqPDF) {
                                 <Text
                                     style={pdfStyles.fieldValue}
                                 >
-                                    {partsReq.requester}
+                                    {`${partsReq.requester.firstName} ${partsReq.requester.lastName}`}
                                 </Text>
                             </View>
                             {partsReq.contact && <View style={pdfStyles.infoRow}>
@@ -294,7 +294,7 @@ function PartsReqPDF(props: PartsReqPDF) {
                                 <Text
                                     style={pdfStyles.fieldValue}
                                 >
-                                    {partsReq.contact}
+                                    {`${partsReq.contact.firstName} ${partsReq.contact.lastName}`}
                                 </Text>
                             </View>}
                             <View style={pdfStyles.infoRow}>
@@ -333,7 +333,7 @@ function PartsReqPDF(props: PartsReqPDF) {
                                     {partsReq.vendor}
                                 </Text>
                             </View>}
-                            {partsReq.afe || partsReq.so &&
+                            {(partsReq.afe || partsReq.so) &&
                                 <>
                                     <Text style={pdfStyles.sectionText}>
                                         Class
@@ -349,7 +349,7 @@ function PartsReqPDF(props: PartsReqPDF) {
                                 <Text
                                     style={pdfStyles.fieldValue}
                                 >
-                                    {partsReq.afe}
+                                    {partsReq.afe.number}
                                 </Text>
                             </View>}
                             {partsReq.so && <View style={pdfStyles.infoRow}>

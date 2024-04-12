@@ -113,28 +113,31 @@ model PartsReqRow {
 }
 
 model PartsReq {
-  id         Int           @id @default(autoincrement())
-  requester  String
-  contact    String        @default("")
-  date       DateTime      @db.Timestamptz(6)
-  billable   Boolean       @default(false)
-  quoteOnly  Boolean       @default(false) @map("quote_only")
-  afe        String?
-  so         String?
-  unitNumber String?       @map("unit_number")
-  truck      String?
-  urgency    String
-  orderType  String        @map("order_type")
-  pickup     String        @default("")
-  region     String
-  amex       Boolean       @default(false)
-  vendor     String        @default("")
-  parts      PartsReqRow[]
-  comments   Comment[]
-  status     String
-  updated    DateTime      @db.Timestamptz(6)
-  unit       Unit?         @relation(fields: [unitNumber], references: [unitNumber], onDelete: Cascade)
-  files      File[]
+  id          Int           @id @default(autoincrement())
+  requesterId String        @default("") @map("requester_id")
+  contactId   String?       @map("contact_id")
+  date        DateTime      @db.Timestamptz(6)
+  billable    Boolean       @default(false)
+  quoteOnly   Boolean       @default(false) @map("quote_only")
+  afeId       String?       @map("afe_id")
+  so          String?
+  unitNumber  String?       @map("unit_number")
+  truck       String?
+  urgency     String
+  orderType   String        @map("order_type")
+  pickup      String        @default("")
+  region      String
+  amex        Boolean       @default(false)
+  vendor      String        @default("")
+  parts       PartsReqRow[]
+  comments    Comment[]
+  status      String
+  updated     DateTime      @db.Timestamptz(6)
+  files       File[]
+  unit        Unit?         @relation(fields: [unitNumber], references: [unitNumber], onDelete: Cascade)
+  afe         AFE?          @relation(fields: [afeId], references: [id], onDelete: Cascade)
+  requester   User?         @relation("Requester", fields: [requesterId], references: [id], onDelete: Cascade)
+  contact     User?         @relation("Contact", fields: [contactId], references: [id], onDelete: Cascade)
 
   @@map("parts_req")
 }
@@ -161,30 +164,33 @@ model File {
 }
 
 model AFE {
-  id         String @id @default(uuid())
+  id         String     @id @default(uuid())
   number     String
-  unitNumber String @map("unit_number")
+  unitNumber String     @map("unit_number")
   amount     String
-  unit       Unit?  @relation(fields: [unitNumber], references: [unitNumber], onDelete: Cascade)
+  unit       Unit?      @relation(fields: [unitNumber], references: [unitNumber], onDelete: Cascade)
+  partsReqs  PartsReq[]
 
   @@map("afe")
 }
 
 model User {
-  id              String    @id @default(uuid())
-  firstName       String    @map("first_name")
-  lastName        String    @map("last_name")
-  email           String
-  cellPhone       String    @map("cell_phone")
-  terminationDate DateTime? @map("termination_date")
-  jobTitle        String    @map("job_title")
-  region          String
-  managerId       String?   @map("manager_id")
-  manager         User?     @relation("Manager", fields: [managerId], references: [id])
-  managers        User[]    @relation("Manager")
-  supervisorId    String?   @map("supervisor_id")
-  supervisor      User?     @relation("Supervisor", fields: [supervisorId], references: [id])
-  supervisors     User[]    @relation("Supervisor")
+  id                 String     @id @default(uuid())
+  firstName          String     @map("first_name")
+  lastName           String     @map("last_name")
+  email              String
+  cellPhone          String     @map("cell_phone")
+  terminationDate    DateTime?  @map("termination_date")
+  jobTitle           String     @map("job_title")
+  region             String
+  managerId          String?    @map("manager_id")
+  manager            User?      @relation("Manager", fields: [managerId], references: [id])
+  managers           User[]     @relation("Manager")
+  supervisorId       String?    @map("supervisor_id")
+  supervisor         User?      @relation("Supervisor", fields: [supervisorId], references: [id])
+  supervisors        User[]     @relation("Supervisor")
+  partsReqsRequester PartsReq[] @relation("Requester")
+  partsReqsContact   PartsReq[] @relation("Contact")
 
   @@map("user")
 }

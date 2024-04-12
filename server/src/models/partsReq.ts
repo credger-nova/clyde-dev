@@ -1,5 +1,6 @@
 import { File, Unit, Comment } from "@prisma/client"
 import { NovaUser } from "./novaUser"
+import { AFE } from "./afe"
 
 export interface OrderRow {
     id: string,
@@ -13,12 +14,12 @@ export interface OrderRow {
 
 export interface PartsReq {
     id: number,
-    requester: string,
-    contact: string,
+    requester: NovaUser,
+    contact: NovaUser,
     date: Date,
     billable: boolean,
     quoteOnly: boolean,
-    afe: string,
+    afe: AFE,
     so: string,
     unit: Unit,
     truck: string,

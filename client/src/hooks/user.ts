@@ -1,23 +1,20 @@
-import { useQuery } from "@tanstack/react-query"
-import axios from "axios"
 import { NovaUser } from "../types/novaUser"
 
-// Get user by id or email
-const getNovaUser = async (id?: string, email?: string) => {
-    const url = new URL(`${import.meta.env.VITE_API_BASE}/kpa/employee`)
-    id ? url.searchParams.append("id", id) : null
-    email ? url.searchParams.append("email", email) : null
+import { useQuery } from "@tanstack/react-query"
+import axios from "axios"
 
-    const { data } = await axios.get<NovaUser>(url.toString())
+// Get user by id or email
+const getNovaUser = async (email: string) => {
+    const { data } = await axios.get<NovaUser>(`${import.meta.env.VITE_API_BASE}/kpa/employee/${email}`)
 
     return data
 }
 
-export function useNovaUser(id?: string, email?: string) {
+export function useNovaUser(email: string) {
     return useQuery({
-        queryKey: ["user", id || email],
-        queryFn: () => getNovaUser(id, email),
-        enabled: id !== undefined || email !== undefined
+        queryKey: ["user", email],
+        queryFn: () => getNovaUser(email),
+        enabled: email !== undefined
     })
 }
 
@@ -42,7 +39,7 @@ const getManagersEmployees = async (user: NovaUser) => {
 }
 
 export function useManagersEmployees(user: NovaUser) {
-    return useQuery({ queryKey: ["employees", user.id], queryFn: () => getManagersEmployees(user), enabled: user.title.includes("Manager") })
+    return useQuery({ queryKey: ["employees", user.id], queryFn: () => getManagersEmployees(user), enabled: user.jobTitle.includes("Manager") })
 }
 
 // Get all director's employees
@@ -53,5 +50,5 @@ const getDirectorsEmployees = async (user: NovaUser) => {
 }
 
 export function useDirectorsEmployees(user: NovaUser) {
-    return useQuery({ queryKey: ["employees", user.id], queryFn: () => getDirectorsEmployees(user), enabled: user.title.includes("Director") })
+    return useQuery({ queryKey: ["employees", user.id], queryFn: () => getDirectorsEmployees(user), enabled: user.jobTitle.includes("Director") })
 }

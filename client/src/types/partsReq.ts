@@ -1,7 +1,8 @@
-import { Unit } from "./unit";
-import { Comment } from "./comment";
-import { File } from "./file";
-import { NovaUser } from "./novaUser";
+import { Unit } from "./unit"
+import { Comment } from "./comment"
+import { File } from "./file"
+import { NovaUser } from "./novaUser"
+import { AFE } from "./afe"
 
 export interface OrderRow {
     id: string,
@@ -15,25 +16,25 @@ export interface OrderRow {
 
 export interface PartsReq {
     id: number,
-    requester: string,
-    contact: string,
+    requester: NovaUser,
+    contact?: NovaUser,
     date: Date,
     billable: boolean,
     quoteOnly: boolean,
-    afe: string | null,
-    so: string | null,
-    unit: Unit | null,
-    truck: string | null,
-    urgency: string | null,
-    orderType: string | null,
-    pickup: string,
-    region: string | null,
+    afe?: AFE,
+    so?: string,
+    unit?: Unit,
+    truck?: string,
+    urgency: string,
+    orderType: string,
+    pickup?: string,
+    region: string,
     parts: Array<OrderRow>,
     comments: Array<Comment>,
     files: Array<File>,
     status: string,
     amex: boolean,
-    vendor: string,
+    vendor?: string,
     updated: Date
 }
 
@@ -41,12 +42,12 @@ export interface PartsReqQuery {
     user: NovaUser | undefined | null,
     searchString?: string,
     id?: string,
-    afe?: Array<string>,
+    afe?: Array<string>, // Array of AFE IDs
     so?: Array<string>,
     unitNumber?: Array<string>,
     truck?: Array<string>,
     part?: Array<string>,
-    requester?: Array<string>,
+    requester?: Array<string>, // Array of user IDs
     customer?: Array<string>,
     location?: Array<string>,
     region?: Array<string>,

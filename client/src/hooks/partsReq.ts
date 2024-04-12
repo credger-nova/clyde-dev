@@ -1,6 +1,7 @@
+import { CreatePartsReq, PartsReq, PartsReqQuery, UpdatePartsReq } from "../types/partsReq"
+
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import axios from "axios"
-import { CreatePartsReq, PartsReq, PartsReqQuery, UpdatePartsReq } from "../types/partsReq"
 
 // Get all Parts Reqs
 const getAllPartsReqs = async (partsReqQuery: PartsReqQuery) => {

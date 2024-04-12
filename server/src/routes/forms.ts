@@ -1,4 +1,35 @@
-import { CreatePartsReq, PartsReqQuery, UpdatePartsReq } from "../models/partsReq"
+import { PartsReqQuery } from "../models/partsReq"
+
+import { FastifyInstance, FastifyRequest } from "fastify"
+import { getPartsReqs, getPartsReq } from "../api/forms"
+
+async function routes(fastify: FastifyInstance) {
+    // POST request to get Parts Reqs with requirements defined in body
+    fastify.post("/parts-req", async (req: FastifyRequest<{ Body: PartsReqQuery }>, res) => {
+        const query = req.body
+
+        const partsReqs = await getPartsReqs(query)
+
+        res.status(200).send(partsReqs)
+    })
+
+    // Get a single Parts Req by id
+    fastify.get("/parts-req/:id", async (req: FastifyRequest<{ Params: { id: string } }>, res) => {
+        const { id } = req.params
+
+        const partsReq = await getPartsReq(Number(id))
+
+        if (partsReq) {
+            res.status(200).send(partsReq)
+        } else {
+            res.status(404).send({ error: `No Parts Requisition with id: ${id} found.` })
+        }
+    })
+}
+
+export default routes
+
+/*import { CreatePartsReq, PartsReqQuery, UpdatePartsReq } from "../models/partsReq"
 
 import { FastifyInstance, FastifyRequest } from "fastify"
 import { createPartsReq, getPartsReq, getPartsReqs, sumPrWithAfe, updatePartsReq } from "../api/forms"
@@ -71,4 +102,4 @@ async function routes(fastify: FastifyInstance) {
     })
 }
 
-export default routes
+export default routes*/

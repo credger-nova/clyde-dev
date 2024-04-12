@@ -2,6 +2,22 @@ import { NovaUser } from "../../models/novaUser"
 
 import { prisma } from "../../utils/prisma-client"
 
+// Function to cast user to NovaUser
+export function convertUser(user: any) {
+    return {
+        id: user.id,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email,
+        cellPhone: user.cellPhone,
+        terminationDate: user.terminationDate ?? undefined,
+        jobTitle: user.jobTitle,
+        region: user.region.split(","),
+        supervisorId: user.supervisorId,
+        managerId: user.managerId
+    } as NovaUser
+}
+
 export const getAllEmployees = async (active?: "true" | "false") => {
     const employees = await prisma.user.findMany({
         where: {
@@ -19,18 +35,7 @@ export const getAllEmployees = async (active?: "true" | "false") => {
 
     // Convert to correct type
     let novaEmployees = employees.map((employee) => {
-        return ({
-            id: employee.id,
-            firstName: employee.firstName,
-            lastName: employee.lastName,
-            email: employee.email,
-            cellPhone: employee.cellPhone,
-            terminationDate: employee.terminationDate ?? undefined,
-            jobTitle: employee.jobTitle,
-            region: employee.region.split(","),
-            supervisorId: employee.supervisorId,
-            managerId: employee.managerId
-        } as NovaUser)
+        return convertUser(employee)
     })
 
     return novaEmployees
@@ -46,18 +51,7 @@ export const getEmployee = async (email: string) => {
 
     if (employee) {
         // Convert to correct type
-        const novaEmployee = {
-            id: employee.id,
-            firstName: employee.firstName,
-            lastName: employee.lastName,
-            email: employee.email,
-            cellPhone: employee.cellPhone,
-            terminationDate: employee.terminationDate ?? undefined,
-            jobTitle: employee.jobTitle,
-            region: employee.region.split(","),
-            supervisorId: employee.supervisorId,
-            managerId: employee.managerId
-        } as NovaUser
+        const novaEmployee = convertUser(employee)
 
         return novaEmployee
     } else {
@@ -90,18 +84,7 @@ export const getManagersEmployees = async (id: string, active?: string) => {
 
     // Convert to correct type
     let novaEmployees = employees.map((employee) => {
-        return ({
-            id: employee.id,
-            firstName: employee.firstName,
-            lastName: employee.lastName,
-            email: employee.email,
-            cellPhone: employee.cellPhone,
-            terminationDate: employee.terminationDate ?? undefined,
-            jobTitle: employee.jobTitle,
-            region: employee.region.split(","),
-            supervisorId: employee.supervisorId,
-            managerId: employee.managerId
-        } as NovaUser)
+        return convertUser(employee)
     })
 
     return novaEmployees
@@ -140,18 +123,7 @@ export const getDirectorsEmployees = async (id: string, active?: string) => {
 
     // Convert to correct type
     let novaEmployees = employees.map((employee) => {
-        return ({
-            id: employee.id,
-            firstName: employee.firstName,
-            lastName: employee.lastName,
-            email: employee.email,
-            cellPhone: employee.cellPhone,
-            terminationDate: employee.terminationDate ?? undefined,
-            jobTitle: employee.jobTitle,
-            region: employee.region.split(","),
-            supervisorId: employee.supervisorId,
-            managerId: employee.managerId
-        } as NovaUser)
+        return convertUser(employee)
     })
 
     return novaEmployees

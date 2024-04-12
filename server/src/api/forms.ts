@@ -1,10 +1,12 @@
 import { TITLES } from "../utils/titles"
 import { UNIT_PLANNING } from "../utils/unitPlanning"
-import { CreatePartsReq, OrderRow, PartsReq, PartsReqQuery, UpdatePartsReq } from "../models/partsReq"
+import { PartsReq, PartsReqQuery, CreatePartsReq, UpdatePartsReq, OrderRow } from "../models/partsReq"
+import { AFE } from "../models/afe"
 import { NovaUser } from "../models/novaUser"
 
 import { prisma } from "../utils/prisma-client"
-import { getAfeAmount, getDirectorsEmployees, getManagersEmployees } from "./kpa"
+
+import { convertUser, getManagersEmployees, getDirectorsEmployees, getAllEmployees } from "./kpa/employee"
 
 const URGENCY_SORT = ["Unit Down", "Unit Set", "Rush", "Standard", "Stock"]
 const FIELD_SERVICE_SORT = ["Rejected - Adjustments Required", "Completed - Parts Staged/Delivered", "Closed - Partially Received", "Pending Approval", "Pending Quote",
@@ -33,17 +35,86 @@ const ADMIN_TITLES = TITLES.find(item => item.group === "Admin")?.titles ?? []
 const EXEC_TITLES = TITLES.find(item => item.group === "Executive Management")?.titles ?? []
 const IT_TITLES = TITLES.find(item => item.group === "IT")?.titles ?? []
 
-async function genSystemComment(message: string, user: string, id: number) {
-    await prisma.comment.create({
-        data: {
-            comment: message,
-            name: user,
-            timestamp: new Date().toISOString(),
-            partsReqId: id
-        }
-    })
+// Function to cast to prisma PR to FE usable typing
+function convertPartsReq(partsReq: any) {
+    const typedPR = {
+        id: partsReq.id,
+        requester: convertUser(partsReq.requester),
+        contact: partsReq.contact ? convertUser(partsReq.contact) : undefined,
+        date: partsReq.date,
+        billable: partsReq.billable,
+        quoteOnly: partsReq.quoteOnly,
+        afe: partsReq.afe ? {
+            id: partsReq.afe.id,
+            number: partsReq.afe.number,
+            amount: partsReq.afe.amount,
+            unit: partsReq.afe.unit
+        } as AFE : undefined,
+        so: partsReq.so,
+        unit: partsReq.unit,
+        truck: partsReq.truck,
+        urgency: partsReq.urgency,
+        orderType: partsReq.orderType,
+        pickup: partsReq.pickup,
+        region: partsReq.region,
+        parts: partsReq.parts,
+        comments: partsReq.comments,
+        files: partsReq.files,
+        status: partsReq.status,
+        amex: partsReq.amex,
+        vendor: partsReq.vendor,
+        updated: partsReq.updated
+    } as PartsReq
+
+    return typedPR
 }
 
+// Function to return a list of IDs of allowed requesters based on the user's permissions
+async function allowedRequester(user: NovaUser | undefined | null) {
+    if (user) {
+        if (FIELD_SERVICE_TITLES.includes(user.jobTitle)) {
+            return [user.id]
+        } else if (OPS_MANAGER_TITLES.includes(user.jobTitle)) {
+            const employees = await getManagersEmployees(user.id)
+
+            return employees.map((employee) => employee.id)
+        } else if (OPS_DIRECTOR_TITLES.includes(user.jobTitle)) {
+            const employees = await getDirectorsEmployees(user.id)
+
+            return employees.map((employee) => employee.id)
+        } else if (SVP_TITLES.includes(user.jobTitle)) {
+            const allEmployees = await getAllEmployees("false")
+
+            return allEmployees.map((employee) => employee.id)
+        } else if (SUPPLY_CHAIN_TITLES.includes(user.jobTitle)) {
+            const allEmployees = await getAllEmployees("false")
+
+            return allEmployees.map((employee) => employee.id)
+        } else if (SC_MANAGEMENT_TITLES.includes(user.jobTitle)) {
+            const allEmployees = await getAllEmployees("false")
+
+            return allEmployees.map((employee) => employee.id)
+        } else if (ADMIN_TITLES.includes(user.jobTitle)) {
+            const allEmployees = await getAllEmployees("false")
+
+            return allEmployees.map((employee) => employee.id)
+        } else if (EXEC_TITLES.includes(user.jobTitle)) {
+            const allEmployees = await getAllEmployees("false")
+
+            return allEmployees.map((employee) => employee.id)
+        } else if (IT_TITLES.includes(user.jobTitle)) {
+            const allEmployees = await getAllEmployees("false")
+
+            return allEmployees.map((employee) => employee.id)
+        }
+    }
+
+    const allEmployees = await getAllEmployees("false")
+
+    return allEmployees.map((employee) => employee.id)
+}
+
+// Function to return a list of statuses allowed based on user's permissions
 function allowedStatus(title: string) {
     if (FIELD_SERVICE_TITLES.includes(title) || OPS_MANAGER_TITLES.includes(title) || OPS_DIRECTOR_TITLES.includes(title)) {
         return ALL_STATUS
@@ -62,32 +133,15 @@ function allowedStatus(title: string) {
     }
 }
 
-async function allowedRequester(user: NovaUser | undefined | null) {
-    if (user) {
-        if (FIELD_SERVICE_TITLES.includes(user.title)) {
-            return [`${user.firstName} ${user.lastName}`]
-        } else if (OPS_MANAGER_TITLES.includes(user.title)) {
-            const employees = await getManagersEmployees(user.id)
-
-            return employees.map((employee) => `${employee.firstName} ${employee.lastName}`).concat(`${user.firstName} ${user.lastName}`)
-        } else if (OPS_DIRECTOR_TITLES.includes(user.title)) {
-            const employees = await getDirectorsEmployees(user.id)
-
-            return employees.map((employee) => `${employee.firstName} ${employee.lastName}`).concat(`${user.firstName} ${user.lastName}`)
-        } else if (SVP_TITLES.includes(user.title)) {
-
-        } else if (SUPPLY_CHAIN_TITLES.includes(user.title)) {
-
-        } else if (SC_MANAGEMENT_TITLES.includes(user.title)) {
-
-        } else if (ADMIN_TITLES.includes(user.title)) {
-
-        } else if (EXEC_TITLES.includes(user.title)) {
-
-        } else if (IT_TITLES.includes(user.title)) {
-
+async function genSystemComment(message: string, user: NovaUser, id: number) {
+    await prisma.comment.create({
+        data: {
+            comment: message,
+            name: `${user.firstName} ${user.lastName}`,
+            timestamp: new Date().toISOString(),
+            partsReqId: id
         }
-    }
+    })
 }
 
 function determineReceived(parts: Array<OrderRow> | undefined) {
@@ -148,17 +202,37 @@ function svpApprovalRequired(unitNumber: string, hp: number, rows: Array<OrderRo
     }
 }
 
-async function autoApprove(afeNumber: string, prCost: number) {
-    if (afeNumber) {
-        const afeAmount = await getAfeAmount(afeNumber)
-        const existingCost = await sumPrWithAfe(afeNumber)
+async function autoApprove(afe: AFE | undefined, prCost: number) {
+    if (afe) {
+        const existingCost = await sumPrWithAfe(afe)
 
-        if (afeAmount && (prCost <= (afeAmount - existingCost))) {
+        if (afe.amount && (prCost <= (Number(afe.amount) - existingCost))) {
             return true
         }
     }
 
     return false
+}
+
+// Function to find the sum of PR costs with an associated AFE
+export const sumPrWithAfe = async (afe: AFE) => {
+    let sum = 0
+
+    const partsReqs = await prisma.partsReq.findMany({
+        where: {
+            afe: { id: afe.id },
+            status: { notIn: ["Pending Approval", "Pending Quote", "Quote Provided - Pending Approval", "Rejected - Adjustments Required", "Rejected - Closed"] }
+        },
+        include: {
+            parts: true
+        }
+    })
+
+    for (const partsReq of partsReqs) {
+        sum += calcCost(partsReq.parts as Array<OrderRow>)
+    }
+
+    return sum
 }
 
 function noRate(rows: Array<Omit<OrderRow, "id">>) {
@@ -177,20 +251,22 @@ export const getPartsReqs = async (query: PartsReqQuery) => {
             AND: [
                 {
                     requester: {
-                        in: await allowedRequester(query.user)
+                        id: {
+                            in: await allowedRequester(query.user)
+                        }
                     },
                     status: {
-                        in: allowedStatus(query.user ? query.user.title : "")
+                        in: allowedStatus(query.user ? query.user.jobTitle : "")
                     }
                 },
                 {
                     AND: [
-                        query.afe && query.afe.length > 0 ? { afe: { in: query.afe } } : {},
+                        query.afe && query.afe.length > 0 ? { afe: { id: { in: query.afe } } } : {},
                         query.so && query.so.length > 0 ? { so: { in: query.so } } : {},
                         query.unitNumber && query.unitNumber.length > 0 ? { unitNumber: { in: query.unitNumber } } : {},
                         query.truck && query.truck.length > 0 ? { truck: { in: query.truck } } : {},
                         {}, // TODO: parts
-                        query.requester && query.requester.length > 0 ? { requester: { in: query.requester } } : {},
+                        query.requester && query.requester.length > 0 ? { requester: { id: { in: query.requester } } } : {},
                         query.customer && query.customer.length > 0 ? { unit: { customer: { in: query.customer } } } : {},
                         query.location && query.location.length > 0 ? { unit: { location: { in: query.location } } } : {},
                         query.region && query.region.length > 0 ? { region: { in: query.region, mode: "insensitive" } } : {},
@@ -201,11 +277,18 @@ export const getPartsReqs = async (query: PartsReqQuery) => {
                 {
                     OR: [
                         { id: Number(query.searchString) ? { in: query.searchString ? [Number(query.searchString)] : [] } : {} },
-                        { afe: { contains: query.searchString ?? "", mode: "insensitive" } },
+                        { afe: { number: { contains: query.searchString ?? "", mode: "insensitive" } } },
                         { so: { contains: query.searchString ?? "", mode: "insensitive" } },
                         { unitNumber: { contains: query.searchString ?? "", mode: "insensitive" } },
                         { truck: { contains: query.searchString ?? "", mode: "insensitive" } },
-                        { requester: { contains: query.searchString ?? "", mode: "insensitive" } },
+                        {
+                            requester: {
+                                OR: [
+                                    { firstName: { contains: query.searchString ?? "", mode: "insensitive" } },
+                                    { lastName: { contains: query.searchString ?? "", mode: "insensitive" } }
+                                ]
+                            }
+                        },
                         { unit: { customer: { contains: query.searchString ?? "", mode: "insensitive" } } },
                         { unit: { location: { contains: query.searchString ?? "", mode: "insensitive" } } },
                         { region: { contains: query.searchString ?? "", mode: "insensitive" } }
@@ -214,54 +297,33 @@ export const getPartsReqs = async (query: PartsReqQuery) => {
             ]
         },
         include: {
+            requester: true,
+            contact: true,
+            unit: true,
+            afe: {
+                include: { unit: true }
+            },
             parts: true,
             comments: true,
-            unit: true,
             files: true
         }
     })
 
-    let partsReqs = result.map((obj) => {
-        return (
-            {
-                id: obj.id,
-                requester: obj.requester,
-                contact: obj.contact,
-                date: obj.date,
-                billable: obj.billable,
-                quoteOnly: obj.quoteOnly,
-                afe: obj.afe,
-                so: obj.so,
-                unit: obj.unit,
-                truck: obj.truck,
-                urgency: obj.urgency,
-                orderType: obj.orderType,
-                pickup: obj.pickup,
-                region: obj.region,
-                parts: obj.parts,
-                comments: obj.comments,
-                files: obj.files,
-                status: obj.status,
-                amex: obj.amex,
-                vendor: obj.vendor,
-                updated: obj.updated
-            } as PartsReq
-        )
-    })
+    let partsReqs = result.map((partsReq) => convertPartsReq(partsReq))
 
     // Filter SVP results to only units that require SVP privileges
-    if (SVP_TITLES.includes(query.user!.title)) {
+    if (SVP_TITLES.includes(query.user!.jobTitle)) {
         partsReqs = partsReqs.filter((partsReq) => partsReq.unit && svpApprovalRequired(partsReq.unit.unitNumber, Number(partsReq.unit.oemHP), partsReq.parts))
     }
 
     // Sort based on title
-    if (FIELD_SERVICE_TITLES.includes(query.user!.title)) {
+    if (FIELD_SERVICE_TITLES.includes(query.user!.jobTitle)) {
         partsReqs.sort((a, b) => FIELD_SERVICE_SORT.indexOf(a.status) - FIELD_SERVICE_SORT.indexOf(b.status) ||
             URGENCY_SORT.indexOf(a.urgency) - URGENCY_SORT.indexOf(b.urgency) || a.date.getTime() - b.date.getTime())
-    } else if (OPS_MANAGER_TITLES.includes(query.user!.title) || OPS_DIRECTOR_TITLES.includes(query.user!.title)) {
+    } else if (OPS_MANAGER_TITLES.includes(query.user!.jobTitle) || OPS_DIRECTOR_TITLES.includes(query.user!.jobTitle)) {
         partsReqs.sort((a, b) => MANAGER_STATUS_SORT.indexOf(a.status) - MANAGER_STATUS_SORT.indexOf(b.status) ||
             URGENCY_SORT.indexOf(a.urgency) - URGENCY_SORT.indexOf(b.urgency) || a.date.getTime() - b.date.getTime())
-    } else if (SUPPLY_CHAIN_TITLES.includes(query.user!.title)) {
+    } else if (SUPPLY_CHAIN_TITLES.includes(query.user!.jobTitle)) {
         partsReqs.sort((a, b) => SUPPLY_CHAIN_STATUS.indexOf(a.status) - SUPPLY_CHAIN_STATUS.indexOf(b.status) ||
             URGENCY_SORT.indexOf(a.urgency) - URGENCY_SORT.indexOf(b.urgency) || a.date.getTime() - b.date.getTime())
     } else {
@@ -272,44 +334,27 @@ export const getPartsReqs = async (query: PartsReqQuery) => {
     return partsReqs
 }
 
-// Get single Parts Req by id
+// Get Parts Req by id
 export const getPartsReq = async (id: number) => {
-    const result = await prisma.partsReq.findUnique({
+    const partsReq = await prisma.partsReq.findUnique({
         where: {
             id: id
         },
         include: {
+            requester: true,
+            contact: true,
+            unit: true,
+            afe: {
+                include: { unit: true }
+            },
             parts: true,
             comments: true,
-            unit: true,
             files: true
         }
     })
 
-    if (result) {
-        return {
-            id: result.id,
-            requester: result.requester,
-            contact: result.contact,
-            date: result.date,
-            billable: result.billable,
-            quoteOnly: result.quoteOnly,
-            afe: result.afe,
-            so: result.so,
-            unit: result.unit,
-            truck: result.truck,
-            urgency: result.urgency,
-            orderType: result.orderType,
-            pickup: result.pickup,
-            region: result.region,
-            parts: result.parts,
-            comments: result.comments,
-            files: result.files,
-            status: result.status,
-            amex: result.amex,
-            vendor: result.vendor,
-            updated: result.updated
-        } as PartsReq
+    if (partsReq) {
+        return convertPartsReq(partsReq)
     } else {
         return null
     }
@@ -322,11 +367,11 @@ export const createPartsReq = async (partsReq: CreatePartsReq) => {
 
     const newPartsReq = await prisma.partsReq.create({
         data: {
-            requester: partsReq.requester,
+            requesterId: partsReq.requester.id,
             date: partsReq.date,
             billable: partsReq.billable,
             quoteOnly: partsReq.quoteOnly,
-            afe: partsReq.afe,
+            afeId: partsReq.afe ? partsReq.afe.id : undefined,
             so: partsReq.so,
             unitNumber: partsReq.unit ? partsReq.unit.unitNumber : null,
             truck: partsReq.truck,
@@ -372,7 +417,7 @@ export const createPartsReq = async (partsReq: CreatePartsReq) => {
 }
 
 // Update existing Parts Req
-export const updatePartsReq = async (id: number, user: string, updateReq: Partial<UpdatePartsReq>) => {
+export const updatePartsReq = async (id: number, user: NovaUser, updateReq: Partial<UpdatePartsReq>) => {
     // Flag to determine if anything was updated
     let updated: boolean = false
 
@@ -380,6 +425,17 @@ export const updatePartsReq = async (id: number, user: string, updateReq: Partia
     const oldPartsReq = await prisma.partsReq.findUnique({
         where: {
             id: id
+        },
+        include: {
+            requester: true,
+            contact: true,
+            unit: true,
+            afe: {
+                include: { unit: true }
+            },
+            parts: true,
+            comments: true,
+            files: true
         }
     })
 
@@ -449,7 +505,7 @@ export const updatePartsReq = async (id: number, user: string, updateReq: Partia
         })
 
         // Add system comments
-        const message = `Added(x${part.qty}): ${part.itemNumber} `
+        const message = `Added(x${part.qty}): ${part.itemNumber}`
 
         await genSystemComment(message, user, id)
     }
@@ -465,7 +521,7 @@ export const updatePartsReq = async (id: number, user: string, updateReq: Partia
             })
 
             // Add system comments
-            const message = `Removed(x${row.qty}): ${row.itemNumber} `
+            const message = `Removed(x${row.qty}): ${row.itemNumber}`
 
             await genSystemComment(message, user, id)
         }
@@ -484,7 +540,7 @@ export const updatePartsReq = async (id: number, user: string, updateReq: Partia
         })
 
         // Add system comments
-        const message = `Removed Document: ${delFile.name} `
+        const message = `Removed Document: ${delFile.name}`
 
         await genSystemComment(message, user, id)
     }
@@ -503,7 +559,7 @@ export const updatePartsReq = async (id: number, user: string, updateReq: Partia
         newFileIds.push(newFile.id)
 
         // Add system comments
-        const message = `Added Document: ${file} `
+        const message = `Added Document: ${file}`
 
         await genSystemComment(message, user, id)
     }
@@ -512,63 +568,63 @@ export const updatePartsReq = async (id: number, user: string, updateReq: Partia
     // Status change
     if (oldPartsReq?.status !== status) {
         updated = true
-        const message = `Status Change: ${oldPartsReq?.status} -> ${status} `
+        const message = `Status Change: ${oldPartsReq?.status} -> ${status}`
 
         await genSystemComment(message, user, id)
     }
     // AFE change
     if (oldPartsReq?.afe !== updateReq.afe) {
         updated = true
-        const message = `AFE Change: ${oldPartsReq?.afe} -> ${updateReq.afe} `
+        const message = `AFE Change: ${oldPartsReq?.afe} -> ${updateReq.afe}`
 
         await genSystemComment(message, user, id)
     }
     // SO change
     if (oldPartsReq?.so !== updateReq.so) {
         updated = true
-        const message = `SO Change: ${oldPartsReq?.so} -> ${updateReq.so} `
+        const message = `SO Change: ${oldPartsReq?.so} -> ${updateReq.so}`
 
         await genSystemComment(message, user, id)
     }
     // Unit change
     if (oldPartsReq?.unitNumber !== updateReq.unit?.unitNumber) {
         updated = true
-        const message = `Unit Change: ${oldPartsReq?.unitNumber} -> ${updateReq.unit?.unitNumber} `
+        const message = `Unit Change: ${oldPartsReq?.unitNumber} -> ${updateReq.unit?.unitNumber}`
 
         await genSystemComment(message, user, id)
     }
     // Truck change
     if (oldPartsReq?.truck !== updateReq.truck) {
         updated = true
-        const message = `Truck Change: ${oldPartsReq?.truck} -> ${updateReq.truck} `
+        const message = `Truck Change: ${oldPartsReq?.truck} -> ${updateReq.truck}`
 
         await genSystemComment(message, user, id)
     }
     // Urgency change
     if (oldPartsReq?.urgency !== updateReq.urgency) {
         updated = true
-        const message = `Urgency Change: ${oldPartsReq?.urgency} -> ${updateReq.urgency} `
+        const message = `Urgency Change: ${oldPartsReq?.urgency} -> ${updateReq.urgency}`
 
         await genSystemComment(message, user, id)
     }
     // Order Type change
     if (oldPartsReq?.orderType !== updateReq.orderType) {
         updated = true
-        const message = `Order Type Change: ${oldPartsReq?.orderType} -> ${updateReq.orderType} `
+        const message = `Order Type Change: ${oldPartsReq?.orderType} -> ${updateReq.orderType}`
 
         await genSystemComment(message, user, id)
     }
     // Pickup Location change
     if (oldPartsReq?.pickup !== updateReq.pickup) {
         updated = true
-        const message = `Pick Up Location Change: ${oldPartsReq?.pickup} -> ${updateReq.pickup} `
+        const message = `Pick Up Location Change: ${oldPartsReq?.pickup} -> ${updateReq.pickup}`
 
         await genSystemComment(message, user, id)
     }
     // Region change
     if (oldPartsReq?.region !== updateReq.region) {
         updated = true
-        const message = `Region Change: ${oldPartsReq?.region} -> ${updateReq.region} `
+        const message = `Region Change: ${oldPartsReq?.region} -> ${updateReq.region}`
 
         await genSystemComment(message, user, id)
     }
@@ -580,14 +636,14 @@ export const updatePartsReq = async (id: number, user: string, updateReq: Partia
             status = "Sourcing - Pending Amex Approval"
         }
 
-        const message = `Amex Request Change: ${oldPartsReq?.amex} -> ${updateReq.amex} `
+        const message = `Amex Request Change: ${oldPartsReq?.amex} -> ${updateReq.amex}`
 
         await genSystemComment(message, user, id)
     }
     // Vendor change
     if (oldPartsReq?.vendor !== updateReq.vendor) {
         updated = true
-        const message = `Vendor Change: ${oldPartsReq?.vendor} -> ${updateReq.vendor} `
+        const message = `Vendor Change: ${oldPartsReq?.vendor} -> ${updateReq.vendor}`
 
         await genSystemComment(message, user, id)
     }
@@ -620,9 +676,9 @@ export const updatePartsReq = async (id: number, user: string, updateReq: Partia
             id: id
         },
         data: {
-            contact: updateReq.contact,
+            contactId: updateReq.contact ? updateReq.contact.id : undefined,
             quoteOnly: updateReq.quoteOnly,
-            afe: updateReq.afe,
+            afeId: updateReq.afe ? updateReq.afe.id : undefined,
             so: updateReq.so,
             unitNumber: updateReq.unit ? updateReq.unit.unitNumber : null,
             truck: updateReq.truck,
@@ -651,25 +707,4 @@ export const updatePartsReq = async (id: number, user: string, updateReq: Partia
     })
 
     return updatedPartsReq
-}
-
-// Function to find the sum of PR costs with an associated AFE
-export const sumPrWithAfe = async (afeNumber: string) => {
-    let sum = 0
-
-    const partsReqs = await prisma.partsReq.findMany({
-        where: {
-            afe: afeNumber,
-            status: { notIn: ["Pending Approval", "Pending Quote", "Quote Provided - Pending Approval", "Rejected - Adjustments Required", "Rejected - Closed"] }
-        },
-        include: {
-            parts: true
-        }
-    })
-
-    for (const partsReq of partsReqs) {
-        sum += calcCost(partsReq.parts as Array<OrderRow>)
-    }
-
-    return sum
 }

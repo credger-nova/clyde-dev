@@ -44,7 +44,7 @@ const StyledToggleButtonGroup = styled(ToggleButtonGroup)(({ theme }) => ({
 
 export default function SupplyChain() {
     const { user } = useAuth0()
-    const { data: novaUser, isFetched } = useNovaUser(undefined, user?.email)
+    const { data: novaUser, isFetched } = useNovaUser(user?.email)
     const { state } = useLocation()
     const { statuses, requesters, region } = state ?? {}
 

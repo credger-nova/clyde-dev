@@ -10,10 +10,10 @@ const getNovaUser = async (email: string) => {
     return data
 }
 
-export function useNovaUser(email: string) {
+export function useNovaUser(email: string | undefined) {
     return useQuery({
         queryKey: ["user", email],
-        queryFn: () => getNovaUser(email),
+        queryFn: () => getNovaUser(email!),
         enabled: email !== undefined
     })
 }

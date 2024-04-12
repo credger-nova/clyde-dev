@@ -11,13 +11,13 @@ import PartsReqSummary from "../components/dashboard/parts-reqs/PartsReqSummary"
 
 export default function Home() {
     const { user } = useAuth0()
-    const { data: novaUser, isFetched } = useNovaUser(undefined, user?.email)
+    const { data: novaUser, isFetched } = useNovaUser(user?.email)
 
     const [userGroup, setUserGroup] = React.useState<string | undefined>()
 
     React.useEffect(() => {
         if (isFetched && novaUser) {
-            setUserGroup(TITLES.find(item => item.titles.includes(novaUser.title))?.group)
+            setUserGroup(TITLES.find(item => item.titles.includes(novaUser.jobTitle))?.group)
         }
     }, [isFetched, novaUser])
 

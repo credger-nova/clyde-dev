@@ -34,7 +34,7 @@ interface Props {
 
 export default function PartsReqSummary(props: Props) {
     const { novaUser } = props
-    const userType = TITLES.find(item => item.titles.includes(novaUser.title))
+    const userType = TITLES.find(item => item.titles.includes(novaUser.jobTitle))
 
     return (
         userType && ALLOWED_GROUPS.includes(userType.group) &&

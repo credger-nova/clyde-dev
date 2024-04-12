@@ -13,11 +13,11 @@ interface Props {
 const Route = ({ children, titles }: Props) => {
     const { user } = useAuth0()
 
-    const { data: novaUser, isFetched } = useNovaUser(undefined, user?.email)
+    const { data: novaUser, isFetched } = useNovaUser(user?.email)
 
     if (isFetched) {
         if (novaUser) {
-            const canAccess = titles ? titles.includes(novaUser.title) : true
+            const canAccess = titles ? titles.includes(novaUser.jobTitle) : true
 
             return (canAccess ?
                 <Layout>{children}</Layout> :

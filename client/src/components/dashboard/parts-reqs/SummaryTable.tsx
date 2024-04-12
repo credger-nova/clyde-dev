@@ -112,7 +112,7 @@ const StyledSwitch = styled(Switch)(() => ({
     },
 }))
 
-function calcStatus(partsReqs: Array<PartsReq>, statusGroup: string, requester?: string, requesterGroup?: Array<string>, region?: string) {
+function calcStatus(partsReqs: Array<PartsReq>, statusGroup: string, requester?: NovaUser, requesterGroup?: Array<NovaUser>, region?: string) {
     let filtered: Array<PartsReq> = []
 
     if (statusGroup === "Pending Quote") {
@@ -152,7 +152,7 @@ export default function SummaryTable(props: Props) {
     const { novaUser, group } = props
 
     const [partsReqQuery, setPartsReqQuery] = React.useState<PartsReqQuery>({ user: novaUser })
-    const [managerOnly, setManagerOnly] = React.useState<Array<string>>([])
+    const [managerOnly, setManagerOnly] = React.useState<Array<NovaUser>>([])
 
     const { data: managersEmployees, isFetching: managersEmployeesFetching } = useManagersEmployees(novaUser)
     const { data: directorsEmployees, isFetching: directorsEmployeesFetching } = useDirectorsEmployees(novaUser)
@@ -193,7 +193,7 @@ export default function SummaryTable(props: Props) {
         navigate("/supply-chain", { state: { statuses: statuses, requesters: requesters, region: region } })
     }
 
-    const handleManagerOnlyChange = (event: React.ChangeEvent<HTMLInputElement>, manager: string) => {
+    const handleManagerOnlyChange = (event: React.ChangeEvent<HTMLInputElement>, manager: NovaUser) => {
         if (event.target.checked) {
             setManagerOnly([...managerOnly, manager])
         } else {
@@ -223,7 +223,7 @@ export default function SummaryTable(props: Props) {
                                         {`${statusGroup}:`}
                                     </Typography>
                                     <Typography>
-                                        {partsReqs ? calcStatus(partsReqs, statusGroup, `${novaUser.firstName} ${novaUser.lastName}`) : 0}
+                                        {partsReqs ? calcStatus(partsReqs, statusGroup, novaUser) : 0}
                                     </Typography>
                                 </Item>
                             </Grid>
@@ -242,8 +242,8 @@ export default function SummaryTable(props: Props) {
                         <FormControlLabel
                             control={
                                 <StyledSwitch
-                                    checked={managerOnly.includes(`${novaUser.firstName} ${novaUser.lastName}`)}
-                                    onChange={(event) => handleManagerOnlyChange(event, `${novaUser.firstName} ${novaUser.lastName}`)}
+                                    checked={managerOnly.includes(novaUser)}
+                                    onChange={(event) => handleManagerOnlyChange(event, novaUser)}
                                     size="medium"
                                     disableRipple
                                     sx={{ marginLeft: "10px" }}
@@ -268,10 +268,9 @@ export default function SummaryTable(props: Props) {
                                                 {`${statusGroup}:`}
                                             </Typography>
                                             <Typography>
-                                                {partsReqs ? calcStatus(partsReqs, statusGroup, undefined, managerOnly.includes(`${novaUser.firstName} ${novaUser.lastName}`) ?
-                                                    [`${novaUser.firstName} ${novaUser.lastName}`] :
-                                                    managersEmployees?.filter((subordinate) => subordinate.supervisorId === novaUser.id)
-                                                        .map((user) => `${user.firstName} ${user.lastName}`).concat(`${novaUser.firstName} ${novaUser.lastName}`)
+                                                {partsReqs ? calcStatus(partsReqs, statusGroup, undefined, managerOnly.includes(novaUser) ?
+                                                    [novaUser] :
+                                                    managersEmployees?.filter((subordinate) => subordinate.supervisorId === novaUser.id).concat(novaUser)
                                                 ) : 0}
                                             </Typography>
                                         </Item>
@@ -326,7 +325,7 @@ export default function SummaryTable(props: Props) {
                                                         {`${statusGroup}:`}
                                                     </Typography>
                                                     <Typography>
-                                                        {partsReqs ? calcStatus(partsReqs, statusGroup, `${employee.firstName} ${employee.lastName}`) : 0}
+                                                        {partsReqs ? calcStatus(partsReqs, statusGroup, novaUser) : 0}
                                                     </Typography>
                                                 </Item>
                                             </Grid>
@@ -372,7 +371,7 @@ export default function SummaryTable(props: Props) {
                             {
                                 !directorsEmployeesFetching && !partsReqsFetching ? directorsEmployees?.map((employee) => {
                                     return (
-                                        employee.title.includes("Manager") && employee.region.includes(region) && <Accordion
+                                        employee.jobTitle.includes("Manager") && employee.region.includes(region) && <Accordion
                                             key={employee.id}
                                             disableGutters
                                         >
@@ -397,8 +396,8 @@ export default function SummaryTable(props: Props) {
                                                 <FormControlLabel
                                                     control={
                                                         <StyledSwitch
-                                                            checked={managerOnly.includes(`${employee.firstName} ${employee.lastName}`)}
-                                                            onChange={(event) => handleManagerOnlyChange(event, `${employee.firstName} ${employee.lastName}`)}
+                                                            checked={managerOnly.includes(employee)}
+                                                            onChange={(event) => handleManagerOnlyChange(event, employee)}
                                                             size="medium"
                                                             disableRipple
                                                         />
@@ -423,10 +422,9 @@ export default function SummaryTable(props: Props) {
                                                                         {`${statusGroup}:`}
                                                                     </Typography>
                                                                     <Typography>
-                                                                        {partsReqs ? calcStatus(partsReqs, statusGroup, undefined, managerOnly.includes(`${employee.firstName} ${employee.lastName}`) ?
-                                                                            [`${employee.firstName} ${employee.lastName}`] :
-                                                                            directorsEmployees.filter((subordinate) => subordinate.supervisorId === employee.id)
-                                                                                .map((user) => `${user.firstName} ${user.lastName}`).concat(`${employee.firstName} ${employee.lastName}`)
+                                                                        {partsReqs ? calcStatus(partsReqs, statusGroup, undefined, managerOnly.includes(employee) ?
+                                                                            [employee] :
+                                                                            directorsEmployees.filter((subordinate) => subordinate.supervisorId === employee.id).concat(employee)
                                                                         ) : 0}
                                                                     </Typography>
                                                                 </Item>
@@ -478,7 +476,7 @@ export default function SummaryTable(props: Props) {
                                                                                     {`${statusGroup}:`}
                                                                                 </Typography>
                                                                                 <Typography>
-                                                                                    {partsReqs ? calcStatus(partsReqs, statusGroup, `${user.firstName} ${user.lastName}`) : 0}
+                                                                                    {partsReqs ? calcStatus(partsReqs, statusGroup, user) : 0}
                                                                                 </Typography>
                                                                             </Item>
                                                                         </Grid>
@@ -501,7 +499,7 @@ export default function SummaryTable(props: Props) {
                 )
             }) : !directorsEmployeesFetching && !partsReqsFetching ? directorsEmployees?.map((employee) => {
                 return (
-                    employee.title.includes("Manager") && <Accordion
+                    employee.jobTitle.includes("Manager") && <Accordion
                         key={employee.id}
                         disableGutters
                     >
@@ -526,8 +524,8 @@ export default function SummaryTable(props: Props) {
                             <FormControlLabel
                                 control={
                                     <StyledSwitch
-                                        checked={managerOnly.includes(`${employee.firstName} ${employee.lastName}`)}
-                                        onChange={(event) => handleManagerOnlyChange(event, `${employee.firstName} ${employee.lastName}`)}
+                                        checked={managerOnly.includes(employee)}
+                                        onChange={(event) => handleManagerOnlyChange(event, employee)}
                                         size="medium"
                                         disableRipple
                                     />
@@ -552,10 +550,9 @@ export default function SummaryTable(props: Props) {
                                                     {`${statusGroup}:`}
                                                 </Typography>
                                                 <Typography>
-                                                    {partsReqs ? calcStatus(partsReqs, statusGroup, undefined, managerOnly.includes(`${employee.firstName} ${employee.lastName}`) ?
-                                                        [`${employee.firstName} ${employee.lastName}`] :
-                                                        directorsEmployees.filter((subordinate) => subordinate.supervisorId === employee.id)
-                                                            .map((user) => `${user.firstName} ${user.lastName}`).concat(`${employee.firstName} ${employee.lastName}`)
+                                                    {partsReqs ? calcStatus(partsReqs, statusGroup, undefined, managerOnly.includes(employee) ?
+                                                        [employee] :
+                                                        directorsEmployees.filter((subordinate) => subordinate.supervisorId === employee.id).concat(employee)
                                                     ) : 0}
                                                 </Typography>
                                             </Item>
@@ -607,7 +604,7 @@ export default function SummaryTable(props: Props) {
                                                                 {`${statusGroup}:`}
                                                             </Typography>
                                                             <Typography>
-                                                                {partsReqs ? calcStatus(partsReqs, statusGroup, `${user.firstName} ${user.lastName}`) : 0}
+                                                                {partsReqs ? calcStatus(partsReqs, statusGroup, user) : 0}
                                                             </Typography>
                                                         </Item>
                                                     </Grid>

@@ -21,6 +21,7 @@ import { Unit } from "../../types/unit"
 import { Part } from "../../types/part"
 import { Comment } from "../../types/comment"
 import { NovaUser } from "../../types/novaUser"
+import { AFE } from "../../types/afe"
 
 import { styled } from '@mui/material/styles'
 import Paper from '@mui/material/Paper'
@@ -212,7 +213,7 @@ export default function EditPartsReqForm(props: Props) {
 
     const { data: novaUser, isFetched } = useNovaUser(user?.email)
 
-    const { data: afeNumbers, isFetching: afeFetching } = useAFEs()
+    const { data: afes, isFetching: afeFetching } = useAFEs()
     const { data: soNumbers, isFetching: soFetching } = useSOs()
     const { data: unitNumbers, isFetching: unitsFetching } = useUnits()
     const { data: trucks, isFetching: trucksFetching } = useTrucks()
@@ -224,17 +225,17 @@ export default function EditPartsReqForm(props: Props) {
     const { mutateAsync: uploadFiles } = useUploadFiles()
 
     const [status, setStatus] = React.useState<string>(partsReq.status)
-    const [requester] = React.useState<string>(partsReq.requester)
-    const [contact, setContact] = React.useState<string>(partsReq.contact)
+    const [requester] = React.useState<NovaUser>(partsReq.requester)
+    const [contact, setContact] = React.useState<NovaUser | null>(partsReq.contact ?? null)
     const [orderDate] = React.useState<Date>(partsReq.date)
     const [billable] = React.useState<boolean>(partsReq.billable)
-    const [afe, setAfe] = React.useState<string | null>(partsReq.afe)
-    const [so, setSo] = React.useState<string | null>(partsReq.so)
-    const [unit, setUnit] = React.useState<Unit | null>(partsReq.unit)
-    const [truck, setTruck] = React.useState<string | null>(partsReq.truck)
+    const [afe, setAfe] = React.useState<AFE | null>(partsReq.afe ?? null)
+    const [so, setSo] = React.useState<string | null>(partsReq.so ?? null)
+    const [unit, setUnit] = React.useState<Unit | null>(partsReq.unit ?? null)
+    const [truck, setTruck] = React.useState<string | null>(partsReq.truck ?? null)
     const [urgency, setUrgency] = React.useState<string | null>(partsReq.urgency)
     const [orderType, setOrderType] = React.useState<string | null>(partsReq.orderType)
-    const [pickup, setPickup] = React.useState<string>(partsReq.pickup)
+    const [pickup, setPickup] = React.useState<string | null>(partsReq.pickup ?? null)
     const [region, setRegion] = React.useState<string | null>(partsReq.region)
     const [rows, setRows] = React.useState<Array<Omit<OrderRow, "id">>>(partsReq.parts)
     const [delRows, setDelRows] = React.useState<Array<OrderRow>>([])
@@ -244,16 +245,15 @@ export default function EditPartsReqForm(props: Props) {
     const [newFiles, setNewFiles] = React.useState<Array<File>>([])
     const [deleteFiles, setDeleteFiles] = React.useState<Array<string>>([])
     const [amex, setAmex] = React.useState<boolean>(partsReq.amex)
-    const [vendor, setVendor] = React.useState<string>(partsReq.vendor)
+    const [vendor, setVendor] = React.useState<string | null>(partsReq.vendor ?? null)
     const [prExceedsAfe, setPrExceedsAfe] = React.useState<boolean>(false)
     const [needsComment, setNeedsComment] = React.useState<boolean>(false)
 
-    const { data: afeAmount } = useAFEAmount(afe ?? null)
-    const { data: afeExistingAmount } = useSumPrWithAfe(afe ?? "")
+    const { data: afeExistingAmount } = useSumPrWithAfe(afe ? afe.number : "")
 
-    const afeFilter = createFilterOptions<{ number: string, unit: string, location: string | null }>({
+    const afeFilter = createFilterOptions<AFE>({
         matchFrom: "any",
-        stringify: (option) => option.number + option.unit + (option.location ?? "")
+        stringify: (option) => option.number + option.unit.unitNumber + (option.unit.location ?? "")
     })
 
     const partsFilter = createFilterOptions<PartOption>({
@@ -274,14 +274,14 @@ export default function EditPartsReqForm(props: Props) {
     }, [requester, orderDate, afe, so, urgency, orderType, rows, needsComment, setSaveDisabled])
 
     React.useEffect(() => {
-        if (afeAmount) {
-            if (calcCost(rows as Array<OrderRow>) <= afeAmount - afeExistingAmount!) {
+        if (afe) {
+            if (calcCost(rows as Array<OrderRow>) <= Number(afe.amount) - afeExistingAmount!) {
                 setPrExceedsAfe(false)
             } else {
                 setPrExceedsAfe(true)
             }
         }
-    }, [afeAmount, afeExistingAmount, rows])
+    }, [afe, afeExistingAmount, rows])
 
     // Check if a comment is needed if the PR is being set to Rejected - Closed
     React.useEffect(() => {
@@ -301,14 +301,14 @@ export default function EditPartsReqForm(props: Props) {
     React.useEffect(() => {
         if (reset) {
             setStatus(partsReq.status)
-            setContact(partsReq.contact)
-            setAfe(partsReq.afe)
-            setSo(partsReq.so)
-            setUnit(partsReq.unit)
-            setTruck(partsReq.truck)
+            setContact(partsReq.contact ?? null)
+            setAfe(partsReq.afe ?? null)
+            setSo(partsReq.so ?? null)
+            setUnit(partsReq.unit ?? null)
+            setTruck(partsReq.truck ?? null)
             setUrgency(partsReq.urgency)
             setOrderType(partsReq.orderType)
-            setPickup(partsReq.pickup)
+            setPickup(partsReq.pickup ?? null)
             setRegion(partsReq.region)
             setRows(partsReq.parts)
             setDelRows([])
@@ -317,7 +317,7 @@ export default function EditPartsReqForm(props: Props) {
             setNewFiles([])
             setDeleteFiles([])
             setAmex(partsReq.amex)
-            setVendor(partsReq.vendor)
+            setVendor(partsReq.vendor ?? null)
 
             setReset(false)
         }
@@ -377,16 +377,19 @@ export default function EditPartsReqForm(props: Props) {
 
         if (["Sourcing - Information Required", "Ordered - Awaiting Parts", "Completed - Parts Staged/Delivered"]
             .includes(value ?? "") && !partsReq.contact) {
-            setContact(`${novaUser?.firstName} ${novaUser?.lastName}`)
+            setContact(novaUser ?? null)
         }
     }
 
-    const onAfeChange = (_e: React.SyntheticEvent, value: { number: string, unit: string, location: string | null } | null) => {
-        setAfe(value ? value.number : null)
+    const onAfeChange = (_e: React.SyntheticEvent, value: AFE | null) => {
+        setAfe(value ?? null)
+
+        console.log(value)
 
         if (value) {
-            const unit = unitNumbers ? unitNumbers.find(obj => obj.unitNumber === value.unit) : null
+            const unit = unitNumbers ? unitNumbers.find(obj => obj.unitNumber === value.unit.unitNumber) : undefined
             onUnitNumberChange(undefined, unit ?? null)
+            onTruckChange(undefined, null)
         } else {
             onUnitNumberChange(undefined, null)
         }
@@ -404,9 +407,17 @@ export default function EditPartsReqForm(props: Props) {
         }
 
         setOrderType(value ? "Rental" : so ? "Third-Party" : null)
-        setRegion(value ? value.operationalRegion ? toTitleCase(value.operationalRegion) : null : null)
+        setRegion(
+            value ?
+                value.operationalRegion ?
+                    toTitleCase(value.operationalRegion) :
+                    novaUser ?
+                        novaUser.region[0] :
+                        null :
+                null
+        )
     }
-    const onTruckChange = (_e: React.SyntheticEvent, value: string | null) => {
+    const onTruckChange = (_e: React.SyntheticEvent | undefined, value: string | null) => {
         setTruck(value ?? null)
     }
     const onCommentChange = (e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
@@ -601,7 +612,7 @@ export default function EditPartsReqForm(props: Props) {
                 }
             }
             if (partsReq.status === "Rejected - Adjustments Required" &&
-                partsReq.requester === `${novaUser!.firstName} ${novaUser!.lastName}`) {
+                partsReq.requester === novaUser) {
                 if (field !== "Status") {
                     return false
                 }
@@ -637,7 +648,7 @@ export default function EditPartsReqForm(props: Props) {
                 }
             }
             if (partsReq.status === "Rejected - Adjustments Required" &&
-                partsReq.requester === `${novaUser!.firstName} ${novaUser!.lastName}`) {
+                partsReq.requester === novaUser) {
                 if (field !== "Status") {
                     return false
                 }
@@ -798,7 +809,7 @@ export default function EditPartsReqForm(props: Props) {
                                                     </li>
                                             );
                                         }}
-                                        readOnly={denyAccess(novaUser!.title, status, "Status")}
+                                        readOnly={denyAccess(novaUser!.jobTitle, status, "Status")}
                                     />
                                 </Box>
                             </Item>
@@ -838,17 +849,17 @@ export default function EditPartsReqForm(props: Props) {
                                     <b><p style={{ margin: "20px 0px 0px 0px" }}>Class:</p></b>
                                     <Divider />
                                     <Autocomplete
-                                        options={afeNumbers ? afeNumbers : []}
+                                        options={afes ? afes : []}
                                         getOptionLabel={(option) => option.number}
                                         onChange={onAfeChange}
                                         loading={afeFetching}
-                                        value={afeNumbers?.find(el => el.number === afe)}
+                                        value={afe}
                                         renderInput={(params) => <StyledTextField
                                             {...params}
                                             variant="standard"
                                             label="AFE #"
                                         />}
-                                        disabled={so !== null}
+                                        disabled={!!so}
                                         filterOptions={afeFilter}
                                         renderOption={(props, option, { inputValue }) => {
                                             // Get matches in AFE number
@@ -857,14 +868,14 @@ export default function EditPartsReqForm(props: Props) {
                                             const afeNumberParts = parse(option.number, afeNumberMatches)
 
                                             // Get matches in unit number
-                                            const unitNumberMatches = match(option.unit, inputValue, { insideWords: true })
+                                            const unitNumberMatches = match(option.unit.unitNumber, inputValue, { insideWords: true })
                                             // Get parts from unit number matches
-                                            const unitNumberParts = parse(option.unit, unitNumberMatches)
+                                            const unitNumberParts = parse(option.unit.unitNumber, unitNumberMatches)
 
                                             // Get matches in location
-                                            const locationMatches = match(option.location ?? "", inputValue, { insideWords: true })
+                                            const locationMatches = match(option.unit.location ?? "", inputValue, { insideWords: true })
                                             // Get parts from location matches
-                                            const locationParts = parse(option.location ?? "", locationMatches)
+                                            const locationParts = parse(option.unit.location ?? "", locationMatches)
 
                                             return (
                                                 <li {...props} style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
@@ -910,7 +921,7 @@ export default function EditPartsReqForm(props: Props) {
                                                 </li>
                                             )
                                         }}
-                                        readOnly={denyAccess(novaUser!.title, status)}
+                                        readOnly={denyAccess(novaUser!.jobTitle, status)}
                                     />
                                     <Autocomplete
                                         options={soNumbers ? soNumbers : []}
@@ -922,7 +933,7 @@ export default function EditPartsReqForm(props: Props) {
                                             variant="standard"
                                             label="SO #"
                                         />}
-                                        disabled={afe !== null}
+                                        disabled={!!afe}
                                         renderOption={(props, option, { inputValue }) => {
                                             const matches = match(option, inputValue, { insideWords: true, requireMatchAll: true });
                                             const parts = parse(option, matches);
@@ -945,7 +956,7 @@ export default function EditPartsReqForm(props: Props) {
                                                 </li>
                                             );
                                         }}
-                                        readOnly={denyAccess(novaUser!.title, status)}
+                                        readOnly={denyAccess(novaUser!.jobTitle, status)}
                                     />
                                     <b><p style={{ margin: "20px 0px 0px 0px" }}>Related Asset:</p></b>
                                     <Divider />
@@ -961,7 +972,7 @@ export default function EditPartsReqForm(props: Props) {
                                             variant="standard"
                                             label="Unit #"
                                         />}
-                                        disabled={truck !== null || afe !== null}
+                                        disabled={!!truck || !!afe}
                                         renderOption={(props, option, { inputValue }) => {
                                             const matches = match(option.unitNumber, inputValue, { insideWords: true, requireMatchAll: true });
                                             const parts = parse(option.unitNumber, matches);
@@ -984,7 +995,7 @@ export default function EditPartsReqForm(props: Props) {
                                                 </li>
                                             );
                                         }}
-                                        readOnly={denyAccess(novaUser!.title, status)}
+                                        readOnly={denyAccess(novaUser!.jobTitle, status)}
                                     />
                                     <div style={{ display: "flex", flexDirection: "row", width: "100%" }}>
                                         <p style={{ marginTop: "10px", marginRight: "10px" }}>Location:</p>
@@ -1015,7 +1026,7 @@ export default function EditPartsReqForm(props: Props) {
                                             variant="standard"
                                             label="Truck #"
                                         />}
-                                        disabled={unit !== null}
+                                        disabled={!!unit}
                                         renderOption={(props, option, { inputValue }) => {
                                             const matches = match(option, inputValue, { insideWords: true, requireMatchAll: true });
                                             const parts = parse(option, matches);
@@ -1038,7 +1049,7 @@ export default function EditPartsReqForm(props: Props) {
                                                 </li>
                                             );
                                         }}
-                                        readOnly={denyAccess(novaUser!.title, status)}
+                                        readOnly={denyAccess(novaUser!.jobTitle, status)}
                                     />
                                 </Box>
                             </Item>
@@ -1052,7 +1063,7 @@ export default function EditPartsReqForm(props: Props) {
                                             options={warehouses ? warehouses.concat("WILL CALL") : []}
                                             loading={warehousesFetching}
                                             onChange={onPickupChange}
-                                            value={pickup}
+                                            value={pickup ?? ""}
                                             disableClearable
                                             renderInput={(params) => <StyledTextField
                                                 {...params}
@@ -1081,7 +1092,7 @@ export default function EditPartsReqForm(props: Props) {
                                                     </li>
                                                 );
                                             }}
-                                            readOnly={denyAccess(novaUser!.title, status, "Pickup")}
+                                            readOnly={denyAccess(novaUser!.jobTitle, status, "Pickup")}
                                         />
                                     </Box>
                                 </Item>
@@ -1090,7 +1101,7 @@ export default function EditPartsReqForm(props: Props) {
                                 <Box>
                                     <b><p style={{ margin: 0 }}>Urgency:</p></b>
                                     <Divider />
-                                    <FormControl disabled={denyAccess(novaUser!.title, status)}>
+                                    <FormControl disabled={denyAccess(novaUser!.jobTitle, status)}>
                                         <RadioGroup row>
                                             {URGENCY.map((val) => {
                                                 return (
@@ -1108,10 +1119,10 @@ export default function EditPartsReqForm(props: Props) {
                                     </FormControl>
                                     <b><p style={{ margin: "20px 0px 0px 0px" }}>Order Type:</p></b>
                                     <Divider />
-                                    <FormControl disabled={(unit !== null || so !== null) || denyAccess(novaUser!.title, status)}>
+                                    <FormControl disabled={(!!unit || !!so) || denyAccess(novaUser!.jobTitle, status)}>
                                         <RadioGroup row>
                                             {ORDER_TYPE.map((val) => {
-                                                const canAccess = val.titles ? (val.titles.findIndex(el => novaUser!.title.includes(el)) !== -1) : true
+                                                const canAccess = val.titles ? (val.titles.findIndex(el => novaUser!.jobTitle.includes(el)) !== -1) : true
 
                                                 return canAccess ? (
                                                     <FormControlLabel
@@ -1128,7 +1139,7 @@ export default function EditPartsReqForm(props: Props) {
                                     </FormControl>
                                     <b><p style={{ margin: "20px 0px 0px 0px" }}>Operational Region:</p></b>
                                     <Divider />
-                                    <FormControl disabled={unit !== null || denyAccess(novaUser!.title, status)}>
+                                    <FormControl disabled={!!unit || denyAccess(novaUser!.jobTitle, status)}>
                                         <RadioGroup row>
                                             {REGION.map((val) => {
                                                 return (
@@ -1239,10 +1250,10 @@ export default function EditPartsReqForm(props: Props) {
                                             checked={amex}
                                             onChange={onAmexChange}
                                             disableRipple
-                                            disabled={denyAccess(novaUser!.title, status, "Amex") || noRate(rows)}
+                                            disabled={denyAccess(novaUser!.jobTitle, status, "Amex") || noRate(rows)}
                                         />
                                         <Autocomplete
-                                            disabled={!amex || denyAccess(novaUser!.title, status, "Amex")}
+                                            disabled={!amex || denyAccess(novaUser!.jobTitle, status, "Amex")}
                                             options={vendors ? vendors : []}
                                             loading={vendorsFetching}
                                             onChange={onVendorChange}
@@ -1289,13 +1300,13 @@ export default function EditPartsReqForm(props: Props) {
                                         label="New Comment"
                                         value={comment}
                                         onChange={onCommentChange}
-                                        disabled={denyAccess(novaUser!.title, status, "Comment")}
+                                        disabled={denyAccess(novaUser!.jobTitle, status, "Comment")}
                                         error={needsComment}
                                         helperText={needsComment && "Please enter a reason for rejecting"}
                                     />
                                     <IconButton
                                         onClick={onAddComment}
-                                        disabled={!comment || denyAccess(novaUser!.title, status, "Comment")}
+                                        disabled={!comment || denyAccess(novaUser!.jobTitle, status, "Comment")}
                                     >
                                         <AddIcon />
                                     </IconButton>
@@ -1330,7 +1341,7 @@ export default function EditPartsReqForm(props: Props) {
                                 />
                                 <AddFileButton
                                     setNewFiles={setNewFiles}
-                                    disabled={denyAccess(novaUser!.title, status, "Document")}
+                                    disabled={denyAccess(novaUser!.jobTitle, status, "Document")}
                                 />
                                 <Box
                                     sx={{ maxHeight: "250px", overflow: "auto" }}
@@ -1342,7 +1353,7 @@ export default function EditPartsReqForm(props: Props) {
                                         deleteFiles={deleteFiles}
                                         setDeleteFiles={setDeleteFiles}
                                         folder={"parts-req"}
-                                        disabled={denyAccess(novaUser!.title, status, "Document")}
+                                        disabled={denyAccess(novaUser!.jobTitle, status, "Document")}
                                     />
                                 </Box>
                             </Item>
@@ -1423,7 +1434,7 @@ export default function EditPartsReqForm(props: Props) {
                                                                 onChange={onReceivedChange(index)}
                                                                 InputProps={{
                                                                     inputProps: { min: partsReq.parts[index].received, max: row.qty },
-                                                                    readOnly: denyAccess(novaUser!.title, status, "Received")
+                                                                    readOnly: denyAccess(novaUser!.jobTitle, status, "Received")
                                                                 }}
                                                                 sx={{ width: "100%" }}
                                                                 helperText={!rows[index].itemNumber && " "}
@@ -1438,7 +1449,7 @@ export default function EditPartsReqForm(props: Props) {
                                                             onChange={onQtyChange(index)}
                                                             InputProps={{
                                                                 inputProps: { min: 1 },
-                                                                readOnly: denyAccess(novaUser!.title, status, "Needed")
+                                                                readOnly: denyAccess(novaUser!.jobTitle, status, "Needed")
                                                             }}
                                                             sx={{ width: "100%" }}
                                                             helperText={!rows[index].itemNumber && " "}
@@ -1543,7 +1554,7 @@ export default function EditPartsReqForm(props: Props) {
                                                                 )
                                                             }}
                                                             PopperComponent={CustomPopper}
-                                                            readOnly={denyAccess(novaUser!.title, status, "Item")}
+                                                            readOnly={denyAccess(novaUser!.jobTitle, status, "Item")}
                                                         />
                                                     </TableCell>
                                                     <TableCell>
@@ -1554,7 +1565,7 @@ export default function EditPartsReqForm(props: Props) {
                                                             helperText={!rows[index].itemNumber && " "}
                                                             disabled={partExists(rows[index].itemNumber)}
                                                             InputProps={{
-                                                                readOnly: denyAccess(novaUser!.title, status, "Description")
+                                                                readOnly: denyAccess(novaUser!.jobTitle, status, "Description")
                                                             }}
                                                         />
                                                     </TableCell>
@@ -1570,10 +1581,10 @@ export default function EditPartsReqForm(props: Props) {
                                                                     step: "0.01",
                                                                     min: 0
                                                                 },
-                                                                readOnly: denyAccess(novaUser!.title, status, "Rate")
+                                                                readOnly: denyAccess(novaUser!.jobTitle, status, "Rate")
                                                             }}
                                                             helperText={!rows[index].itemNumber && " "}
-                                                            disabled={partExists(rows[index].itemNumber) && denyAccess(novaUser!.title, status, "Rate")}
+                                                            disabled={partExists(rows[index].itemNumber) && denyAccess(novaUser!.jobTitle, status, "Rate")}
                                                         />
                                                     </TableCell>
                                                     <TableCell sx={{ paddingBottom: 0 }}>{row.cost ? `$${(Number(row.cost) * row.qty).toFixed(2)}` : ""}</TableCell>
@@ -1599,7 +1610,7 @@ export default function EditPartsReqForm(props: Props) {
                                                             <IconButton
                                                                 onClick={() => removeRow(index)}
                                                                 disableRipple
-                                                                disabled={denyAccess(novaUser!.title, status)}
+                                                                disabled={denyAccess(novaUser!.jobTitle, status)}
                                                             >
                                                                 <DeleteIcon />
                                                             </IconButton>
@@ -1628,7 +1639,7 @@ export default function EditPartsReqForm(props: Props) {
                                     variant="contained"
                                     startIcon={<AddIcon />}
                                     onClick={onCreateRow}
-                                    disabled={partsFetching || denyAccess(novaUser!.title, status)}
+                                    disabled={partsFetching || denyAccess(novaUser!.jobTitle, status)}
                                     sx={{
                                         marginTop: "5px", backgroundColor: theme.palette.primary.dark,
                                         "&.MuiButton-root:hover": {

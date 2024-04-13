@@ -7,6 +7,16 @@
 
 */
 
+-- Set contact column to be nullable
+ALTER TABLE "parts_req"
+ALTER COLUMN "contact"
+DROP NOT NULL;
+
+-- Convert empty strings to null in contact column
+UPDATE "parts_req"
+SET contact = NULL
+WHERE contact = '';
+
 -- Add new columns
 ALTER TABLE "parts_req"
 ADD COLUMN     "afe_id" TEXT,

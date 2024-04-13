@@ -40,7 +40,7 @@ export default function PageList(props: Props) {
             sx={{ padding: 0 }}
         >
             {pages.map((page) => {
-                const canAccess = page.titles ? page.titles.includes(user.title) : true
+                const canAccess = page.titles ? page.titles.includes(user.jobTitle) : true
 
                 return (canAccess ?
                     (

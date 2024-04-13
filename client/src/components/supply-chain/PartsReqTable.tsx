@@ -85,10 +85,10 @@ export default function PartsReqTable(props: Props) {
                             sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                         >
                             <StyledTableCell>{partsReq.id}</StyledTableCell>
-                            <StyledTableCell>{partsReq.requester}</StyledTableCell>
+                            <StyledTableCell>{`${partsReq.requester.firstName} ${partsReq.requester.lastName}`}</StyledTableCell>
                             <StyledTableCell>{new Date(partsReq.date).toLocaleDateString()}</StyledTableCell>
                             {partsReq.afe ?
-                                <StyledTableCell>{`AFE: ${partsReq.afe}`}</StyledTableCell> :
+                                <StyledTableCell>{`AFE: ${partsReq.afe.number}`}</StyledTableCell> :
                                 partsReq.so ?
                                     <StyledTableCell>{`SO: ${partsReq.so}`}</StyledTableCell> :
                                     <StyledTableCell />
@@ -141,7 +141,7 @@ export default function PartsReqTable(props: Props) {
                             <StyledTableCell>${calcCost(partsReq.parts).toFixed(2)}</StyledTableCell>
                             <StyledTableCell>
                                 {<div style={{ display: "flex", alignItems: "center" }}>
-                                    {svpApprovalRequired(partsReq.unit, partsReq.parts) &&
+                                    {svpApprovalRequired(partsReq.unit ?? null, partsReq.parts) &&
                                         (partsReq.status === "Pending Approval" || partsReq.status === "Rejected - Adjustments Required") ?
                                         <Tooltip
                                             title="Travis Yount Must Approve All Non-PM Parts"

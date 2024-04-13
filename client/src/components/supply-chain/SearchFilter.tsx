@@ -3,6 +3,7 @@ import * as React from "react"
 import { Unit } from "../../types/unit"
 import { NovaUser } from "../../types/novaUser"
 import { PartsReqQuery } from "../../types/partsReq"
+import { AFE } from "../../types/afe"
 
 import { useAFEs } from "../../hooks/afe"
 import { useSOs } from "../../hooks/so"
@@ -51,10 +52,10 @@ export default function SearchFilter(props: Props) {
         }))
     }
 
-    const handleAfeChange = (_e: React.SyntheticEvent<Element, Event>, value: Array<{ number: string, unit: string, location: string | null }>) => {
+    const handleAfeChange = (_e: React.SyntheticEvent<Element, Event>, value: Array<AFE>) => {
         setPartsReqQuery(prevState => ({
             ...prevState,
-            afe: value.map((val) => val.number)
+            afe: value.map((val) => val.id)
         }))
     }
 
@@ -96,7 +97,7 @@ export default function SearchFilter(props: Props) {
     const handleRequesterChange = (_e: React.SyntheticEvent<Element, Event>, value: Array<NovaUser>) => {
         setPartsReqQuery(prevState => ({
             ...prevState,
-            requester: value.map(item => `${item.firstName} ${item.lastName}`)
+            requester: value.map((requester) => requester.id)
         }))
     }
 

@@ -820,14 +820,14 @@ export default function EditPartsReqForm(props: Props) {
                                     <StyledTextField
                                         variant="standard"
                                         label="Parts Requester"
-                                        defaultValue={requester}
+                                        defaultValue={`${requester.firstName} ${requester.lastName}`}
                                         InputProps={{ readOnly: true }}
                                     />
                                     {contact &&
                                         <StyledTextField
                                             variant="standard"
                                             label="Supply Chain Contact"
-                                            defaultValue={contact}
+                                            defaultValue={`${contact.firstName} ${contact.lastName}`}
                                             InputProps={{ readOnly: true }}
                                         />
                                     }

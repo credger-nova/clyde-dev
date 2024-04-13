@@ -117,7 +117,7 @@ export default function PartsReqCard(props: Props) {
             >
                 <CardHeader
                     title={`Parts Requisition #${partsReq.id}`}
-                    subheader={`${partsReq.requester} - ${new Date(partsReq.date).toLocaleDateString()}`}
+                    subheader={`${partsReq.requester.firstName} ${partsReq.requester.lastName} - ${new Date(partsReq.date).toLocaleDateString()}`}
                     sx={{ padding: "5px" }}
                 />
                 <Divider />
@@ -131,7 +131,7 @@ export default function PartsReqCard(props: Props) {
                             </Typography>
                             {partsReq.afe ?
                                 <Typography variant="body2" sx={{ width: "65%" }}>
-                                    {`AFE ${partsReq.afe}`}
+                                    {`AFE ${partsReq.afe.number}`}
                                 </Typography> : null
                             }
                             {partsReq.so ?
@@ -241,7 +241,7 @@ export default function PartsReqCard(props: Props) {
                             {`Estimated Cost: $${calcCost(partsReq.parts).toFixed(2)}`}
                         </Typography>
                         {<div style={{ display: "flex", alignItems: "center" }}>
-                            {svpApprovalRequired(partsReq.unit, partsReq.parts) &&
+                            {svpApprovalRequired(partsReq.unit ?? null, partsReq.parts) &&
                                 (partsReq.status === "Pending Approval" || partsReq.status === "Rejected - Adjustments Required") ?
                                 <Tooltip
                                     title="Travis Yount Must Approve All Non-PM Parts"

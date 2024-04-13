@@ -51,7 +51,7 @@ export default function SupplyChain() {
     const [partsReqQuery, setPartsReqQuery] = React.useState<PartsReqQuery>({
         user: isFetched ? novaUser : null,
         status: statuses ?? [],
-        requester: requesters ? requesters.map((user: NovaUser) => `${user.firstName} ${user.lastName}`) : [],
+        requester: requesters ? requesters.map((user: NovaUser) => user.id) : [],
         region: region ? [region.toUpperCase()] : []
     })
     const [open, setOpen] = React.useState<boolean>(false)

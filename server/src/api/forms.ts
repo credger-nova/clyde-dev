@@ -77,11 +77,11 @@ async function allowedRequester(user: NovaUser | undefined | null) {
         } else if (OPS_MANAGER_TITLES.includes(user.jobTitle)) {
             const employees = await getManagersEmployees(user.id)
 
-            return employees.map((employee) => employee.id)
+            return employees.map((employee) => employee.id).concat(user.id)
         } else if (OPS_DIRECTOR_TITLES.includes(user.jobTitle)) {
             const employees = await getDirectorsEmployees(user.id)
 
-            return employees.map((employee) => employee.id)
+            return employees.map((employee) => employee.id).concat(user.id)
         } else if (SVP_TITLES.includes(user.jobTitle)) {
             const allEmployees = await getAllEmployees("false")
 

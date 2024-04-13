@@ -47,7 +47,7 @@ function StatusSkeleton(props: StatusProps) {
     const { statuses } = props
 
     return (
-        <Paper sx={{ padding: "5px", minWidth: "fit-conent", maxWidth: "100%" }}>
+        <Paper sx={{ padding: "5px", minWidth: "fit-content", maxWidth: "100%" }}>
             <Grid container>
                 {statuses.map((status) => {
                     return (
@@ -136,10 +136,10 @@ function calcStatus(partsReqs: Array<PartsReq>, statusGroup: string, requester?:
     }
 
     if (requester) {
-        filtered = filtered.filter((partsReq) => partsReq.requester === requester)
+        filtered = filtered.filter((partsReq) => partsReq.requester.id === requester.id)
     }
     if (requesterGroup) {
-        filtered = filtered.filter((partsReq) => requesterGroup.includes(partsReq.requester))
+        filtered = filtered.filter((partsReq) => requesterGroup.map((user) => user.id).includes(partsReq.requester.id))
     }
     if (region) {
         filtered = filtered.filter((partsReqs) => partsReqs.region === region)
@@ -164,7 +164,7 @@ export default function SummaryTable(props: Props) {
         if (!managersEmployeesFetching && group !== "Supply Chain Management") {
             setPartsReqQuery(prevState => ({
                 ...prevState,
-                requester: managersEmployees?.map((employee) => `${employee.firstName} ${employee.lastName}`).concat(`${novaUser.firstName} ${novaUser.lastName}`)
+                requester: managersEmployees?.map((employee) => employee.id).concat(novaUser.id)
             }))
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -205,7 +205,7 @@ export default function SummaryTable(props: Props) {
 
     if (group === "Field Service") {
         return !partsReqsFetching ? (
-            <Paper sx={{ padding: "5px", minWidth: "fit-conent", maxWidth: "100%" }}>
+            <Paper sx={{ padding: "5px", minWidth: "fit-content", maxWidth: "100%" }}>
                 <Grid container>
                     {STATUS_GROUPS.map((statusGroup) => {
                         return (
@@ -238,7 +238,7 @@ export default function SummaryTable(props: Props) {
         return (
             <>
                 {!partsReqsFetching ? (
-                    <Paper sx={{ padding: "5px", minWidth: "fit-conent", maxWidth: "100%" }}>
+                    <Paper sx={{ padding: "5px", minWidth: "fit-content", maxWidth: "100%" }}>
                         <FormControlLabel
                             control={
                                 <StyledSwitch
@@ -256,7 +256,7 @@ export default function SummaryTable(props: Props) {
                                 return (
                                     <Grid xs={12} sm={4} spacing={2} key={statusGroup}>
                                         <Item
-                                            onClick={() => handleClick(statusGroup, [novaUser])}
+                                            onClick={() => handleClick(statusGroup, managerOnly.includes(novaUser) ? [novaUser] : [novaUser].concat(managersEmployees!))}
                                             sx={{
                                                 margin: "5px", display: "flex", alignItems: "center", justifyContent: "space-between", cursor: "pointer",
                                                 transition: "transform 0.1s ease-in-out",
@@ -410,7 +410,8 @@ export default function SummaryTable(props: Props) {
                                                         return (
                                                             <Grid xs={12} sm={4} spacing={2} key={statusGroup}>
                                                                 <Item
-                                                                    onClick={() => handleClick(statusGroup, directorsEmployees.filter((subordinate) => subordinate.supervisorId === employee.id).concat(employee))}
+                                                                    onClick={() => handleClick(statusGroup, managerOnly.includes(employee) ? [employee] :
+                                                                        directorsEmployees.filter((subordinate) => subordinate.supervisorId === employee.id).concat(employee))}
                                                                     sx={{
                                                                         margin: "5px", display: "flex", alignItems: "center", justifyContent: "space-between", cursor: "pointer",
                                                                         transition: "transform 0.1s ease-in-out",
@@ -538,7 +539,8 @@ export default function SummaryTable(props: Props) {
                                     return (
                                         <Grid xs={12} sm={4} spacing={2} key={statusGroup}>
                                             <Item
-                                                onClick={() => handleClick(statusGroup, directorsEmployees.filter((subordinate) => subordinate.supervisorId === employee.id).concat(employee))}
+                                                onClick={() => handleClick(statusGroup, managerOnly.includes(employee) ? [employee] :
+                                                    directorsEmployees.filter((subordinate) => subordinate.supervisorId === employee.id).concat(employee))}
                                                 sx={{
                                                     margin: "5px", display: "flex", alignItems: "center", justifyContent: "space-between", cursor: "pointer",
                                                     transition: "transform 0.1s ease-in-out",
@@ -630,8 +632,7 @@ export default function SummaryTable(props: Props) {
                     <Accordion
                         key={region}
                         disableGutters
-                        defaultExpanded={novaUser.region.includes(region) ||
-                            `${novaUser.firstName} ${novaUser.lastName}` === "Chris Brooks"}
+                        defaultExpanded={novaUser.region.includes(region)}
                     >
                         <AccordionSummary
                             expandIcon={<ExpandMoreIcon />}
@@ -748,7 +749,7 @@ export default function SummaryTable(props: Props) {
         )
     } else if (group === "IT" || group === "Admin") {
         return !partsReqsFetching ? (
-            <Paper sx={{ padding: "5px", minWidth: "fit-conent", maxWidth: "100%" }}>
+            <Paper sx={{ padding: "5px", minWidth: "fit-content", maxWidth: "100%" }}>
                 <Grid container>
                     {STATUS_GROUPS.map((statusGroup) => {
                         return (

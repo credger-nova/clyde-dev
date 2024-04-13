@@ -1,4 +1,5 @@
 import { CreatePartsReq, PartsReq, PartsReqQuery, UpdatePartsReq } from "../types/partsReq"
+import { NovaUser } from "../types/novaUser"
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import axios from "axios"
@@ -41,7 +42,7 @@ export function useCreatePartsReq() {
 }
 
 // Update Parts Req
-const updatePartsReq = async ({ user, updateReq }: { user: string, updateReq: Partial<UpdatePartsReq> }) => {
+const updatePartsReq = async ({ user, updateReq }: { user: NovaUser, updateReq: Partial<UpdatePartsReq> }) => {
     const body = { user: user, updateReq: updateReq }
 
     const { data } = await axios.put<PartsReq>(`${import.meta.env.VITE_API_BASE}/forms/parts-req/${updateReq.id}`, body)

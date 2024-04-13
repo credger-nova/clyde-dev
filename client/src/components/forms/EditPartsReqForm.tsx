@@ -327,7 +327,7 @@ export default function EditPartsReqForm(props: Props) {
     React.useEffect(() => {
         async function update() {
             const updateReq = {
-                user: `${novaUser?.firstName} ${novaUser?.lastName}`,
+                user: novaUser!,
                 updateReq: {
                     id: partsReq.id,
                     contact: contact,

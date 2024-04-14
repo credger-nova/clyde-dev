@@ -83,33 +83,33 @@ async function allowedRequester(user: NovaUser | undefined | null) {
 
             return employees.map((employee) => employee.id).concat(user.id)
         } else if (SVP_TITLES.includes(user.jobTitle)) {
-            const allEmployees = await getAllEmployees("false")
+            const allEmployees = await getAllEmployees()
 
             return allEmployees.map((employee) => employee.id)
         } else if (SUPPLY_CHAIN_TITLES.includes(user.jobTitle)) {
-            const allEmployees = await getAllEmployees("false")
+            const allEmployees = await getAllEmployees()
 
             return allEmployees.map((employee) => employee.id)
         } else if (SC_MANAGEMENT_TITLES.includes(user.jobTitle)) {
-            const allEmployees = await getAllEmployees("false")
+            const allEmployees = await getAllEmployees()
 
             return allEmployees.map((employee) => employee.id)
         } else if (ADMIN_TITLES.includes(user.jobTitle)) {
-            const allEmployees = await getAllEmployees("false")
+            const allEmployees = await getAllEmployees()
 
             return allEmployees.map((employee) => employee.id)
         } else if (EXEC_TITLES.includes(user.jobTitle)) {
-            const allEmployees = await getAllEmployees("false")
+            const allEmployees = await getAllEmployees()
 
             return allEmployees.map((employee) => employee.id)
         } else if (IT_TITLES.includes(user.jobTitle)) {
-            const allEmployees = await getAllEmployees("false")
+            const allEmployees = await getAllEmployees()
 
             return allEmployees.map((employee) => employee.id)
         }
     }
 
-    const allEmployees = await getAllEmployees("false")
+    const allEmployees = await getAllEmployees()
 
     return allEmployees.map((employee) => employee.id)
 }

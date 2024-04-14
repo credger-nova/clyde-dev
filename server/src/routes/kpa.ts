@@ -4,10 +4,10 @@ import { getAllAfe } from "../api/kpa/afe"
 
 async function routes(fastify: FastifyInstance) {
     // Route to get all employees
-    fastify.get("/employee/all", async (req: FastifyRequest<{ Querystring: { active?: "true" | "false" } }>, res) => {
-        const { active } = req.query
+    fastify.get("/employee/all", async (req: FastifyRequest<{ Querystring: { inactive?: "true" } }>, res) => {
+        const { inactive } = req.query
 
-        const employees = await getAllEmployees(active)
+        const employees = await getAllEmployees(inactive)
 
         res.status(200).send(employees)
     })
@@ -26,21 +26,21 @@ async function routes(fastify: FastifyInstance) {
     })
 
     // Route to get all employees under a manager
-    fastify.get("/manager/:id/employees", async (req: FastifyRequest<{ Params: { id: string }, Querystring: { active: "true" | "false" } }>, res) => {
+    fastify.get("/manager/:id/employees", async (req: FastifyRequest<{ Params: { id: string }, Querystring: { inactive: "true" } }>, res) => {
         const { id } = req.params
-        const { active } = req.query
+        const { inactive } = req.query
 
-        const employees = await getManagersEmployees(id, active)
+        const employees = await getManagersEmployees(id, inactive)
 
         res.status(200).send(employees)
     })
 
     // Route to get all employees under a director
-    fastify.get("/director/:id/employees", async (req: FastifyRequest<{ Params: { id: string }, Querystring: { active: "true" | "false" } }>, res) => {
+    fastify.get("/director/:id/employees", async (req: FastifyRequest<{ Params: { id: string }, Querystring: { inactive: "true" } }>, res) => {
         const { id } = req.params
-        const { active } = req.query
+        const { inactive } = req.query
 
-        const employees = await getDirectorsEmployees(id, active)
+        const employees = await getDirectorsEmployees(id, inactive)
 
         res.status(200).send(employees)
     })

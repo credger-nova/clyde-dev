@@ -18,10 +18,10 @@ export function convertUser(user: any) {
     } as NovaUser
 }
 
-export const getAllEmployees = async (active?: "true" | "false") => {
+export const getAllEmployees = async (inactive?: "true") => {
     const employees = await prisma.user.findMany({
         where: {
-            ...(active === "true" ? { terminationDate: null } : {})
+            ...(inactive !== "true" ? { terminationDate: null } : {})
         },
         orderBy: [
             {
@@ -60,7 +60,7 @@ export const getEmployee = async (email: string) => {
 }
 
 // Get employees under a manager
-export const getManagersEmployees = async (id: string, active?: string) => {
+export const getManagersEmployees = async (id: string, inactive?: "true") => {
     const employees = await prisma.user.findMany({
         where: {
             AND: [
@@ -68,7 +68,7 @@ export const getManagersEmployees = async (id: string, active?: string) => {
                     supervisorId: id
                 },
                 {
-                    ...(active === "true" ? { terminationDate: null } : {})
+                    ...(inactive !== "true" ? { terminationDate: null } : {})
                 }
             ]
         },
@@ -91,7 +91,7 @@ export const getManagersEmployees = async (id: string, active?: string) => {
 }
 
 // Get employees under a director
-export const getDirectorsEmployees = async (id: string, active?: string) => {
+export const getDirectorsEmployees = async (id: string, inactive?: "true") => {
     const employees = await prisma.user.findMany({
         where: {
             AND: [
@@ -107,7 +107,7 @@ export const getDirectorsEmployees = async (id: string, active?: string) => {
                         ]
                 },
                 {
-                    ...(active === "true" ? { terminationDate: null } : {})
+                    ...(inactive !== "true" ? { terminationDate: null } : {})
                 }
             ]
         },

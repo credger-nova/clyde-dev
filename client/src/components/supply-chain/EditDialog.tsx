@@ -2,6 +2,8 @@ import * as React from "react"
 
 import theme from "../../css/theme"
 
+import { NovaUser } from "../../types/novaUser"
+
 import { useParams, useNavigate } from "react-router-dom"
 import { usePartsReq, useGeneratePDF } from "../../hooks/partsReq"
 
@@ -17,9 +19,15 @@ import SaveIcon from '@mui/icons-material/Save'
 import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf'
 import CircularProgress from '@mui/material/CircularProgress'
 
-export default function EditDialog() {
-    const { mutateAsync: generatePDF } = useGeneratePDF()
+interface Props {
+    novaUser: NovaUser | undefined,
+    isFetched: boolean
+}
 
+export default function EditDialog(props: Props) {
+    const { novaUser, isFetched } = props
+
+    const { mutateAsync: generatePDF } = useGeneratePDF()
     const { id } = useParams()
     const navigate = useNavigate()
     const { data: partsReq } = usePartsReq(Number(id))
@@ -115,7 +123,9 @@ export default function EditDialog() {
                         variant="contained"
                         onClick={() => setEdit(!edit)}
                         startIcon={<EditIcon />}
-                        disabled={partsReq.status === "Closed - Parts in Hand" || partsReq.status === "Rejected - Closed"}
+                        disabled={partsReq.status === "Closed - Parts in Hand" || partsReq.status === "Rejected - Closed" ||
+                            (isFetched && novaUser?.jobTitle.includes("Lead") && partsReq.requester.id !== novaUser.id)
+                        }
                         sx={{
                             backgroundColor: theme.palette.primary.dark,
                             "&.MuiButton-root:hover": {

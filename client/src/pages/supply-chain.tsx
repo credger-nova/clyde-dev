@@ -230,7 +230,10 @@ export default function SupplyChain() {
                 }
                 <Routes>
                     <Route path="/:id" element={
-                        <EditDialog />
+                        <EditDialog
+                            novaUser={novaUser}
+                            isFetched={isFetched}
+                        />
                     }>
                     </Route>
                 </Routes>

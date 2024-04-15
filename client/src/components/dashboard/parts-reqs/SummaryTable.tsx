@@ -5,7 +5,7 @@ import { PartsReq, PartsReqQuery } from "../../../types/partsReq"
 
 import { toTitleCase } from "../../../utils/helperFunctions"
 
-import { useManagersEmployees, useDirectorsEmployees } from "../../../hooks/user"
+import { useLeadsEmployees, useManagersEmployees, useDirectorsEmployees } from "../../../hooks/user"
 import { usePartsReqs } from "../../../hooks/partsReq"
 import { useRegions } from "../../../hooks/unit"
 import { useNavigate } from "react-router-dom"
@@ -154,6 +154,7 @@ export default function SummaryTable(props: Props) {
     const [partsReqQuery, setPartsReqQuery] = React.useState<PartsReqQuery>({ user: novaUser })
     const [managerOnly, setManagerOnly] = React.useState<Array<NovaUser>>([])
 
+    const { data: leadsEmployees, isFetching: leadsEmployeesFetching } = useLeadsEmployees(novaUser)
     const { data: managersEmployees, isFetching: managersEmployeesFetching } = useManagersEmployees(novaUser)
     const { data: directorsEmployees, isFetching: directorsEmployeesFetching } = useDirectorsEmployees(novaUser)
     const { data: partsReqs, isFetching: partsReqsFetching } = usePartsReqs(partsReqQuery)
@@ -204,36 +205,98 @@ export default function SummaryTable(props: Props) {
     }
 
     if (group === "Field Service") {
-        return !partsReqsFetching ? (
-            <Paper sx={{ padding: "5px", minWidth: "fit-content", maxWidth: "100%" }}>
-                <Grid container>
-                    {STATUS_GROUPS.map((statusGroup) => {
-                        return (
-                            <Grid xs={12} sm={4} spacing={2} key={statusGroup}>
-                                <Item
-                                    onClick={() => handleClick(statusGroup)}
-                                    sx={{
-                                        margin: "5px", display: "flex", alignItems: "center", justifyContent: "space-between", cursor: "pointer",
-                                        transition: "transform 0.1s ease-in-out",
-                                        "&:hover": {
-                                            transform: "scale3d(1.03, 1.03, 1)"
-                                        }
-                                    }}>
-                                    <Typography>
-                                        {`${statusGroup}:`}
-                                    </Typography>
-                                    <Typography>
-                                        {partsReqs ? calcStatus(partsReqs, statusGroup, novaUser) : 0}
-                                    </Typography>
-                                </Item>
-                            </Grid>
-                        )
-                    })}
-                </Grid>
-            </Paper>
-        ) : <StatusSkeleton
-            statuses={STATUS_GROUPS}
-        />
+        return (
+            <>
+                {!partsReqsFetching ? (
+                    <Paper sx={{ padding: "5px", minWidth: "fit-content", maxWidth: "100%" }}>
+                        <Grid container>
+                            {STATUS_GROUPS.map((statusGroup) => {
+                                return (
+                                    <Grid xs={12} sm={4} spacing={2} key={statusGroup}>
+                                        <Item
+                                            onClick={() => handleClick(statusGroup, [novaUser])}
+                                            sx={{
+                                                margin: "5px", display: "flex", alignItems: "center", justifyContent: "space-between", cursor: "pointer",
+                                                transition: "transform 0.1s ease-in-out",
+                                                "&:hover": {
+                                                    transform: "scale3d(1.03, 1.03, 1)"
+                                                }
+                                            }}>
+                                            <Typography>
+                                                {`${statusGroup}:`}
+                                            </Typography>
+                                            <Typography>
+                                                {partsReqs ? calcStatus(partsReqs, statusGroup, novaUser) : 0}
+                                            </Typography>
+                                        </Item>
+                                    </Grid>
+                                )
+                            })}
+                        </Grid>
+                    </Paper>
+                ) : <StatusSkeleton
+                    statuses={STATUS_GROUPS}
+                />
+                }
+                {!leadsEmployeesFetching && !partsReqsFetching ? leadsEmployees?.map((employee) => {
+                    return (
+                        <Accordion
+                            key={employee.id}
+                            disableGutters
+                        >
+                            <AccordionSummary
+                                expandIcon={<ExpandMoreIcon />}
+                                sx={{
+                                    flexDirection: "row-reverse",
+                                    "& .MuiAccordionSummary-content": {
+                                        margin: 0
+                                    },
+                                    "&.MuiAccordionSummary-root": {
+                                        minHeight: 0,
+                                        margin: "5px 0px"
+                                    }
+                                }}
+                            >
+                                <div>
+                                    {`${employee.firstName} ${employee.lastName}`}
+                                </div>
+                            </AccordionSummary>
+                            <AccordionDetails>
+                                <Divider />
+                                <Grid container>
+                                    {STATUS_GROUPS.map((statusGroup) => {
+                                        return (
+                                            <Grid xs={12} sm={4} spacing={2} key={statusGroup}>
+                                                <Item
+                                                    onClick={() => handleClick(statusGroup, [employee])}
+                                                    sx={{
+                                                        margin: "5px", display: "flex", alignItems: "center", justifyContent: "space-between", cursor: "pointer",
+                                                        transition: "transform 0.1s ease-in-out",
+                                                        "&:hover": {
+                                                            transform: "scale3d(1.03, 1.03, 1)"
+                                                        }
+                                                    }}>
+                                                    <Typography>
+                                                        {`${statusGroup}:`}
+                                                    </Typography>
+                                                    <Typography>
+                                                        {partsReqs ? calcStatus(partsReqs, statusGroup, employee) : 0}
+                                                    </Typography>
+                                                </Item>
+                                            </Grid>
+                                        )
+                                    })}
+                                </Grid>
+                            </AccordionDetails>
+                        </Accordion>
+                    )
+                }) :
+                    <AccordionSkeleton
+                        statuses={STATUS_GROUPS}
+                    />
+                }
+            </>
+        )
     } else if (group === "Ops Manager") {
         return (
             <>

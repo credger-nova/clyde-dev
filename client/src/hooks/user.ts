@@ -31,6 +31,17 @@ export function useAllNovaUsers() {
     })
 }
 
+// Get all lead's employees
+const getLeadsEmployees = async (user: NovaUser) => {
+    const { data } = await axios.get<Array<NovaUser>>(`${import.meta.env.VITE_API_BASE}/kpa/lead/${user.id}/employees`)
+
+    return data
+}
+
+export function useLeadsEmployees(user: NovaUser) {
+    return useQuery({ queryKey: ["employees", user.id], queryFn: () => getLeadsEmployees(user), enabled: user.jobTitle.includes("Lead") })
+}
+
 // Get all manager's employees
 const getManagersEmployees = async (user: NovaUser) => {
     const { data } = await axios.get<Array<NovaUser>>(`${import.meta.env.VITE_API_BASE}/kpa/manager/${user.id}/employees`)

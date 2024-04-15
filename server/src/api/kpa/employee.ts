@@ -1,4 +1,5 @@
 import { NovaUser } from "../../models/novaUser"
+import { LEAD_MECHANICS } from "../../utils/lead-mechanics"
 
 import { prisma } from "../../utils/prisma-client"
 
@@ -57,6 +58,33 @@ export const getEmployee = async (email: string) => {
     } else {
         return null
     }
+}
+
+// Get employees under a lead
+export const getLeadsEmployees = async (id: string) => {
+    // Get list of ids of lead's subordinates
+    const ids = LEAD_MECHANICS.find((group) => group.leads.includes(id))?.mechanics.map((mechanic) => mechanic.id)
+
+    const employees = await prisma.user.findMany({
+        where: {
+            id: { in: ids ?? [] }
+        },
+        orderBy: [
+            {
+                firstName: "asc"
+            },
+            {
+                lastName: "asc"
+            }
+        ]
+    })
+
+    // Convert to correct type
+    let novaEmployees = employees.map((employee) => {
+        return convertUser(employee)
+    })
+
+    return novaEmployees
 }
 
 // Get employees under a manager

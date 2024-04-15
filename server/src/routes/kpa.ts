@@ -1,5 +1,5 @@
 import { FastifyInstance, FastifyRequest } from "fastify"
-import { getAllEmployees, getDirectorsEmployees, getEmployee, getManagersEmployees } from "../api/kpa/employee"
+import { getAllEmployees, getDirectorsEmployees, getEmployee, getLeadsEmployees, getManagersEmployees } from "../api/kpa/employee"
 import { getAllAfe } from "../api/kpa/afe"
 
 async function routes(fastify: FastifyInstance) {
@@ -23,6 +23,14 @@ async function routes(fastify: FastifyInstance) {
         } else {
             res.status(404).send({ error: `Employee with email: ${email} not found` })
         }
+    })
+
+    fastify.get("/lead/:id/employees", async (req: FastifyRequest<{ Params: { id: string } }>, res) => {
+        const { id } = req.params
+
+        const employees = await getLeadsEmployees(id)
+
+        res.status(200).send(employees)
     })
 
     // Route to get all employees under a manager

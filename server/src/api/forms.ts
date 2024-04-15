@@ -1,4 +1,5 @@
 import { TITLES } from "../utils/titles"
+import { LEAD_MECHANICS } from "../utils/lead-mechanics"
 import { UNIT_PLANNING } from "../utils/unitPlanning"
 import { PartsReq, PartsReqQuery, CreatePartsReq, UpdatePartsReq, OrderRow } from "../models/partsReq"
 import { AFE } from "../models/afe"
@@ -73,7 +74,12 @@ function convertPartsReq(partsReq: any) {
 async function allowedRequester(user: NovaUser | undefined | null) {
     if (user) {
         if (FIELD_SERVICE_TITLES.includes(user.jobTitle)) {
-            return [user.id]
+            if (user.jobTitle.includes("Lead")) {
+                const mechanics = LEAD_MECHANICS.find(group => group.leads.includes(user.id))?.mechanics
+                return [user.id].concat(mechanics?.map(mechanic => mechanic.id) ?? [])
+            } else {
+                return [user.id]
+            }
         } else if (OPS_MANAGER_TITLES.includes(user.jobTitle)) {
             const employees = await getManagersEmployees(user.id)
 

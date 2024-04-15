@@ -761,7 +761,7 @@ export default function SummaryTable(props: Props) {
                     statuses={SC_GROUPS}
                 />
         )
-    } else if (group === "Supply Chain Management" || group === "SVP" || group === "Executive Management") {
+    } else if (group === "Supply Chain Management" || group === "SVP" || group === "Executive Management" || group === "IT" || group === "Admin") {
         return (
             !partsReqsFetching && !regionsFetching ? regions?.map((region) => {
                 region = toTitleCase(region)
@@ -843,7 +843,7 @@ export default function SummaryTable(props: Props) {
                     statuses={STATUS_GROUPS}
                 />
         )
-    } else if (group === "IT" || group === "Admin") {
+    } else if (group === "") {
         return !partsReqsFetching ? (
             <Paper sx={{ padding: "5px", minWidth: "fit-content", maxWidth: "100%" }}>
                 <Grid container>

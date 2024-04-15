@@ -35,6 +35,9 @@ interface StatusProps {
 const STATUS_GROUPS = ["Pending Approval", "Pending Quote", "Rejected", "Approved", "Sourcing", "Parts Ordered", "Parts Staged", "Closed"]
 const SC_GROUPS = ["Pending Quote", "Approved", "Sourcing", "Parts Ordered", "Parts Staged"]
 
+const UNIT_DOWN_STATUSES = ["Pending Approval", "Pending Quote", "Quote Provided - Pending Approval", "Rejected - Adjustments Required", "Approved - On Hold", "Approved",
+    "Sourcing - Information Required", "Sourcing - Information Provided", "Sourcing - Pending Amex Approval", "Sourcing - Amex Approved", "Ordered - Awaiting Parts"]
+
 const Item = styled(Paper)(({ theme }) => ({
     backgroundColor: "#242424",
     ...theme.typography.body2,
@@ -148,6 +151,14 @@ function calcStatus(partsReqs: Array<PartsReq>, statusGroup: string, requester?:
     return filtered.length
 }
 
+function calcUnitDown(partsReqs: Array<PartsReq>, region: string) {
+    const filtered = partsReqs.filter((partsReq) => partsReq.region === region && partsReq.urgency === "Unit Down" &&
+        UNIT_DOWN_STATUSES.includes(partsReq.status)
+    )
+
+    return filtered.length
+}
+
 export default function SummaryTable(props: Props) {
     const { novaUser, group } = props
 
@@ -171,7 +182,7 @@ export default function SummaryTable(props: Props) {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [managersEmployeesFetching])
 
-    const handleClick = (statusGroup: string, requesters?: Array<NovaUser>, region?: string) => {
+    const handleClick = (statusGroup: string, requesters?: Array<NovaUser>, region?: string, urgency?: string) => {
         let statuses: Array<string> = []
         if (statusGroup === "Pending Quote") {
             statuses = ["Pending Quote"]
@@ -189,9 +200,11 @@ export default function SummaryTable(props: Props) {
             statuses = ["Completed - Parts Staged/Delivered"]
         } else if (statusGroup === "Closed") {
             statuses = ["Closed - Partially Received", "Closed - Parts in Hand", "Rejected - Closed"]
+        } else if (statusGroup === "Unit Down") {
+            statuses = UNIT_DOWN_STATUSES
         }
 
-        navigate("/supply-chain", { state: { statuses: statuses, requesters: requesters, region: region } })
+        navigate("/supply-chain", { state: { statuses: statuses, requesters: requesters, region: region, urgency: urgency } })
     }
 
     const handleManagerOnlyChange = (event: React.ChangeEvent<HTMLInputElement>, manager: NovaUser) => {
@@ -222,10 +235,10 @@ export default function SummaryTable(props: Props) {
                                                     transform: "scale3d(1.03, 1.03, 1)"
                                                 }
                                             }}>
-                                            <Typography>
+                                            <Typography variant="subtitle2" fontWeight="400">
                                                 {`${statusGroup}:`}
                                             </Typography>
-                                            <Typography>
+                                            <Typography variant="subtitle2" fontWeight="400">
                                                 {partsReqs ? calcStatus(partsReqs, statusGroup, novaUser) : 0}
                                             </Typography>
                                         </Item>
@@ -276,10 +289,10 @@ export default function SummaryTable(props: Props) {
                                                             transform: "scale3d(1.03, 1.03, 1)"
                                                         }
                                                     }}>
-                                                    <Typography>
+                                                    <Typography variant="subtitle2" fontWeight="400">
                                                         {`${statusGroup}:`}
                                                     </Typography>
-                                                    <Typography>
+                                                    <Typography variant="subtitle2" fontWeight="400">
                                                         {partsReqs ? calcStatus(partsReqs, statusGroup, employee) : 0}
                                                     </Typography>
                                                 </Item>
@@ -327,10 +340,10 @@ export default function SummaryTable(props: Props) {
                                                     transform: "scale3d(1.03, 1.03, 1)"
                                                 }
                                             }}>
-                                            <Typography>
+                                            <Typography variant="subtitle2" fontWeight="400">
                                                 {`${statusGroup}:`}
                                             </Typography>
-                                            <Typography>
+                                            <Typography variant="subtitle2" fontWeight="400">
                                                 {partsReqs ? calcStatus(partsReqs, statusGroup, undefined, managerOnly.includes(novaUser) ?
                                                     [novaUser] :
                                                     managersEmployees?.filter((subordinate) => subordinate.supervisorId === novaUser.id).concat(novaUser)
@@ -384,10 +397,10 @@ export default function SummaryTable(props: Props) {
                                                             transform: "scale3d(1.03, 1.03, 1)"
                                                         }
                                                     }}>
-                                                    <Typography>
+                                                    <Typography variant="subtitle2" fontWeight="400">
                                                         {`${statusGroup}:`}
                                                     </Typography>
-                                                    <Typography>
+                                                    <Typography variant="subtitle2" fontWeight="400">
                                                         {partsReqs ? calcStatus(partsReqs, statusGroup, novaUser) : 0}
                                                     </Typography>
                                                 </Item>
@@ -482,10 +495,10 @@ export default function SummaryTable(props: Props) {
                                                                             transform: "scale3d(1.03, 1.03, 1)"
                                                                         }
                                                                     }}>
-                                                                    <Typography>
+                                                                    <Typography variant="subtitle2" fontWeight="400">
                                                                         {`${statusGroup}:`}
                                                                     </Typography>
-                                                                    <Typography>
+                                                                    <Typography variant="subtitle2" fontWeight="400">
                                                                         {partsReqs ? calcStatus(partsReqs, statusGroup, undefined, managerOnly.includes(employee) ?
                                                                             [employee] :
                                                                             directorsEmployees.filter((subordinate) => subordinate.supervisorId === employee.id).concat(employee)
@@ -536,10 +549,10 @@ export default function SummaryTable(props: Props) {
                                                                                         transform: "scale3d(1.03, 1.03, 1)"
                                                                                     }
                                                                                 }}>
-                                                                                <Typography>
+                                                                                <Typography variant="subtitle2" fontWeight="400">
                                                                                     {`${statusGroup}:`}
                                                                                 </Typography>
-                                                                                <Typography>
+                                                                                <Typography variant="subtitle2" fontWeight="400">
                                                                                     {partsReqs ? calcStatus(partsReqs, statusGroup, user) : 0}
                                                                                 </Typography>
                                                                             </Item>
@@ -611,10 +624,10 @@ export default function SummaryTable(props: Props) {
                                                         transform: "scale3d(1.03, 1.03, 1)"
                                                     }
                                                 }}>
-                                                <Typography>
+                                                <Typography variant="subtitle2" fontWeight="400">
                                                     {`${statusGroup}:`}
                                                 </Typography>
-                                                <Typography>
+                                                <Typography variant="subtitle2" fontWeight="400">
                                                     {partsReqs ? calcStatus(partsReqs, statusGroup, undefined, managerOnly.includes(employee) ?
                                                         [employee] :
                                                         directorsEmployees.filter((subordinate) => subordinate.supervisorId === employee.id).concat(employee)
@@ -665,10 +678,10 @@ export default function SummaryTable(props: Props) {
                                                                     transform: "scale3d(1.03, 1.03, 1)"
                                                                 }
                                                             }}>
-                                                            <Typography>
+                                                            <Typography variant="subtitle2" fontWeight="400">
                                                                 {`${statusGroup}:`}
                                                             </Typography>
-                                                            <Typography>
+                                                            <Typography variant="subtitle2" fontWeight="400">
                                                                 {partsReqs ? calcStatus(partsReqs, statusGroup, user) : 0}
                                                             </Typography>
                                                         </Item>
@@ -729,10 +742,10 @@ export default function SummaryTable(props: Props) {
                                                         transform: "scale3d(1.03, 1.03, 1)"
                                                     }
                                                 }}>
-                                                <Typography>
+                                                <Typography variant="subtitle2" fontWeight="400">
                                                     {`${statusGroup}:`}
                                                 </Typography>
-                                                <Typography>
+                                                <Typography variant="subtitle2" fontWeight="400">
                                                     {partsReqs ? calcStatus(partsReqs, statusGroup, undefined, undefined, region) : 0}
                                                 </Typography>
                                             </Item>
@@ -753,7 +766,7 @@ export default function SummaryTable(props: Props) {
             !partsReqsFetching && !regionsFetching ? regions?.map((region) => {
                 region = toTitleCase(region)
                 return (
-                    <Grid xs={12} sm={6} sx={{ padding: "2px" }} key={region}>
+                    <Grid xs={12} sm={6} sx={{ padding: "2px", marginBottom: "5px" }} key={region}>
                         <Accordion
                             disableGutters
                             defaultExpanded
@@ -767,15 +780,15 @@ export default function SummaryTable(props: Props) {
                                     },
                                     "&.MuiAccordionSummary-root": {
                                         minHeight: 0,
-                                        margin: "5px 0px"
+                                        margin: 0
                                     }
                                 }}
                             >
-                                <div>
+                                <h4 style={{ margin: 0 }}>
                                     {region}
-                                </div>
+                                </h4>
                             </AccordionSummary>
-                            <AccordionDetails>
+                            <AccordionDetails sx={{ padding: "8px" }}>
                                 <Divider />
                                 <Grid container>
                                     {STATUS_GROUPS.map((statusGroup) => {
@@ -790,16 +803,36 @@ export default function SummaryTable(props: Props) {
                                                             transform: "scale3d(1.03, 1.03, 1)"
                                                         }
                                                     }}>
-                                                    <Typography>
+                                                    <Typography variant="subtitle2" fontWeight="400">
                                                         {`${statusGroup}:`}
                                                     </Typography>
-                                                    <Typography>
+                                                    <Typography variant="subtitle2" fontWeight="400">
                                                         {partsReqs ? calcStatus(partsReqs, statusGroup, undefined, undefined, region) : 0}
                                                     </Typography>
                                                 </Item>
                                             </Grid>
                                         )
                                     })}
+                                </Grid>
+                                <Divider />
+                                <Grid xs={12} sm={4} spacing={2} key={region}>
+                                    <Item
+                                        onClick={() => handleClick("Unit Down", undefined, region, "Unit Down")}
+                                        sx={{
+                                            margin: "5px", display: "flex", alignItems: "center", justifyContent: "space-between", cursor: "pointer",
+                                            transition: "transform 0.1s ease-in-out",
+                                            "&:hover": {
+                                                transform: "scale3d(1.03, 1.03, 1)"
+                                            }
+                                        }}
+                                    >
+                                        <Typography variant="subtitle2" fontWeight="400">
+                                            {`Unit Down: `}
+                                        </Typography>
+                                        <Typography variant="subtitle2" fontWeight="400">
+                                            {partsReqs ? calcUnitDown(partsReqs, region) : 0}
+                                        </Typography>
+                                    </Item>
                                 </Grid>
                             </AccordionDetails>
                         </Accordion>
@@ -826,10 +859,10 @@ export default function SummaryTable(props: Props) {
                                             transform: "scale3d(1.03, 1.03, 1)"
                                         }
                                     }}>
-                                    <Typography>
+                                    <Typography variant="subtitle2" fontWeight="400">
                                         {`${statusGroup}:`}
                                     </Typography>
-                                    <Typography>
+                                    <Typography variant="subtitle2" fontWeight="400">
                                         {partsReqs ? calcStatus(partsReqs, statusGroup) : 0}
                                     </Typography>
                                 </Item>

@@ -50,9 +50,9 @@ export default function PartsReqSummary(props: Props) {
         <Item>
             <Box sx={{ display: "flex", flexDirection: "column" }}>
                 <Box sx={{ display: "flex", flexDirection: "row" }}>
-                    <h4 style={{ margin: "0px 0px 0px 34px", width: "100%", textAlign: "center" }}>
+                    <h3 style={{ margin: "0px 0px 0px 34px", width: "100%", textAlign: "center" }}>
                         Parts Requisitions
-                    </h4>
+                    </h3>
                     <IconButton
                         onClick={handleRefreshPartsReqs}
                         disableRipple

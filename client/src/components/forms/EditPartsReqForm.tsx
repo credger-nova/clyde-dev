@@ -286,7 +286,7 @@ export default function EditPartsReqForm(props: Props) {
 
     // Check if a comment is needed if the PR is being set to Rejected - Closed
     React.useEffect(() => {
-        if (status === "Rejected - Closed") {
+        if (status === "Rejected - Closed" && partsReq.status !== "Rejected - Closed") {
             const newComments = (comments as Array<Comment>).filter(comment => !comment.id)
             if (newComments.length === 0) {
                 setNeedsComment(true)
@@ -296,7 +296,7 @@ export default function EditPartsReqForm(props: Props) {
         } else {
             setNeedsComment(false)
         }
-    }, [status, comments, setNeedsComment])
+    }, [partsReq, status, comments, setNeedsComment])
 
     // If user cancels an edit session, reset state
     React.useEffect(() => {

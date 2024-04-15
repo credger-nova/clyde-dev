@@ -575,7 +575,7 @@ export const updatePartsReq = async (id: number, user: NovaUser, updateReq: Part
     // AFE change
     if (oldPartsReq?.afe !== updateReq.afe) {
         updated = true
-        const message = `AFE Change: ${oldPartsReq?.afe} -> ${updateReq.afe}`
+        const message = `AFE Change: ${oldPartsReq?.afe?.number} -> ${updateReq.afe?.number}`
 
         await genSystemComment(message, user, id)
     }

@@ -55,6 +55,7 @@ import Skeleton from '@mui/material/Skeleton'
 import Checkbox from '@mui/material/Checkbox'
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline'
 import Tooltip from '@mui/material/Tooltip'
+import Typography from '@mui/material/Typography'
 
 const URGENCY = ["Unit Down", "Unit Set", "Rush", "Standard"]
 const ORDER_TYPE = [{ type: "Rental" }, { type: "Third-Party" }, { type: "Shop Supplies" }, { type: "Truck Supplies" }, { type: "Stock", titles: ["Supply Chain", "Software"] }]
@@ -823,13 +824,41 @@ export default function EditPartsReqForm(props: Props) {
                                         defaultValue={`${requester.firstName} ${requester.lastName}`}
                                         InputProps={{ readOnly: true }}
                                     />
+                                    <div>
+                                        <i>
+                                            <Typography variant="caption">
+                                                {requester?.jobTitle}
+                                            </Typography>
+                                        </i>
+                                        {requester?.cellPhone && <i>
+                                            <Typography variant="caption">
+                                                {` - ${requester?.cellPhone}`}
+                                            </Typography>
+                                        </i>
+                                        }
+                                    </div>
                                     {contact &&
-                                        <StyledTextField
-                                            variant="standard"
-                                            label="Supply Chain Contact"
-                                            defaultValue={`${contact.firstName} ${contact.lastName}`}
-                                            InputProps={{ readOnly: true }}
-                                        />
+                                        <>
+                                            <StyledTextField
+                                                variant="standard"
+                                                label="Supply Chain Contact"
+                                                defaultValue={`${contact.firstName} ${contact.lastName}`}
+                                                InputProps={{ readOnly: true }}
+                                            />
+                                            <div>
+                                                <i>
+                                                    <Typography variant="caption">
+                                                        {contact?.jobTitle}
+                                                    </Typography>
+                                                </i>
+                                                {contact?.cellPhone && <i>
+                                                    <Typography variant="caption">
+                                                        {` - ${contact?.cellPhone}`}
+                                                    </Typography>
+                                                </i>
+                                                }
+                                            </div>
+                                        </>
                                     }
                                     <StyledTextField
                                         variant="standard"

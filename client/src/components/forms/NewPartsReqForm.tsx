@@ -50,6 +50,7 @@ import AddFileButton from "./AddFileButton"
 import Checkbox from '@mui/material/Checkbox'
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline'
 import Tooltip from '@mui/material/Tooltip'
+import Typography from '@mui/material/Typography'
 
 const URGENCY = ["Unit Down", "Unit Set", "Rush", "Standard"]
 const ORDER_TYPE = [{ type: "Rental" }, { type: "Third-Party" }, { type: "Shop Supplies" }, { type: "Truck Supplies" }, { type: "Stock", titles: ["Supply Chain", "Software"] }]
@@ -363,6 +364,19 @@ export default function PartsReqForm() {
                                         value={`${requester?.firstName} ${requester?.lastName}`}
                                         InputProps={{ readOnly: true }}
                                     />
+                                    <div>
+                                        <i>
+                                            <Typography variant="caption">
+                                                {requester?.jobTitle}
+                                            </Typography>
+                                        </i>
+                                        {requester?.cellPhone && <i>
+                                            <Typography variant="caption">
+                                                {` - ${requester?.cellPhone}`}
+                                            </Typography>
+                                        </i>
+                                        }
+                                    </div>
                                     <StyledTextField
                                         variant="standard"
                                         label="Order Date"

@@ -29,7 +29,11 @@ export default function Home() {
                         container
                         direction="row"
                     >
-                        <Grid xs={12} sm={userGroup === "Supply Chain Management" ? 12 : 6} sx={{ padding: "20px" }}>
+                        <Grid
+                            xs={12}
+                            sm={userGroup === "Supply Chain Management" || userGroup === "SVP" || userGroup === "Executive Management" ||
+                                userGroup === "Admind" || userGroup === "IT" ? 12 : 6}
+                            sx={{ padding: "20px" }}>
                             <PartsReqSummary
                                 novaUser={novaUser}
                             />

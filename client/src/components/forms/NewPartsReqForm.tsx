@@ -340,6 +340,11 @@ export default function PartsReqForm() {
         return part ? true : false
     }
 
+    function partIsInventoryItem(itemNumber: string): boolean {
+        const part = parts?.find((el) => el.itemNumber.toUpperCase() === itemNumber.toUpperCase())
+        return part?.type === "inventoryitem"
+    }
+
     if (isFetched) {
         return (
             <Box sx={{
@@ -877,7 +882,8 @@ export default function PartsReqForm() {
                                                                         id: inputValue,
                                                                         description: "",
                                                                         cost: "",
-                                                                        mode: ""
+                                                                        mode: "",
+                                                                        type: ""
                                                                     })
                                                                 }
 
@@ -943,7 +949,7 @@ export default function PartsReqForm() {
                                                             value={row.description}
                                                             onChange={onDescriptionChange(index)}
                                                             helperText={!rows[index].itemNumber && " "}
-                                                            disabled={partExists(rows[index].itemNumber)}
+                                                            disabled={partExists(rows[index].itemNumber) && partIsInventoryItem(rows[index].itemNumber)}
                                                         />
                                                     </TableCell>
                                                     <TableCell>

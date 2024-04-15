@@ -3,5 +3,6 @@ export interface Part {
     itemNumber: string,
     description: string,
     cost: string,
-    mode: string
+    mode: string,
+    type: string
 }

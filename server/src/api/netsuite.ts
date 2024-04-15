@@ -22,8 +22,9 @@ export const getAllItems = async () => {
             id: part.id,
             itemNumber: part.values.itemid,
             description: part.values.salesdescription,
-            cost: part.values.averagecost ?  Number(part.values.averagecost).toFixed(2) : "",
-            mode: part.values.custitem_order_mode.length > 0 ? part.values.custitem_order_mode[0].text : ""
+            cost: part.values.averagecost ? Number(part.values.averagecost).toFixed(2) : "",
+            mode: part.values.custitem_order_mode.length > 0 ? part.values.custitem_order_mode[0].text : "",
+            type: part.recordType
         } as Part
     })
 

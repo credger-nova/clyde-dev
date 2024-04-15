@@ -571,6 +571,11 @@ export default function EditPartsReqForm(props: Props) {
         return part ? true : false
     }
 
+    function partIsInventoryItem(itemNumber: string): boolean {
+        const part = parts?.find((el) => el.itemNumber.toUpperCase() === itemNumber.toUpperCase())
+        return part?.type === "inventoryitem"
+    }
+
     function denyAccess(title: string, status: string, field?: string) {
         if (!edit) {
             return true
@@ -1525,7 +1530,8 @@ export default function EditPartsReqForm(props: Props) {
                                                                         id: inputValue,
                                                                         description: "",
                                                                         cost: "",
-                                                                        mode: ""
+                                                                        mode: "",
+                                                                        type: ""
                                                                     })
                                                                 }
 
@@ -1592,7 +1598,7 @@ export default function EditPartsReqForm(props: Props) {
                                                             value={row.description}
                                                             onChange={onDescriptionChange(index)}
                                                             helperText={!rows[index].itemNumber && " "}
-                                                            disabled={partExists(rows[index].itemNumber)}
+                                                            disabled={partExists(rows[index].itemNumber) && partIsInventoryItem(rows[index].itemNumber)}
                                                             InputProps={{
                                                                 readOnly: denyAccess(novaUser!.jobTitle, status, "Description")
                                                             }}

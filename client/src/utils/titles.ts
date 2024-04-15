@@ -57,6 +57,7 @@ export const TITLES: Array<{ group: string, titles: Array<string> }> = [
         group: "Executive Management",
         titles: [
             "Director - Business Development",
+            "Vice President - Permian Operations",
             "Chief Financial Officer",
             "President and Chief Executive Officer"
         ]

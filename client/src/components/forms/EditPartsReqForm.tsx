@@ -124,11 +124,13 @@ const STATUS: Array<{ status: string, titles: Array<string> }> = [
     {
         status: "Ordered - Awaiting Parts",
         titles: (TITLES.find(item => item.group === "Supply Chain")?.titles ?? [])
+            .concat(TITLES.find(item => item.group === "Supply Chain Management")?.titles ?? [])
             .concat(TITLES.find(item => item.group === "IT")?.titles ?? [])
     },
     {
         status: "Completed - Parts Staged/Delivered",
         titles: (TITLES.find(item => item.group === "Supply Chain")?.titles ?? [])
+            .concat(TITLES.find(item => item.group === "Supply Chain Management")?.titles ?? [])
             .concat(TITLES.find(item => item.group === "IT")?.titles ?? [])
     },
     {

@@ -832,7 +832,7 @@ export default function EditPartsReqForm(props: Props) {
                                         </i>
                                         {requester?.cellPhone && <i>
                                             <Typography variant="caption">
-                                                {` - ${requester?.cellPhone}`}
+                                                {` | ${requester?.cellPhone}`}
                                             </Typography>
                                         </i>
                                         }
@@ -853,7 +853,7 @@ export default function EditPartsReqForm(props: Props) {
                                                 </i>
                                                 {contact?.cellPhone && <i>
                                                     <Typography variant="caption">
-                                                        {` - ${contact?.cellPhone}`}
+                                                        {` | ${contact?.cellPhone}`}
                                                     </Typography>
                                                 </i>
                                                 }

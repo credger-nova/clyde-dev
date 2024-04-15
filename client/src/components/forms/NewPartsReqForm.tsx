@@ -372,7 +372,7 @@ export default function PartsReqForm() {
                                         </i>
                                         {requester?.cellPhone && <i>
                                             <Typography variant="caption">
-                                                {` - ${requester?.cellPhone}`}
+                                                {` | ${requester?.cellPhone}`}
                                             </Typography>
                                         </i>
                                         }

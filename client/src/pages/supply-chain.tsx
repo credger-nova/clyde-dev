@@ -1,5 +1,13 @@
 import * as React from "react"
 
+import { NovaUser } from "../types/novaUser"
+
+import { useAuth0 } from "@auth0/auth0-react"
+import { usePartsReqs } from "../hooks/partsReq"
+import { useNovaUser } from "../hooks/user"
+import { useLocation } from "react-router-dom"
+import { useQueryClient } from "@tanstack/react-query"
+
 import PartsReqCard, { SkeletonCard } from "../components/supply-chain/PartsReqCard"
 import Grid from '@mui/material/Unstable_Grid2'
 import Box from '@mui/material/Box'
@@ -18,12 +26,10 @@ import Tooltip from '@mui/material/Tooltip'
 import TablePagination from '@mui/material/TablePagination'
 import PartsReqTable from "../components/supply-chain/PartsReqTable"
 import { Routes, Route } from "react-router-dom"
+import Button from '@mui/material/Button'
+import theme from '../css/theme'
+import RefreshIcon from '@mui/icons-material/Refresh'
 
-import { useAuth0 } from "@auth0/auth0-react"
-import { usePartsReqs } from "../hooks/partsReq"
-import { useNovaUser } from "../hooks/user"
-import { useLocation } from "react-router-dom"
-import { NovaUser } from "../types/novaUser"
 
 const StyledToggleButtonGroup = styled(ToggleButtonGroup)(({ theme }) => ({
     [`& .${toggleButtonGroupClasses.grouped}`]: {
@@ -46,6 +52,7 @@ export default function SupplyChain() {
     const { user } = useAuth0()
     const { data: novaUser, isFetched } = useNovaUser(user?.email)
     const { state } = useLocation()
+    const queryClient = useQueryClient()
     const { statuses, requesters, region } = state ?? {}
 
     const [partsReqQuery, setPartsReqQuery] = React.useState<PartsReqQuery>({
@@ -91,6 +98,10 @@ export default function SupplyChain() {
         setPage(0)
     }
 
+    const handleRefreshPartsReqs = () => {
+        queryClient.refetchQueries({ queryKey: ["partsReq"] })
+    }
+
     return (
         <div className="page-container" style={{ flexDirection: "column" }}>
             <Box sx={{ marginBottom: "20px" }}>
@@ -120,6 +131,19 @@ export default function SupplyChain() {
                             />
                         }
                     </div>
+                    <Button
+                        onClick={handleRefreshPartsReqs}
+                        startIcon={<RefreshIcon />}
+                        sx={{
+                            backgroundColor: theme.palette.primary.dark, marginBottom: "10px",
+                            "&.MuiButton-root:hover": {
+                                backgroundColor: theme.palette.primary.dark
+                            },
+                            margin: "5px"
+                        }}
+                    >
+                        Refresh
+                    </Button>
                     <Box
                         sx={{
                             backgroundColor: "background.paper", borderBottomRightRadius: "0.5rem", borderBottomLeftRadius: "0.5rem"

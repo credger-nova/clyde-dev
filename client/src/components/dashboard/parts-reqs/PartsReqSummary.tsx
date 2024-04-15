@@ -1,12 +1,16 @@
 import { NovaUser } from '../../../types/novaUser'
 import { TITLES } from "../../../utils/titles"
 
+import { useQueryClient } from "@tanstack/react-query"
+
 import Box from '@mui/material/Box'
 import Divider from '@mui/material/Divider'
 import { styled } from '@mui/material/styles'
 import Paper from '@mui/material/Paper'
 import Grid from '@mui/material/Unstable_Grid2'
 import SummaryTable from './SummaryTable'
+import IconButton from '@mui/material/IconButton'
+import RefreshIcon from '@mui/icons-material/Refresh'
 
 const Item = styled(Paper)(({ theme }) => ({
     backgroundColor: "#242424",
@@ -34,13 +38,30 @@ interface Props {
 
 export default function PartsReqSummary(props: Props) {
     const { novaUser } = props
+    const queryClient = useQueryClient()
     const userType = TITLES.find(item => item.titles.includes(novaUser.jobTitle))
+
+    const handleRefreshPartsReqs = () => {
+        queryClient.refetchQueries({ queryKey: ["partsReq"] })
+    }
 
     return (
         userType && ALLOWED_GROUPS.includes(userType.group) &&
         <Item>
             <Box sx={{ display: "flex", flexDirection: "column" }}>
-                <h4 style={{ margin: 0, width: "100%", textAlign: "center" }}>Parts Requisitions</h4>
+                <Box sx={{ display: "flex", flexDirection: "row" }}>
+                    <h4 style={{ margin: "0px 0px 0px 34px", width: "100%", textAlign: "center" }}>
+                        Parts Requisitions
+                    </h4>
+                    <IconButton
+                        onClick={handleRefreshPartsReqs}
+                        disableRipple
+                        size={"small"}
+                        sx={{ padding: "0px 5px" }}
+                    >
+                        <RefreshIcon />
+                    </IconButton>
+                </Box>
                 <Divider sx={{ width: "100%", marginBottom: "10px" }} />
                 <Grid container direction={userType.group === "Supply Chain Management" ? "row" : "column"}>
                     <SummaryTable

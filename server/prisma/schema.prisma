@@ -129,6 +129,8 @@ model PartsReq {
   region      String
   amex        Boolean       @default(false)
   vendor      String        @default("")
+  conex       Boolean       @default(false)
+  conexName   String?       @map("conex_name")
   parts       PartsReqRow[]
   comments    Comment[]
   status      String

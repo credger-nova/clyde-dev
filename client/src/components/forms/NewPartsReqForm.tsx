@@ -9,6 +9,7 @@ import { useParts } from "../../hooks/parts"
 import { useCreatePartsReq, useSumPrWithAfe } from "../../hooks/partsReq"
 import { useUploadFiles } from "../../hooks/storage"
 import { useNovaUser } from "../../hooks/user"
+import { useWarehouses } from "../../hooks/warehouse"
 
 import { toTitleCase, calcCost, svpApprovalRequired } from "../../utils/helperFunctions"
 
@@ -90,6 +91,7 @@ export default function PartsReqForm() {
     const { data: unitNumbers, isFetching: unitsFetching } = useUnits()
     const { data: trucks, isFetching: trucksFetching } = useTrucks()
     const { data: parts, isFetching: partsFetching } = useParts()
+    const { data: locations, isFetching: locationsFetching } = useWarehouses()
 
     const { mutateAsync: createPartsReq } = useCreatePartsReq()
     const { mutateAsync: uploadFiles } = useUploadFiles()
@@ -110,6 +112,8 @@ export default function PartsReqForm() {
     const [comments, setComments] = React.useState<Array<Omit<Comment, "id">>>([])
     const [newFiles, setNewFiles] = React.useState<Array<File>>([])
     const [deleteFiles, setDeleteFiles] = React.useState<Array<string>>([])
+    const [conex, setConex] = React.useState<boolean>(false)
+    const [conexName, setConexName] = React.useState<string | null>(null)
     const [disableSubmit, setDisableSubmit] = React.useState<boolean>(true)
     const [prExceedsAfe, setPrExceedsAfe] = React.useState<boolean>(false)
 
@@ -170,6 +174,8 @@ export default function PartsReqForm() {
             status: quoteOnly ? "Pending Quote" : "Pending Approval",
             amex: false,
             vendor: "",
+            conex: conex,
+            conexName: conexName ?? undefined,
             updated: new Date()
         }
 
@@ -307,6 +313,19 @@ export default function PartsReqForm() {
         row.cost = e.target.value
         tempRows[index] = row
         setRows(tempRows)
+    }
+
+    const onConexChange = () => {
+        if (conex) {
+            setConex(false)
+            setConexName(null)
+        } else {
+            setConex(true)
+        }
+    }
+
+    const onConexNameChange = (_e: React.SyntheticEvent, value: string | null) => {
+        setConexName(value)
     }
 
     const onAddComment = () => {
@@ -611,6 +630,53 @@ export default function PartsReqForm() {
                             </Item>
                         </Grid>
                         <Grid xs={12} sm={4}>
+                            <Item sx={{ marginBottom: "10px" }}>
+                                <b><p style={{ margin: 0 }}>Were all these parts taken from a Conex?</p></b>
+                                <div
+                                    style={{ display: "flex", flexDirection: "row", alignItems: "flex-end" }}
+                                >
+                                    <Checkbox
+                                        checked={conex}
+                                        onChange={onConexChange}
+                                        disableRipple
+                                    />
+                                    <Autocomplete
+                                        disabled={!conex}
+                                        options={locations ? locations.filter((location) => location.includes("CONEX")) : []}
+                                        loading={locationsFetching}
+                                        onChange={onConexNameChange}
+                                        value={conexName}
+                                        renderInput={(params) => <StyledTextField
+                                            {...params}
+                                            variant="standard"
+                                            label="Conex"
+                                        />}
+                                        sx={{ width: "100%" }}
+                                        renderOption={(props, option, { inputValue }) => {
+                                            const matches = match(option, inputValue, { insideWords: true, requireMatchAll: true });
+                                            const parts = parse(option, matches);
+
+                                            return (
+                                                <li {...props}>
+                                                    <div>
+                                                        {parts.map((part, index) => (
+                                                            <span
+                                                                key={index}
+                                                                style={{
+                                                                    fontWeight: part.highlight ? 700 : 400,
+                                                                    color: part.highlight ? "#23aee5" : "#fff"
+                                                                }}
+                                                            >
+                                                                {part.text}
+                                                            </span>
+                                                        ))}
+                                                    </div>
+                                                </li>
+                                            );
+                                        }}
+                                    />
+                                </div>
+                            </Item>
                             <Item>
                                 <Box>
                                     <b><p style={{ margin: 0 }}>Urgency:</p></b>

@@ -64,6 +64,8 @@ function convertPartsReq(partsReq: any) {
         status: partsReq.status,
         amex: partsReq.amex,
         vendor: partsReq.vendor,
+        conex: partsReq.conex,
+        conexName: partsReq.conexName,
         updated: partsReq.updated
     } as PartsReq
 
@@ -387,6 +389,8 @@ export const createPartsReq = async (partsReq: CreatePartsReq) => {
             region: partsReq.region ?? "",
             amex: partsReq.amex,
             vendor: partsReq.vendor,
+            conex: partsReq.conex,
+            conexName: partsReq.conexName,
             parts: {
                 createMany: {
                     data: partsReq.parts
@@ -654,6 +658,13 @@ export const updatePartsReq = async (id: number, user: NovaUser, updateReq: Part
 
         await genSystemComment(message, user, id)
     }
+    // Conex change
+    if (oldPartsReq?.conexName !== updateReq.conexName) {
+        updated = true
+        const message = `Conex Change: ${oldPartsReq?.conexName} -> ${updateReq.conexName}`
+
+        await genSystemComment(message, user, id)
+    }
 
     // Add new comments
     if (updateReq.comments) {
@@ -695,6 +706,8 @@ export const updatePartsReq = async (id: number, user: NovaUser, updateReq: Part
             region: updateReq.region,
             amex: updateReq.amex,
             vendor: updateReq.vendor,
+            conex: updateReq.conex,
+            conexName: updateReq.conexName,
             status: status,
             updated: new Date().toISOString()
         }

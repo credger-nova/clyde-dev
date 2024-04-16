@@ -249,6 +249,8 @@ export default function EditPartsReqForm(props: Props) {
     const [deleteFiles, setDeleteFiles] = React.useState<Array<string>>([])
     const [amex, setAmex] = React.useState<boolean>(partsReq.amex)
     const [vendor, setVendor] = React.useState<string | null>(partsReq.vendor ?? null)
+    const [conex, setConex] = React.useState<boolean>(partsReq.conex)
+    const [conexName, setConexName] = React.useState<string | null>(partsReq.conexName ?? null)
     const [prExceedsAfe, setPrExceedsAfe] = React.useState<boolean>(false)
     const [needsComment, setNeedsComment] = React.useState<boolean>(false)
 
@@ -321,6 +323,8 @@ export default function EditPartsReqForm(props: Props) {
             setDeleteFiles([])
             setAmex(partsReq.amex)
             setVendor(partsReq.vendor ?? null)
+            setConex(partsReq.conex)
+            setConexName(partsReq.conexName ?? null)
 
             setReset(false)
         }
@@ -347,6 +351,8 @@ export default function EditPartsReqForm(props: Props) {
                     comments: comments as Array<Comment>,
                     amex: amex,
                     vendor: vendor,
+                    conex: conex,
+                    conexName: conexName,
                     newFiles: newFiles.map((file) => file.name),
                     delFiles: deleteFiles,
                     status: status,
@@ -535,6 +541,19 @@ export default function EditPartsReqForm(props: Props) {
         setVendor(value ?? "")
     }
 
+    const onConexChange = () => {
+        if (conex) {
+            setConex(false)
+            setConexName(null)
+        } else {
+            setConex(true)
+        }
+    }
+
+    const onConexNameChange = (_e: React.SyntheticEvent, value: string | null) => {
+        setConexName(value)
+    }
+
     // Prevent enter key from submitting form
     const handleKeyDown = (e: { keyCode: number; preventDefault: () => void }) => {
         if (e.keyCode === 13) {
@@ -716,7 +735,7 @@ export default function EditPartsReqForm(props: Props) {
                     return false
                 }
             }
-            if (field === "Item" || field === "Description" || field === "Rate") {
+            if (field === "Item" || field === "Description" || field === "Rate" || field === "Conex") {
                 return false
             }
 
@@ -741,7 +760,7 @@ export default function EditPartsReqForm(props: Props) {
                     return false
                 }
             }
-            if (field === "Item" || field === "Description" || field === "Rate") {
+            if (field === "Item" || field === "Description" || field === "Rate" || field === "Conex") {
                 return false
             }
 
@@ -1133,6 +1152,54 @@ export default function EditPartsReqForm(props: Props) {
                                     </Box>
                                 </Item>
                             }
+                            <Item sx={{ marginBottom: "10px" }}>
+                                <b><p style={{ margin: 0 }}>Were all these parts taken from a Conex?</p></b>
+                                <div
+                                    style={{ display: "flex", flexDirection: "row", alignItems: "flex-end" }}
+                                >
+                                    <Checkbox
+                                        checked={conex}
+                                        onChange={onConexChange}
+                                        disableRipple
+                                        disabled={denyAccess(novaUser!.jobTitle, status, "Conex")}
+                                    />
+                                    <Autocomplete
+                                        disabled={!conex || denyAccess(novaUser!.jobTitle, status, "Conex")}
+                                        options={warehouses ? warehouses.filter((loc) => loc.includes("CONEX")) : []}
+                                        loading={warehousesFetching}
+                                        onChange={onConexNameChange}
+                                        value={conexName}
+                                        renderInput={(params) => <StyledTextField
+                                            {...params}
+                                            variant="standard"
+                                            label="Conex"
+                                        />}
+                                        sx={{ width: "100%" }}
+                                        renderOption={(props, option, { inputValue }) => {
+                                            const matches = match(option, inputValue, { insideWords: true, requireMatchAll: true });
+                                            const parts = parse(option, matches);
+
+                                            return (
+                                                <li {...props}>
+                                                    <div>
+                                                        {parts.map((part, index) => (
+                                                            <span
+                                                                key={index}
+                                                                style={{
+                                                                    fontWeight: part.highlight ? 700 : 400,
+                                                                    color: part.highlight ? "#23aee5" : "#fff"
+                                                                }}
+                                                            >
+                                                                {part.text}
+                                                            </span>
+                                                        ))}
+                                                    </div>
+                                                </li>
+                                            );
+                                        }}
+                                    />
+                                </div>
+                            </Item>
                             <Item>
                                 <Box>
                                     <b><p style={{ margin: 0 }}>Urgency:</p></b>
@@ -1278,7 +1345,7 @@ export default function EditPartsReqForm(props: Props) {
                                 "Approved - On Hold", "Rejected - Closed"
                             ].includes(status) &&
                                 <Item sx={{ marginBottom: "10px" }}>
-                                    <b><p style={{ margin: 0 }}>Is this an Amex Request?</p></b>
+                                    <b><p style={{ margin: 0 }}>Is this an Amex request?</p></b>
                                     <div
                                         style={{ display: "flex", flexDirection: "row", alignItems: "flex-end" }}
                                     >

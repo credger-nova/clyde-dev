@@ -35,6 +35,8 @@ export interface PartsReq {
     status: string,
     amex: boolean,
     vendor?: string,
+    conex: boolean,
+    conexName?: string,
     updated: Date
 }
 

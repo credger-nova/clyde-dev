@@ -333,6 +333,22 @@ function PartsReqPDF(props: PartsReqPDF) {
                                     {partsReq.vendor}
                                 </Text>
                             </View>}
+                            <View style={pdfStyles.checkboxRow}>
+                                {partsReq.conex ? <CheckedCheckbox /> : <EmptyCheckbox />}
+                                <Text
+                                    style={pdfStyles.checkboxText}
+                                >
+                                    All parts taken from Conex?
+                                </Text>
+                            </View>
+                            {partsReq.conex && <View style={pdfStyles.infoRow}>
+                                <Text style={pdfStyles.fieldTitle}>
+                                    Conex:
+                                </Text>
+                                <Text style={pdfStyles.fieldValue}>
+                                    {partsReq.conexName}
+                                </Text>
+                            </View>}
                             {(partsReq.afe || partsReq.so) &&
                                 <>
                                     <Text style={pdfStyles.sectionText}>

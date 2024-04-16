@@ -33,7 +33,7 @@ export default function AddFileButton(props: Props) {
             <input
                 type="file"
                 multiple
-                accept="application/pdf"
+                accept="application/pdf, image/*"
                 onChange={handleFileChange}
                 onClick={(event) => (event.target as HTMLInputElement).value = ""} // Clear value
                 hidden

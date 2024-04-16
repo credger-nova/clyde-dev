@@ -319,7 +319,8 @@ export const getPartsReqs = async (query: PartsReqQuery) => {
 
     // Filter SVP results to only units that require SVP privileges
     if (SVP_TITLES.includes(query.user!.jobTitle)) {
-        partsReqs = partsReqs.filter((partsReq) => partsReq.unit && svpApprovalRequired(partsReq.unit.unitNumber, Number(partsReq.unit.oemHP), partsReq.parts))
+        partsReqs = partsReqs.filter((partsReq) => partsReq.unit && calcCost(partsReq.parts) > 10000)
+        /*svpApprovalRequired(partsReq.unit.unitNumber, Number(partsReq.unit.oemHP), partsReq.parts))*/
     }
 
     // Sort based on title

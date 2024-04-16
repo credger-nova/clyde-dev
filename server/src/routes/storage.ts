@@ -7,7 +7,7 @@ dotenv.config()
 async function routes(fastify: FastifyInstance) {
     // Upload files to given location
     fastify.post("/", async (req, res) => {
-        const data = await req.file()
+        const data = await req.file({ limits: { fileSize: 50 * 1024 * 1024 } }) // 50MB
         const buffer = await data?.toBuffer()
 
         if (data) {

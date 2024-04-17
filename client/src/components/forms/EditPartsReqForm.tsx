@@ -105,6 +105,12 @@ const STATUS: Array<{ status: string, titles: Array<string> }> = [
             .concat(TITLES.find(item => item.group === "IT")?.titles ?? [])
     },
     {
+        status: "Sourcing - In Progress",
+        titles: (TITLES.find(item => item.group === "Supply Chain")?.titles ?? [])
+            .concat(TITLES.find(item => item.group === "Supply Chain Management")?.titles ?? [])
+            .concat(TITLES.find(item => item.group === "IT")?.titles ?? [])
+    },
+    {
         status: "Sourcing - Information Required",
         titles: (TITLES.find(item => item.group === "Ops Manager")?.titles ?? [])
             .concat(TITLES.find(item => item.group === "Supply Chain")?.titles ?? [])
@@ -725,6 +731,11 @@ export default function EditPartsReqForm(props: Props) {
                     return false
                 }
             }
+            if (partsReq.status === "Sourcing - In Progress") {
+                if (field === "Status") {
+                    return false
+                }
+            }
             if (partsReq.status === "Sourcing - Amex Approved") {
                 if (field === "Status") {
                     return false
@@ -747,6 +758,11 @@ export default function EditPartsReqForm(props: Props) {
             if (partsReq.status === "Pending Quote" || partsReq.status === "Approved" || partsReq.status === "Sourcing - Information Required" ||
                 partsReq.status === "Sourcing - Information Provided" || partsReq.status === "Ordered - Awaiting Parts") {
                 if (field === "Status" || field === "Amex") {
+                    return false
+                }
+            }
+            if (partsReq.status === "Sourcing - In Progress") {
+                if (field === "Status") {
                     return false
                 }
             }

@@ -20,9 +20,9 @@ import parse from 'autosuggest-highlight/parse'
 import match from 'autosuggest-highlight/match'
 
 const URGENCY = ["Unit Down", "Unit Set", "Rush", "Standard"]
-const STATUS = ["Pending Approval", "Pending Quote", "Quote Provided - Pending Approval", "Rejected - Adjustments Required", "Approved - On Hold", "Approved", "Sourcing - Information Required",
-    "Sourcing - Information Provided", "Sourcing - Pending Amex Approval", "Ordered - Awaiting Parts", "Completed - Parts Staged/Delivered", "Closed - Partially Received", "Closed - Parts in Hand",
-    "Rejected - Closed"]
+const STATUS = ["Pending Approval", "Pending Quote", "Quote Provided - Pending Approval", "Rejected - Adjustments Required", "Approved - On Hold", "Approved", "Sourcing - In Progress",
+    "Sourcing - Information Required", "Sourcing - Information Provided", "Sourcing - Pending Amex Approval", "Ordered - Awaiting Parts", "Completed - Parts Staged/Delivered", "Closed - Partially Received",
+    "Closed - Parts in Hand", "Rejected - Closed"]
 
 interface Props {
     partsReqQuery: PartsReqQuery,

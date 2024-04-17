@@ -36,7 +36,8 @@ const STATUS_GROUPS = ["Pending Approval", "Pending Quote", "Rejected", "Approve
 const SC_GROUPS = ["Pending Quote", "Approved", "Sourcing", "Parts Ordered", "Parts Staged"]
 
 const UNIT_DOWN_STATUSES = ["Pending Approval", "Pending Quote", "Quote Provided - Pending Approval", "Rejected - Adjustments Required", "Approved - On Hold", "Approved",
-    "Sourcing - Information Required", "Sourcing - Information Provided", "Sourcing - Pending Amex Approval", "Sourcing - Amex Approved", "Ordered - Awaiting Parts"]
+    "Sourcing - In Progress", "Sourcing - Information Required", "Sourcing - Information Provided", "Sourcing - Pending Amex Approval", "Sourcing - Amex Approved",
+    "Ordered - Awaiting Parts"]
 
 const Item = styled(Paper)(({ theme }) => ({
     backgroundColor: "#242424",
@@ -127,8 +128,8 @@ function calcStatus(partsReqs: Array<PartsReq>, statusGroup: string, requester?:
     } else if (statusGroup === "Approved") {
         filtered = partsReqs.filter((partsReq) => partsReq.status === "Approved" || partsReq.status === "Approved - On Hold")
     } else if (statusGroup === "Sourcing") {
-        filtered = partsReqs.filter((partsReq) => partsReq.status === "Sourcing - Information Required" || partsReq.status === "Sourcing - Information Provided" ||
-            partsReq.status === "Sourcing - Pending Amex Approval" || partsReq.status === "Sourcing - Amex Approved")
+        filtered = partsReqs.filter((partsReq) => partsReq.status === "Sourcing - In Progress" || partsReq.status === "Sourcing - Information Required" ||
+            partsReq.status === "Sourcing - Information Provided" || partsReq.status === "Sourcing - Pending Amex Approval" || partsReq.status === "Sourcing - Amex Approved")
     } else if (statusGroup === "Parts Ordered") {
         filtered = partsReqs.filter((partsReq) => partsReq.status === "Ordered - Awaiting Parts")
     } else if (statusGroup === "Parts Staged") {
@@ -193,7 +194,8 @@ export default function SummaryTable(props: Props) {
         } else if (statusGroup === "Approved") {
             statuses = ["Approved", "Approved - On Hold"]
         } else if (statusGroup === "Sourcing") {
-            statuses = ["Sourcing - Information Required", "Sourcing - Information Provided", "Sourcing - Pending Amex Approval", "Sourcing - Amex Approved"]
+            statuses = ["Sourcing - In Progress", "Sourcing - Information Required", "Sourcing - Information Provided", "Sourcing - Pending Amex Approval",
+                "Sourcing - Amex Approved"]
         } else if (statusGroup === "Parts Ordered") {
             statuses = ["Ordered - Awaiting Parts"]
         } else if (statusGroup === "Parts Staged") {

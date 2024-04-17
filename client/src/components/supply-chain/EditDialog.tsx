@@ -72,10 +72,10 @@ export default function EditDialog(props: Props) {
 
     const handleGeneratePDF = async (id: number, pricing: boolean) => {
         setPDFLoading(true)
+        setAnchorEl(null)
 
         generatePDF({ id, pricing }).then(() => {
             setPDFLoading(false)
-            setAnchorEl(null)
         })
     }
 

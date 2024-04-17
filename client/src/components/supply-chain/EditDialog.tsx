@@ -18,6 +18,10 @@ import CloseIcon from '@mui/icons-material/Close'
 import SaveIcon from '@mui/icons-material/Save'
 import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf'
 import CircularProgress from '@mui/material/CircularProgress'
+import Menu from '@mui/material/Menu'
+import MenuItem from '@mui/material/MenuItem'
+import AttachMoneyIcon from '@mui/icons-material/AttachMoney'
+import MoneyOffIcon from '@mui/icons-material/MoneyOff'
 
 interface Props {
     novaUser: NovaUser | undefined,
@@ -37,6 +41,8 @@ export default function EditDialog(props: Props) {
     const [saveDisabled, setSaveDisabled] = React.useState<boolean>(true)
     const [reset, setReset] = React.useState<boolean>(false)
     const [pdfLoading, setPDFLoading] = React.useState<boolean>(false)
+    const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null)
+    const pdfMenuOpen = Boolean(anchorEl)
 
     const handleSave = () => {
         setSave(true)
@@ -56,10 +62,21 @@ export default function EditDialog(props: Props) {
         setReset(true)
     }
 
-    const handleGeneratePDF = async (id: number) => {
+    const handlePdfClick = (e: React.MouseEvent<HTMLElement>) => {
+        setAnchorEl(e.currentTarget)
+    }
+
+    const handlePdfMenuClose = () => {
+        setAnchorEl(null)
+    }
+
+    const handleGeneratePDF = async (id: number, pricing: boolean) => {
         setPDFLoading(true)
 
-        generatePDF(id).then(() => setPDFLoading(false))
+        generatePDF({ id, pricing }).then(() => {
+            setPDFLoading(false)
+            setAnchorEl(null)
+        })
     }
 
     return (partsReq && (
@@ -101,9 +118,10 @@ export default function EditDialog(props: Props) {
                     >
                         Close
                     </Button>
+
                     <Button
                         variant="contained"
-                        onClick={() => handleGeneratePDF(partsReq.id)}
+                        onClick={handlePdfClick}
                         startIcon={pdfLoading ?
                             <CircularProgress
                                 size={20}
@@ -119,6 +137,28 @@ export default function EditDialog(props: Props) {
                     >
                         {pdfLoading ? "Exporting" : "Export PDF"}
                     </Button>
+                    <Menu
+                        anchorEl={anchorEl}
+                        open={pdfMenuOpen}
+                        onClose={handlePdfMenuClose}
+                        anchorOrigin={{ vertical: "top", horizontal: "left" }}
+                        transformOrigin={{ vertical: "bottom", horizontal: "left" }}
+                    >
+                        <MenuItem
+                            onClick={() => handleGeneratePDF(partsReq.id, true)}
+                            disableRipple
+                        >
+                            <AttachMoneyIcon />
+                            With Pricing
+                        </MenuItem>
+                        <MenuItem
+                            onClick={() => handleGeneratePDF(partsReq.id, false)}
+                            disableRipple
+                        >
+                            <MoneyOffIcon />
+                            Without Pricing
+                        </MenuItem>
+                    </Menu>
                     <Button
                         variant="contained"
                         onClick={() => setEdit(!edit)}

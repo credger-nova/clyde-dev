@@ -60,13 +60,14 @@ async function routes(fastify: FastifyInstance) {
     })
 
     // Generate a PDF for a Parts Req
-    fastify.get<{ Params: { id: string } }>("/parts-req/export/:id", async (req, res) => {
+    fastify.get("/parts-req/export/:id", async (req: FastifyRequest<{ Params: { id: string }, Querystring: { pricing?: "true" } }>, res) => {
         const { id } = req.params
+        const { pricing } = req.query
 
         const partsReq = await getPartsReq(Number(id))
 
         if (partsReq) {
-            const pdf = await generatePartsReqPDF(partsReq)
+            const pdf = await generatePartsReqPDF(partsReq, pricing ? true : false)
 
             return res.status(200).send(pdf) // TODO: figure out why this only works with return and not res.status().send()
         } else {

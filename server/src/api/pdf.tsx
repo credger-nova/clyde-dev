@@ -2,11 +2,17 @@ import { Page, View, Text, Image, Document, Svg, Line, Polyline, StyleSheet, ren
 import { OrderRow, PartsReq } from "../models/partsReq"
 
 interface PartsReqPDF {
-    partsReq: PartsReq
+    partsReq: PartsReq,
+    pricing: boolean
+}
+
+interface HeaderRowProps {
+    pricing: boolean
 }
 
 interface TableRowProps {
-    row: OrderRow
+    row: OrderRow,
+    pricing: boolean
 }
 
 interface TotalRowProps {
@@ -26,8 +32,8 @@ function calcCost(parts: Array<OrderRow>) {
 // Styles for PDF
 const pdfStyles = StyleSheet.create({
     body: {
-        paddingTop: 10,
-        paddingBottom: 10,
+        paddingTop: 35,
+        paddingBottom: 35,
         paddingHorizontal: 35,
         flexDirection: "column"
     },
@@ -102,7 +108,7 @@ const pdfStyles = StyleSheet.create({
     },
     topImage: {
         marginHorizontal: 200,
-        top: 0,
+        top: -10,
         textAlign: 'center',
     },
     footerNumber: {
@@ -159,25 +165,31 @@ function CheckedCheckbox() {
     )
 }
 
-function HeaderRow() {
+function HeaderRow(props: HeaderRowProps) {
+    const { pricing } = props
+
     return (
         <>
             <View style={pdfStyles.headerRow}>
                 <Text style={[pdfStyles.fieldTitle, { width: "7%" }]}>
                     Qty
                 </Text>
-                <Text style={[pdfStyles.fieldTitle, { width: "25%" }]}>
+                <Text style={[pdfStyles.fieldTitle, { width: pricing ? "25%" : "28%" }]}>
                     Part #
                 </Text>
-                <Text style={[pdfStyles.fieldTitle, { width: "40%" }]}>
+                <Text style={[pdfStyles.fieldTitle, { width: pricing ? "40%" : "65%" }]}>
                     Description
                 </Text>
-                <Text style={[pdfStyles.fieldTitle, { width: "13%" }]}>
-                    Rate
-                </Text>
-                <Text style={[pdfStyles.fieldTitle, { width: "15%" }]}>
-                    Amount
-                </Text>
+                {pricing &&
+                    <Text style={[pdfStyles.fieldTitle, { width: "13%" }]}>
+                        Rate
+                    </Text>
+                }
+                {pricing &&
+                    <Text style={[pdfStyles.fieldTitle, { width: "15%" }]}>
+                        Amount
+                    </Text>
+                }
             </View>
             <FullLine />
         </>
@@ -185,7 +197,7 @@ function HeaderRow() {
 }
 
 function TableRow(props: TableRowProps) {
-    const { row } = props
+    const { row, pricing } = props
 
     return (
         <>
@@ -193,18 +205,22 @@ function TableRow(props: TableRowProps) {
                 <Text style={[pdfStyles.fieldValue, { width: "7%", marginRight: "3px" }]}>
                     {row.qty}
                 </Text>
-                <Text style={[pdfStyles.fieldValue, { width: "25%", marginRight: "3px" }]}>
+                <Text style={[pdfStyles.fieldValue, { width: pricing ? "25%" : "28%", marginRight: "3px" }]}>
                     {row.itemNumber}
                 </Text>
-                <Text style={[pdfStyles.fieldValue, { width: "40%", marginRight: "3px" }]}>
+                <Text style={[pdfStyles.fieldValue, { width: pricing ? "40%" : "65%", marginRight: "3px" }]}>
                     {row.description}
                 </Text>
-                <Text style={[pdfStyles.fieldValue, { width: "13%", marginRight: "3px" }]}>
-                    {row.cost ? `$${Number(row.cost).toFixed(2)}` : null}
-                </Text>
-                <Text style={[pdfStyles.fieldValue, { width: "15%", marginRight: "3px" }]}>
-                    {row.cost ? `$${(row.qty * Number(row.cost)).toFixed(2)}` : null}
-                </Text>
+                {pricing &&
+                    <Text style={[pdfStyles.fieldValue, { width: "13%", marginRight: "3px" }]}>
+                        {row.cost ? `$${Number(row.cost).toFixed(2)}` : null}
+                    </Text>
+                }
+                {pricing &&
+                    <Text style={[pdfStyles.fieldValue, { width: "15%", marginRight: "3px" }]}>
+                        {row.cost ? `$${(row.qty * Number(row.cost)).toFixed(2)}` : null}
+                    </Text>
+                }
             </View>
             <FullLine />
         </>
@@ -239,7 +255,7 @@ function TotalRow(props: TotalRowProps) {
 
 // React Component for generating PDF of PartsReq
 function PartsReqPDF(props: PartsReqPDF) {
-    const { partsReq } = props
+    const { partsReq, pricing } = props
 
     return (
         <Document>
@@ -600,18 +616,23 @@ function PartsReqPDF(props: PartsReqPDF) {
                     </View>
                 </View>
                 <View style={pdfStyles.tableContainer}>
-                    <HeaderRow />
+                    <HeaderRow
+                        pricing={pricing}
+                    />
                     {partsReq.parts.map((row) => {
                         return (
                             <TableRow
                                 key={row.id}
                                 row={row}
+                                pricing={pricing}
                             />
                         )
                     })}
-                    <TotalRow
-                        rows={partsReq.parts}
-                    />
+                    {pricing &&
+                        <TotalRow
+                            rows={partsReq.parts}
+                        />
+                    }
                 </View>
                 <Text style={pdfStyles.footerNumber} render={({ pageNumber, totalPages }) => (
                     `${pageNumber} / ${totalPages}`
@@ -622,10 +643,11 @@ function PartsReqPDF(props: PartsReqPDF) {
 }
 
 // Generate PDF of Parts Req
-export const generatePartsReqPDF = async (partsReq: PartsReq) => {
+export const generatePartsReqPDF = async (partsReq: PartsReq, pricing: boolean) => {
     const pdf = await renderToStream(
         <PartsReqPDF
             partsReq={partsReq}
+            pricing={pricing}
         />
     )
 

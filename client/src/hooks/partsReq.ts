@@ -61,8 +61,8 @@ export function useUpdatePartsReq() {
 }
 
 // Generate PDF for a Parts Req
-const generatePartsReqPDF = async (id: number) => {
-    const { data } = await axios.get(`${import.meta.env.VITE_API_BASE}/forms/parts-req/export/${id}`,
+const generatePartsReqPDF = async ({ id, pricing }: { id: number, pricing: boolean }) => {
+    const { data } = await axios.get(`${import.meta.env.VITE_API_BASE}/forms/parts-req/export/${id}${pricing ? '?pricing=true' : ''}`,
         {
             responseType: "arraybuffer",
             responseEncoding: "binary",

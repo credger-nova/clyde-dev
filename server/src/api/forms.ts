@@ -9,6 +9,8 @@ import { prisma } from "../utils/prisma-client"
 
 import { convertUser, getManagersEmployees, getDirectorsEmployees, getAllEmployees } from "./kpa/employee"
 
+const PERMIAN_REGIONS = ["Pecos", "Carlsbad", "North Permian", "South Permian"]
+
 const PERMIAN_CUSTOMER_SORT = ["APACHE CORPORATION", "CONOCOPHILLIPS CO", "DIAMONDBACK ENERGY", "MATADOR PRODUCTION COMPANY", "VITAL ENERGY INC"]
 
 const URGENCY_SORT = ["Unit Down", "Unit Set", "Rush", "Standard", "Stock"]
@@ -254,6 +256,59 @@ function noRate(rows: Array<Omit<OrderRow, "id">>) {
     return false
 }
 
+function sortPartsReqs(partsReqs: Array<PartsReq>, title?: string, region?: Array<string>) {
+    // Permian sorting (status > date > custoemr > urgency)
+    if (region && PERMIAN_REGIONS.filter(value => region.includes(value)).length > 0) {
+        // Supply Chain sorting
+        if (SUPPLY_CHAIN_TITLES.includes(title ?? "")) {
+            partsReqs.sort((a, b) =>
+                SUPPLY_CHAIN_STATUS.indexOf(a.status) - SUPPLY_CHAIN_STATUS.indexOf(b.status) ||
+                a.date.getTime() - b.date.getTime() ||
+                PERMIAN_CUSTOMER_SORT.indexOf(b.unit && b.unit.customer ? b.unit.customer : "") - PERMIAN_CUSTOMER_SORT.indexOf(a.unit && a.unit.customer ? a.unit.customer : "") ||
+                URGENCY_SORT.indexOf(a.urgency) - URGENCY_SORT.indexOf(b.urgency)
+            )
+        } else {
+            partsReqs.sort((a, b) =>
+                SUPPLY_CHAIN_STATUS.indexOf(a.status) - SUPPLY_CHAIN_STATUS.indexOf(b.status) ||
+                URGENCY_SORT.indexOf(a.urgency) - URGENCY_SORT.indexOf(b.urgency) ||
+                PERMIAN_CUSTOMER_SORT.indexOf(b.unit && b.unit.customer ? b.unit.customer : "") - PERMIAN_CUSTOMER_SORT.indexOf(a.unit && a.unit.customer ? a.unit.customer : "") ||
+                a.date.getTime() - b.date.getTime()
+            )
+        }
+    } else {
+        // Default sorting (status > urgency > date)
+        if (title && FIELD_SERVICE_TITLES.includes(title)) {
+            partsReqs.sort((a, b) =>
+                FIELD_SERVICE_SORT.indexOf(a.status) - ALL_STATUS.indexOf(b.status) ||
+                URGENCY_SORT.indexOf(a.urgency) - URGENCY_SORT.indexOf(b.urgency) ||
+                a.date.getTime() - b.date.getTime()
+            )
+        } else if (title && (OPS_MANAGER_TITLES.includes(title) || OPS_DIRECTOR_TITLES.includes(title))) {
+            partsReqs.sort((a, b) =>
+                MANAGER_STATUS_SORT.indexOf(a.status) - ALL_STATUS.indexOf(b.status) ||
+                URGENCY_SORT.indexOf(a.urgency) - URGENCY_SORT.indexOf(b.urgency) ||
+                a.date.getTime() - b.date.getTime()
+            )
+        } else if (title && SUPPLY_CHAIN_TITLES.includes(title)) {
+            partsReqs.sort((a, b) =>
+                SUPPLY_CHAIN_STATUS.indexOf(a.status) - ALL_STATUS.indexOf(b.status) ||
+                URGENCY_SORT.indexOf(a.urgency) - URGENCY_SORT.indexOf(b.urgency) ||
+                a.date.getTime() - b.date.getTime()
+            )
+        } else {
+            partsReqs.sort((a, b) =>
+                ALL_STATUS.indexOf(a.status) - ALL_STATUS.indexOf(b.status) ||
+                URGENCY_SORT.indexOf(a.urgency) - URGENCY_SORT.indexOf(b.urgency) ||
+                a.date.getTime() - b.date.getTime()
+            )
+        }
+    }
+
+    return partsReqs
+}
+
+
+
 // Get Parts Reqs that match the given query
 export const getPartsReqs = async (query: PartsReqQuery) => {
     const result = await prisma.partsReq.findMany({
@@ -354,6 +409,8 @@ export const getPartsReqs = async (query: PartsReqQuery) => {
     } else {
         partsReqs.sort((a, b) => ALL_STATUS.indexOf(a.status) - ALL_STATUS.indexOf(b.status) || URGENCY_SORT.indexOf(a.urgency) - URGENCY_SORT.indexOf(b.urgency))
     }
+
+    partsReqs = sortPartsReqs(partsReqs, query.user!.jobTitle, query.user?.region)
 
     return partsReqs
 }

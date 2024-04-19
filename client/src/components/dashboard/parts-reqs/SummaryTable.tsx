@@ -122,7 +122,8 @@ function calcStatus(partsReqs: Array<PartsReq>, statusGroup: string, requester?:
     if (statusGroup === "Pending Quote") {
         filtered = partsReqs.filter((partsReq) => partsReq.status === "Pending Quote")
     } else if (statusGroup === "Pending Approval") {
-        filtered = partsReqs.filter((partsReq) => partsReq.status === "Pending Approval" || partsReq.status === "Quote Provided - Pending Approval")
+        filtered = partsReqs.filter((partsReq) => partsReq.status === "Pending Approval" || partsReq.status === "Quote Provided - Pending Approval" ||
+            partsReq.status === "Sourcing - Request to Cancel")
     } else if (statusGroup === "Rejected") {
         filtered = partsReqs.filter((partsReq) => partsReq.status === "Rejected - Adjustments Required")
     } else if (statusGroup === "Approved") {
@@ -136,7 +137,7 @@ function calcStatus(partsReqs: Array<PartsReq>, statusGroup: string, requester?:
         filtered = partsReqs.filter((partsReq) => partsReq.status === "Completed - Parts Staged/Delivered")
     } else if (statusGroup === "Closed") {
         filtered = partsReqs.filter((partsReq) => partsReq.status === "Closed - Partially Received" || partsReq.status === "Closed - Parts in Hand" ||
-            partsReq.status === "Rejected - Closed")
+            partsReq.status === "Rejected - Closed" || partsReq.status === "Closed - Order Canceled")
     }
 
     if (requester) {
@@ -188,20 +189,20 @@ export default function SummaryTable(props: Props) {
         if (statusGroup === "Pending Quote") {
             statuses = ["Pending Quote"]
         } else if (statusGroup === "Pending Approval") {
-            statuses = ["Pending Approval", "Quote Provided - Pending Approval"]
+            statuses = ["Pending Approval", "Quote Provided - Pending Approval", "Sourcing - Request to Cancel"]
         } else if (statusGroup === "Rejected") {
             statuses = ["Rejected - Adjustments Required"]
         } else if (statusGroup === "Approved") {
             statuses = ["Approved", "Approved - On Hold"]
         } else if (statusGroup === "Sourcing") {
             statuses = ["Sourcing - In Progress", "Sourcing - Information Required", "Sourcing - Information Provided", "Sourcing - Pending Amex Approval",
-                "Sourcing - Amex Approved"]
+                "Sourcing - Amex Approved", "Sourcing - Request to Cancel"]
         } else if (statusGroup === "Parts Ordered") {
             statuses = ["Ordered - Awaiting Parts"]
         } else if (statusGroup === "Parts Staged") {
             statuses = ["Completed - Parts Staged/Delivered"]
         } else if (statusGroup === "Closed") {
-            statuses = ["Closed - Partially Received", "Closed - Parts in Hand", "Rejected - Closed"]
+            statuses = ["Closed - Partially Received", "Closed - Parts in Hand", "Rejected - Closed", "Closed - Order Canceled"]
         } else if (statusGroup === "Unit Down") {
             statuses = UNIT_DOWN_STATUSES
         }

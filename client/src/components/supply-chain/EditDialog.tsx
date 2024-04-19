@@ -163,7 +163,7 @@ export default function EditDialog(props: Props) {
                         variant="contained"
                         onClick={() => setEdit(!edit)}
                         startIcon={<EditIcon />}
-                        disabled={partsReq.status === "Closed - Parts in Hand" || partsReq.status === "Rejected - Closed" ||
+                        disabled={partsReq.status === "Closed - Parts in Hand" || partsReq.status === "Rejected - Closed" || partsReq.status === "Closed - Order Canceled" ||
                             (isFetched && novaUser?.jobTitle.includes("Lead") && partsReq.requester.id !== novaUser.id)
                         }
                         sx={{

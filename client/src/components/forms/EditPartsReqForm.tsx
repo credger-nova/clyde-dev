@@ -128,6 +128,12 @@ const STATUS: Array<{ status: string, titles: Array<string> }> = [
             .concat(TITLES.find(item => item.group === "IT")?.titles ?? [])
     },
     {
+        status: "Sourcing - Request to Cancel",
+        titles: (TITLES.find(item => item.group === "Supply Chain")?.titles ?? [])
+            .concat(TITLES.find(item => item.group === "Supply Chain Management")?.titles ?? [])
+            .concat(TITLES.find(item => item.group === "IT")?.titles ?? [])
+    },
+    {
         status: "Ordered - Awaiting Parts",
         titles: (TITLES.find(item => item.group === "Supply Chain")?.titles ?? [])
             .concat(TITLES.find(item => item.group === "Supply Chain Management")?.titles ?? [])
@@ -146,6 +152,12 @@ const STATUS: Array<{ status: string, titles: Array<string> }> = [
     {
         status: "Closed - Parts in Hand",
         titles: TITLES.find(item => item.group === "IT")?.titles ?? []
+    },
+    {
+        status: "Closed - Order Canceled",
+        titles: (TITLES.find(item => item.group === "Ops Manager")?.titles ?? [])
+            .concat(TITLES.find(item => item.group === "Ops Director")?.titles ?? [])
+            .concat(TITLES.find(item => item.group === "IT")?.titles ?? [])
     }
 ]
 
@@ -188,10 +200,20 @@ function getAvailableStatus(user: NovaUser | undefined, currStatus: string) {
             return ["Sourcing - Information Provided"]
         }
 
+        if (currStatus === "Sourcing - Request to Cancel" && (OPS_MANAGER_TITLES.includes(user.jobTitle) || OPS_DIRECTOR_TITLES.includes(user.jobTitle))) {
+            return ["Closed - Order Canceled", "Sourcing - Information Provided"]
+        }
+
         let status = STATUS.filter(item => item.titles.includes(user.jobTitle) && item.status !== "Quote Provided - Pending Approval")
 
         if (OPS_MANAGER_TITLES.includes(user.jobTitle)) {
             status = status.filter(item => !item.status.includes("Sourcing"))
+        }
+
+        if (SUPPLY_CHAIN_TITLES.includes(user.jobTitle) || SC_MANAGEMENT_TITLES.includes(user.jobTitle)) {
+            if (currStatus === "Ordered - Awaiting Parts" || currStatus === "Completed - Parts Staged - Delivered") {
+                status = status.filter(item => item.status !== "Sourcing - Request to Cancel")
+            }
         }
 
         return status.map(item => item.status)
@@ -294,9 +316,14 @@ export default function EditPartsReqForm(props: Props) {
         }
     }, [afe, afeExistingAmount, rows])
 
-    // Check if a comment is needed if the PR is being set to Rejected - Closed
+    // Check if a comment is needed
     React.useEffect(() => {
-        if (status === "Rejected - Closed" && partsReq.status !== "Rejected - Closed") {
+        if (
+            (status === "Rejected - Closed" && partsReq.status !== "Rejected - Closed") ||
+            (status === "Closed - Order Canceled" && partsReq.status !== "Closed - Order Canceled") ||
+            (status === "Sourcing - Request to Cancel" && partsReq.status !== "Sourcing - Request to Cancel") ||
+            (status === "Sourcing - Information Provided" && partsReq.status === "Sourcing - Request to Cancel")
+        ) {
             const newComments = (comments as Array<Comment>).filter(comment => !comment.id)
             if (newComments.length === 0) {
                 setNeedsComment(true)
@@ -660,6 +687,11 @@ export default function EditPartsReqForm(props: Props) {
                     return false
                 }
             }
+            if (partsReq.status === "Sourcing - Request to Cancel") {
+                if (field === "Status") {
+                    return false
+                }
+            }
             if (status === "Completed - Parts Staged/Delivered" || status === "Closed - Partially Received") {
                 if (field === "Received") {
                     return false
@@ -693,6 +725,11 @@ export default function EditPartsReqForm(props: Props) {
             }
             if (partsReq.status === "Sourcing - Information Required") {
                 if (field !== "Amex") {
+                    return false
+                }
+            }
+            if (partsReq.status === "Sourcing - Request to Cancel") {
+                if (field === "Status") {
                     return false
                 }
             }
@@ -739,6 +776,11 @@ export default function EditPartsReqForm(props: Props) {
             if (partsReq.status === "Sourcing - Amex Approved") {
                 if (field === "Status") {
                     return false
+                }
+            }
+            if (partsReq.status === "Sourcing - Request to Cancel") {
+                if (field === "Item" || field === "Description" || field === "Rate" || field === "Conex") {
+                    return true
                 }
             }
             if (partsReq.status === "Completed - Parts Staged/Delivered" || status === "Completed - Parts Staged/Delivered") {
@@ -1421,7 +1463,7 @@ export default function EditPartsReqForm(props: Props) {
                                         onChange={onCommentChange}
                                         disabled={denyAccess(novaUser!.jobTitle, status, "Comment")}
                                         error={needsComment}
-                                        helperText={needsComment && "Please enter a reason for rejecting"}
+                                        helperText={needsComment && "Please enter a reason for status change"}
                                     />
                                     <IconButton
                                         onClick={onAddComment}

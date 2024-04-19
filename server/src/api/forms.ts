@@ -267,9 +267,23 @@ function sortPartsReqs(partsReqs: Array<PartsReq>, title?: string, region?: Arra
                 PERMIAN_CUSTOMER_SORT.indexOf(b.unit && b.unit.customer ? b.unit.customer : "") - PERMIAN_CUSTOMER_SORT.indexOf(a.unit && a.unit.customer ? a.unit.customer : "") ||
                 URGENCY_SORT.indexOf(a.urgency) - URGENCY_SORT.indexOf(b.urgency)
             )
+        } else if (FIELD_SERVICE_TITLES.includes(title ?? "")) {
+            partsReqs.sort((a, b) =>
+                FIELD_SERVICE_SORT.indexOf(a.status) - FIELD_SERVICE_SORT.indexOf(b.status) ||
+                URGENCY_SORT.indexOf(a.urgency) - URGENCY_SORT.indexOf(b.urgency) ||
+                PERMIAN_CUSTOMER_SORT.indexOf(b.unit && b.unit.customer ? b.unit.customer : "") - PERMIAN_CUSTOMER_SORT.indexOf(a.unit && a.unit.customer ? a.unit.customer : "") ||
+                a.date.getTime() - b.date.getTime()
+            )
+        } else if (OPS_MANAGER_TITLES.includes(title ?? "") || OPS_DIRECTOR_TITLES.includes(title ?? "")) {
+            partsReqs.sort((a, b) =>
+                MANAGER_STATUS_SORT.indexOf(a.status) - MANAGER_STATUS_SORT.indexOf(b.status) ||
+                URGENCY_SORT.indexOf(a.urgency) - URGENCY_SORT.indexOf(b.urgency) ||
+                PERMIAN_CUSTOMER_SORT.indexOf(b.unit && b.unit.customer ? b.unit.customer : "") - PERMIAN_CUSTOMER_SORT.indexOf(a.unit && a.unit.customer ? a.unit.customer : "") ||
+                a.date.getTime() - b.date.getTime()
+            )
         } else {
             partsReqs.sort((a, b) =>
-                SUPPLY_CHAIN_STATUS.indexOf(a.status) - SUPPLY_CHAIN_STATUS.indexOf(b.status) ||
+                ALL_STATUS.indexOf(a.status) - ALL_STATUS.indexOf(b.status) ||
                 URGENCY_SORT.indexOf(a.urgency) - URGENCY_SORT.indexOf(b.urgency) ||
                 PERMIAN_CUSTOMER_SORT.indexOf(b.unit && b.unit.customer ? b.unit.customer : "") - PERMIAN_CUSTOMER_SORT.indexOf(a.unit && a.unit.customer ? a.unit.customer : "") ||
                 a.date.getTime() - b.date.getTime()

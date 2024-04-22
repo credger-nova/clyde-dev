@@ -604,7 +604,7 @@ export const updatePartsReq = async (id: number, user: NovaUser, updateReq: Part
         })
 
         // Add system comments
-        const message = `Added(x${part.qty}): ${part.itemNumber}`
+        const message = `Added (x${part.qty}): ${part.itemNumber}`
 
         await genSystemComment(message, user, id)
     }
@@ -620,7 +620,7 @@ export const updatePartsReq = async (id: number, user: NovaUser, updateReq: Part
             })
 
             // Add system comments
-            const message = `Removed(x${row.qty}): ${row.itemNumber}`
+            const message = `Removed (x${row.qty}): ${row.itemNumber}`
 
             await genSystemComment(message, user, id)
         }
@@ -687,10 +687,12 @@ export const updatePartsReq = async (id: number, user: NovaUser, updateReq: Part
     }
     // Unit change
     if (oldPartsReq?.unitNumber !== updateReq.unit?.unitNumber) {
-        updated = true
-        const message = `Unit Change: ${oldPartsReq?.unitNumber} -> ${updateReq.unit?.unitNumber}`
+        if (!!oldPartsReq?.unitNumber || !!updateReq.unit?.unitNumber) {
+            updated = true
+            const message = `Unit Change: ${oldPartsReq?.unitNumber} -> ${updateReq.unit?.unitNumber}`
 
-        await genSystemComment(message, user, id)
+            await genSystemComment(message, user, id)
+        }
     }
     // Truck change
     if (oldPartsReq?.truck !== updateReq.truck) {

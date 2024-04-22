@@ -10,11 +10,11 @@ import { prisma } from "../utils/prisma-client"
 import { convertUser, getManagersEmployees, getDirectorsEmployees, getAllEmployees } from "./kpa/employee"
 
 const PERMIAN_REGIONS = ["Pecos", "Carlsbad", "North Permian", "South Permian"]
-
 const PERMIAN_CUSTOMER_SORT = ["APACHE CORPORATION", "CONOCOPHILLIPS CO", "DIAMONDBACK ENERGY", "MATADOR PRODUCTION COMPANY", "VITAL ENERGY INC"]
 
 const URGENCY_SORT = ["Unit Down", "Unit Set", "Rush", "Standard", "Stock"]
-const FIELD_SERVICE_SORT = ["Rejected - Adjustments Required", "Completed - Parts Staged/Delivered", "Closed - Partially Received", "Pending Approval", "Pending Quote",
+
+const SERVICE_SORT = ["Rejected - Adjustments Required", "Completed - Parts Staged/Delivered", "Closed - Partially Received", "Pending Approval", "Pending Quote",
     "Quote Provided - Pending Approval", "Approved - On Hold", "Approved", "Sourcing - In Progress", "Sourcing - Information Required", "Sourcing - Information Provided",
     "Sourcing - Pending Amex Approval", "Sourcing - Amex Approved", "Sourcing - Request to Cancel", "Ordered - Awaiting Parts", "Closed - Parts in Hand", "Rejected - Closed",
     "Closed - Order Canceled"]
@@ -32,9 +32,9 @@ const SUPPLY_CHAIN_STATUS = [
 ]
 const SVP_STATUS = ["Pending Approval", "Quote Provided - Pending Approval"]
 
-const FIELD_SERVICE_TITLES = TITLES.find(item => item.group === "Field Service")?.titles ?? []
-const OPS_MANAGER_TITLES = TITLES.find(item => item.group === "Ops Manager")?.titles ?? []
-const OPS_DIRECTOR_TITLES = TITLES.find(item => item.group === "Ops Director")?.titles ?? []
+const FIELD_SHOP_SERVICE_TITLES = TITLES.find(item => item.group === "Field Service" || item.group === "Shop Service")?.titles ?? []
+const OPS_SHOP_MANAGER_TITLES = TITLES.find(item => item.group === "Ops Manager" || item.group === "Shop Supervisor")?.titles ?? []
+const OPS_SHOP_DIRECTOR_TITLES = TITLES.find(item => item.group === "Ops Director" || item.group === "Shop Director")?.titles ?? []
 const SVP_TITLES = TITLES.find(item => item.group === "SVP")?.titles ?? []
 const SUPPLY_CHAIN_TITLES = TITLES.find(item => item.group === "Supply Chain")?.titles ?? []
 const SC_MANAGEMENT_TITLES = TITLES.find(item => item.group === "Supply Chain Management")?.titles ?? []
@@ -81,18 +81,18 @@ function convertPartsReq(partsReq: any) {
 // Function to return a list of IDs of allowed requesters based on the user's permissions
 async function allowedRequester(user: NovaUser | undefined | null) {
     if (user) {
-        if (FIELD_SERVICE_TITLES.includes(user.jobTitle)) {
+        if (FIELD_SHOP_SERVICE_TITLES.includes(user.jobTitle)) {
             if (user.jobTitle.includes("Lead")) {
                 const mechanics = LEAD_MECHANICS.find(group => group.leads.includes(user.id))?.mechanics
                 return [user.id].concat(mechanics?.map(mechanic => mechanic.id) ?? [])
             } else {
                 return [user.id]
             }
-        } else if (OPS_MANAGER_TITLES.includes(user.jobTitle)) {
+        } else if (OPS_SHOP_MANAGER_TITLES.includes(user.jobTitle)) {
             const employees = await getManagersEmployees(user.id)
 
             return employees.map((employee) => employee.id).concat(user.id)
-        } else if (OPS_DIRECTOR_TITLES.includes(user.jobTitle)) {
+        } else if (OPS_SHOP_DIRECTOR_TITLES.includes(user.jobTitle)) {
             const employees = await getDirectorsEmployees(user.id)
 
             return employees.map((employee) => employee.id).concat(user.id)
@@ -130,7 +130,7 @@ async function allowedRequester(user: NovaUser | undefined | null) {
 
 // Function to return a list of statuses allowed based on user's permissions
 function allowedStatus(title: string) {
-    if (FIELD_SERVICE_TITLES.includes(title) || OPS_MANAGER_TITLES.includes(title) || OPS_DIRECTOR_TITLES.includes(title)) {
+    if (FIELD_SHOP_SERVICE_TITLES.includes(title) || OPS_SHOP_MANAGER_TITLES.includes(title) || OPS_SHOP_DIRECTOR_TITLES.includes(title)) {
         return ALL_STATUS
     } else if (SVP_TITLES.includes(title)) {
         return SVP_STATUS
@@ -269,14 +269,14 @@ function sortPartsReqs(partsReqs: Array<PartsReq>, title?: string, region?: Arra
                 PERMIAN_CUSTOMER_SORT.indexOf(b.unit && b.unit.customer ? b.unit.customer : "") - PERMIAN_CUSTOMER_SORT.indexOf(a.unit && a.unit.customer ? a.unit.customer : "") ||
                 a.date.getTime() - b.date.getTime()
             )
-        } else if (FIELD_SERVICE_TITLES.includes(title ?? "")) {
+        } else if (FIELD_SHOP_SERVICE_TITLES.includes(title ?? "")) {
             partsReqs.sort((a, b) =>
-                FIELD_SERVICE_SORT.indexOf(a.status) - FIELD_SERVICE_SORT.indexOf(b.status) ||
+                SERVICE_SORT.indexOf(a.status) - SERVICE_SORT.indexOf(b.status) ||
                 URGENCY_SORT.indexOf(a.urgency) - URGENCY_SORT.indexOf(b.urgency) ||
                 PERMIAN_CUSTOMER_SORT.indexOf(b.unit && b.unit.customer ? b.unit.customer : "") - PERMIAN_CUSTOMER_SORT.indexOf(a.unit && a.unit.customer ? a.unit.customer : "") ||
                 a.date.getTime() - b.date.getTime()
             )
-        } else if (OPS_MANAGER_TITLES.includes(title ?? "") || OPS_DIRECTOR_TITLES.includes(title ?? "")) {
+        } else if (OPS_SHOP_MANAGER_TITLES.includes(title ?? "") || OPS_SHOP_DIRECTOR_TITLES.includes(title ?? "")) {
             partsReqs.sort((a, b) =>
                 MANAGER_STATUS_SORT.indexOf(a.status) - MANAGER_STATUS_SORT.indexOf(b.status) ||
                 URGENCY_SORT.indexOf(a.urgency) - URGENCY_SORT.indexOf(b.urgency) ||
@@ -293,13 +293,13 @@ function sortPartsReqs(partsReqs: Array<PartsReq>, title?: string, region?: Arra
         }
     } else {
         // Default sorting (status > urgency > date)
-        if (title && FIELD_SERVICE_TITLES.includes(title)) {
+        if (title && FIELD_SHOP_SERVICE_TITLES.includes(title)) {
             partsReqs.sort((a, b) =>
-                FIELD_SERVICE_SORT.indexOf(a.status) - ALL_STATUS.indexOf(b.status) ||
+                SERVICE_SORT.indexOf(a.status) - ALL_STATUS.indexOf(b.status) ||
                 URGENCY_SORT.indexOf(a.urgency) - URGENCY_SORT.indexOf(b.urgency) ||
                 a.date.getTime() - b.date.getTime()
             )
-        } else if (title && (OPS_MANAGER_TITLES.includes(title) || OPS_DIRECTOR_TITLES.includes(title))) {
+        } else if (title && (OPS_SHOP_MANAGER_TITLES.includes(title) || OPS_SHOP_DIRECTOR_TITLES.includes(title))) {
             partsReqs.sort((a, b) =>
                 MANAGER_STATUS_SORT.indexOf(a.status) - ALL_STATUS.indexOf(b.status) ||
                 URGENCY_SORT.indexOf(a.urgency) - URGENCY_SORT.indexOf(b.urgency) ||
@@ -413,10 +413,10 @@ export const getPartsReqs = async (query: PartsReqQuery) => {
     }
 
     // Sort based on title
-    if (FIELD_SERVICE_TITLES.includes(query.user!.jobTitle)) {
-        partsReqs.sort((a, b) => FIELD_SERVICE_SORT.indexOf(a.status) - FIELD_SERVICE_SORT.indexOf(b.status) ||
+    if (FIELD_SHOP_SERVICE_TITLES.includes(query.user!.jobTitle)) {
+        partsReqs.sort((a, b) => SERVICE_SORT.indexOf(a.status) - SERVICE_SORT.indexOf(b.status) ||
             URGENCY_SORT.indexOf(a.urgency) - URGENCY_SORT.indexOf(b.urgency))
-    } else if (OPS_MANAGER_TITLES.includes(query.user!.jobTitle) || OPS_DIRECTOR_TITLES.includes(query.user!.jobTitle)) {
+    } else if (OPS_SHOP_MANAGER_TITLES.includes(query.user!.jobTitle) || OPS_SHOP_DIRECTOR_TITLES.includes(query.user!.jobTitle)) {
         partsReqs.sort((a, b) => MANAGER_STATUS_SORT.indexOf(a.status) - MANAGER_STATUS_SORT.indexOf(b.status) ||
             URGENCY_SORT.indexOf(a.urgency) - URGENCY_SORT.indexOf(b.urgency))
     } else if (SUPPLY_CHAIN_TITLES.includes(query.user!.jobTitle)) {

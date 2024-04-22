@@ -28,6 +28,25 @@ export const TITLES: Array<{ group: string, titles: Array<string> }> = [
         ]
     },
     {
+        group: "Shop Service",
+        titles: [
+            "Shop Service Technician",
+            "Shop Service Technician - Lead"
+        ]
+    },
+    {
+        group: "Shop Supervisor",
+        titles: [
+            "Supervisor - Shop"
+        ]
+    },
+    {
+        group: "Shop Director",
+        titles: [
+            "Director - Shops"
+        ]
+    },
+    {
         group: "Supply Chain",
         titles: [
             "Analyst - Supply Chain & Analysis",

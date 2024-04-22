@@ -67,8 +67,8 @@ const STATUS: Array<{ status: string, titles: Array<string> }> = [
     },
     {
         status: "Pending Quote",
-        titles: (TITLES.find(item => item.group === "Ops Manager")?.titles ?? [])
-            .concat(TITLES.find(item => item.group === "Ops Director")?.titles ?? [])
+        titles: (TITLES.find(item => item.group === "Ops Manager" || item.group === "Shop Supervisor")?.titles ?? [])
+            .concat(TITLES.find(item => item.group === "Ops Director" || item.group === "Shop Director")?.titles ?? [])
             .concat(TITLES.find(item => item.group === "IT")?.titles ?? [])
     },
     {
@@ -78,29 +78,29 @@ const STATUS: Array<{ status: string, titles: Array<string> }> = [
     },
     {
         status: "Rejected - Adjustments Required",
-        titles: (TITLES.find(item => item.group === "Ops Manager")?.titles ?? [])
-            .concat(TITLES.find(item => item.group === "Ops Director")?.titles ?? [])
+        titles: (TITLES.find(item => item.group === "Ops Manager" || item.group === "Shop Supervisor")?.titles ?? [])
+            .concat(TITLES.find(item => item.group === "Ops Director" || item.group === "Shop Director")?.titles ?? [])
             .concat(TITLES.find(item => item.group === "SVP")?.titles ?? [])
             .concat(TITLES.find(item => item.group === "IT")?.titles ?? [])
     },
     {
         status: "Rejected - Closed",
-        titles: (TITLES.find(item => item.group === "Ops Manager")?.titles ?? [])
-            .concat(TITLES.find(item => item.group === "Ops Director")?.titles ?? [])
+        titles: (TITLES.find(item => item.group === "Ops Manager" || item.group === "Shop Supervisor")?.titles ?? [])
+            .concat(TITLES.find(item => item.group === "Ops Director" || item.group === "Shop Director")?.titles ?? [])
             .concat(TITLES.find(item => item.group === "SVP")?.titles ?? [])
             .concat(TITLES.find(item => item.group === "IT")?.titles ?? [])
     },
     {
         status: "Approved - On Hold",
-        titles: (TITLES.find(item => item.group === "Ops Manager")?.titles ?? [])
-            .concat(TITLES.find(item => item.group === "Ops Director")?.titles ?? [])
+        titles: (TITLES.find(item => item.group === "Ops Manager" || item.group === "Shop Supervisor")?.titles ?? [])
+            .concat(TITLES.find(item => item.group === "Ops Director" || item.group === "Shop Director")?.titles ?? [])
             .concat(TITLES.find(item => item.group === "SVP")?.titles ?? [])
             .concat(TITLES.find(item => item.group === "IT")?.titles ?? [])
     },
     {
         status: "Approved",
-        titles: (TITLES.find(item => item.group === "Ops Manager")?.titles ?? [])
-            .concat(TITLES.find(item => item.group === "Ops Director")?.titles ?? [])
+        titles: (TITLES.find(item => item.group === "Ops Manager" || item.group === "Shop Supervisor")?.titles ?? [])
+            .concat(TITLES.find(item => item.group === "Ops Director" || item.group === "Shop Director")?.titles ?? [])
             .concat(TITLES.find(item => item.group === "SVP")?.titles ?? [])
             .concat(TITLES.find(item => item.group === "IT")?.titles ?? [])
     },
@@ -112,7 +112,7 @@ const STATUS: Array<{ status: string, titles: Array<string> }> = [
     },
     {
         status: "Sourcing - Information Required",
-        titles: (TITLES.find(item => item.group === "Ops Manager")?.titles ?? [])
+        titles: (TITLES.find(item => item.group === "Ops Manager" || item.group === "Shop Supervisor")?.titles ?? [])
             .concat(TITLES.find(item => item.group === "Supply Chain")?.titles ?? [])
             .concat(TITLES.find(item => item.group === "Supply Chain Management")?.titles ?? [])
             .concat(TITLES.find(item => item.group === "IT")?.titles ?? [])
@@ -155,15 +155,16 @@ const STATUS: Array<{ status: string, titles: Array<string> }> = [
     },
     {
         status: "Closed - Order Canceled",
-        titles: (TITLES.find(item => item.group === "Ops Manager")?.titles ?? [])
-            .concat(TITLES.find(item => item.group === "Ops Director")?.titles ?? [])
+        titles: (TITLES.find(item => item.group === "Ops Manager" || item.group === "Shop Supervisor")?.titles ?? [])
+            .concat(TITLES.find(item => item.group === "Ops Director" || item.group === "Shop Director")?.titles ?? [])
             .concat(TITLES.find(item => item.group === "IT")?.titles ?? [])
     }
 ]
 
-const FIELD_SERVICE_TITLES = TITLES.find(item => item.group === "Field Service")?.titles ?? []
-const OPS_MANAGER_TITLES = TITLES.find(item => item.group === "Ops Manager")?.titles ?? []
-const OPS_DIRECTOR_TITLES = TITLES.find(item => item.group === "Ops Director")?.titles ?? []
+const FIELD_SHOP_SERVICE_TITLES = TITLES.find(item => item.group === "Field Service" || item.group === "Shop Service")?.titles ?? []
+const OPS_SHOP_MANAGER_TITLES = TITLES.find(item => item.group === "Ops Manager" || item.group === "Shop Supervisor")?.titles ?? []
+const OPS_SHOP_DIRECTOR_TITLES = TITLES.find(item => item.group === "Ops Director" || item.group === "Shop Director")?.titles ?? []
+const SHOP_TITLES = TITLES.find(item => item.group.includes("Shop"))?.titles ?? []
 const SVP_TITLES = TITLES.find(item => item.group === "SVP")?.titles ?? []
 const SUPPLY_CHAIN_TITLES = TITLES.find(item => item.group === "Supply Chain")?.titles ?? []
 const SC_MANAGEMENT_TITLES = TITLES.find(item => item.group === "Supply Chain Management")?.titles ?? []
@@ -196,17 +197,17 @@ function getAvailableStatus(user: NovaUser | undefined, currStatus: string) {
             return ["Quote Provided - Pending Approval"]
         }
 
-        if (currStatus === "Sourcing - Information Required" && (OPS_MANAGER_TITLES.includes(user.jobTitle) || FIELD_SERVICE_TITLES.includes(user.jobTitle))) {
+        if (currStatus === "Sourcing - Information Required" && (OPS_SHOP_MANAGER_TITLES.includes(user.jobTitle) || FIELD_SHOP_SERVICE_TITLES.includes(user.jobTitle))) {
             return ["Sourcing - Information Provided"]
         }
 
-        if (currStatus === "Sourcing - Request to Cancel" && (OPS_MANAGER_TITLES.includes(user.jobTitle) || OPS_DIRECTOR_TITLES.includes(user.jobTitle))) {
+        if (currStatus === "Sourcing - Request to Cancel" && (OPS_SHOP_MANAGER_TITLES.includes(user.jobTitle) || OPS_SHOP_DIRECTOR_TITLES.includes(user.jobTitle))) {
             return ["Closed - Order Canceled", "Sourcing - Information Provided"]
         }
 
         let status = STATUS.filter(item => item.titles.includes(user.jobTitle) && item.status !== "Quote Provided - Pending Approval")
 
-        if (OPS_MANAGER_TITLES.includes(user.jobTitle)) {
+        if (OPS_SHOP_MANAGER_TITLES.includes(user.jobTitle)) {
             status = status.filter(item => !item.status.includes("Sourcing"))
         }
 
@@ -451,11 +452,13 @@ export default function EditPartsReqForm(props: Props) {
         setOrderType(value ? "Rental" : so ? "Third-Party" : null)
         setRegion(
             value ?
-                value.operationalRegion ?
-                    toTitleCase(value.operationalRegion) :
-                    novaUser ?
-                        novaUser.region[0] :
-                        null :
+                SHOP_TITLES.includes(novaUser!.jobTitle) ?
+                    novaUser!.region[0] :
+                    value.operationalRegion ?
+                        toTitleCase(value.operationalRegion) :
+                        novaUser ?
+                            novaUser.region[0] :
+                            null :
                 null
         )
     }
@@ -639,8 +642,8 @@ export default function EditPartsReqForm(props: Props) {
             return false
         }
 
-        // Field Service permissions
-        if (FIELD_SERVICE_TITLES.includes(title)) {
+        // Field/Shop Service permissions
+        if (FIELD_SHOP_SERVICE_TITLES.includes(title)) {
             if (status === "Rejected - Adjustments Required") {
                 if (field !== "Status") {
                     return false
@@ -660,8 +663,8 @@ export default function EditPartsReqForm(props: Props) {
             return true
         }
 
-        // Ops Manager permissions
-        if (OPS_MANAGER_TITLES.includes(title)) {
+        // Ops/Shop Manager permissions
+        if (OPS_SHOP_MANAGER_TITLES.includes(title)) {
             if (partsReq.status === "Pending Approval") {
                 if (field === "Status" && calcCost(rows as Array<OrderRow>) < 5000 &&
                     !svpApprovalRequired(unit, rows as Array<OrderRow>)) {
@@ -701,8 +704,8 @@ export default function EditPartsReqForm(props: Props) {
             return true
         }
 
-        // Ops Director permissions
-        if (OPS_DIRECTOR_TITLES.includes(title)) {
+        // Ops/Shop Director permissions
+        if (OPS_SHOP_DIRECTOR_TITLES.includes(title)) {
             if (partsReq.status === "Pending Approval" || partsReq.status === "Quote Provided - Pending Approval") {
                 if (field === "Status" && (calcCost(rows as Array<OrderRow>) < 10000 || partsReq.afe) &&
                     !svpApprovalRequired(unit, rows as Array<OrderRow>)) {

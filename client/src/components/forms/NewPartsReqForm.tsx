@@ -12,6 +12,7 @@ import { useNovaUser } from "../../hooks/user"
 import { useWarehouses } from "../../hooks/warehouse"
 
 import { toTitleCase, calcCost, svpApprovalRequired } from "../../utils/helperFunctions"
+import { TITLES } from "../../utils/titles"
 
 import { OrderRow, CreatePartsReq } from "../../types/partsReq"
 import { Part } from "../../types/part"
@@ -56,6 +57,8 @@ import Typography from '@mui/material/Typography'
 const URGENCY = ["Unit Down", "Unit Set", "Rush", "Standard"]
 const ORDER_TYPE = [{ type: "Rental" }, { type: "Third-Party" }, { type: "Shop Supplies" }, { type: "Truck Supplies" }, { type: "Stock", titles: ["Supply Chain", "Software"] }]
 const REGION = ["Carlsbad", "Pecos", "North Permian", "South Permian", "East Texas", "South Texas", "Midcon"]
+
+const SHOP_TITLES = TITLES.find(item => item.group.includes("Shop"))?.titles ?? []
 
 const Item = styled(Paper)(({ theme }) => ({
     backgroundColor: "#242424",
@@ -233,11 +236,13 @@ export default function PartsReqForm() {
         setOrderType(value ? "Rental" : so ? "Third-Party" : null)
         setRegion(
             value ?
-                value.operationalRegion ?
-                    toTitleCase(value.operationalRegion) :
-                    novaUser ?
-                        novaUser.region[0] :
-                        null :
+                SHOP_TITLES.includes(novaUser!.jobTitle) ?
+                    novaUser!.region[0] :
+                    value.operationalRegion ?
+                        toTitleCase(value.operationalRegion) :
+                        novaUser ?
+                            novaUser.region[0] :
+                            null :
                 null
         )
     }
@@ -719,7 +724,7 @@ export default function PartsReqForm() {
                                     </FormControl>
                                     <b><p style={{ margin: "20px 0px 0px 0px" }}>Operational Region:</p></b>
                                     <Divider />
-                                    <FormControl disabled={!!unit}>
+                                    <FormControl disabled={!!unit || (!!unit && SHOP_TITLES.includes(novaUser!.jobTitle))}>
                                         <RadioGroup row>
                                             {REGION.map((val) => {
                                                 return (

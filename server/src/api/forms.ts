@@ -265,9 +265,9 @@ function sortPartsReqs(partsReqs: Array<PartsReq>, title?: string, region?: Arra
         if (SUPPLY_CHAIN_TITLES.includes(title ?? "")) {
             partsReqs.sort((a, b) =>
                 SUPPLY_CHAIN_STATUS.indexOf(a.status) - SUPPLY_CHAIN_STATUS.indexOf(b.status) ||
-                a.date.getTime() - b.date.getTime() ||
+                URGENCY_SORT.indexOf(a.urgency) - URGENCY_SORT.indexOf(b.urgency) ||
                 PERMIAN_CUSTOMER_SORT.indexOf(b.unit && b.unit.customer ? b.unit.customer : "") - PERMIAN_CUSTOMER_SORT.indexOf(a.unit && a.unit.customer ? a.unit.customer : "") ||
-                URGENCY_SORT.indexOf(a.urgency) - URGENCY_SORT.indexOf(b.urgency)
+                a.date.getTime() - b.date.getTime()
             )
         } else if (FIELD_SERVICE_TITLES.includes(title ?? "")) {
             partsReqs.sort((a, b) =>

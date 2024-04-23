@@ -648,7 +648,7 @@ export default function PartsReqForm() {
                                     />
                                     <Autocomplete
                                         disabled={!conex}
-                                        options={locations ? locations.filter((location) => location.includes("CONEX")) : []}
+                                        options={locations ? locations.filter((location) => location.includes("CONEX") || location.includes("STORAGE")) : []}
                                         loading={locationsFetching}
                                         onChange={onConexNameChange}
                                         value={conexName}

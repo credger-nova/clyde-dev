@@ -323,8 +323,6 @@ function sortPartsReqs(partsReqs: Array<PartsReq>, title?: string, region?: Arra
     return partsReqs
 }
 
-
-
 // Get Parts Reqs that match the given query
 export const getPartsReqs = async (query: PartsReqQuery) => {
     const result = await prisma.partsReq.findMany({

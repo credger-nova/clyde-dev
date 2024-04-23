@@ -133,7 +133,8 @@ export default function PartsReqForm() {
     })
 
     React.useEffect(() => {
-        if (!requester || !orderDate || !urgency || !orderType || (billable && !unit) || !(rows.length > 0)) {
+        if (!requester || !orderDate || !urgency || !orderType || (billable && !unit) || !(rows.length > 0) ||
+            (!unit && !truck && !so)) {
             setDisableSubmit(true)
         } else {
             if (!rows[0].itemNumber) {
@@ -142,7 +143,7 @@ export default function PartsReqForm() {
                 setDisableSubmit(false)
             }
         }
-    }, [requester, orderDate, billable, unit, afe, so, urgency, orderType, rows])
+    }, [requester, orderDate, billable, unit, afe, so, urgency, orderType, rows, truck])
 
     React.useEffect(() => {
         if (afe) {

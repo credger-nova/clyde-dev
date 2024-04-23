@@ -27,7 +27,8 @@ export default function TestingSplashPage(props: Props) {
 
     return (
         <div
-            style={{ width: "100%", height: "100%", display: "flex", justifyContent: "center", alignItems: "center", flexDirection: "column" }}
+            className="page-container"
+            style={{ display: "flex", justifyContent: "center", alignItems: "center", flexDirection: "column" }}
         >
             <img
                 src="https://res.cloudinary.com/dvdturlak/image/upload/v1701810257/Kepler/nova-simple_yrdti4.svg"

@@ -28,9 +28,11 @@ export default function App() {
 
   return showTestingSplashScreen ?
     (
-      <TestingSplashPage
-        setShowTestingSplashScreen={setShowTestingSplashScreen}
-      />
+      <PrivateRoute>
+        <TestingSplashPage
+          setShowTestingSplashScreen={setShowTestingSplashScreen}
+        />
+      </PrivateRoute>
     ) :
     (
       <React.Suspense fallback={<Loader />}>

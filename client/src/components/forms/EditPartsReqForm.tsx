@@ -296,7 +296,8 @@ export default function EditPartsReqForm(props: Props) {
     })
 
     React.useEffect(() => {
-        if (!requester || !orderDate || !urgency || !orderType || !(rows.length > 0) || needsComment) {
+        if (!requester || !orderDate || !urgency || !orderType || !(rows.length > 0) || needsComment ||
+            (!unit && !truck && !so)) {
             setSaveDisabled(true)
         } else {
             if (!rows[0].itemNumber) {
@@ -305,7 +306,7 @@ export default function EditPartsReqForm(props: Props) {
                 setSaveDisabled(false)
             }
         }
-    }, [requester, orderDate, afe, so, urgency, orderType, rows, needsComment, setSaveDisabled])
+    }, [requester, orderDate, afe, so, urgency, orderType, rows, needsComment, setSaveDisabled, truck, unit])
 
     React.useEffect(() => {
         if (afe) {

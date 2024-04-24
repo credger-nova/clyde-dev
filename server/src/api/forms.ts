@@ -468,7 +468,7 @@ export const createPartsReq = async (partsReq: CreatePartsReq) => {
                     })
                 }
             },
-            status: await autoApprove(partsReq.afe, calcCost(partsReq.parts as Array<OrderRow>)) ? "Approved" : "Pending Approval",
+            status: partsReq.quoteOnly ? "Pending Quote" : await autoApprove(partsReq.afe, calcCost(partsReq.parts as Array<OrderRow>)) ? "Approved" : "Pending Approval",
             updated: partsReq.updated
         }
     })

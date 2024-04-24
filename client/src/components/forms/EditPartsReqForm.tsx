@@ -762,12 +762,13 @@ export default function EditPartsReqForm(props: Props) {
             if (partsReq.status === "Approved") {
                 return false
             }
-            if (partsReq.status === "Pending Quote" || partsReq.status === "Approved" || partsReq.status === "Sourcing - Information Required" ||
+            if (partsReq.status === "Pending Quote") {
+                return false
+            }
+            if (partsReq.status === "Approved" || partsReq.status === "Sourcing - Information Required" ||
                 partsReq.status === "Sourcing - Information Provided" || partsReq.status === "Ordered - Awaiting Parts") {
-                if (field === "Status" || field === "Amex" ||
-                    (partsReq.status === "Sourcing - Information Provided" &&
-                        (field === "Needed" || field === "Item" || field === "Description" || field === "Rate")
-                    )
+                if (field === "Status" || field === "Amex" || (partsReq.status === "Sourcing - Information Provided" &&
+                    (field === "Needed" || field === "Item" || field === "Description" || field === "Rate"))
                 ) {
                     return false
                 }
@@ -801,7 +802,10 @@ export default function EditPartsReqForm(props: Props) {
 
         // Supply Chain management permissions
         if (SC_MANAGEMENT_TITLES.includes(title)) {
-            if (partsReq.status === "Pending Quote" || partsReq.status === "Approved" || partsReq.status === "Sourcing - Information Required" ||
+            if (partsReq.status === "Pending Quote") {
+                return false
+            }
+            if (partsReq.status === "Approved" || partsReq.status === "Sourcing - Information Required" ||
                 partsReq.status === "Sourcing - Information Provided" || partsReq.status === "Ordered - Awaiting Parts") {
                 if (field === "Status" || field === "Amex") {
                     return false

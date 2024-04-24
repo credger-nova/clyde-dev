@@ -259,7 +259,7 @@ function noRate(rows: Array<Omit<OrderRow, "id">>) {
 }
 
 function sortPartsReqs(partsReqs: Array<PartsReq>, title?: string, region?: Array<string>) {
-    // Permian sorting (status > date > custoemr > urgency)
+    // Permian sorting (status > date > customer > urgency)
     if (region && PERMIAN_REGIONS.filter(value => region.includes(value)).length > 0) {
         // Supply Chain sorting
         if (SUPPLY_CHAIN_TITLES.includes(title ?? "")) {
@@ -394,34 +394,6 @@ export const getPartsReqs = async (query: PartsReqQuery) => {
     if (SVP_TITLES.includes(query.user!.jobTitle)) {
         partsReqs = partsReqs.filter((partsReq) => partsReq.unit && calcCost(partsReq.parts) > 10000)
         /*svpApprovalRequired(partsReq.unit.unitNumber, Number(partsReq.unit.oemHP), partsReq.parts))*/
-    }
-
-    // Sort by date
-    partsReqs.sort((a, b) => a.date.getTime() - b.date.getTime())
-
-    // Sort based on region
-    if (["Carlsbad", "Pecos", "North Permian", "South Permian"].filter(value => query.user?.region.includes(value)).length > 0) {
-        const permianSorted = [
-            ...partsReqs.filter(partsReq => partsReq.unit && PERMIAN_CUSTOMER_SORT.includes(partsReq.unit.customer ?? ""))
-                .sort((a, b) => PERMIAN_CUSTOMER_SORT.indexOf(a.unit!.customer ?? "") - PERMIAN_CUSTOMER_SORT.indexOf(b.unit!.customer ?? "")),
-            ...partsReqs.filter(partsReq => !(partsReq.unit && PERMIAN_CUSTOMER_SORT.includes(partsReq.unit.customer ?? "")))
-        ]
-
-        partsReqs = permianSorted
-    }
-
-    // Sort based on title
-    if (FIELD_SHOP_SERVICE_TITLES.includes(query.user!.jobTitle)) {
-        partsReqs.sort((a, b) => SERVICE_SORT.indexOf(a.status) - SERVICE_SORT.indexOf(b.status) ||
-            URGENCY_SORT.indexOf(a.urgency) - URGENCY_SORT.indexOf(b.urgency))
-    } else if (OPS_SHOP_MANAGER_TITLES.includes(query.user!.jobTitle) || OPS_SHOP_DIRECTOR_TITLES.includes(query.user!.jobTitle)) {
-        partsReqs.sort((a, b) => MANAGER_STATUS_SORT.indexOf(a.status) - MANAGER_STATUS_SORT.indexOf(b.status) ||
-            URGENCY_SORT.indexOf(a.urgency) - URGENCY_SORT.indexOf(b.urgency))
-    } else if (SUPPLY_CHAIN_TITLES.includes(query.user!.jobTitle)) {
-        partsReqs.sort((a, b) => SUPPLY_CHAIN_STATUS.indexOf(a.status) - SUPPLY_CHAIN_STATUS.indexOf(b.status) ||
-            URGENCY_SORT.indexOf(a.urgency) - URGENCY_SORT.indexOf(b.urgency))
-    } else {
-        partsReqs.sort((a, b) => ALL_STATUS.indexOf(a.status) - ALL_STATUS.indexOf(b.status) || URGENCY_SORT.indexOf(a.urgency) - URGENCY_SORT.indexOf(b.urgency))
     }
 
     partsReqs = sortPartsReqs(partsReqs, query.user!.jobTitle, query.user?.region)

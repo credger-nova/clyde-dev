@@ -703,6 +703,63 @@ export default function SummaryTable(props: Props) {
                     statuses={STATUS_GROUPS}
                 />
         )
+    } else if (group === "Ops Vice President") {
+        return (
+            !partsReqsFetching && !regionsFetching ? regions?.map((region) => {
+                region = toTitleCase(region)
+                return (
+                    <Grid xs={12} sm={6} sx={{ padding: "2px", marginBottom: "5px" }} key={region}>
+                        <Accordion
+                            disableGutters
+                            defaultExpanded
+                        >
+                            <AccordionSummary
+                                expandIcon={<ExpandMoreIcon />}
+                                sx={{
+                                    flexDirection: "row-reverse",
+                                    "& .MuiAccordionSummary-content": {
+                                        margin: 0
+                                    },
+                                    "&.MuiAccordionSummary-root": {
+                                        minHeight: 0,
+                                        margin: 0
+                                    }
+                                }}
+                            >
+                                <h4 style={{ margin: 0 }}>
+                                    {region}
+                                </h4>
+                            </AccordionSummary>
+                            <AccordionDetails sx={{ padding: "8px" }}>
+                                <Divider />
+                                <Grid container>
+                                    <Grid xs={12} sm={4}>
+                                        <Item
+                                            onClick={() => handleClick("Pending Approval", undefined, region)}
+                                            sx={{
+                                                margin: "5px", display: "flex", alignItems: "center", justifyContent: "space-between", cursor: "pointer",
+                                                transition: "transform 0.1s ease-in-out",
+                                                "&:hover": {
+                                                    transform: "scale3d(1.03, 1.03, 1)"
+                                                }
+                                            }}>
+                                            <Typography variant="subtitle2" fontWeight="400">
+                                                {`Pending Approval:`}
+                                            </Typography>
+                                            <Typography variant="subtitle2" fontWeight="400">
+                                                {partsReqs ? calcStatus(partsReqs, "Pending Approval", undefined, undefined, region) : 0}
+                                            </Typography>
+                                        </Item>
+                                    </Grid>
+                                </Grid>
+                            </AccordionDetails>
+                        </Accordion>
+                    </Grid>
+                )
+            }) : <AccordionSkeleton
+                statuses={["Pending Approval"]}
+            />
+        )
     } else if (group === "Supply Chain") {
         return (
             !partsReqsFetching && !regionsFetching ? regions?.map((region) => {
@@ -764,7 +821,7 @@ export default function SummaryTable(props: Props) {
                     statuses={SC_GROUPS}
                 />
         )
-    } else if (group === "Supply Chain Management" || group === "Ops Vice President" || group === "Executive Management" || group === "IT" || group === "Admin") {
+    } else if (group === "Supply Chain Management" || group === "Executive Management" || group === "IT" || group === "Admin") {
         return (
             !partsReqsFetching && !regionsFetching ? regions?.map((region) => {
                 region = toTitleCase(region)

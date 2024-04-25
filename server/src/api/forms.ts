@@ -35,7 +35,7 @@ const SVP_STATUS = ["Pending Approval", "Quote Provided - Pending Approval"]
 const FIELD_SHOP_SERVICE_TITLES = TITLES.find(item => item.group === "Field Service" || item.group === "Shop Service")?.titles ?? []
 const OPS_SHOP_MANAGER_TITLES = TITLES.find(item => item.group === "Ops Manager" || item.group === "Shop Supervisor")?.titles ?? []
 const OPS_SHOP_DIRECTOR_TITLES = TITLES.find(item => item.group === "Ops Director" || item.group === "Shop Director")?.titles ?? []
-const SVP_TITLES = TITLES.find(item => item.group === "Ops Vice President")?.titles ?? []
+const OPS_VP_TITLES = TITLES.find(item => item.group === "Ops Vice President")?.titles ?? []
 const SUPPLY_CHAIN_TITLES = TITLES.find(item => item.group === "Supply Chain")?.titles ?? []
 const SC_MANAGEMENT_TITLES = TITLES.find(item => item.group === "Supply Chain Management")?.titles ?? []
 const ADMIN_TITLES = TITLES.find(item => item.group === "Admin")?.titles ?? []
@@ -96,7 +96,7 @@ async function allowedRequester(user: NovaUser | undefined | null) {
             const employees = await getDirectorsEmployees(user.id)
 
             return employees.map((employee) => employee.id).concat(user.id)
-        } else if (SVP_TITLES.includes(user.jobTitle)) {
+        } else if (OPS_VP_TITLES.includes(user.jobTitle)) {
             const allEmployees = await getAllEmployees()
 
             return allEmployees.map((employee) => employee.id)
@@ -132,8 +132,8 @@ async function allowedRequester(user: NovaUser | undefined | null) {
 function allowedStatus(title: string) {
     if (FIELD_SHOP_SERVICE_TITLES.includes(title) || OPS_SHOP_MANAGER_TITLES.includes(title) || OPS_SHOP_DIRECTOR_TITLES.includes(title)) {
         return ALL_STATUS
-    } else if (SVP_TITLES.includes(title)) {
-        return SVP_STATUS
+    } else if (OPS_VP_TITLES.includes(title)) {
+        return ALL_STATUS
     } else if (SUPPLY_CHAIN_TITLES.includes(title)) {
         return SUPPLY_CHAIN_STATUS
     } else if (SC_MANAGEMENT_TITLES.includes(title)) {
@@ -391,11 +391,11 @@ export const getPartsReqs = async (query: PartsReqQuery) => {
     let partsReqs = result.map((partsReq) => convertPartsReq(partsReq))
 
     // Filter Ops Vice President results to only units that require Ops Vice President privileges
-    if (SVP_TITLES.includes(query.user!.jobTitle)) {
+    /*if (OPS_VP_TITLES.includes(query.user!.jobTitle)) {
         partsReqs = partsReqs.filter((partsReq) => partsReq.unit && (calcCost(partsReq.parts) > 10000 ||
             opsVpApprovalRequired(partsReq.unit.unitNumber, Number(partsReq.unit.oemHP), partsReq.parts))
         )
-    }
+    }*/
 
     partsReqs = sortPartsReqs(partsReqs, query.user!.jobTitle, query.user?.region)
 

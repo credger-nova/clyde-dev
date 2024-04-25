@@ -3,7 +3,7 @@ import * as React from "react"
 import { NovaUser } from "../../../types/novaUser"
 import { PartsReq, PartsReqQuery } from "../../../types/partsReq"
 
-import { opsVpApprovalRequired, toTitleCase } from "../../../utils/helperFunctions"
+import { calcCost, opsVpApprovalRequired, toTitleCase } from "../../../utils/helperFunctions"
 
 import { useLeadsEmployees, useManagersEmployees, useDirectorsEmployees } from "../../../hooks/user"
 import { usePartsReqs } from "../../../hooks/partsReq"
@@ -150,7 +150,7 @@ function calcStatus(partsReqs: Array<PartsReq>, statusGroup: string, requester?:
         filtered = filtered.filter((partsReqs) => partsReqs.region === region)
     }
     if (opsVP) {
-        filtered = filtered.filter((partsReq) => opsVpApprovalRequired(partsReq.unit ?? null, partsReq.parts))
+        filtered = filtered.filter((partsReq) => calcCost(partsReq.parts) > 10000 || opsVpApprovalRequired(partsReq.unit ?? null, partsReq.parts))
     }
 
     return filtered.length
@@ -750,7 +750,7 @@ export default function SummaryTable(props: Props) {
                                                 {`Pending Approval:`}
                                             </Typography>
                                             <Typography variant="subtitle2" fontWeight="400">
-                                                {partsReqs ? calcStatus(partsReqs, "Pending Approval", undefined, undefined, region) : 0}
+                                                {partsReqs ? calcStatus(partsReqs, "Pending Approval", undefined, undefined, region, true) : 0}
                                             </Typography>
                                         </Item>
                                     </Grid>
@@ -809,7 +809,7 @@ export default function SummaryTable(props: Props) {
                                                     {`${statusGroup}:`}
                                                 </Typography>
                                                 <Typography variant="subtitle2" fontWeight="400">
-                                                    {partsReqs ? calcStatus(partsReqs, statusGroup, undefined, undefined, region, true) : 0}
+                                                    {partsReqs ? calcStatus(partsReqs, statusGroup, undefined, undefined, region) : 0}
                                                 </Typography>
                                             </Item>
                                         </Grid>

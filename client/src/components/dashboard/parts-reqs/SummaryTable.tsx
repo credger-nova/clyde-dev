@@ -404,7 +404,7 @@ export default function SummaryTable(props: Props) {
                                                         {`${statusGroup}:`}
                                                     </Typography>
                                                     <Typography variant="subtitle2" fontWeight="400">
-                                                        {partsReqs ? calcStatus(partsReqs, statusGroup, novaUser) : 0}
+                                                        {partsReqs ? calcStatus(partsReqs, statusGroup, employee) : 0}
                                                     </Typography>
                                                 </Item>
                                             </Grid>

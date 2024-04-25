@@ -393,7 +393,8 @@ export const getPartsReqs = async (query: PartsReqQuery) => {
     // Filter Ops Vice President results to only units that require Ops Vice President privileges
     if (SVP_TITLES.includes(query.user!.jobTitle)) {
         partsReqs = partsReqs.filter((partsReq) => partsReq.unit && (calcCost(partsReq.parts) > 10000 ||
-            opsVpApprovalRequired(partsReq.unit.unitNumber, Number(partsReq.unit.oemHP), partsReq.parts)))
+            opsVpApprovalRequired(partsReq.unit.unitNumber, Number(partsReq.unit.oemHP), partsReq.parts))
+        )
     }
 
     partsReqs = sortPartsReqs(partsReqs, query.user!.jobTitle, query.user?.region)

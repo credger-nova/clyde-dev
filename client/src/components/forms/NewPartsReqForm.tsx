@@ -1046,7 +1046,7 @@ export default function PartsReqForm() {
                                                         <div style={{ display: "flex", flexDirection: "row", justifyContent: "flex-end", alignItems: "center" }}>
                                                             {unit && opsVpApprovalRequired(unit, rows as Array<OrderRow>) && rows[index].mode !== "PM PARTS" ?
                                                                 <Tooltip
-                                                                    title={"Non PM Part"}
+                                                                    title={"Non-PM Part"}
                                                                     componentsProps={{
                                                                         tooltip: {
                                                                             sx: {

@@ -80,28 +80,28 @@ const STATUS: Array<{ status: string, titles: Array<string> }> = [
         status: "Rejected - Adjustments Required",
         titles: (TITLES.find(item => item.group === "Ops Manager" || item.group === "Shop Supervisor")?.titles ?? [])
             .concat(TITLES.find(item => item.group === "Ops Director" || item.group === "Shop Director")?.titles ?? [])
-            .concat(TITLES.find(item => item.group === "SVP")?.titles ?? [])
+            .concat(TITLES.find(item => item.group === "Ops Vice President")?.titles ?? [])
             .concat(TITLES.find(item => item.group === "IT")?.titles ?? [])
     },
     {
         status: "Rejected - Closed",
         titles: (TITLES.find(item => item.group === "Ops Manager" || item.group === "Shop Supervisor")?.titles ?? [])
             .concat(TITLES.find(item => item.group === "Ops Director" || item.group === "Shop Director")?.titles ?? [])
-            .concat(TITLES.find(item => item.group === "SVP")?.titles ?? [])
+            .concat(TITLES.find(item => item.group === "Ops Vice President")?.titles ?? [])
             .concat(TITLES.find(item => item.group === "IT")?.titles ?? [])
     },
     {
         status: "Approved - On Hold",
         titles: (TITLES.find(item => item.group === "Ops Manager" || item.group === "Shop Supervisor")?.titles ?? [])
             .concat(TITLES.find(item => item.group === "Ops Director" || item.group === "Shop Director")?.titles ?? [])
-            .concat(TITLES.find(item => item.group === "SVP")?.titles ?? [])
+            .concat(TITLES.find(item => item.group === "Ops Vice President")?.titles ?? [])
             .concat(TITLES.find(item => item.group === "IT")?.titles ?? [])
     },
     {
         status: "Approved",
         titles: (TITLES.find(item => item.group === "Ops Manager" || item.group === "Shop Supervisor")?.titles ?? [])
             .concat(TITLES.find(item => item.group === "Ops Director" || item.group === "Shop Director")?.titles ?? [])
-            .concat(TITLES.find(item => item.group === "SVP")?.titles ?? [])
+            .concat(TITLES.find(item => item.group === "Ops Vice President")?.titles ?? [])
             .concat(TITLES.find(item => item.group === "IT")?.titles ?? [])
     },
     {
@@ -165,7 +165,7 @@ const FIELD_SHOP_SERVICE_TITLES = TITLES.find(item => item.group === "Field Serv
 const OPS_SHOP_MANAGER_TITLES = TITLES.find(item => item.group === "Ops Manager" || item.group === "Shop Supervisor")?.titles ?? []
 const OPS_SHOP_DIRECTOR_TITLES = TITLES.find(item => item.group === "Ops Director" || item.group === "Shop Director")?.titles ?? []
 const SHOP_TITLES = TITLES.find(item => item.group.includes("Shop"))?.titles ?? []
-const SVP_TITLES = TITLES.find(item => item.group === "SVP")?.titles ?? []
+const SVP_TITLES = TITLES.find(item => item.group === "Ops Vice President")?.titles ?? []
 const SUPPLY_CHAIN_TITLES = TITLES.find(item => item.group === "Supply Chain")?.titles ?? []
 const SC_MANAGEMENT_TITLES = TITLES.find(item => item.group === "Supply Chain Management")?.titles ?? []
 const EXEC_TITLES = TITLES.find(item => item.group === "Executive Management")?.titles ?? []
@@ -746,7 +746,7 @@ export default function EditPartsReqForm(props: Props) {
             return true
         }
 
-        // SVP permissions
+        // Ops Vice President permissions
         if (SVP_TITLES.includes(title)) {
             if (partsReq.status === "Pending Approval" || partsReq.status === "Quote Provided - Pending Approval") {
                 if (field === "Status") {

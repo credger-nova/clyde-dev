@@ -24,7 +24,7 @@ const ALLOWED_GROUPS = [
     "Field Service",
     "Ops Manager",
     "Ops Director",
-    "SVP",
+    "Ops Vice President",
     "Shop Service",
     "Shop Supervisor",
     "Shop Director",
@@ -66,7 +66,7 @@ export default function PartsReqSummary(props: Props) {
                     </IconButton>
                 </Box>
                 <Divider sx={{ width: "100%", marginBottom: "10px" }} />
-                <Grid container direction={userType.group === "Supply Chain Management" || userType.group === "SVP" || userType.group === "Executive Management" ||
+                <Grid container direction={userType.group === "Supply Chain Management" || userType.group === "Ops Vice President" || userType.group === "Executive Management" ||
                     userType.group === "Admin" || userType.group === "IT" ? "row" : "column"}>
                     <SummaryTable
                         novaUser={novaUser}

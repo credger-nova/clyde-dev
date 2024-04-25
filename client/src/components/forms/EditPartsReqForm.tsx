@@ -774,7 +774,7 @@ export default function EditPartsReqForm(props: Props) {
                 }
             }
             if (partsReq.status === "Sourcing - In Progress") {
-                if (field === "Status") {
+                if (field === "Status" || field === "Amex") {
                     return false
                 }
             }

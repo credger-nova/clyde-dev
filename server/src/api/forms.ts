@@ -35,7 +35,7 @@ const SVP_STATUS = ["Pending Approval", "Quote Provided - Pending Approval"]
 const FIELD_SHOP_SERVICE_TITLES = TITLES.find(item => item.group === "Field Service" || item.group === "Shop Service")?.titles ?? []
 const OPS_SHOP_MANAGER_TITLES = TITLES.find(item => item.group === "Ops Manager" || item.group === "Shop Supervisor")?.titles ?? []
 const OPS_SHOP_DIRECTOR_TITLES = TITLES.find(item => item.group === "Ops Director" || item.group === "Shop Director")?.titles ?? []
-const SVP_TITLES = TITLES.find(item => item.group === "SVP")?.titles ?? []
+const SVP_TITLES = TITLES.find(item => item.group === "Ops Vice President")?.titles ?? []
 const SUPPLY_CHAIN_TITLES = TITLES.find(item => item.group === "Supply Chain")?.titles ?? []
 const SC_MANAGEMENT_TITLES = TITLES.find(item => item.group === "Supply Chain Management")?.titles ?? []
 const ADMIN_TITLES = TITLES.find(item => item.group === "Admin")?.titles ?? []
@@ -390,7 +390,7 @@ export const getPartsReqs = async (query: PartsReqQuery) => {
 
     let partsReqs = result.map((partsReq) => convertPartsReq(partsReq))
 
-    // Filter SVP results to only units that require SVP privileges
+    // Filter Ops Vice President results to only units that require Ops Vice President privileges
     if (SVP_TITLES.includes(query.user!.jobTitle)) {
         partsReqs = partsReqs.filter((partsReq) => partsReq.unit && calcCost(partsReq.parts) > 10000)
         /*svpApprovalRequired(partsReq.unit.unitNumber, Number(partsReq.unit.oemHP), partsReq.parts))*/

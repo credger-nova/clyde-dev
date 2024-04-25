@@ -31,8 +31,8 @@ export default function Home() {
                     >
                         <Grid
                             xs={12}
-                            sm={userGroup === "Supply Chain Management" || userGroup === "SVP" || userGroup === "Executive Management" ||
-                                userGroup === "Admind" || userGroup === "IT" ? 12 : 6}
+                            sm={userGroup === "Supply Chain Management" || userGroup === "Ops Vice President" || userGroup === "Executive Management" ||
+                                userGroup === "Admin" || userGroup === "IT" ? 12 : 6}
                             sx={{ padding: "20px" }}>
                             <PartsReqSummary
                                 novaUser={novaUser}

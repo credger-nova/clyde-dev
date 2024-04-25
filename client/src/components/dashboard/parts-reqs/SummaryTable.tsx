@@ -3,7 +3,7 @@ import * as React from "react"
 import { NovaUser } from "../../../types/novaUser"
 import { PartsReq, PartsReqQuery } from "../../../types/partsReq"
 
-import { toTitleCase } from "../../../utils/helperFunctions"
+import { opsVpApprovalRequired, toTitleCase } from "../../../utils/helperFunctions"
 
 import { useLeadsEmployees, useManagersEmployees, useDirectorsEmployees } from "../../../hooks/user"
 import { usePartsReqs } from "../../../hooks/partsReq"
@@ -116,7 +116,7 @@ const StyledSwitch = styled(Switch)(() => ({
     },
 }))
 
-function calcStatus(partsReqs: Array<PartsReq>, statusGroup: string, requester?: NovaUser, requesterGroup?: Array<NovaUser>, region?: string) {
+function calcStatus(partsReqs: Array<PartsReq>, statusGroup: string, requester?: NovaUser, requesterGroup?: Array<NovaUser>, region?: string, opsVP?: boolean) {
     let filtered: Array<PartsReq> = []
 
     if (statusGroup === "Pending Quote") {
@@ -148,6 +148,9 @@ function calcStatus(partsReqs: Array<PartsReq>, statusGroup: string, requester?:
     }
     if (region) {
         filtered = filtered.filter((partsReqs) => partsReqs.region === region)
+    }
+    if (opsVP) {
+        filtered = filtered.filter((partsReq) => opsVpApprovalRequired(partsReq.unit ?? null, partsReq.parts))
     }
 
     return filtered.length
@@ -806,7 +809,7 @@ export default function SummaryTable(props: Props) {
                                                     {`${statusGroup}:`}
                                                 </Typography>
                                                 <Typography variant="subtitle2" fontWeight="400">
-                                                    {partsReqs ? calcStatus(partsReqs, statusGroup, undefined, undefined, region) : 0}
+                                                    {partsReqs ? calcStatus(partsReqs, statusGroup, undefined, undefined, region, true) : 0}
                                                 </Typography>
                                             </Item>
                                         </Grid>

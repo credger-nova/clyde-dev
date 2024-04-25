@@ -15,7 +15,7 @@ import Skeleton from '@mui/material/Skeleton'
 import Tooltip from '@mui/material/Tooltip'
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline'
 
-import { calcCost, svpApprovalRequired } from '../../utils/helperFunctions'
+import { calcCost, opsVpApprovalRequired } from '../../utils/helperFunctions'
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -141,7 +141,7 @@ export default function PartsReqTable(props: Props) {
                             <StyledTableCell>${calcCost(partsReq.parts).toFixed(2)}</StyledTableCell>
                             <StyledTableCell>
                                 {<div style={{ display: "flex", alignItems: "center" }}>
-                                    {svpApprovalRequired(partsReq.unit ?? null, partsReq.parts) &&
+                                    {opsVpApprovalRequired(partsReq.unit ?? null, partsReq.parts) &&
                                         (partsReq.status === "Pending Approval" || partsReq.status === "Rejected - Adjustments Required") ?
                                         <Tooltip
                                             title="Travis Yount Must Approve All Non-PM Parts"

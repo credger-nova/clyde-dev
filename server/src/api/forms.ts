@@ -204,7 +204,7 @@ export function getNonPM(rows: Array<OrderRow>) {
     return nonPM.length > 0
 }
 
-function svpApprovalRequired(unitNumber: string, hp: number, rows: Array<OrderRow>) {
+function opsVpApprovalRequired(unitNumber: string, hp: number, rows: Array<OrderRow>) {
     if (
         UNIT_PLANNING.includes(unitNumber) &&
         getThreshold(hp) <= calcCost(rows) &&
@@ -392,8 +392,8 @@ export const getPartsReqs = async (query: PartsReqQuery) => {
 
     // Filter Ops Vice President results to only units that require Ops Vice President privileges
     if (SVP_TITLES.includes(query.user!.jobTitle)) {
-        partsReqs = partsReqs.filter((partsReq) => partsReq.unit && calcCost(partsReq.parts) > 10000)
-        /*svpApprovalRequired(partsReq.unit.unitNumber, Number(partsReq.unit.oemHP), partsReq.parts))*/
+        partsReqs = partsReqs.filter((partsReq) => partsReq.unit && (calcCost(partsReq.parts) > 10000 ||
+            opsVpApprovalRequired(partsReq.unit.unitNumber, Number(partsReq.unit.oemHP), partsReq.parts)))
     }
 
     partsReqs = sortPartsReqs(partsReqs, query.user!.jobTitle, query.user?.region)

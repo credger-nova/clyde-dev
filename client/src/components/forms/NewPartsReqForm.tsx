@@ -11,7 +11,7 @@ import { useUploadFiles } from "../../hooks/storage"
 import { useNovaUser } from "../../hooks/user"
 import { useWarehouses } from "../../hooks/warehouse"
 
-import { toTitleCase, calcCost, svpApprovalRequired } from "../../utils/helperFunctions"
+import { toTitleCase, calcCost, opsVpApprovalRequired } from "../../utils/helperFunctions"
 import { TITLES } from "../../utils/titles"
 
 import { OrderRow, CreatePartsReq } from "../../types/partsReq"
@@ -744,7 +744,7 @@ export default function PartsReqForm() {
                                 </Box>
                             </Item>
                             <Item sx={{
-                                marginTop: "15px", border: unit ? svpApprovalRequired(unit, rows as Array<OrderRow>) ?
+                                marginTop: "15px", border: unit ? opsVpApprovalRequired(unit, rows as Array<OrderRow>) ?
                                     "3px solid red" :
                                     "3px solid transparent" :
                                     "3px solid transparent"
@@ -753,7 +753,7 @@ export default function PartsReqForm() {
                                     <b><p style={{ margin: 0 }}>Unit Planning Approval Status:</p></b>
                                     <Divider />
                                     {unit ?
-                                        svpApprovalRequired(unit, rows as Array<OrderRow>) ?
+                                        opsVpApprovalRequired(unit, rows as Array<OrderRow>) ?
                                             <b><p style={{ marginTop: "5px", color: "red" }}>Travis Yount Must Approve Non-PM Parts</p></b> :
                                             <p style={{ marginTop: "5px" }}>No Additional Approval Needed</p> :
                                         <p style={{ marginTop: "5px" }}>No Additional Approval Needed</p>
@@ -1044,7 +1044,7 @@ export default function PartsReqForm() {
                                                     <TableCell sx={{ paddingBottom: 0 }}>{row.cost ? `$${(Number(row.cost) * row.qty).toFixed(2)}` : ""}</TableCell>
                                                     <TableCell>
                                                         <div style={{ display: "flex", flexDirection: "row", justifyContent: "flex-end", alignItems: "center" }}>
-                                                            {unit && svpApprovalRequired(unit, rows as Array<OrderRow>) && rows[index].mode !== "PM PARTS" ?
+                                                            {unit && opsVpApprovalRequired(unit, rows as Array<OrderRow>) && rows[index].mode !== "PM PARTS" ?
                                                                 <Tooltip
                                                                     title={"Non PM Part"}
                                                                     componentsProps={{

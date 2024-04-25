@@ -38,7 +38,7 @@ export function getNonPM(rows: Array<OrderRow>) {
     return nonPM.length > 0
 }
 
-export function svpApprovalRequired(unit: Unit | null, rows: Array<OrderRow>) {
+export function opsVpApprovalRequired(unit: Unit | null, rows: Array<OrderRow>) {
     if (unit) {
         if (
             UNIT_PLANNING.includes(unit.unitNumber) &&

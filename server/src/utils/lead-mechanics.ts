@@ -42,10 +42,10 @@ export const LEAD_MECHANICS: Array<{ leads: Array<string>, mechanics: Array<{ id
         },
         {
             leads: [
-                "65b13736fb5ffb0016ddb500"
+                "65b13795ab5e3800209cd659"
             ],
             mechanics: [
-                { id: "65f9c83fe8321f004e8975c3", name: "Test Test6" }
+                { id: "65b13736fb5ffb0016ddb500", name: "Test Test1" }
             ]
         }
     ]

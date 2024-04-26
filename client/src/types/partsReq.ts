@@ -54,7 +54,8 @@ export interface PartsReqQuery {
     location?: Array<string>,
     region?: Array<string>,
     urgency?: Array<string>,
-    status?: Array<string>
+    status?: Array<string>,
+    vpApproval?: boolean
 }
 
 export interface CreatePartsReq extends Omit<PartsReq, "id" | "parts" | "comments" | "files"> {

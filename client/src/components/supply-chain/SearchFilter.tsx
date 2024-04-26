@@ -1,5 +1,7 @@
 import * as React from "react"
 
+import { TITLES } from "../../utils/titles"
+
 import { Unit } from "../../types/unit"
 import { NovaUser } from "../../types/novaUser"
 import { PartsReqQuery } from "../../types/partsReq"
@@ -12,12 +14,18 @@ import { useTrucks } from "../../hooks/truck"
 import { useAllNovaUsers } from "../../hooks/user"
 //import { useParts } from "../../hooks/parts"
 
+import { styled } from '@mui/material/styles'
 import Grid from '@mui/material/Unstable_Grid2'
 import Box from '@mui/material/Box'
 import Autocomplete from '@mui/material/Autocomplete'
 import { StyledTextField } from "../common/TextField"
 import parse from 'autosuggest-highlight/parse'
 import match from 'autosuggest-highlight/match'
+import Switch from '@mui/material/Switch'
+import FormControlLabel from '@mui/material/FormControlLabel'
+import Typography from '@mui/material/Typography'
+
+const OPS_VP_TITLES = TITLES.find(item => item.group === "Ops Vice President")?.titles ?? []
 
 const URGENCY = ["Unit Down", "Unit Set", "Rush", "Standard"]
 const STATUS = ["Pending Approval", "Pending Quote", "Quote Provided - Pending Approval", "Rejected - Adjustments Required", "Approved - On Hold", "Approved", "Sourcing - In Progress",
@@ -30,11 +38,20 @@ interface Props {
     initialStatuses: Array<string>,
     initialRequesters: Array<NovaUser>,
     initialRegion: string,
-    initialUrgency: string
+    initialUrgency: string,
+    novaUser: NovaUser | undefined,
+    vpApproval: boolean,
+    setVpApproval: React.Dispatch<React.SetStateAction<boolean>>
 }
 
+const StyledSwitch = styled(Switch)(() => ({
+    '& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track': {
+        backgroundColor: "#00ff00",
+    },
+}))
+
 export default function SearchFilter(props: Props) {
-    const { partsReqQuery, setPartsReqQuery, initialStatuses, initialRequesters, initialRegion, initialUrgency } = props
+    const { partsReqQuery, setPartsReqQuery, initialStatuses, initialRequesters, initialRegion, initialUrgency, novaUser, vpApproval, setVpApproval } = props
 
     const { data: afeNumbers, isFetching: afeFetching } = useAFEs()
     const { data: soNumbers, isFetching: soFetching } = useSOs()
@@ -121,6 +138,15 @@ export default function SearchFilter(props: Props) {
             ...prevState,
             region: value
         }))
+    }
+
+    const handleVpApprovalChange = () => {
+        setPartsReqQuery(prevState => ({
+            ...prevState,
+            vpApproval: !vpApproval
+        }))
+
+        setVpApproval(!vpApproval)
     }
 
     return (
@@ -545,6 +571,20 @@ export default function SearchFilter(props: Props) {
                             }}
                         />
                     </Grid>
+                    {novaUser && OPS_VP_TITLES.includes(novaUser.jobTitle) && <Grid sx={{ display: "flex", alignItems: "flex-end" }}>
+                        <FormControlLabel
+                            control={
+                                <StyledSwitch
+                                    checked={vpApproval}
+                                    onChange={handleVpApprovalChange}
+                                    size="medium"
+                                    disableRipple
+                                    sx={{ marginLeft: "10px" }}
+                                />
+                            }
+                            label={<Typography variant="body2">Ops VP Approval Required</Typography>}
+                        />
+                    </Grid>}
                 </Grid>
             </Box>
         </div >

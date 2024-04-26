@@ -1,5 +1,7 @@
 import * as React from "react"
 
+import { TITLES } from "../utils/titles"
+
 import { NovaUser } from "../types/novaUser"
 
 import { useAuth0 } from "@auth0/auth0-react"
@@ -30,7 +32,6 @@ import Button from '@mui/material/Button'
 import theme from '../css/theme'
 import RefreshIcon from '@mui/icons-material/Refresh'
 
-
 const StyledToggleButtonGroup = styled(ToggleButtonGroup)(({ theme }) => ({
     [`& .${toggleButtonGroupClasses.grouped}`]: {
         margin: theme.spacing(0.5),
@@ -47,6 +48,7 @@ const StyledToggleButtonGroup = styled(ToggleButtonGroup)(({ theme }) => ({
     },
 }));
 
+const OPS_VP_TITLES = TITLES.find(item => item.group === "Ops Vice President")?.titles ?? []
 
 export default function SupplyChain() {
     const { user } = useAuth0()
@@ -55,18 +57,20 @@ export default function SupplyChain() {
     const queryClient = useQueryClient()
     const { statuses, requesters, region, urgency } = state ?? {}
 
-    const [partsReqQuery, setPartsReqQuery] = React.useState<PartsReqQuery>({
-        user: isFetched ? novaUser : null,
-        status: statuses ?? [],
-        requester: requesters ? requesters.map((user: NovaUser) => user.id) : [],
-        region: region ? [region.toUpperCase()] : [],
-        urgency: urgency ? [urgency] : []
-    })
     const [open, setOpen] = React.useState<boolean>(false)
     const [uiType, setUIType] = React.useState<"card" | "table">(window.screen.width <= 600 ? "card" : "table")
     const [disabled, setDisabled] = React.useState<boolean>(window.screen.width <= 600)
     const [page, setPage] = React.useState<number>(0)
     const [itemsPerPage, setItemsPerPage] = React.useState<number>(20)
+    const [vpApproval, setVpApproval] = React.useState<boolean>((novaUser && OPS_VP_TITLES.includes(novaUser.jobTitle)) ?? false)
+    const [partsReqQuery, setPartsReqQuery] = React.useState<PartsReqQuery>({
+        user: isFetched ? novaUser : null,
+        status: statuses ?? [],
+        requester: requesters ? requesters.map((user: NovaUser) => user.id) : [],
+        region: region ? [region.toUpperCase()] : [],
+        urgency: urgency ? [urgency] : [],
+        vpApproval: vpApproval
+    })
 
     const { data: partsReqs, isFetching: partsReqsFetching } = usePartsReqs(partsReqQuery)
 
@@ -117,6 +121,9 @@ export default function SupplyChain() {
                         initialRequesters={requesters}
                         initialRegion={region}
                         initialUrgency={urgency}
+                        novaUser={novaUser}
+                        vpApproval={vpApproval}
+                        setVpApproval={setVpApproval}
                     />
                 </Collapse>
                 <div

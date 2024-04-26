@@ -456,7 +456,7 @@ export default function SummaryTable(props: Props) {
                         <AccordionDetails>
                             {!directorsEmployeesFetching && !partsReqsFetching ? directorsEmployees?.map((employee) => {
                                 return (
-                                    employee.jobTitle.includes("Manager") && employee.region.includes(region) && <Accordion
+                                    (employee.jobTitle.includes("Manager") || employee.email.includes("bourland")) && employee.region.includes(region) && <Accordion
                                         key={employee.id}
                                         disableGutters
                                     >

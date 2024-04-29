@@ -227,7 +227,7 @@ export default function SummaryTable(props: Props) {
         }
     }
 
-    if (group === "Field Service") {
+    if (group === "Field Service" || group === "Shop Service") {
         return (
             <>
                 {!partsReqsFetching ? (
@@ -320,7 +320,7 @@ export default function SummaryTable(props: Props) {
                 }
             </>
         )
-    } else if (group === "Ops Manager") {
+    } else if (group === "Ops Manager" || group === "Shop Supervisor") {
         return (
             <>
                 {!partsReqsFetching ? (
@@ -428,7 +428,7 @@ export default function SummaryTable(props: Props) {
                 }
             </>
         )
-    } else if (group === "Ops Director") {
+    } else if (group === "Ops Director" || group === "Shop Director") {
         return (
             novaUser.region.length > 1 ? novaUser.region.map((region) => {
                 return (

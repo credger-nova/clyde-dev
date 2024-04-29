@@ -50,7 +50,7 @@ const getManagersEmployees = async (user: NovaUser) => {
 }
 
 export function useManagersEmployees(user: NovaUser) {
-    return useQuery({ queryKey: ["employees", user.id], queryFn: () => getManagersEmployees(user), enabled: user.jobTitle.includes("Manager") })
+    return useQuery({ queryKey: ["employees", user.id], queryFn: () => getManagersEmployees(user), enabled: user.jobTitle.includes("Manager") || user.jobTitle === "Supervisor - Shop" })
 }
 
 // Get all director's employees

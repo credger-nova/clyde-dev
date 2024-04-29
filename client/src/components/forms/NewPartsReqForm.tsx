@@ -109,7 +109,7 @@ export default function PartsReqForm() {
     const [truck, setTruck] = React.useState<string | null>(null)
     const [urgency, setUrgency] = React.useState<string | null>(null)
     const [orderType, setOrderType] = React.useState<string | null>(null)
-    const [region, setRegion] = React.useState<string | null>(null)
+    const [region, setRegion] = React.useState<string | null>(SHOP_TITLES.includes(novaUser!.jobTitle) ? novaUser!.region[0] : null)
     const [rows, setRows] = React.useState<Array<Omit<OrderRow, "id">>>([])
     const [comment, setComment] = React.useState<string>("")
     const [comments, setComments] = React.useState<Array<Omit<Comment, "id">>>([])
@@ -235,17 +235,17 @@ export default function PartsReqForm() {
         }
 
         setOrderType(value ? "Rental" : so ? "Third-Party" : null)
-        setRegion(
-            value ?
-                SHOP_TITLES.includes(novaUser!.jobTitle) ?
-                    novaUser!.region[0] :
+        if (!SHOP_TITLES.includes(novaUser!.jobTitle)) {
+            setRegion(
+                value ?
                     value.operationalRegion ?
                         toTitleCase(value.operationalRegion) :
                         novaUser ?
                             novaUser.region[0] :
                             null :
-                null
-        )
+                    null
+            )
+        }
     }
     const onTruckChange = (_e: React.SyntheticEvent | undefined, value: string | null) => {
         setTruck(value ?? null)
@@ -726,7 +726,7 @@ export default function PartsReqForm() {
                                     </FormControl>
                                     <b><p style={{ margin: "20px 0px 0px 0px" }}>Operational Region:</p></b>
                                     <Divider />
-                                    <FormControl disabled={!!unit || (!!unit && SHOP_TITLES.includes(novaUser!.jobTitle))}>
+                                    <FormControl disabled={!!unit || (SHOP_TITLES.includes(novaUser!.jobTitle))}>
                                         <RadioGroup row>
                                             {REGION.map((val) => {
                                                 return (
@@ -735,7 +735,7 @@ export default function PartsReqForm() {
                                                         onChange={() => setRegion(val)}
                                                         control={<Radio disableRipple sx={{ paddingRight: "2px" }} checked={region === val} />}
                                                         label={val}
-                                                        defaultChecked={false}
+                                                        defaultChecked={SHOP_TITLES.includes(novaUser!.jobTitle) && novaUser!.region.includes(val)}
                                                         key={val}
                                                     />
                                                 )

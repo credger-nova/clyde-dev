@@ -67,8 +67,8 @@ const STATUS: Array<{ status: string, titles: Array<string> }> = [
     },
     {
         status: "Pending Quote",
-        titles: (TITLES.find(item => item.group === "Ops Manager" || item.group === "Shop Supervisor")?.titles ?? [])
-            .concat(TITLES.find(item => item.group === "Ops Director" || item.group === "Shop Director")?.titles ?? [])
+        titles: (TITLES.filter(item => item.group === "Ops Manager" || item.group === "Shop Supervisor").map(group => group.titles).flat())
+            .concat(TITLES.filter(item => item.group === "Ops Director" || item.group === "Shop Director").map(group => group.titles).flat())
             .concat(TITLES.find(item => item.group === "IT")?.titles ?? [])
     },
     {
@@ -78,29 +78,29 @@ const STATUS: Array<{ status: string, titles: Array<string> }> = [
     },
     {
         status: "Rejected - Adjustments Required",
-        titles: (TITLES.find(item => item.group === "Ops Manager" || item.group === "Shop Supervisor")?.titles ?? [])
-            .concat(TITLES.find(item => item.group === "Ops Director" || item.group === "Shop Director")?.titles ?? [])
+        titles: (TITLES.filter(item => item.group === "Ops Manager" || item.group === "Shop Supervisor").map(group => group.titles).flat())
+            .concat(TITLES.filter(item => item.group === "Ops Director" || item.group === "Shop Director").map(group => group.titles).flat())
             .concat(TITLES.find(item => item.group === "Ops Vice President")?.titles ?? [])
             .concat(TITLES.find(item => item.group === "IT")?.titles ?? [])
     },
     {
         status: "Rejected - Closed",
-        titles: (TITLES.find(item => item.group === "Ops Manager" || item.group === "Shop Supervisor")?.titles ?? [])
-            .concat(TITLES.find(item => item.group === "Ops Director" || item.group === "Shop Director")?.titles ?? [])
+        titles: (TITLES.filter(item => item.group === "Ops Manager" || item.group === "Shop Supervisor").map(group => group.titles).flat())
+            .concat(TITLES.filter(item => item.group === "Ops Director" || item.group === "Shop Director").map(group => group.titles).flat())
             .concat(TITLES.find(item => item.group === "Ops Vice President")?.titles ?? [])
             .concat(TITLES.find(item => item.group === "IT")?.titles ?? [])
     },
     {
         status: "Approved - On Hold",
-        titles: (TITLES.find(item => item.group === "Ops Manager" || item.group === "Shop Supervisor")?.titles ?? [])
-            .concat(TITLES.find(item => item.group === "Ops Director" || item.group === "Shop Director")?.titles ?? [])
+        titles: (TITLES.filter(item => item.group === "Ops Manager" || item.group === "Shop Supervisor").map(group => group.titles).flat())
+            .concat(TITLES.filter(item => item.group === "Ops Director" || item.group === "Shop Director").map(group => group.titles).flat())
             .concat(TITLES.find(item => item.group === "Ops Vice President")?.titles ?? [])
             .concat(TITLES.find(item => item.group === "IT")?.titles ?? [])
     },
     {
         status: "Approved",
-        titles: (TITLES.find(item => item.group === "Ops Manager" || item.group === "Shop Supervisor")?.titles ?? [])
-            .concat(TITLES.find(item => item.group === "Ops Director" || item.group === "Shop Director")?.titles ?? [])
+        titles: (TITLES.filter(item => item.group === "Ops Manager" || item.group === "Shop Supervisor").map(group => group.titles).flat())
+            .concat(TITLES.filter(item => item.group === "Ops Director" || item.group === "Shop Director").map(group => group.titles).flat())
             .concat(TITLES.find(item => item.group === "Ops Vice President")?.titles ?? [])
             .concat(TITLES.find(item => item.group === "IT")?.titles ?? [])
     },
@@ -112,7 +112,7 @@ const STATUS: Array<{ status: string, titles: Array<string> }> = [
     },
     {
         status: "Sourcing - Information Required",
-        titles: (TITLES.find(item => item.group === "Ops Manager" || item.group === "Shop Supervisor")?.titles ?? [])
+        titles: (TITLES.filter(item => item.group === "Ops Manager" || item.group === "Shop Supervisor").map(group => group.titles).flat())
             .concat(TITLES.find(item => item.group === "Supply Chain")?.titles ?? [])
             .concat(TITLES.find(item => item.group === "Supply Chain Management")?.titles ?? [])
             .concat(TITLES.find(item => item.group === "IT")?.titles ?? [])
@@ -155,8 +155,8 @@ const STATUS: Array<{ status: string, titles: Array<string> }> = [
     },
     {
         status: "Closed - Order Canceled",
-        titles: (TITLES.find(item => item.group === "Ops Manager" || item.group === "Shop Supervisor")?.titles ?? [])
-            .concat(TITLES.find(item => item.group === "Ops Director" || item.group === "Shop Director")?.titles ?? [])
+        titles: (TITLES.filter(item => item.group === "Ops Manager" || item.group === "Shop Supervisor").map(group => group.titles).flat())
+            .concat(TITLES.filter(item => item.group === "Ops Director" || item.group === "Shop Director").map(group => group.titles).flat())
             .concat(TITLES.find(item => item.group === "IT")?.titles ?? [])
     }
 ]

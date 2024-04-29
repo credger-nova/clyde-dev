@@ -42,6 +42,18 @@ export const LEAD_MECHANICS: Array<{ leads: Array<string>, mechanics: Array<{ id
         },
         {
             leads: [
+                "65958734746a2d0016fe1f5f"
+            ],
+            mechanics: [
+                { id: "65a94dc78dd111002a376a3a", name: "James Brown" },
+                { id: "63e3da21eab68c14f3975a75", name: "Cody Adams" },
+                { id: "63209e5c89167653a4bd5cfc", name: "Austin Wilkins" },
+                { id: "621d02f3b1acc9410c52a2cb", name: "Anthony Wilkins" },
+                { id: "66030c4e9faa12001b18e156", name: "Jeffrey Anderson" }
+            ]
+        },
+        {
+            leads: [
                 "65b13795ab5e3800209cd659"
             ],
             mechanics: [

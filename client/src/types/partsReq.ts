@@ -21,6 +21,7 @@ export interface PartsReq {
     date: Date,
     billable: boolean,
     quoteOnly: boolean,
+    warrantyJob: boolean,
     afe?: AFE,
     so?: string,
     unit?: Unit,

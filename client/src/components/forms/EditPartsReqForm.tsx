@@ -262,6 +262,7 @@ export default function EditPartsReqForm(props: Props) {
     const [contact, setContact] = React.useState<NovaUser | null>(partsReq.contact ?? null)
     const [orderDate] = React.useState<Date>(partsReq.date)
     const [billable] = React.useState<boolean>(partsReq.billable)
+    const [warrantyJob] = React.useState<boolean>(partsReq.warrantyJob)
     const [afe, setAfe] = React.useState<AFE | null>(partsReq.afe ?? null)
     const [so, setSo] = React.useState<string | null>(partsReq.so ?? null)
     const [unit, setUnit] = React.useState<Unit | null>(partsReq.unit ?? null)
@@ -375,6 +376,7 @@ export default function EditPartsReqForm(props: Props) {
                     id: partsReq.id,
                     contact: contact,
                     billable: billable,
+                    warrantyJob: warrantyJob,
                     afe: afe,
                     so: so,
                     unit: unit,
@@ -966,7 +968,15 @@ export default function EditPartsReqForm(props: Props) {
                                             readOnly
                                             sx={{ paddingLeft: 0 }}
                                         />
-                                        <b><p style={{ margin: 0 }}>Billable to Customer for Nova Unit?</p></b>
+                                        <b><p style={{ margin: 0 }}>Billable to customer for Nova unit?</p></b>
+                                    </div>
+                                    <div style={{ display: "flex", alignItems: "center" }}>
+                                        <Checkbox
+                                            checked={warrantyJob}
+                                            disableRipple
+                                            sx={{ paddingLeft: 0 }}
+                                        />
+                                        <b><p style={{ margin: 0 }}>Is this related to a potential warranty from the vendor?</p></b>
                                     </div>
                                     <b><p style={{ margin: "20px 0px 0px 0px" }}>Class:</p></b>
                                     <Divider />
@@ -1339,9 +1349,9 @@ export default function EditPartsReqForm(props: Props) {
                                     <Divider />
                                     {unit ?
                                         opsVpApprovalRequired(unit, rows as Array<OrderRow>) ?
-                                            <b><p style={{ marginTop: "5px", color: "red" }}>Travis Yount Must Approve Non-PM Parts</p></b> :
-                                            <p style={{ marginTop: "5px" }}>No Additional Approval Needed</p> :
-                                        <p style={{ marginTop: "5px" }}>No Additional Approval Needed</p>
+                                            <b><p style={{ marginTop: "5px", color: "red" }}>Travis Yount must approve non-PM parts</p></b> :
+                                            <p style={{ marginTop: "5px" }}>No additional approval needed</p> :
+                                        <p style={{ marginTop: "5px" }}>No additional approval needed</p>
                                     }
                                     <b><p style={{ margin: "20px 0px 0px 0px" }}>Engine:</p></b>
                                     <Divider />

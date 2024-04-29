@@ -119,6 +119,7 @@ model PartsReq {
   date        DateTime      @db.Timestamptz(6)
   billable    Boolean       @default(false)
   quoteOnly   Boolean       @default(false) @map("quote_only")
+  warrantyJob Boolean       @default(false) @map("warranty_job")
   afeId       String?       @map("afe_id")
   so          String?
   unitNumber  String?       @map("unit_number")

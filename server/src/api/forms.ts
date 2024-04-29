@@ -52,6 +52,7 @@ function convertPartsReq(partsReq: any) {
         date: partsReq.date,
         billable: partsReq.billable,
         quoteOnly: partsReq.quoteOnly,
+        warrantyJob: partsReq.warrantyJob,
         afe: partsReq.afe ? {
             id: partsReq.afe.id,
             number: partsReq.afe.number,
@@ -440,6 +441,7 @@ export const createPartsReq = async (partsReq: CreatePartsReq) => {
             date: partsReq.date,
             billable: partsReq.billable,
             quoteOnly: partsReq.quoteOnly,
+            warrantyJob: partsReq.warrantyJob,
             afeId: partsReq.afe ? partsReq.afe.id : undefined,
             so: partsReq.so,
             unitNumber: partsReq.unit ? partsReq.unit.unitNumber : null,

@@ -166,6 +166,7 @@ const OPS_SHOP_MANAGER_TITLES = TITLES.find(item => item.group === "Ops Manager"
 const OPS_SHOP_DIRECTOR_TITLES = TITLES.find(item => item.group === "Ops Director" || item.group === "Shop Director")?.titles ?? []
 const SHOP_TITLES = TITLES.find(item => item.group.includes("Shop"))?.titles ?? []
 const SVP_TITLES = TITLES.find(item => item.group === "Ops Vice President")?.titles ?? []
+const EMISSIONS_TITLES = TITLES.find(item => item.group === "Emissions")?.titles ?? []
 const SUPPLY_CHAIN_TITLES = TITLES.find(item => item.group === "Supply Chain")?.titles ?? []
 const SC_MANAGEMENT_TITLES = TITLES.find(item => item.group === "Supply Chain Management")?.titles ?? []
 const EXEC_TITLES = TITLES.find(item => item.group === "Executive Management")?.titles ?? []
@@ -1232,7 +1233,7 @@ export default function EditPartsReqForm(props: Props) {
                                     <Autocomplete
                                         disabled={!conex || denyAccess(novaUser!.jobTitle, status, "Conex")}
                                         options={warehouses ? warehouses.filter((location) => location.includes("CONEX") || location.includes("STORAGE")
-                                            || location.includes("TRUCK")) : []}
+                                            || (location.includes("TRUCK") && EMISSIONS_TITLES.includes(novaUser!.jobTitle))) : []}
                                         loading={warehousesFetching}
                                         onChange={onConexNameChange}
                                         value={conexName}

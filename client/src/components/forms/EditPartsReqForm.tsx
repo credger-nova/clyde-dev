@@ -1231,7 +1231,8 @@ export default function EditPartsReqForm(props: Props) {
                                     />
                                     <Autocomplete
                                         disabled={!conex || denyAccess(novaUser!.jobTitle, status, "Conex")}
-                                        options={warehouses ? warehouses.filter((location) => location.includes("CONEX") || location.includes("STORAGE")) : []}
+                                        options={warehouses ? warehouses.filter((location) => location.includes("CONEX") || location.includes("STORAGE")
+                                            || location.includes("TRUCK")) : []}
                                         loading={warehousesFetching}
                                         onChange={onConexNameChange}
                                         value={conexName}

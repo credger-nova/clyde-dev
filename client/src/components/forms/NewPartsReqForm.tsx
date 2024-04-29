@@ -58,7 +58,7 @@ const URGENCY = ["Unit Down", "Unit Set", "Rush", "Standard"]
 const ORDER_TYPE = [{ type: "Rental" }, { type: "Third-Party" }, { type: "Shop Supplies" }, { type: "Truck Supplies" }, { type: "Stock", titles: ["Supply Chain", "Software"] }]
 const REGION = ["Carlsbad", "Pecos", "North Permian", "South Permian", "East Texas", "South Texas", "Midcon"]
 
-const SHOP_TITLES = TITLES.find(item => item.group.includes("Shop"))?.titles ?? []
+const SHOP_TITLES = TITLES.filter(item => item.group.includes("Shop")).map((group) => group.titles).flat()
 
 const Item = styled(Paper)(({ theme }) => ({
     backgroundColor: "#242424",
@@ -134,7 +134,7 @@ export default function PartsReqForm() {
 
     React.useEffect(() => {
         if (!requester || !orderDate || !urgency || !orderType || (billable && !unit) || !(rows.length > 0) ||
-            (!unit && !truck && !so)) {
+            ((!unit && !truck && !so) && orderType !== "Shop Supplies")) {
             setDisableSubmit(true)
         } else {
             if (!rows[0].itemNumber) {

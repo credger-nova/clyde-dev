@@ -36,6 +36,7 @@ const FIELD_SHOP_SERVICE_TITLES = TITLES.find(item => item.group === "Field Serv
 const OPS_SHOP_MANAGER_TITLES = TITLES.find(item => item.group === "Ops Manager" || item.group === "Shop Supervisor")?.titles ?? []
 const OPS_SHOP_DIRECTOR_TITLES = TITLES.find(item => item.group === "Ops Director" || item.group === "Shop Director")?.titles ?? []
 const OPS_VP_TITLES = TITLES.find(item => item.group === "Ops Vice President")?.titles ?? []
+const EMISSIONS_TITLES = TITLES.find(item => item.group === "Emissions")?.titles ?? []
 const SUPPLY_CHAIN_TITLES = TITLES.find(item => item.group === "Supply Chain")?.titles ?? []
 const SC_MANAGEMENT_TITLES = TITLES.find(item => item.group === "Supply Chain Management")?.titles ?? []
 const ADMIN_TITLES = TITLES.find(item => item.group === "Admin")?.titles ?? []

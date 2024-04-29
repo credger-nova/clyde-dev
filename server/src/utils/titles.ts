@@ -48,6 +48,12 @@ export const TITLES: Array<{ group: string, titles: Array<string> }> = [
         ]
     },
     {
+        group: "Emissions",
+        titles: [
+            "Manager - Emissions"
+        ]
+    },
+    {
         group: "Supply Chain",
         titles: [
             "Analyst - Supply Chain & Analysis",

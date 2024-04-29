@@ -164,7 +164,7 @@ const STATUS: Array<{ status: string, titles: Array<string> }> = [
 const FIELD_SHOP_SERVICE_TITLES = TITLES.find(item => item.group === "Field Service" || item.group === "Shop Service")?.titles ?? []
 const OPS_SHOP_MANAGER_TITLES = TITLES.find(item => item.group === "Ops Manager" || item.group === "Shop Supervisor")?.titles ?? []
 const OPS_SHOP_DIRECTOR_TITLES = TITLES.find(item => item.group === "Ops Director" || item.group === "Shop Director")?.titles ?? []
-const SHOP_TITLES = TITLES.find(item => item.group.includes("Shop"))?.titles ?? []
+const SHOP_TITLES = TITLES.filter(item => item.group.includes("Shop")).map((group) => group.titles).flat()
 const SVP_TITLES = TITLES.find(item => item.group === "Ops Vice President")?.titles ?? []
 const EMISSIONS_TITLES = TITLES.find(item => item.group === "Emissions")?.titles ?? []
 const SUPPLY_CHAIN_TITLES = TITLES.find(item => item.group === "Supply Chain")?.titles ?? []

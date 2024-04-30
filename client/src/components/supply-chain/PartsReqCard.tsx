@@ -1,5 +1,7 @@
 import { PartsReq } from "../../types/partsReq"
 
+import { calcCost, opsVpApprovalRequired } from "../../utils/helperFunctions"
+
 import Card from '@mui/material/Card'
 import CardHeader from '@mui/material/CardHeader'
 import CardContent from '@mui/material/CardContent'
@@ -12,7 +14,7 @@ import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline'
 import Link from "@mui/material/Link"
 import { Link as RouterLink } from "react-router-dom"
 
-import { calcCost, opsVpApprovalRequired } from "../../utils/helperFunctions"
+const PERMIAN_REGIONS = ["North Permian", "South Permian", "Pecos", "Carlsbad"]
 
 interface Props {
     partsReq: PartsReq
@@ -244,7 +246,10 @@ export default function PartsReqCard(props: Props) {
                             {opsVpApprovalRequired(partsReq.unit ?? null, partsReq.parts) &&
                                 (partsReq.status === "Pending Approval" || partsReq.status === "Rejected - Adjustments Required") ?
                                 <Tooltip
-                                    title="Travis Yount Must Approve All Non-PM Parts"
+                                    title={PERMIAN_REGIONS.includes(partsReq.region) ?
+                                        "Sean Stewart must approve all non-PM parts" :
+                                        "Travis Yount must approve all non-PM parts"
+                                    }
                                     componentsProps={{
                                         tooltip: {
                                             sx: {

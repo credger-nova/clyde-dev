@@ -25,6 +25,7 @@ import Switch from '@mui/material/Switch'
 import FormControlLabel from '@mui/material/FormControlLabel'
 import Typography from '@mui/material/Typography'
 
+const SUPPLY_CHAIN_TITLES = TITLES.find(item => item.group === "Supply Chain")?.titles ?? []
 const OPS_VP_TITLES = TITLES.find(item => item.group === "Ops Vice President")?.titles ?? []
 
 const URGENCY = ["Unit Down", "Unit Set", "Rush", "Standard"]
@@ -41,7 +42,9 @@ interface Props {
     initialUrgency: string,
     novaUser: NovaUser | undefined,
     vpApproval: boolean,
-    setVpApproval: React.Dispatch<React.SetStateAction<boolean>>
+    setVpApproval: React.Dispatch<React.SetStateAction<boolean>>,
+    scAll: boolean,
+    setScAll: React.Dispatch<React.SetStateAction<boolean>>
 }
 
 const StyledSwitch = styled(Switch)(() => ({
@@ -51,7 +54,9 @@ const StyledSwitch = styled(Switch)(() => ({
 }))
 
 export default function SearchFilter(props: Props) {
-    const { partsReqQuery, setPartsReqQuery, initialStatuses, initialRequesters, initialRegion, initialUrgency, novaUser, vpApproval, setVpApproval } = props
+    const { partsReqQuery, setPartsReqQuery, initialStatuses, initialRequesters, initialRegion, initialUrgency, novaUser, vpApproval, setVpApproval,
+        scAll, setScAll
+    } = props
 
     const { data: afeNumbers, isFetching: afeFetching } = useAFEs()
     const { data: soNumbers, isFetching: soFetching } = useSOs()
@@ -147,6 +152,15 @@ export default function SearchFilter(props: Props) {
         }))
 
         setVpApproval(!vpApproval)
+    }
+
+    const handleScAllChange = () => {
+        setPartsReqQuery(prevState => ({
+            ...prevState,
+            scAll: !scAll
+        }))
+
+        setScAll(!scAll)
     }
 
     return (
@@ -582,7 +596,21 @@ export default function SearchFilter(props: Props) {
                                     sx={{ marginLeft: "10px" }}
                                 />
                             }
-                            label={<Typography variant="body2">Ops VP Approval Required</Typography>}
+                            label={<Typography variant="body2">Ops VP approval required</Typography>}
+                        />
+                    </Grid>}
+                    {novaUser && SUPPLY_CHAIN_TITLES.includes(novaUser.jobTitle) && <Grid sx={{ display: "flex", alignItems: "flex-end" }}>
+                        <FormControlLabel
+                            control={
+                                <StyledSwitch
+                                    checked={scAll}
+                                    onChange={handleScAllChange}
+                                    size="medium"
+                                    disableRipple
+                                    sx={{ marginLeft: "10px" }}
+                                />
+                            }
+                            label={<Typography variant="body2">Show all statuses</Typography>}
                         />
                     </Grid>}
                 </Grid>

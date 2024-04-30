@@ -54,6 +54,8 @@ import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline'
 import Tooltip from '@mui/material/Tooltip'
 import Typography from '@mui/material/Typography'
 
+const PERMIAN_REGIONS = ["North Permian", "South Permian", "Pecos", "Carlsbad"]
+
 const URGENCY = ["Unit Down", "Unit Set", "Rush", "Standard"]
 const ORDER_TYPE = [{ type: "Rental" }, { type: "Third-Party" }, { type: "Shop Supplies" }, { type: "Truck Supplies" }, { type: "Stock", titles: ["Supply Chain", "Software"] }]
 const REGION = ["Carlsbad", "Pecos", "North Permian", "South Permian", "East Texas", "South Texas", "Midcon"]
@@ -770,7 +772,12 @@ export default function PartsReqForm() {
                                     <Divider />
                                     {unit ?
                                         opsVpApprovalRequired(unit, rows as Array<OrderRow>) ?
-                                            <b><p style={{ marginTop: "5px", color: "red" }}>Travis Yount must approve non-PM parts</p></b> :
+                                            <b><p style={{ marginTop: "5px", color: "red" }}>
+                                                {PERMIAN_REGIONS.includes(region ?? "") ?
+                                                    "Sean Stewart must approve non-PM parts" :
+                                                    "Travis Yount must approve non-PM parts"
+                                                }
+                                            </p></b> :
                                             <p style={{ marginTop: "5px" }}>No additional approval needed</p> :
                                         <p style={{ marginTop: "5px" }}>No additional approval needed</p>
                                     }

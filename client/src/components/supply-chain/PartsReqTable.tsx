@@ -1,5 +1,7 @@
 import { PartsReq } from '../../types/partsReq'
 
+import { calcCost, opsVpApprovalRequired } from '../../utils/helperFunctions'
+
 import { useNavigate } from 'react-router-dom'
 
 import { styled } from '@mui/material/styles'
@@ -15,7 +17,7 @@ import Skeleton from '@mui/material/Skeleton'
 import Tooltip from '@mui/material/Tooltip'
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline'
 
-import { calcCost, opsVpApprovalRequired } from '../../utils/helperFunctions'
+const PERMIAN_REGIONS = ["North Permian", "South Permian", "Pecos", "Carlsbad"]
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -144,7 +146,10 @@ export default function PartsReqTable(props: Props) {
                                     {opsVpApprovalRequired(partsReq.unit ?? null, partsReq.parts) &&
                                         (partsReq.status === "Pending Approval" || partsReq.status === "Rejected - Adjustments Required") ?
                                         <Tooltip
-                                            title="Travis Yount Must Approve All Non-PM Parts"
+                                            title={PERMIAN_REGIONS.includes(partsReq.region) ?
+                                                "Sean Stewart must approve all non-PM parts" :
+                                                "Travis Yount must approve all non-PM parts"
+                                            }
                                             componentsProps={{
                                                 tooltip: {
                                                     sx: {

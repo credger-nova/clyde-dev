@@ -299,7 +299,7 @@ export default function EditPartsReqForm(props: Props) {
 
     React.useEffect(() => {
         if (!requester || !orderDate || !urgency || !orderType || !(rows.length > 0) || needsComment ||
-            (!unit && !truck && !so)) {
+            ((!unit && !truck && !so) && orderType !== "Shop Supplies")) {
             setSaveDisabled(true)
         } else {
             if (!rows[0].itemNumber) {

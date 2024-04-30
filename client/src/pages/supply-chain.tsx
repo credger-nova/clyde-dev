@@ -63,13 +63,15 @@ export default function SupplyChain() {
     const [page, setPage] = React.useState<number>(0)
     const [itemsPerPage, setItemsPerPage] = React.useState<number>(20)
     const [vpApproval, setVpApproval] = React.useState<boolean>((novaUser && OPS_VP_TITLES.includes(novaUser.jobTitle)) ?? false)
+    const [scAll, setScAll] = React.useState<boolean>(false)
     const [partsReqQuery, setPartsReqQuery] = React.useState<PartsReqQuery>({
         user: isFetched ? novaUser : null,
         status: statuses ?? [],
         requester: requesters ? requesters.map((user: NovaUser) => user.id) : [],
         region: region ? [region.toUpperCase()] : [],
         urgency: urgency ? [urgency] : [],
-        vpApproval: vpApproval
+        vpApproval: vpApproval,
+        scAll: scAll
     })
 
     const { data: partsReqs, isFetching: partsReqsFetching } = usePartsReqs(partsReqQuery)
@@ -124,6 +126,8 @@ export default function SupplyChain() {
                         novaUser={novaUser}
                         vpApproval={vpApproval}
                         setVpApproval={setVpApproval}
+                        scAll={scAll}
+                        setScAll={setScAll}
                     />
                 </Collapse>
                 <div

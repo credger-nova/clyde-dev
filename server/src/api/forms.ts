@@ -131,13 +131,17 @@ async function allowedRequester(user: NovaUser | undefined | null) {
 }
 
 // Function to return a list of statuses allowed based on user's permissions
-function allowedStatus(title: string) {
+function allowedStatus(title: string, scAll: boolean) {
     if (FIELD_SHOP_SERVICE_TITLES.includes(title) || OPS_SHOP_MANAGER_TITLES.includes(title) || OPS_SHOP_DIRECTOR_TITLES.includes(title)) {
         return ALL_STATUS
     } else if (OPS_VP_TITLES.includes(title)) {
         return ALL_STATUS
     } else if (SUPPLY_CHAIN_TITLES.includes(title)) {
-        return SUPPLY_CHAIN_STATUS
+        if (scAll) {
+            return ALL_STATUS
+        } else {
+            return SUPPLY_CHAIN_STATUS
+        }
     } else if (SC_MANAGEMENT_TITLES.includes(title)) {
         return ALL_STATUS
     } else if (ADMIN_TITLES.includes(title)) {
@@ -337,7 +341,7 @@ export const getPartsReqs = async (query: PartsReqQuery) => {
                         }
                     },
                     status: {
-                        in: allowedStatus(query.user ? query.user.jobTitle : "")
+                        in: allowedStatus(query.user ? query.user.jobTitle : "", query.scAll ?? false)
                     }
                 },
                 {

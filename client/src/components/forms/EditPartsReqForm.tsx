@@ -83,6 +83,7 @@ const STATUS: Array<{ status: string, titles: Array<string> }> = [
         titles: (TITLES.filter(item => item.group === "Ops Manager" || item.group === "Shop Supervisor").map(group => group.titles).flat())
             .concat(TITLES.filter(item => item.group === "Ops Director" || item.group === "Shop Director").map(group => group.titles).flat())
             .concat(TITLES.find(item => item.group === "Ops Vice President")?.titles ?? [])
+            .concat(TITLES.find(item => item.group === "Supply Chain Management")?.titles ?? [])
             .concat(TITLES.find(item => item.group === "IT")?.titles ?? [])
     },
     {
@@ -90,6 +91,7 @@ const STATUS: Array<{ status: string, titles: Array<string> }> = [
         titles: (TITLES.filter(item => item.group === "Ops Manager" || item.group === "Shop Supervisor").map(group => group.titles).flat())
             .concat(TITLES.filter(item => item.group === "Ops Director" || item.group === "Shop Director").map(group => group.titles).flat())
             .concat(TITLES.find(item => item.group === "Ops Vice President")?.titles ?? [])
+            .concat(TITLES.find(item => item.group === "Supply Chain Management")?.titles ?? [])
             .concat(TITLES.find(item => item.group === "IT")?.titles ?? [])
     },
     {
@@ -97,6 +99,7 @@ const STATUS: Array<{ status: string, titles: Array<string> }> = [
         titles: (TITLES.filter(item => item.group === "Ops Manager" || item.group === "Shop Supervisor").map(group => group.titles).flat())
             .concat(TITLES.filter(item => item.group === "Ops Director" || item.group === "Shop Director").map(group => group.titles).flat())
             .concat(TITLES.find(item => item.group === "Ops Vice President")?.titles ?? [])
+            .concat(TITLES.find(item => item.group === "Supply Chain Management")?.titles ?? [])
             .concat(TITLES.find(item => item.group === "IT")?.titles ?? [])
     },
     {
@@ -104,6 +107,7 @@ const STATUS: Array<{ status: string, titles: Array<string> }> = [
         titles: (TITLES.filter(item => item.group === "Ops Manager" || item.group === "Shop Supervisor").map(group => group.titles).flat())
             .concat(TITLES.filter(item => item.group === "Ops Director" || item.group === "Shop Director").map(group => group.titles).flat())
             .concat(TITLES.find(item => item.group === "Ops Vice President")?.titles ?? [])
+            .concat(TITLES.find(item => item.group === "Supply Chain Management")?.titles ?? [])
             .concat(TITLES.find(item => item.group === "IT")?.titles ?? [])
     },
     {
@@ -217,6 +221,9 @@ function getAvailableStatus(user: NovaUser | undefined, currStatus: string) {
         if (SUPPLY_CHAIN_TITLES.includes(user.jobTitle) || SC_MANAGEMENT_TITLES.includes(user.jobTitle)) {
             if (currStatus === "Ordered - Awaiting Parts" || currStatus === "Completed - Parts Staged - Delivered") {
                 status = status.filter(item => item.status !== "Sourcing - Request to Cancel")
+            }
+            if (currStatus === "Pending Approval") {
+                return ["Rejected - Adjustments Required", "Rejected - Closed", "Approved - On Hold", "Approved"]
             }
         }
 
@@ -809,6 +816,11 @@ export default function EditPartsReqForm(props: Props) {
         if (SC_MANAGEMENT_TITLES.includes(title)) {
             if (partsReq.status === "Pending Quote") {
                 return false
+            }
+            if (partsReq.status === "Pending Approval") {
+                if (field === "Status") {
+                    return false
+                }
             }
             if (partsReq.status === "Approved" || partsReq.status === "Sourcing - Information Required" ||
                 partsReq.status === "Sourcing - Information Provided" || partsReq.status === "Ordered - Awaiting Parts") {

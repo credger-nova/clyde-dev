@@ -36,7 +36,7 @@ const FIELD_SHOP_SERVICE_TITLES = TITLES.filter(item => item.group === "Field Se
 const OPS_SHOP_MANAGER_TITLES = TITLES.filter(item => item.group === "Ops Manager" || item.group === "Shop Supervisor").map(group => group.titles).flat()
 const OPS_SHOP_DIRECTOR_TITLES = TITLES.filter(item => item.group === "Ops Director" || item.group === "Shop Director").map(group => group.titles).flat()
 const OPS_VP_TITLES = TITLES.find(item => item.group === "Ops Vice President")?.titles ?? []
-const EMISSIONS_TITLES = TITLES.find(item => item.group === "Emissions")?.titles ?? []
+const EMISSIONS_MANAGER_TITLES = TITLES.find(item => item.group === "Emissions Manager")?.titles ?? []
 const SUPPLY_CHAIN_TITLES = TITLES.find(item => item.group === "Supply Chain")?.titles ?? []
 const SC_MANAGEMENT_TITLES = TITLES.find(item => item.group === "Supply Chain Management")?.titles ?? []
 const ADMIN_TITLES = TITLES.find(item => item.group === "Admin")?.titles ?? []
@@ -102,6 +102,10 @@ async function allowedRequester(user: NovaUser | undefined | null) {
             const allEmployees = await getAllEmployees()
 
             return allEmployees.map((employee) => employee.id)
+        } else if (EMISSIONS_MANAGER_TITLES.includes(user.jobTitle)) {
+            const employees = await getManagersEmployees(user.id)
+
+            return employees.map((employee) => employee.id).concat(user.id)
         } else if (SUPPLY_CHAIN_TITLES.includes(user.jobTitle)) {
             const allEmployees = await getAllEmployees()
 
@@ -135,6 +139,8 @@ function allowedStatus(title: string, scAll: boolean) {
     if (FIELD_SHOP_SERVICE_TITLES.includes(title) || OPS_SHOP_MANAGER_TITLES.includes(title) || OPS_SHOP_DIRECTOR_TITLES.includes(title)) {
         return ALL_STATUS
     } else if (OPS_VP_TITLES.includes(title)) {
+        return ALL_STATUS
+    } else if (EMISSIONS_MANAGER_TITLES.includes(title)) {
         return ALL_STATUS
     } else if (SUPPLY_CHAIN_TITLES.includes(title)) {
         if (scAll) {

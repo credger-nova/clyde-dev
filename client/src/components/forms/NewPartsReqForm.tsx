@@ -113,7 +113,7 @@ export default function PartsReqForm() {
     const [urgency, setUrgency] = React.useState<string | null>(null)
     const [orderType, setOrderType] = React.useState<string | null>(null)
     const [region, setRegion] = React.useState<string | null>(SHOP_TITLES.includes(novaUser!.jobTitle) ? novaUser!.region[0] : null)
-    const [rows, setRows] = React.useState<Array<Omit<OrderRow, "id">>>([])
+    const [rows, setRows] = React.useState<Array<Omit<OrderRow, "id">>>([{ qty: 1, itemNumber: "", description: "", cost: "", mode: "", received: 0 }])
     const [comment, setComment] = React.useState<string>("")
     const [comments, setComments] = React.useState<Array<Omit<Comment, "id">>>([])
     const [newFiles, setNewFiles] = React.useState<Array<File>>([])

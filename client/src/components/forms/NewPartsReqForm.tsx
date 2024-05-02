@@ -53,6 +53,9 @@ import Checkbox from '@mui/material/Checkbox'
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline'
 import Tooltip from '@mui/material/Tooltip'
 import Typography from '@mui/material/Typography'
+import Menu from '@mui/material/Menu'
+import MenuItem from '@mui/material/MenuItem'
+import CloseIcon from '@mui/icons-material/Close'
 
 const PERMIAN_REGIONS = ["North Permian", "South Permian", "Pecos", "Carlsbad"]
 
@@ -122,6 +125,9 @@ export default function PartsReqForm() {
     const [conexName, setConexName] = React.useState<string | null>(null)
     const [disableSubmit, setDisableSubmit] = React.useState<boolean>(true)
     const [prExceedsAfe, setPrExceedsAfe] = React.useState<boolean>(false)
+    const [menuIndex, setMenuIndex] = React.useState<number | null>(null)
+    const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null)
+    const confirmDeleteRowOpen = Boolean(anchorEl)
 
     const { data: afeExistingAmount } = useSumPrWithAfe(afe ? afe.number : "")
 
@@ -270,6 +276,22 @@ export default function PartsReqForm() {
         const tempRows = [...rows]
         tempRows.splice(index, 1)
         setRows(tempRows)
+
+        setAnchorEl(null)
+    }
+
+    const handleDeleteRowClick = (e: React.MouseEvent<HTMLElement>, index: number) => {
+        if (!rows[index].itemNumber) {
+            removeRow(index)
+        } else {
+            setMenuIndex(index)
+            setAnchorEl(e.currentTarget)
+        }
+    }
+
+    const handleDeleteRowClose = () => {
+        setMenuIndex(null)
+        setAnchorEl(null)
     }
 
     const onQtyChange = (index: number) => (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -1085,11 +1107,33 @@ export default function PartsReqForm() {
                                                                 </Tooltip> : null
                                                             }
                                                             <IconButton
-                                                                onClick={() => removeRow(index)}
+                                                                onClick={(e) => handleDeleteRowClick(e, index)}
                                                                 disableRipple
                                                             >
                                                                 <DeleteIcon />
                                                             </IconButton>
+                                                            <Menu
+                                                                anchorEl={anchorEl}
+                                                                open={confirmDeleteRowOpen && menuIndex === index}
+                                                                onClose={handleDeleteRowClose}
+                                                                anchorOrigin={{ vertical: "top", horizontal: "right" }}
+                                                                transformOrigin={{ vertical: "bottom", horizontal: "right" }}
+                                                            >
+                                                                <MenuItem
+                                                                    onClick={() => removeRow(index)}
+                                                                    disableRipple
+                                                                >
+                                                                    <DeleteIcon />
+                                                                    Remove Part
+                                                                </MenuItem>
+                                                                <MenuItem
+                                                                    onClick={handleDeleteRowClose}
+                                                                    disableRipple
+                                                                >
+                                                                    <CloseIcon />
+                                                                    Cancel
+                                                                </MenuItem>
+                                                            </Menu>
                                                         </div>
                                                     </TableCell>
                                                 </TableRow>

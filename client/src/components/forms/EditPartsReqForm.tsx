@@ -56,6 +56,9 @@ import Checkbox from '@mui/material/Checkbox'
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline'
 import Tooltip from '@mui/material/Tooltip'
 import Typography from '@mui/material/Typography'
+import Menu from '@mui/material/Menu'
+import MenuItem from '@mui/material/MenuItem'
+import CloseIcon from '@mui/icons-material/Close'
 
 const PERMIAN_REGIONS = ["North Permian", "South Permian", "Pecos", "Carlsbad"]
 
@@ -71,6 +74,7 @@ const STATUS: Array<{ status: string, titles: Array<string> }> = [
         status: "Pending Quote",
         titles: (TITLES.filter(item => item.group === "Ops Manager" || item.group === "Shop Supervisor").map(group => group.titles).flat())
             .concat(TITLES.filter(item => item.group === "Ops Director" || item.group === "Shop Director").map(group => group.titles).flat())
+            .concat(TITLES.find(item => item.group === "Emissions Manager")?.titles ?? [])
             .concat(TITLES.find(item => item.group === "IT")?.titles ?? [])
     },
     {
@@ -83,6 +87,8 @@ const STATUS: Array<{ status: string, titles: Array<string> }> = [
         titles: (TITLES.filter(item => item.group === "Ops Manager" || item.group === "Shop Supervisor").map(group => group.titles).flat())
             .concat(TITLES.filter(item => item.group === "Ops Director" || item.group === "Shop Director").map(group => group.titles).flat())
             .concat(TITLES.find(item => item.group === "Ops Vice President")?.titles ?? [])
+            .concat(TITLES.find(item => item.group === "Emissions Manager")?.titles ?? [])
+            .concat(TITLES.find(item => item.group === "Supply Chain Management")?.titles ?? [])
             .concat(TITLES.find(item => item.group === "IT")?.titles ?? [])
     },
     {
@@ -90,6 +96,8 @@ const STATUS: Array<{ status: string, titles: Array<string> }> = [
         titles: (TITLES.filter(item => item.group === "Ops Manager" || item.group === "Shop Supervisor").map(group => group.titles).flat())
             .concat(TITLES.filter(item => item.group === "Ops Director" || item.group === "Shop Director").map(group => group.titles).flat())
             .concat(TITLES.find(item => item.group === "Ops Vice President")?.titles ?? [])
+            .concat(TITLES.find(item => item.group === "Emissions Manager")?.titles ?? [])
+            .concat(TITLES.find(item => item.group === "Supply Chain Management")?.titles ?? [])
             .concat(TITLES.find(item => item.group === "IT")?.titles ?? [])
     },
     {
@@ -97,6 +105,8 @@ const STATUS: Array<{ status: string, titles: Array<string> }> = [
         titles: (TITLES.filter(item => item.group === "Ops Manager" || item.group === "Shop Supervisor").map(group => group.titles).flat())
             .concat(TITLES.filter(item => item.group === "Ops Director" || item.group === "Shop Director").map(group => group.titles).flat())
             .concat(TITLES.find(item => item.group === "Ops Vice President")?.titles ?? [])
+            .concat(TITLES.find(item => item.group === "Emissions Manager")?.titles ?? [])
+            .concat(TITLES.find(item => item.group === "Supply Chain Management")?.titles ?? [])
             .concat(TITLES.find(item => item.group === "IT")?.titles ?? [])
     },
     {
@@ -104,6 +114,8 @@ const STATUS: Array<{ status: string, titles: Array<string> }> = [
         titles: (TITLES.filter(item => item.group === "Ops Manager" || item.group === "Shop Supervisor").map(group => group.titles).flat())
             .concat(TITLES.filter(item => item.group === "Ops Director" || item.group === "Shop Director").map(group => group.titles).flat())
             .concat(TITLES.find(item => item.group === "Ops Vice President")?.titles ?? [])
+            .concat(TITLES.find(item => item.group === "Emissions Manager")?.titles ?? [])
+            .concat(TITLES.find(item => item.group === "Supply Chain Management")?.titles ?? [])
             .concat(TITLES.find(item => item.group === "IT")?.titles ?? [])
     },
     {
@@ -115,6 +127,7 @@ const STATUS: Array<{ status: string, titles: Array<string> }> = [
     {
         status: "Sourcing - Information Required",
         titles: (TITLES.filter(item => item.group === "Ops Manager" || item.group === "Shop Supervisor").map(group => group.titles).flat())
+            .concat(TITLES.find(item => item.group === "Emissions Manager")?.titles ?? [])
             .concat(TITLES.find(item => item.group === "Supply Chain")?.titles ?? [])
             .concat(TITLES.find(item => item.group === "Supply Chain Management")?.titles ?? [])
             .concat(TITLES.find(item => item.group === "IT")?.titles ?? [])
@@ -159,6 +172,7 @@ const STATUS: Array<{ status: string, titles: Array<string> }> = [
         status: "Closed - Order Canceled",
         titles: (TITLES.filter(item => item.group === "Ops Manager" || item.group === "Shop Supervisor").map(group => group.titles).flat())
             .concat(TITLES.filter(item => item.group === "Ops Director" || item.group === "Shop Director").map(group => group.titles).flat())
+            .concat(TITLES.find(item => item.group === "Emissions Manager")?.titles ?? [])
             .concat(TITLES.find(item => item.group === "IT")?.titles ?? [])
     }
 ]
@@ -168,7 +182,7 @@ const OPS_SHOP_MANAGER_TITLES = TITLES.filter(item => item.group === "Ops Manage
 const OPS_SHOP_DIRECTOR_TITLES = TITLES.filter(item => item.group === "Ops Director" || item.group === "Shop Director").map(group => group.titles).flat()
 const SHOP_TITLES = TITLES.filter(item => item.group.includes("Shop")).map((group) => group.titles).flat()
 const SVP_TITLES = TITLES.find(item => item.group === "Ops Vice President")?.titles ?? []
-const EMISSIONS_TITLES = TITLES.find(item => item.group === "Emissions")?.titles ?? []
+const EMISSIONS_MANAGER_TITLES = TITLES.find(item => item.group === "Emissions Manager")?.titles ?? []
 const SUPPLY_CHAIN_TITLES = TITLES.find(item => item.group === "Supply Chain")?.titles ?? []
 const SC_MANAGEMENT_TITLES = TITLES.find(item => item.group === "Supply Chain Management")?.titles ?? []
 const EXEC_TITLES = TITLES.find(item => item.group === "Executive Management")?.titles ?? []
@@ -200,11 +214,13 @@ function getAvailableStatus(user: NovaUser | undefined, currStatus: string) {
             return ["Quote Provided - Pending Approval"]
         }
 
-        if (currStatus === "Sourcing - Information Required" && (OPS_SHOP_MANAGER_TITLES.includes(user.jobTitle) || FIELD_SHOP_SERVICE_TITLES.includes(user.jobTitle))) {
+        if (currStatus === "Sourcing - Information Required" && (OPS_SHOP_MANAGER_TITLES.includes(user.jobTitle) || FIELD_SHOP_SERVICE_TITLES.includes(user.jobTitle) ||
+            EMISSIONS_MANAGER_TITLES.includes(user.jobTitle))) {
             return ["Sourcing - Information Provided"]
         }
 
-        if (currStatus === "Sourcing - Request to Cancel" && (OPS_SHOP_MANAGER_TITLES.includes(user.jobTitle) || OPS_SHOP_DIRECTOR_TITLES.includes(user.jobTitle))) {
+        if (currStatus === "Sourcing - Request to Cancel" && (OPS_SHOP_MANAGER_TITLES.includes(user.jobTitle) || OPS_SHOP_DIRECTOR_TITLES.includes(user.jobTitle) ||
+            EMISSIONS_MANAGER_TITLES.includes(user.jobTitle))) {
             return ["Closed - Order Canceled", "Sourcing - Information Provided"]
         }
 
@@ -217,6 +233,9 @@ function getAvailableStatus(user: NovaUser | undefined, currStatus: string) {
         if (SUPPLY_CHAIN_TITLES.includes(user.jobTitle) || SC_MANAGEMENT_TITLES.includes(user.jobTitle)) {
             if (currStatus === "Ordered - Awaiting Parts" || currStatus === "Completed - Parts Staged - Delivered") {
                 status = status.filter(item => item.status !== "Sourcing - Request to Cancel")
+            }
+            if (currStatus === "Pending Approval") {
+                return ["Rejected - Adjustments Required", "Rejected - Closed", "Approved - On Hold", "Approved"]
             }
         }
 
@@ -286,6 +305,9 @@ export default function EditPartsReqForm(props: Props) {
     const [conexName, setConexName] = React.useState<string | null>(partsReq.conexName ?? null)
     const [prExceedsAfe, setPrExceedsAfe] = React.useState<boolean>(false)
     const [needsComment, setNeedsComment] = React.useState<boolean>(false)
+    const [menuIndex, setMenuIndex] = React.useState<number | null>(null)
+    const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null)
+    const confirmDeleteRowOpen = Boolean(anchorEl)
 
     const { data: afeExistingAmount } = useSumPrWithAfe(afe ? afe.number : "")
 
@@ -490,6 +512,22 @@ export default function EditPartsReqForm(props: Props) {
         if ((rows[index] as OrderRow).id) {
             setDelRows([...delRows, rows[index] as OrderRow])
         }
+
+        setAnchorEl(null)
+    }
+
+    const handleDeleteRowClick = (e: React.MouseEvent<HTMLElement>, index: number) => {
+        if (!rows[index].itemNumber) {
+            removeRow(index)
+        } else {
+            setMenuIndex(index)
+            setAnchorEl(e.currentTarget)
+        }
+    }
+
+    const handleDeleteRowClose = () => {
+        setMenuIndex(null)
+        setAnchorEl(null)
     }
 
     const onQtyChange = (index: number) => (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -670,7 +708,7 @@ export default function EditPartsReqForm(props: Props) {
         }
 
         // Ops/Shop Manager permissions
-        if (OPS_SHOP_MANAGER_TITLES.includes(title)) {
+        if (OPS_SHOP_MANAGER_TITLES.includes(title) || EMISSIONS_MANAGER_TITLES.includes(title)) {
             if (partsReq.status === "Pending Approval" || partsReq.status === "Quote Provided - Pending Approval") {
                 if (field === "Status" && calcCost(rows as Array<OrderRow>) < 5000 &&
                     !opsVpApprovalRequired(unit, rows as Array<OrderRow>)) {
@@ -809,6 +847,11 @@ export default function EditPartsReqForm(props: Props) {
         if (SC_MANAGEMENT_TITLES.includes(title)) {
             if (partsReq.status === "Pending Quote") {
                 return false
+            }
+            if (partsReq.status === "Pending Approval") {
+                if (field === "Status") {
+                    return false
+                }
             }
             if (partsReq.status === "Approved" || partsReq.status === "Sourcing - Information Required" ||
                 partsReq.status === "Sourcing - Information Provided" || partsReq.status === "Ordered - Awaiting Parts") {
@@ -1245,7 +1288,7 @@ export default function EditPartsReqForm(props: Props) {
                                     <Autocomplete
                                         disabled={!conex || denyAccess(novaUser!.jobTitle, status, "Conex")}
                                         options={warehouses ? warehouses.filter((location) => location.includes("CONEX") || location.includes("STORAGE")
-                                            || (location.includes("TRUCK") && EMISSIONS_TITLES.includes(novaUser!.jobTitle))) : []}
+                                            || (location.includes("TRUCK") && EMISSIONS_MANAGER_TITLES.includes(novaUser!.jobTitle))) : []}
                                         loading={warehousesFetching}
                                         onChange={onConexNameChange}
                                         value={conexName}
@@ -1797,12 +1840,33 @@ export default function EditPartsReqForm(props: Props) {
                                                                 </Tooltip> : null
                                                             }
                                                             <IconButton
-                                                                onClick={() => removeRow(index)}
+                                                                onClick={(e) => handleDeleteRowClick(e, index)}
                                                                 disableRipple
-                                                                disabled={denyAccess(novaUser!.jobTitle, status)}
                                                             >
                                                                 <DeleteIcon />
                                                             </IconButton>
+                                                            <Menu
+                                                                anchorEl={anchorEl}
+                                                                open={confirmDeleteRowOpen && menuIndex === index}
+                                                                onClose={handleDeleteRowClose}
+                                                                anchorOrigin={{ vertical: "top", horizontal: "right" }}
+                                                                transformOrigin={{ vertical: "bottom", horizontal: "right" }}
+                                                            >
+                                                                <MenuItem
+                                                                    onClick={() => removeRow(index)}
+                                                                    disableRipple
+                                                                >
+                                                                    <DeleteIcon />
+                                                                    Remove Part
+                                                                </MenuItem>
+                                                                <MenuItem
+                                                                    onClick={handleDeleteRowClose}
+                                                                    disableRipple
+                                                                >
+                                                                    <CloseIcon />
+                                                                    Cancel
+                                                                </MenuItem>
+                                                            </Menu>
                                                         </div>
                                                     </TableCell>
                                                 </TableRow>

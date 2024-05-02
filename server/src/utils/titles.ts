@@ -48,7 +48,7 @@ export const TITLES: Array<{ group: string, titles: Array<string> }> = [
         ]
     },
     {
-        group: "Emissions",
+        group: "Emissions Manager",
         titles: [
             "Manager - Emissions"
         ]

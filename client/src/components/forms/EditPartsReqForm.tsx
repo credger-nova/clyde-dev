@@ -1323,9 +1323,7 @@ export default function EditPartsReqForm(props: Props) {
                                     />
                                 </div>
                             </Item>
-                            <Item
-                                sx={{ border: urgency === "LMC Safety Shutdown" ? "3px solid red" : "3px solid transparent" }}
-                            >
+                            <Item>
                                 <Box>
                                     <b><p style={{ margin: 0 }}>Urgency:</p></b>
                                     <Divider />

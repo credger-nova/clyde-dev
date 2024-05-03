@@ -56,6 +56,7 @@ import Typography from '@mui/material/Typography'
 import Menu from '@mui/material/Menu'
 import MenuItem from '@mui/material/MenuItem'
 import CloseIcon from '@mui/icons-material/Close'
+import CircularProgress from '@mui/material/CircularProgress'
 
 const PERMIAN_REGIONS = ["North Permian", "South Permian", "Pecos", "Carlsbad"]
 
@@ -125,6 +126,7 @@ export default function PartsReqForm() {
     const [conexName, setConexName] = React.useState<string | null>(null)
     const [disableSubmit, setDisableSubmit] = React.useState<boolean>(true)
     const [prExceedsAfe, setPrExceedsAfe] = React.useState<boolean>(false)
+    const [submitting, setSubmitting] = React.useState<boolean>(false)
     const [menuIndex, setMenuIndex] = React.useState<number | null>(null)
     const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null)
     const confirmDeleteRowOpen = Boolean(anchorEl)
@@ -165,6 +167,7 @@ export default function PartsReqForm() {
     }, [afe, afeExistingAmount, rows])
 
     const handleSubmit = async (event: React.SyntheticEvent) => {
+        setSubmitting(true)
         event.preventDefault()
 
         const partsReq: CreatePartsReq = {
@@ -1169,7 +1172,13 @@ export default function PartsReqForm() {
                         <Button
                             variant="contained"
                             type="submit"
-                            disabled={disableSubmit}
+                            disabled={disableSubmit || submitting}
+                            startIcon={submitting ?
+                                <CircularProgress
+                                    size={20}
+                                /> :
+                                null
+                            }
                             sx={{
                                 backgroundColor: theme.palette.primary.dark,
                                 "&.MuiButton-root:hover": {
@@ -1177,7 +1186,7 @@ export default function PartsReqForm() {
                                 }
                             }}
                         >
-                            Submit
+                            {submitting ? "Submitting" : "Submit"}
                         </Button>
                     </div>
                 </form>

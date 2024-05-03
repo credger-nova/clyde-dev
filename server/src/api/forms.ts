@@ -12,7 +12,7 @@ import { convertUser, getManagersEmployees, getDirectorsEmployees, getAllEmploye
 const PERMIAN_REGIONS = ["Pecos", "Carlsbad", "North Permian", "South Permian"]
 const PERMIAN_CUSTOMER_SORT = ["APACHE CORPORATION", "CONOCOPHILLIPS CO", "DIAMONDBACK ENERGY", "MATADOR PRODUCTION COMPANY", "VITAL ENERGY INC"]
 
-const URGENCY_SORT = ["Unit Down", "Unit Set", "Rush", "Standard", "Stock"]
+const URGENCY_SORT = ["LMC Safety Shutdown", "Unit Down", "Unit Set", "Rush", "Standard", "Stock"]
 
 const SERVICE_SORT = ["Rejected - Adjustments Required", "Completed - Parts Staged/Delivered", "Closed - Partially Received", "Pending Approval", "Pending Quote",
     "Quote Provided - Pending Approval", "Approved - On Hold", "Approved", "Sourcing - In Progress", "Sourcing - Information Required", "Sourcing - Information Provided",

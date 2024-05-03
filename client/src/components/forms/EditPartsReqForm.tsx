@@ -211,7 +211,7 @@ function CustomPopper(props: PopperProps) {
 function getAvailableStatus(user: NovaUser | undefined, currStatus: string) {
     if (user) {
         if (currStatus === "Pending Quote") {
-            return ["Quote Provided - Pending Approval"]
+            return ["Quote Provided - Pending Approval", "Sourcing - Request to Cancel"]
         }
 
         if (currStatus === "Sourcing - Information Required" && (OPS_SHOP_MANAGER_TITLES.includes(user.jobTitle) || FIELD_SHOP_SERVICE_TITLES.includes(user.jobTitle) ||

@@ -62,7 +62,7 @@ import CloseIcon from '@mui/icons-material/Close'
 
 const PERMIAN_REGIONS = ["North Permian", "South Permian", "Pecos", "Carlsbad"]
 
-const URGENCY = ["Unit Down", "Unit Set", "Rush", "Standard"]
+const URGENCY = [{ urgency: "LMC Safety Shutdown", regions: PERMIAN_REGIONS.concat("Corporate") }, { urgency: "Unit Down" }, { urgency: "Unit Set" }, { urgency: "Rush" }, { urgency: "Standard" }]
 const ORDER_TYPE = [{ type: "Rental" }, { type: "Third-Party" }, { type: "Shop Supplies" }, { type: "Truck Supplies" }, { type: "Stock", titles: ["Supply Chain", "Software"] }]
 const REGION = ["East Texas", "South Texas", "Midcon", "North Permian", "South Permian", "Pecos", "Carlsbad"]
 const STATUS: Array<{ status: string, titles: Array<string> }> = [
@@ -1323,23 +1323,28 @@ export default function EditPartsReqForm(props: Props) {
                                     />
                                 </div>
                             </Item>
-                            <Item>
+                            <Item
+                                sx={{ border: urgency === "LMC Safety Shutdown" ? "3px solid red" : "3px solid transparent" }}
+                            >
                                 <Box>
                                     <b><p style={{ margin: 0 }}>Urgency:</p></b>
                                     <Divider />
-                                    <FormControl disabled={denyAccess(novaUser!.jobTitle, status)}>
+                                    <FormControl>
                                         <RadioGroup row>
                                             {URGENCY.map((val) => {
-                                                return (
+                                                const canAccess = val.regions ? (val.regions.findIndex(el => novaUser!.region.includes(el)) !== -1) : true
+
+                                                return canAccess ? (
                                                     <FormControlLabel
                                                         value={urgency}
-                                                        onChange={() => setUrgency(val)}
-                                                        control={<Radio disableRipple sx={{ paddingRight: "2px" }} checked={urgency === val} />}
-                                                        label={val}
+                                                        onChange={() => setUrgency(val.urgency)}
+                                                        control={<Radio disableRipple sx={{ paddingRight: "2px" }} checked={urgency === val.urgency} />}
+                                                        label={val.urgency}
                                                         defaultChecked={false}
-                                                        key={val}
+                                                        key={val.urgency}
                                                     />
-                                                )
+                                                ) : null
+
                                             })}
                                         </RadioGroup>
                                     </FormControl>

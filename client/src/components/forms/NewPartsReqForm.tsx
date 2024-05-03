@@ -60,7 +60,7 @@ import CircularProgress from '@mui/material/CircularProgress'
 
 const PERMIAN_REGIONS = ["North Permian", "South Permian", "Pecos", "Carlsbad"]
 
-const URGENCY = ["Unit Down", "Unit Set", "Rush", "Standard"]
+const URGENCY = [{ urgency: "LMC Safety Shutdown", regions: PERMIAN_REGIONS.concat("Corporate") }, { urgency: "Unit Down" }, { urgency: "Unit Set" }, { urgency: "Rush" }, { urgency: "Standard" }]
 const ORDER_TYPE = [{ type: "Rental" }, { type: "Third-Party" }, { type: "Shop Supplies" }, { type: "Truck Supplies" }, { type: "Stock", titles: ["Supply Chain", "Software"] }]
 const REGION = ["Carlsbad", "Pecos", "North Permian", "South Permian", "East Texas", "South Texas", "Midcon"]
 
@@ -726,23 +726,28 @@ export default function PartsReqForm() {
                                     />
                                 </div>
                             </Item>
-                            <Item>
+                            <Item
+                                sx={{ border: urgency === "LMC Safety Shutdown" ? "3px solid red" : "3px solid transparent" }}
+                            >
                                 <Box>
                                     <b><p style={{ margin: 0 }}>Urgency:</p></b>
                                     <Divider />
                                     <FormControl>
                                         <RadioGroup row>
                                             {URGENCY.map((val) => {
-                                                return (
+                                                const canAccess = val.regions ? (val.regions.findIndex(el => novaUser!.region.includes(el)) !== -1) : true
+
+                                                return canAccess ? (
                                                     <FormControlLabel
                                                         value={urgency}
-                                                        onChange={() => setUrgency(val)}
-                                                        control={<Radio disableRipple sx={{ paddingRight: "2px" }} checked={urgency === val} />}
-                                                        label={val}
+                                                        onChange={() => setUrgency(val.urgency)}
+                                                        control={<Radio disableRipple sx={{ paddingRight: "2px" }} checked={urgency === val.urgency} />}
+                                                        label={val.urgency}
                                                         defaultChecked={false}
-                                                        key={val}
+                                                        key={val.urgency}
                                                     />
-                                                )
+                                                ) : null
+
                                             })}
                                         </RadioGroup>
                                     </FormControl>

@@ -65,116 +65,25 @@ const PERMIAN_REGIONS = ["North Permian", "South Permian", "Pecos", "Carlsbad"]
 const URGENCY = [{ urgency: "LMC Safety Shutdown", regions: PERMIAN_REGIONS.concat("Corporate") }, { urgency: "Unit Down" }, { urgency: "Unit Set" }, { urgency: "Rush" }, { urgency: "Standard" }]
 const ORDER_TYPE = [{ type: "Rental" }, { type: "Third-Party" }, { type: "Shop Supplies" }, { type: "Truck Supplies" }, { type: "Stock", titles: ["Supply Chain", "Software"] }]
 const REGION = ["East Texas", "South Texas", "Midcon", "North Permian", "South Permian", "Pecos", "Carlsbad"]
-const STATUS: Array<{ status: string, titles: Array<string> }> = [
-    {
-        status: "Pending Approval",
-        titles: TITLES.find(item => item.group === "IT")?.titles ?? []
-    },
-    {
-        status: "Pending Quote",
-        titles: (TITLES.filter(item => item.group === "Ops Manager" || item.group === "Shop Supervisor").map(group => group.titles).flat())
-            .concat(TITLES.filter(item => item.group === "Ops Director" || item.group === "Shop Director").map(group => group.titles).flat())
-            .concat(TITLES.find(item => item.group === "Emissions Manager")?.titles ?? [])
-            .concat(TITLES.find(item => item.group === "IT")?.titles ?? [])
-    },
-    {
-        status: "Quote Provided - Pending Approval",
-        titles: (TITLES.find(item => item.group === "Supply Chain")?.titles ?? [])
-            .concat(TITLES.find(item => item.group === "IT")?.titles ?? [])
-    },
-    {
-        status: "Rejected - Adjustments Required",
-        titles: (TITLES.filter(item => item.group === "Ops Manager" || item.group === "Shop Supervisor").map(group => group.titles).flat())
-            .concat(TITLES.filter(item => item.group === "Ops Director" || item.group === "Shop Director").map(group => group.titles).flat())
-            .concat(TITLES.find(item => item.group === "Ops Vice President")?.titles ?? [])
-            .concat(TITLES.find(item => item.group === "Emissions Manager")?.titles ?? [])
-            .concat(TITLES.find(item => item.group === "Supply Chain Management")?.titles ?? [])
-            .concat(TITLES.find(item => item.group === "IT")?.titles ?? [])
-    },
-    {
-        status: "Rejected - Closed",
-        titles: (TITLES.filter(item => item.group === "Ops Manager" || item.group === "Shop Supervisor").map(group => group.titles).flat())
-            .concat(TITLES.filter(item => item.group === "Ops Director" || item.group === "Shop Director").map(group => group.titles).flat())
-            .concat(TITLES.find(item => item.group === "Ops Vice President")?.titles ?? [])
-            .concat(TITLES.find(item => item.group === "Emissions Manager")?.titles ?? [])
-            .concat(TITLES.find(item => item.group === "Supply Chain Management")?.titles ?? [])
-            .concat(TITLES.find(item => item.group === "IT")?.titles ?? [])
-    },
-    {
-        status: "Approved - On Hold",
-        titles: (TITLES.filter(item => item.group === "Ops Manager" || item.group === "Shop Supervisor").map(group => group.titles).flat())
-            .concat(TITLES.filter(item => item.group === "Ops Director" || item.group === "Shop Director").map(group => group.titles).flat())
-            .concat(TITLES.find(item => item.group === "Ops Vice President")?.titles ?? [])
-            .concat(TITLES.find(item => item.group === "Emissions Manager")?.titles ?? [])
-            .concat(TITLES.find(item => item.group === "Supply Chain Management")?.titles ?? [])
-            .concat(TITLES.find(item => item.group === "IT")?.titles ?? [])
-    },
-    {
-        status: "Approved",
-        titles: (TITLES.filter(item => item.group === "Ops Manager" || item.group === "Shop Supervisor").map(group => group.titles).flat())
-            .concat(TITLES.filter(item => item.group === "Ops Director" || item.group === "Shop Director").map(group => group.titles).flat())
-            .concat(TITLES.find(item => item.group === "Ops Vice President")?.titles ?? [])
-            .concat(TITLES.find(item => item.group === "Emissions Manager")?.titles ?? [])
-            .concat(TITLES.find(item => item.group === "Supply Chain Management")?.titles ?? [])
-            .concat(TITLES.find(item => item.group === "IT")?.titles ?? [])
-    },
-    {
-        status: "Sourcing - In Progress",
-        titles: (TITLES.find(item => item.group === "Supply Chain")?.titles ?? [])
-            .concat(TITLES.find(item => item.group === "Supply Chain Management")?.titles ?? [])
-            .concat(TITLES.find(item => item.group === "IT")?.titles ?? [])
-    },
-    {
-        status: "Sourcing - Information Required",
-        titles: (TITLES.filter(item => item.group === "Ops Manager" || item.group === "Shop Supervisor").map(group => group.titles).flat())
-            .concat(TITLES.find(item => item.group === "Emissions Manager")?.titles ?? [])
-            .concat(TITLES.find(item => item.group === "Supply Chain")?.titles ?? [])
-            .concat(TITLES.find(item => item.group === "Supply Chain Management")?.titles ?? [])
-            .concat(TITLES.find(item => item.group === "IT")?.titles ?? [])
-    },
-    {
-        status: "Sourcing - Information Provided",
-        titles: (TITLES.find(item => item.group === "Supply Chain")?.titles ?? [])
-            .concat(TITLES.find(item => item.group === "IT")?.titles ?? [])
-    },
-    {
-        status: "Sourcing - Amex Approved",
-        titles: (TITLES.find(item => item.group === "Supply Chain Management")?.titles ?? [])
-            .concat(TITLES.find(item => item.group === "IT")?.titles ?? [])
-    },
-    {
-        status: "Sourcing - Request to Cancel",
-        titles: (TITLES.find(item => item.group === "Supply Chain")?.titles ?? [])
-            .concat(TITLES.find(item => item.group === "Supply Chain Management")?.titles ?? [])
-            .concat(TITLES.find(item => item.group === "IT")?.titles ?? [])
-    },
-    {
-        status: "Ordered - Awaiting Parts",
-        titles: (TITLES.find(item => item.group === "Supply Chain")?.titles ?? [])
-            .concat(TITLES.find(item => item.group === "Supply Chain Management")?.titles ?? [])
-            .concat(TITLES.find(item => item.group === "IT")?.titles ?? [])
-    },
-    {
-        status: "Completed - Parts Staged/Delivered",
-        titles: (TITLES.find(item => item.group === "Supply Chain")?.titles ?? [])
-            .concat(TITLES.find(item => item.group === "Supply Chain Management")?.titles ?? [])
-            .concat(TITLES.find(item => item.group === "IT")?.titles ?? [])
-    },
-    {
-        status: "Closed - Partially Received",
-        titles: TITLES.find(item => item.group === "IT")?.titles ?? []
-    },
-    {
-        status: "Closed - Parts in Hand",
-        titles: TITLES.find(item => item.group === "IT")?.titles ?? []
-    },
-    {
-        status: "Closed - Order Canceled",
-        titles: (TITLES.filter(item => item.group === "Ops Manager" || item.group === "Shop Supervisor").map(group => group.titles).flat())
-            .concat(TITLES.filter(item => item.group === "Ops Director" || item.group === "Shop Director").map(group => group.titles).flat())
-            .concat(TITLES.find(item => item.group === "Emissions Manager")?.titles ?? [])
-            .concat(TITLES.find(item => item.group === "IT")?.titles ?? [])
-    }
+const STATUS = [
+    "Pending Approval",
+    "Pending Quote",
+    "Quote Provided - Pending Approval",
+    "Rejected - Adjustments Required",
+    "Approved - On Hold",
+    "Approved",
+    "Sourcing - In Progress",
+    "Sourcing - Information Required",
+    "Sourcing - Information Provided",
+    "Sourcing - Pending Amex Approval",
+    "Sourcing - Amex Approved",
+    "Sourcing - Request to Cancel",
+    "Ordered - Awaiting Parts",
+    "Completed - Parts Staged/Delivered",
+    "Closed - Partially Received",
+    "Closed - Parts in Hand",
+    "Closed - Order Canceled",
+    "Rejected - Closed"
 ]
 
 const FIELD_SHOP_SERVICE_TITLES = TITLES.filter(item => item.group === "Field Service" || item.group === "Shop Service").map(group => group.titles).flat()
@@ -208,38 +117,138 @@ function CustomPopper(props: PopperProps) {
     )
 }
 
-function getAvailableStatus(user: NovaUser | undefined, currStatus: string) {
+function getAvailableStatus(user: NovaUser | undefined, prStatus: string) {
     if (user) {
-        if (currStatus === "Pending Quote") {
-            return ["Quote Provided - Pending Approval", "Sourcing - Request to Cancel"]
+        if (IT_TITLES.includes(user.jobTitle)) {
+            return STATUS
         }
 
-        if (currStatus === "Sourcing - Information Required" && (OPS_SHOP_MANAGER_TITLES.includes(user.jobTitle) || FIELD_SHOP_SERVICE_TITLES.includes(user.jobTitle) ||
-            EMISSIONS_MANAGER_TITLES.includes(user.jobTitle))) {
-            return ["Sourcing - Information Provided"]
+        if (prStatus === "Pending Approval") {
+            return [
+                "Rejected - Adjustments Required",
+                "Rejected - Closed",
+                "Approved - On Hold",
+                "Approved"
+            ]
         }
 
-        if (currStatus === "Sourcing - Request to Cancel" && (OPS_SHOP_MANAGER_TITLES.includes(user.jobTitle) || OPS_SHOP_DIRECTOR_TITLES.includes(user.jobTitle) ||
-            EMISSIONS_MANAGER_TITLES.includes(user.jobTitle))) {
-            return ["Closed - Order Canceled", "Sourcing - Information Provided"]
+        if (prStatus === "Pending Quote") {
+            return [
+                "Quote Provided - Pending Approval",
+                "Sourcing - Request to Cancel"
+            ]
         }
 
-        let status = STATUS.filter(item => item.titles.includes(user.jobTitle) && item.status !== "Quote Provided - Pending Approval")
-
-        if (OPS_SHOP_MANAGER_TITLES.includes(user.jobTitle)) {
-            status = status.filter(item => !item.status.includes("Sourcing"))
+        if (prStatus === "Quote Provided - Pending Approval") {
+            return [
+                "Rejected - Adjustments Required",
+                "Rejected - Closed",
+                "Approved - On Hold",
+                "Approved"
+            ]
         }
 
-        if (SUPPLY_CHAIN_TITLES.includes(user.jobTitle) || SC_MANAGEMENT_TITLES.includes(user.jobTitle)) {
-            if (currStatus === "Ordered - Awaiting Parts" || currStatus === "Completed - Parts Staged - Delivered") {
-                status = status.filter(item => item.status !== "Sourcing - Request to Cancel")
-            }
-            if (currStatus === "Pending Approval") {
-                return ["Rejected - Adjustments Required", "Rejected - Closed", "Approved - On Hold", "Approved"]
-            }
+        if (prStatus === "Rejected - Adjustments Required") {
+            return []
         }
 
-        return status.map(item => item.status)
+        if (prStatus === "Approved - On Hold") {
+            return [
+                "Rejected - Adjustments Required",
+                "Rejected - Closed",
+                "Approved"
+            ]
+        }
+
+        if (prStatus === "Approved") {
+            return [
+                "Sourcing - In Progress",
+                "Sourcing - Information Required",
+                "Sourcing - Request to Cancel",
+                "Ordered - Awaiting Parts",
+                "Completed - Parts Staged/Delivered"
+            ]
+        }
+
+        if (prStatus === "Sourcing - In Progress") {
+            return [
+                "Souring - Information Required",
+                "Sourcing - Request to Cancel",
+                "Ordered - Awaiting Parts",
+                "Completed - Parts Staged/Delivered"
+            ]
+        }
+
+        if (prStatus === "Sourcing - Information Required") {
+            return [
+                "Sourcing - Information Provided"
+            ]
+        }
+
+        if (prStatus === "Sourcing - Information Provided") {
+            return [
+                "Sourcing - In Progress",
+                "Sourcing - Information Required",
+                "Sourcing - Request to Cancel",
+                "Ordered - Awaiting Parts",
+                "Completed - Parts Staged/Delivered"
+            ]
+        }
+
+        if (prStatus === "Sourcing - Pending Amex Approval") {
+            return [
+                "Sourcing - Amex Approved",
+                "Rejected - Adjustments Required"
+            ]
+        }
+
+        if (prStatus === "Sourcing - Amex Approved") {
+            return [
+                "Sourcing - In Progress",
+                "Sourcing - Information Required",
+                "Sourcing - Request to Cancel",
+                "Ordered - Awaiting Parts",
+                "Completed - Parts Staged/Delivered"
+            ]
+        }
+
+        if (prStatus === "Sourcing - Request to Cancel") {
+            return [
+                "Closed - Order Canceled",
+                "Sourcing - Information Provided"
+            ]
+        }
+
+        if (prStatus === "Ordered - Awaiting Parts") {
+            return [
+                "Sourcing - In Progress",
+                "Sourcing - Information Required",
+                "Sourcing - Request to Cancel",
+                "Completed - Parts Staged/Delivered"
+            ]
+        }
+
+        if (prStatus === "Completed - Parts Staged/Delivered") {
+            return []
+        }
+
+        if (prStatus === "Closed - Partially Received") {
+            return []
+        }
+
+        if (prStatus === "Closed - Parts in Hand") {
+            return []
+        }
+
+        if (prStatus === "Closed - Order Canceled") {
+            return []
+        }
+
+        if (prStatus === "Rejected - Closed") {
+            return []
+        }
+
+        return []
     } else {
         return []
     }

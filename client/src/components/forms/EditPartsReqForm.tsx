@@ -180,8 +180,8 @@ const STATUS: Array<{ status: string, titles: Array<string> }> = [
 const FIELD_SHOP_SERVICE_TITLES = TITLES.filter(item => item.group === "Field Service" || item.group === "Shop Service").map(group => group.titles).flat()
 const OPS_SHOP_MANAGER_TITLES = TITLES.filter(item => item.group === "Ops Manager" || item.group === "Shop Supervisor").map(group => group.titles).flat()
 const OPS_SHOP_DIRECTOR_TITLES = TITLES.filter(item => item.group === "Ops Director" || item.group === "Shop Director").map(group => group.titles).flat()
+const OPS_VP_TITLES = TITLES.find(item => item.group === "Ops Vice President")?.titles ?? []
 const SHOP_TITLES = TITLES.filter(item => item.group.includes("Shop")).map((group) => group.titles).flat()
-const SVP_TITLES = TITLES.find(item => item.group === "Ops Vice President")?.titles ?? []
 const EMISSIONS_MANAGER_TITLES = TITLES.find(item => item.group === "Emissions Manager")?.titles ?? []
 const SUPPLY_CHAIN_TITLES = TITLES.find(item => item.group === "Supply Chain")?.titles ?? []
 const SC_MANAGEMENT_TITLES = TITLES.find(item => item.group === "Supply Chain Management")?.titles ?? []
@@ -677,27 +677,31 @@ export default function EditPartsReqForm(props: Props) {
         return part?.type === "inventoryitem"
     }
 
-    function denyAccess(title: string, status: string, field?: string) {
+    function denyAccess(title: string, field?: string) {
+        // Always deny access if edit is not active
         if (!edit) {
             return true
         }
 
+        // Always allow editing of comments and documents
         if (field === "Comment" || field === "Document") {
             return false
         }
 
-        // Field/Shop Service permissions
+        /* --- Field/Shop Service permissions --- */
         if (FIELD_SHOP_SERVICE_TITLES.includes(title)) {
-            if (status === "Rejected - Adjustments Required") {
+            if (partsReq.status === "Rejected - Adjustments Required") {
                 if (field !== "Status") {
                     return false
                 }
             }
+
             if (partsReq.status === "Sourcing - Information Required") {
                 if (field !== "Amex") {
                     return false
                 }
             }
+
             if (status === "Completed - Parts Staged/Delivered" || status === "Closed - Partially Received") {
                 if (field === "Received") {
                     return false
@@ -707,186 +711,211 @@ export default function EditPartsReqForm(props: Props) {
             return true
         }
 
-        // Ops/Shop Manager permissions
+        /* --- Ops/Shop Manager permissions --- */
         if (OPS_SHOP_MANAGER_TITLES.includes(title) || EMISSIONS_MANAGER_TITLES.includes(title)) {
             if (partsReq.status === "Pending Approval" || partsReq.status === "Quote Provided - Pending Approval") {
-                if (field === "Status" && calcCost(rows as Array<OrderRow>) < 5000 &&
-                    !opsVpApprovalRequired(unit, rows as Array<OrderRow>)) {
-                    return false
-                }
-                if (field !== "Status") {
-                    return false
-                }
-            }
-            if (partsReq.status === "Rejected - Adjustments Required" &&
-                partsReq.requester === novaUser) {
-                if (field !== "Status") {
-                    return false
-                }
-            }
-            if (partsReq.status === "Approved - On Hold") {
-                if (field !== "Amex") {
-                    return false
-                }
-            }
-            if (partsReq.status === "Sourcing - Information Required") {
-                if (field !== "Amex") {
-                    return false
-                }
-            }
-            if (partsReq.status === "Sourcing - Request to Cancel") {
-                if (field === "Status") {
-                    return false
-                }
-            }
-            if (status === "Completed - Parts Staged/Delivered" || status === "Closed - Partially Received") {
-                if (field === "Received") {
-                    return false
-                }
-            }
-
-            return true
-        }
-
-        // Ops/Shop Director permissions
-        if (OPS_SHOP_DIRECTOR_TITLES.includes(title)) {
-            if (partsReq.status === "Pending Approval" || partsReq.status === "Quote Provided - Pending Approval") {
-                if (field === "Status" && (calcCost(rows as Array<OrderRow>) < 10000 || partsReq.afe) &&
-                    !opsVpApprovalRequired(unit, rows as Array<OrderRow>)) {
-                    return false
-                }
-                if (field !== "Status") {
-                    return false
-                }
-            }
-            if (partsReq.status === "Rejected - Adjustments Required" &&
-                partsReq.requester === novaUser) {
-                if (field !== "Status") {
-                    return false
-                }
-            }
-            if (partsReq.status === "Approved - On Hold") {
-                if (field !== "Amex") {
-                    return false
-                }
-            }
-            if (partsReq.status === "Sourcing - Information Required") {
-                if (field !== "Amex") {
-                    return false
-                }
-            }
-            if (partsReq.status === "Sourcing - Request to Cancel") {
-                if (field === "Status") {
-                    return false
-                }
-            }
-            if (status === "Completed - Parts Staged/Delivered" || status === "Closed - Partially Received") {
-                if (field === "Received") {
-                    return false
-                }
-            }
-
-            return true
-        }
-
-        // Ops Vice President permissions
-        if (SVP_TITLES.includes(title)) {
-            if (partsReq.status === "Pending Approval" || partsReq.status === "Quote Provided - Pending Approval") {
-                if (field === "Status") {
-                    return false
-                }
-            }
-
-            return true
-        }
-
-        // Supply Chain permissions
-        if (SUPPLY_CHAIN_TITLES.includes(title)) {
-            if (partsReq.status === "Approved") {
-                return false
-            }
-            if (partsReq.status === "Pending Quote") {
-                return false
-            }
-            if (partsReq.status === "Approved" || partsReq.status === "Sourcing - Information Required" ||
-                partsReq.status === "Sourcing - Information Provided" || partsReq.status === "Ordered - Awaiting Parts") {
-                if (field === "Status" || field === "Amex" || (partsReq.status === "Sourcing - Information Provided" &&
-                    (field === "Needed" || field === "Item" || field === "Description" || field === "Rate"))
+                if (
+                    field === "Status" &&
+                    calcCost(rows as Array<OrderRow>) < 5000 &&
+                    !opsVpApprovalRequired(unit, rows as Array<OrderRow>)
                 ) {
                     return false
                 }
-            }
-            if (partsReq.status === "Sourcing - In Progress") {
-                if (field === "Status" || field === "Amex") {
+
+                if (field !== "Status") {
                     return false
                 }
             }
-            if (partsReq.status === "Sourcing - Amex Approved") {
+
+            if (partsReq.status === "Rejected - Adjustments Required" && partsReq.requester === novaUser) {
+                if (field !== "Status") {
+                    return false
+                }
+            }
+
+            if (partsReq.status === "Approved - On Hold") {
+                if (field !== "Amex") {
+                    return false
+                }
+            }
+
+            if (partsReq.status === "Sourcing - Information Required") {
+                if (field !== "Amex") {
+                    return false
+                }
+            }
+
+            if (partsReq.status === "Sourcing - Request to Cancel") {
                 if (field === "Status") {
                     return false
                 }
             }
-            if (partsReq.status === "Sourcing - Request to Cancel") {
-                if (field === "Item" || field === "Description" || field === "Rate" || field === "Conex") {
-                    return true
+
+            if (status === "Completed - Parts Staged/Delivered" || status === "Closed - Partially Received") {
+                if (field === "Received") {
+                    return false
                 }
             }
+
+            return true
+        }
+
+        /* --- Ops/Shop Director Permissions --- */
+        if (OPS_SHOP_DIRECTOR_TITLES.includes(title)) {
+            if (partsReq.status === "Pending Approval" || partsReq.status === "Quote Provided - Pending Approval") {
+                if (
+                    field === "Status" &&
+                    calcCost(rows as Array<OrderRow>) < 10000 &&
+                    !opsVpApprovalRequired(unit, rows as Array<OrderRow>)
+                ) {
+                    return false
+                }
+
+                if (field !== "Status") {
+                    return false
+                }
+            }
+
+            if (partsReq.status === "Rejected - Adjustments Required" && partsReq.requester === novaUser) {
+                if (field !== "Status") {
+                    return false
+                }
+            }
+
+            if (partsReq.status === "Approved - On Hold") {
+                if (field !== "Amex") {
+                    return false
+                }
+            }
+
+            if (partsReq.status === "Sourcing - Information Required") {
+                if (field !== "Amex") {
+                    return false
+                }
+            }
+
+            if (partsReq.status === "Sourcing - Request to Cancel") {
+                if (field === "Status") {
+                    return false
+                }
+            }
+
+            if (status === "Completed - Parts Staged/Delivered" || status === "Closed - Partially Received") {
+                if (field === "Received") {
+                    return false
+                }
+            }
+
+            return true
+        }
+
+        /* --- Ops VP Permissoins --- */
+        if (OPS_VP_TITLES.includes(title)) {
+            if (partsReq.status === "Pending Approval" || partsReq.status === "Quote Provided - Pending Approval") {
+                if (field === "Status") {
+                    return false
+                }
+            }
+
+            return true
+        }
+
+        /* --- Supply Chain Permissions --- */
+        if (SUPPLY_CHAIN_TITLES.includes(title)) {
+            if (partsReq.status === "Pending Quote") {
+                return false
+            }
+
+            if (partsReq.status === "Approved") {
+                return false
+            }
+
+            if (partsReq.status === "Sourcing - In Progress") {
+                return false
+            }
+
+            if (partsReq.status === "Sourcing - Information Provided") {
+                return false
+            }
+
+            if (partsReq.status === "Sourcing - Amex Approved") {
+                return false
+            }
+
+            if (partsReq.status === "Ordered - Awaiting Parts") {
+                return false
+            }
+
             if (partsReq.status === "Completed - Parts Staged/Delivered" || status === "Completed - Parts Staged/Delivered") {
                 if (field === "Pickup") {
                     return false
                 }
             }
-            if (field === "Item" || field === "Description" || field === "Rate" || field === "Conex") {
+
+            if (field === "Needed" || field === "Item" || field === "Description" || field === "Rate") {
                 return false
             }
 
             return true
         }
 
-        // Supply Chain management permissions
+        /* --- Supply Chain Management Permissions --- */
         if (SC_MANAGEMENT_TITLES.includes(title)) {
             if (partsReq.status === "Pending Quote") {
                 return false
             }
+
             if (partsReq.status === "Pending Approval") {
                 if (field === "Status") {
                     return false
                 }
             }
-            if (partsReq.status === "Approved" || partsReq.status === "Sourcing - Information Required" ||
-                partsReq.status === "Sourcing - Information Provided" || partsReq.status === "Ordered - Awaiting Parts") {
-                if (field === "Status" || field === "Amex") {
-                    return false
-                }
+
+            if (partsReq.status === "Approved") {
+                return false
             }
+
             if (partsReq.status === "Sourcing - In Progress") {
-                if (field === "Status") {
-                    return false
-                }
+                return false
             }
+
+            if (partsReq.status === "Sourcing - Information Provided") {
+                return false
+            }
+
             if (partsReq.status === "Sourcing - Pending Amex Approval") {
                 if (field === "Status") {
                     return false
                 }
             }
+
+            if (partsReq.status === "Sourcing - Amex Approved") {
+                return false
+            }
+
+            if (partsReq.status === "Ordered - Awaiting Parts") {
+                return false
+            }
+
             if (partsReq.status === "Completed - Parts Staged/Delivered" || status === "Completed - Parts Staged/Delivered") {
                 if (field === "Pickup") {
                     return false
                 }
             }
-            if (field === "Item" || field === "Description" || field === "Rate" || field === "Conex") {
+
+            if (field === "Needed" || field === "Item" || field === "Description" || field === "Rate") {
                 return false
             }
 
             return true
         }
 
-        // Exec management permissions
+        /* --- Exec Management Permissions --- */
         if (EXEC_TITLES.includes(title)) {
             return true
         }
 
-        // IT permissions
+        /* --- IT Permissions --- */
         if (IT_TITLES.includes(title)) {
             return false
         }
@@ -950,7 +979,7 @@ export default function EditPartsReqForm(props: Props) {
                                                     </li>
                                             );
                                         }}
-                                        readOnly={denyAccess(novaUser!.jobTitle, status, "Status")}
+                                        readOnly={denyAccess(novaUser!.jobTitle, "Status")}
                                     />
                                 </Box>
                             </Item>
@@ -1269,7 +1298,7 @@ export default function EditPartsReqForm(props: Props) {
                                                     </li>
                                                 );
                                             }}
-                                            readOnly={denyAccess(novaUser!.jobTitle, status, "Pickup")}
+                                            readOnly={denyAccess(novaUser!.jobTitle, "Pickup")}
                                         />
                                     </Box>
                                 </Item>
@@ -1283,10 +1312,10 @@ export default function EditPartsReqForm(props: Props) {
                                         checked={conex}
                                         onChange={onConexChange}
                                         disableRipple
-                                        disabled={denyAccess(novaUser!.jobTitle, status, "Conex")}
+                                        disabled={denyAccess(novaUser!.jobTitle, "Conex")}
                                     />
                                     <Autocomplete
-                                        disabled={!conex || denyAccess(novaUser!.jobTitle, status, "Conex")}
+                                        disabled={!conex || denyAccess(novaUser!.jobTitle, "Conex")}
                                         options={warehouses ? warehouses.filter((location) => location.includes("CONEX") || location.includes("STORAGE")
                                             || (location.includes("TRUCK") && EMISSIONS_MANAGER_TITLES.includes(novaUser!.jobTitle))) : []}
                                         loading={warehousesFetching}
@@ -1484,10 +1513,10 @@ export default function EditPartsReqForm(props: Props) {
                                             checked={amex}
                                             onChange={onAmexChange}
                                             disableRipple
-                                            disabled={denyAccess(novaUser!.jobTitle, status, "Amex") || noRate(rows)}
+                                            disabled={denyAccess(novaUser!.jobTitle, "Amex") || noRate(rows)}
                                         />
                                         <Autocomplete
-                                            disabled={!amex || denyAccess(novaUser!.jobTitle, status, "Amex")}
+                                            disabled={!amex || denyAccess(novaUser!.jobTitle, "Amex")}
                                             options={vendors ? vendors : []}
                                             loading={vendorsFetching}
                                             onChange={onVendorChange}
@@ -1534,13 +1563,13 @@ export default function EditPartsReqForm(props: Props) {
                                         label="New Comment"
                                         value={comment}
                                         onChange={onCommentChange}
-                                        disabled={denyAccess(novaUser!.jobTitle, status, "Comment")}
+                                        disabled={denyAccess(novaUser!.jobTitle, "Comment")}
                                         error={needsComment}
                                         helperText={needsComment && "Please enter a reason for status change"}
                                     />
                                     <IconButton
                                         onClick={onAddComment}
-                                        disabled={!comment || denyAccess(novaUser!.jobTitle, status, "Comment")}
+                                        disabled={!comment || denyAccess(novaUser!.jobTitle, "Comment")}
                                     >
                                         <AddIcon />
                                     </IconButton>
@@ -1575,7 +1604,7 @@ export default function EditPartsReqForm(props: Props) {
                                 />
                                 <AddFileButton
                                     setNewFiles={setNewFiles}
-                                    disabled={denyAccess(novaUser!.jobTitle, status, "Document")}
+                                    disabled={denyAccess(novaUser!.jobTitle, "Document")}
                                 />
                                 <Box
                                     sx={{ maxHeight: "250px", overflow: "auto" }}
@@ -1587,7 +1616,7 @@ export default function EditPartsReqForm(props: Props) {
                                         deleteFiles={deleteFiles}
                                         setDeleteFiles={setDeleteFiles}
                                         folder={"parts-req"}
-                                        disabled={denyAccess(novaUser!.jobTitle, status, "Document")}
+                                        disabled={denyAccess(novaUser!.jobTitle, "Document")}
                                     />
                                 </Box>
                             </Item>
@@ -1668,7 +1697,7 @@ export default function EditPartsReqForm(props: Props) {
                                                                 onChange={onReceivedChange(index)}
                                                                 InputProps={{
                                                                     inputProps: { min: partsReq.parts[index].received, max: row.qty },
-                                                                    readOnly: denyAccess(novaUser!.jobTitle, status, "Received")
+                                                                    readOnly: denyAccess(novaUser!.jobTitle, "Received")
                                                                 }}
                                                                 sx={{ width: "100%" }}
                                                                 helperText={!rows[index].itemNumber && " "}
@@ -1683,7 +1712,7 @@ export default function EditPartsReqForm(props: Props) {
                                                             onChange={onQtyChange(index)}
                                                             InputProps={{
                                                                 inputProps: { min: 1 },
-                                                                readOnly: denyAccess(novaUser!.jobTitle, status, "Needed")
+                                                                readOnly: denyAccess(novaUser!.jobTitle, "Needed")
                                                             }}
                                                             sx={{ width: "100%" }}
                                                             helperText={!rows[index].itemNumber && " "}
@@ -1789,7 +1818,7 @@ export default function EditPartsReqForm(props: Props) {
                                                                 )
                                                             }}
                                                             PopperComponent={CustomPopper}
-                                                            readOnly={denyAccess(novaUser!.jobTitle, status, "Item")}
+                                                            readOnly={denyAccess(novaUser!.jobTitle, "Item")}
                                                         />
                                                     </TableCell>
                                                     <TableCell>
@@ -1800,7 +1829,7 @@ export default function EditPartsReqForm(props: Props) {
                                                             helperText={!rows[index].itemNumber && " "}
                                                             disabled={partExists(rows[index].itemNumber) && partIsInventoryItem(rows[index].itemNumber)}
                                                             InputProps={{
-                                                                readOnly: denyAccess(novaUser!.jobTitle, status, "Description")
+                                                                readOnly: denyAccess(novaUser!.jobTitle, "Description")
                                                             }}
                                                         />
                                                     </TableCell>
@@ -1816,10 +1845,10 @@ export default function EditPartsReqForm(props: Props) {
                                                                     step: "0.01",
                                                                     min: 0
                                                                 },
-                                                                readOnly: denyAccess(novaUser!.jobTitle, status, "Rate")
+                                                                readOnly: denyAccess(novaUser!.jobTitle, "Rate")
                                                             }}
                                                             helperText={!rows[index].itemNumber && " "}
-                                                            disabled={partExists(rows[index].itemNumber) && denyAccess(novaUser!.jobTitle, status, "Rate")}
+                                                            disabled={partExists(rows[index].itemNumber) && denyAccess(novaUser!.jobTitle, "Rate")}
                                                         />
                                                     </TableCell>
                                                     <TableCell sx={{ paddingBottom: 0 }}>{row.cost ? `$${(Number(row.cost) * row.qty).toFixed(2)}` : ""}</TableCell>

@@ -65,123 +65,32 @@ const PERMIAN_REGIONS = ["North Permian", "South Permian", "Pecos", "Carlsbad"]
 const URGENCY = [{ urgency: "LMC Safety Shutdown", regions: PERMIAN_REGIONS.concat("Corporate") }, { urgency: "Unit Down" }, { urgency: "Unit Set" }, { urgency: "Rush" }, { urgency: "Standard" }]
 const ORDER_TYPE = [{ type: "Rental" }, { type: "Third-Party" }, { type: "Shop Supplies" }, { type: "Truck Supplies" }, { type: "Stock", titles: ["Supply Chain", "Software"] }]
 const REGION = ["East Texas", "South Texas", "Midcon", "North Permian", "South Permian", "Pecos", "Carlsbad"]
-const STATUS: Array<{ status: string, titles: Array<string> }> = [
-    {
-        status: "Pending Approval",
-        titles: TITLES.find(item => item.group === "IT")?.titles ?? []
-    },
-    {
-        status: "Pending Quote",
-        titles: (TITLES.filter(item => item.group === "Ops Manager" || item.group === "Shop Supervisor").map(group => group.titles).flat())
-            .concat(TITLES.filter(item => item.group === "Ops Director" || item.group === "Shop Director").map(group => group.titles).flat())
-            .concat(TITLES.find(item => item.group === "Emissions Manager")?.titles ?? [])
-            .concat(TITLES.find(item => item.group === "IT")?.titles ?? [])
-    },
-    {
-        status: "Quote Provided - Pending Approval",
-        titles: (TITLES.find(item => item.group === "Supply Chain")?.titles ?? [])
-            .concat(TITLES.find(item => item.group === "IT")?.titles ?? [])
-    },
-    {
-        status: "Rejected - Adjustments Required",
-        titles: (TITLES.filter(item => item.group === "Ops Manager" || item.group === "Shop Supervisor").map(group => group.titles).flat())
-            .concat(TITLES.filter(item => item.group === "Ops Director" || item.group === "Shop Director").map(group => group.titles).flat())
-            .concat(TITLES.find(item => item.group === "Ops Vice President")?.titles ?? [])
-            .concat(TITLES.find(item => item.group === "Emissions Manager")?.titles ?? [])
-            .concat(TITLES.find(item => item.group === "Supply Chain Management")?.titles ?? [])
-            .concat(TITLES.find(item => item.group === "IT")?.titles ?? [])
-    },
-    {
-        status: "Rejected - Closed",
-        titles: (TITLES.filter(item => item.group === "Ops Manager" || item.group === "Shop Supervisor").map(group => group.titles).flat())
-            .concat(TITLES.filter(item => item.group === "Ops Director" || item.group === "Shop Director").map(group => group.titles).flat())
-            .concat(TITLES.find(item => item.group === "Ops Vice President")?.titles ?? [])
-            .concat(TITLES.find(item => item.group === "Emissions Manager")?.titles ?? [])
-            .concat(TITLES.find(item => item.group === "Supply Chain Management")?.titles ?? [])
-            .concat(TITLES.find(item => item.group === "IT")?.titles ?? [])
-    },
-    {
-        status: "Approved - On Hold",
-        titles: (TITLES.filter(item => item.group === "Ops Manager" || item.group === "Shop Supervisor").map(group => group.titles).flat())
-            .concat(TITLES.filter(item => item.group === "Ops Director" || item.group === "Shop Director").map(group => group.titles).flat())
-            .concat(TITLES.find(item => item.group === "Ops Vice President")?.titles ?? [])
-            .concat(TITLES.find(item => item.group === "Emissions Manager")?.titles ?? [])
-            .concat(TITLES.find(item => item.group === "Supply Chain Management")?.titles ?? [])
-            .concat(TITLES.find(item => item.group === "IT")?.titles ?? [])
-    },
-    {
-        status: "Approved",
-        titles: (TITLES.filter(item => item.group === "Ops Manager" || item.group === "Shop Supervisor").map(group => group.titles).flat())
-            .concat(TITLES.filter(item => item.group === "Ops Director" || item.group === "Shop Director").map(group => group.titles).flat())
-            .concat(TITLES.find(item => item.group === "Ops Vice President")?.titles ?? [])
-            .concat(TITLES.find(item => item.group === "Emissions Manager")?.titles ?? [])
-            .concat(TITLES.find(item => item.group === "Supply Chain Management")?.titles ?? [])
-            .concat(TITLES.find(item => item.group === "IT")?.titles ?? [])
-    },
-    {
-        status: "Sourcing - In Progress",
-        titles: (TITLES.find(item => item.group === "Supply Chain")?.titles ?? [])
-            .concat(TITLES.find(item => item.group === "Supply Chain Management")?.titles ?? [])
-            .concat(TITLES.find(item => item.group === "IT")?.titles ?? [])
-    },
-    {
-        status: "Sourcing - Information Required",
-        titles: (TITLES.filter(item => item.group === "Ops Manager" || item.group === "Shop Supervisor").map(group => group.titles).flat())
-            .concat(TITLES.find(item => item.group === "Emissions Manager")?.titles ?? [])
-            .concat(TITLES.find(item => item.group === "Supply Chain")?.titles ?? [])
-            .concat(TITLES.find(item => item.group === "Supply Chain Management")?.titles ?? [])
-            .concat(TITLES.find(item => item.group === "IT")?.titles ?? [])
-    },
-    {
-        status: "Sourcing - Information Provided",
-        titles: (TITLES.find(item => item.group === "Supply Chain")?.titles ?? [])
-            .concat(TITLES.find(item => item.group === "IT")?.titles ?? [])
-    },
-    {
-        status: "Sourcing - Amex Approved",
-        titles: (TITLES.find(item => item.group === "Supply Chain Management")?.titles ?? [])
-            .concat(TITLES.find(item => item.group === "IT")?.titles ?? [])
-    },
-    {
-        status: "Sourcing - Request to Cancel",
-        titles: (TITLES.find(item => item.group === "Supply Chain")?.titles ?? [])
-            .concat(TITLES.find(item => item.group === "Supply Chain Management")?.titles ?? [])
-            .concat(TITLES.find(item => item.group === "IT")?.titles ?? [])
-    },
-    {
-        status: "Ordered - Awaiting Parts",
-        titles: (TITLES.find(item => item.group === "Supply Chain")?.titles ?? [])
-            .concat(TITLES.find(item => item.group === "Supply Chain Management")?.titles ?? [])
-            .concat(TITLES.find(item => item.group === "IT")?.titles ?? [])
-    },
-    {
-        status: "Completed - Parts Staged/Delivered",
-        titles: (TITLES.find(item => item.group === "Supply Chain")?.titles ?? [])
-            .concat(TITLES.find(item => item.group === "Supply Chain Management")?.titles ?? [])
-            .concat(TITLES.find(item => item.group === "IT")?.titles ?? [])
-    },
-    {
-        status: "Closed - Partially Received",
-        titles: TITLES.find(item => item.group === "IT")?.titles ?? []
-    },
-    {
-        status: "Closed - Parts in Hand",
-        titles: TITLES.find(item => item.group === "IT")?.titles ?? []
-    },
-    {
-        status: "Closed - Order Canceled",
-        titles: (TITLES.filter(item => item.group === "Ops Manager" || item.group === "Shop Supervisor").map(group => group.titles).flat())
-            .concat(TITLES.filter(item => item.group === "Ops Director" || item.group === "Shop Director").map(group => group.titles).flat())
-            .concat(TITLES.find(item => item.group === "Emissions Manager")?.titles ?? [])
-            .concat(TITLES.find(item => item.group === "IT")?.titles ?? [])
-    }
+const STATUS = [
+    "Pending Approval",
+    "Pending Quote",
+    "Quote Provided - Pending Approval",
+    "Rejected - Adjustments Required",
+    "Approved - On Hold",
+    "Approved",
+    "Sourcing - In Progress",
+    "Sourcing - Information Required",
+    "Sourcing - Information Provided",
+    "Sourcing - Pending Amex Approval",
+    "Sourcing - Amex Approved",
+    "Sourcing - Request to Cancel",
+    "Ordered - Awaiting Parts",
+    "Completed - Parts Staged/Delivered",
+    "Closed - Partially Received",
+    "Closed - Parts in Hand",
+    "Closed - Order Canceled",
+    "Rejected - Closed"
 ]
 
 const FIELD_SHOP_SERVICE_TITLES = TITLES.filter(item => item.group === "Field Service" || item.group === "Shop Service").map(group => group.titles).flat()
 const OPS_SHOP_MANAGER_TITLES = TITLES.filter(item => item.group === "Ops Manager" || item.group === "Shop Supervisor").map(group => group.titles).flat()
 const OPS_SHOP_DIRECTOR_TITLES = TITLES.filter(item => item.group === "Ops Director" || item.group === "Shop Director").map(group => group.titles).flat()
+const OPS_VP_TITLES = TITLES.find(item => item.group === "Ops Vice President")?.titles ?? []
 const SHOP_TITLES = TITLES.filter(item => item.group.includes("Shop")).map((group) => group.titles).flat()
-const SVP_TITLES = TITLES.find(item => item.group === "Ops Vice President")?.titles ?? []
 const EMISSIONS_MANAGER_TITLES = TITLES.find(item => item.group === "Emissions Manager")?.titles ?? []
 const SUPPLY_CHAIN_TITLES = TITLES.find(item => item.group === "Supply Chain")?.titles ?? []
 const SC_MANAGEMENT_TITLES = TITLES.find(item => item.group === "Supply Chain Management")?.titles ?? []
@@ -208,38 +117,138 @@ function CustomPopper(props: PopperProps) {
     )
 }
 
-function getAvailableStatus(user: NovaUser | undefined, currStatus: string) {
+function getAvailableStatus(user: NovaUser | undefined, prStatus: string) {
     if (user) {
-        if (currStatus === "Pending Quote") {
-            return ["Quote Provided - Pending Approval", "Sourcing - Request to Cancel"]
+        if (IT_TITLES.includes(user.jobTitle)) {
+            return STATUS
         }
 
-        if (currStatus === "Sourcing - Information Required" && (OPS_SHOP_MANAGER_TITLES.includes(user.jobTitle) || FIELD_SHOP_SERVICE_TITLES.includes(user.jobTitle) ||
-            EMISSIONS_MANAGER_TITLES.includes(user.jobTitle))) {
-            return ["Sourcing - Information Provided"]
+        if (prStatus === "Pending Approval") {
+            return [
+                "Rejected - Adjustments Required",
+                "Rejected - Closed",
+                "Approved - On Hold",
+                "Approved"
+            ]
         }
 
-        if (currStatus === "Sourcing - Request to Cancel" && (OPS_SHOP_MANAGER_TITLES.includes(user.jobTitle) || OPS_SHOP_DIRECTOR_TITLES.includes(user.jobTitle) ||
-            EMISSIONS_MANAGER_TITLES.includes(user.jobTitle))) {
-            return ["Closed - Order Canceled", "Sourcing - Information Provided"]
+        if (prStatus === "Pending Quote") {
+            return [
+                "Quote Provided - Pending Approval",
+                "Sourcing - Request to Cancel"
+            ]
         }
 
-        let status = STATUS.filter(item => item.titles.includes(user.jobTitle) && item.status !== "Quote Provided - Pending Approval")
-
-        if (OPS_SHOP_MANAGER_TITLES.includes(user.jobTitle)) {
-            status = status.filter(item => !item.status.includes("Sourcing"))
+        if (prStatus === "Quote Provided - Pending Approval") {
+            return [
+                "Rejected - Adjustments Required",
+                "Rejected - Closed",
+                "Approved - On Hold",
+                "Approved"
+            ]
         }
 
-        if (SUPPLY_CHAIN_TITLES.includes(user.jobTitle) || SC_MANAGEMENT_TITLES.includes(user.jobTitle)) {
-            if (currStatus === "Ordered - Awaiting Parts" || currStatus === "Completed - Parts Staged - Delivered") {
-                status = status.filter(item => item.status !== "Sourcing - Request to Cancel")
-            }
-            if (currStatus === "Pending Approval") {
-                return ["Rejected - Adjustments Required", "Rejected - Closed", "Approved - On Hold", "Approved"]
-            }
+        if (prStatus === "Rejected - Adjustments Required") {
+            return []
         }
 
-        return status.map(item => item.status)
+        if (prStatus === "Approved - On Hold") {
+            return [
+                "Rejected - Adjustments Required",
+                "Rejected - Closed",
+                "Approved"
+            ]
+        }
+
+        if (prStatus === "Approved") {
+            return [
+                "Sourcing - In Progress",
+                "Sourcing - Information Required",
+                "Sourcing - Request to Cancel",
+                "Ordered - Awaiting Parts",
+                "Completed - Parts Staged/Delivered"
+            ]
+        }
+
+        if (prStatus === "Sourcing - In Progress") {
+            return [
+                "Souring - Information Required",
+                "Sourcing - Request to Cancel",
+                "Ordered - Awaiting Parts",
+                "Completed - Parts Staged/Delivered"
+            ]
+        }
+
+        if (prStatus === "Sourcing - Information Required") {
+            return [
+                "Sourcing - Information Provided"
+            ]
+        }
+
+        if (prStatus === "Sourcing - Information Provided") {
+            return [
+                "Sourcing - In Progress",
+                "Sourcing - Information Required",
+                "Sourcing - Request to Cancel",
+                "Ordered - Awaiting Parts",
+                "Completed - Parts Staged/Delivered"
+            ]
+        }
+
+        if (prStatus === "Sourcing - Pending Amex Approval") {
+            return [
+                "Sourcing - Amex Approved",
+                "Rejected - Adjustments Required"
+            ]
+        }
+
+        if (prStatus === "Sourcing - Amex Approved") {
+            return [
+                "Sourcing - In Progress",
+                "Sourcing - Information Required",
+                "Sourcing - Request to Cancel",
+                "Ordered - Awaiting Parts",
+                "Completed - Parts Staged/Delivered"
+            ]
+        }
+
+        if (prStatus === "Sourcing - Request to Cancel") {
+            return [
+                "Closed - Order Canceled",
+                "Sourcing - Information Provided"
+            ]
+        }
+
+        if (prStatus === "Ordered - Awaiting Parts") {
+            return [
+                "Sourcing - In Progress",
+                "Sourcing - Information Required",
+                "Sourcing - Request to Cancel",
+                "Completed - Parts Staged/Delivered"
+            ]
+        }
+
+        if (prStatus === "Completed - Parts Staged/Delivered") {
+            return []
+        }
+
+        if (prStatus === "Closed - Partially Received") {
+            return []
+        }
+
+        if (prStatus === "Closed - Parts in Hand") {
+            return []
+        }
+
+        if (prStatus === "Closed - Order Canceled") {
+            return []
+        }
+
+        if (prStatus === "Rejected - Closed") {
+            return []
+        }
+
+        return []
     } else {
         return []
     }
@@ -677,27 +686,31 @@ export default function EditPartsReqForm(props: Props) {
         return part?.type === "inventoryitem"
     }
 
-    function denyAccess(title: string, status: string, field?: string) {
+    function denyAccess(title: string, field?: string) {
+        // Always deny access if edit is not active
         if (!edit) {
             return true
         }
 
+        // Always allow editing of comments and documents
         if (field === "Comment" || field === "Document") {
             return false
         }
 
-        // Field/Shop Service permissions
+        /* --- Field/Shop Service permissions --- */
         if (FIELD_SHOP_SERVICE_TITLES.includes(title)) {
-            if (status === "Rejected - Adjustments Required") {
+            if (partsReq.status === "Rejected - Adjustments Required") {
                 if (field !== "Status") {
                     return false
                 }
             }
+
             if (partsReq.status === "Sourcing - Information Required") {
                 if (field !== "Amex") {
                     return false
                 }
             }
+
             if (status === "Completed - Parts Staged/Delivered" || status === "Closed - Partially Received") {
                 if (field === "Received") {
                     return false
@@ -707,186 +720,211 @@ export default function EditPartsReqForm(props: Props) {
             return true
         }
 
-        // Ops/Shop Manager permissions
+        /* --- Ops/Shop Manager permissions --- */
         if (OPS_SHOP_MANAGER_TITLES.includes(title) || EMISSIONS_MANAGER_TITLES.includes(title)) {
             if (partsReq.status === "Pending Approval" || partsReq.status === "Quote Provided - Pending Approval") {
-                if (field === "Status" && calcCost(rows as Array<OrderRow>) < 5000 &&
-                    !opsVpApprovalRequired(unit, rows as Array<OrderRow>)) {
-                    return false
-                }
-                if (field !== "Status") {
-                    return false
-                }
-            }
-            if (partsReq.status === "Rejected - Adjustments Required" &&
-                partsReq.requester === novaUser) {
-                if (field !== "Status") {
-                    return false
-                }
-            }
-            if (partsReq.status === "Approved - On Hold") {
-                if (field !== "Amex") {
-                    return false
-                }
-            }
-            if (partsReq.status === "Sourcing - Information Required") {
-                if (field !== "Amex") {
-                    return false
-                }
-            }
-            if (partsReq.status === "Sourcing - Request to Cancel") {
-                if (field === "Status") {
-                    return false
-                }
-            }
-            if (status === "Completed - Parts Staged/Delivered" || status === "Closed - Partially Received") {
-                if (field === "Received") {
-                    return false
-                }
-            }
-
-            return true
-        }
-
-        // Ops/Shop Director permissions
-        if (OPS_SHOP_DIRECTOR_TITLES.includes(title)) {
-            if (partsReq.status === "Pending Approval" || partsReq.status === "Quote Provided - Pending Approval") {
-                if (field === "Status" && (calcCost(rows as Array<OrderRow>) < 10000 || partsReq.afe) &&
-                    !opsVpApprovalRequired(unit, rows as Array<OrderRow>)) {
-                    return false
-                }
-                if (field !== "Status") {
-                    return false
-                }
-            }
-            if (partsReq.status === "Rejected - Adjustments Required" &&
-                partsReq.requester === novaUser) {
-                if (field !== "Status") {
-                    return false
-                }
-            }
-            if (partsReq.status === "Approved - On Hold") {
-                if (field !== "Amex") {
-                    return false
-                }
-            }
-            if (partsReq.status === "Sourcing - Information Required") {
-                if (field !== "Amex") {
-                    return false
-                }
-            }
-            if (partsReq.status === "Sourcing - Request to Cancel") {
-                if (field === "Status") {
-                    return false
-                }
-            }
-            if (status === "Completed - Parts Staged/Delivered" || status === "Closed - Partially Received") {
-                if (field === "Received") {
-                    return false
-                }
-            }
-
-            return true
-        }
-
-        // Ops Vice President permissions
-        if (SVP_TITLES.includes(title)) {
-            if (partsReq.status === "Pending Approval" || partsReq.status === "Quote Provided - Pending Approval") {
-                if (field === "Status") {
-                    return false
-                }
-            }
-
-            return true
-        }
-
-        // Supply Chain permissions
-        if (SUPPLY_CHAIN_TITLES.includes(title)) {
-            if (partsReq.status === "Approved") {
-                return false
-            }
-            if (partsReq.status === "Pending Quote") {
-                return false
-            }
-            if (partsReq.status === "Approved" || partsReq.status === "Sourcing - Information Required" ||
-                partsReq.status === "Sourcing - Information Provided" || partsReq.status === "Ordered - Awaiting Parts") {
-                if (field === "Status" || field === "Amex" || (partsReq.status === "Sourcing - Information Provided" &&
-                    (field === "Needed" || field === "Item" || field === "Description" || field === "Rate"))
+                if (
+                    field === "Status" &&
+                    calcCost(rows as Array<OrderRow>) < 5000 &&
+                    !opsVpApprovalRequired(unit, rows as Array<OrderRow>)
                 ) {
                     return false
                 }
-            }
-            if (partsReq.status === "Sourcing - In Progress") {
-                if (field === "Status" || field === "Amex") {
+
+                if (field !== "Status") {
                     return false
                 }
             }
-            if (partsReq.status === "Sourcing - Amex Approved") {
+
+            if (partsReq.status === "Rejected - Adjustments Required" && partsReq.requester === novaUser) {
+                if (field !== "Status") {
+                    return false
+                }
+            }
+
+            if (partsReq.status === "Approved - On Hold") {
+                if (field !== "Amex") {
+                    return false
+                }
+            }
+
+            if (partsReq.status === "Sourcing - Information Required") {
+                if (field !== "Amex") {
+                    return false
+                }
+            }
+
+            if (partsReq.status === "Sourcing - Request to Cancel") {
                 if (field === "Status") {
                     return false
                 }
             }
-            if (partsReq.status === "Sourcing - Request to Cancel") {
-                if (field === "Item" || field === "Description" || field === "Rate" || field === "Conex") {
-                    return true
+
+            if (status === "Completed - Parts Staged/Delivered" || status === "Closed - Partially Received") {
+                if (field === "Received") {
+                    return false
                 }
             }
+
+            return true
+        }
+
+        /* --- Ops/Shop Director Permissions --- */
+        if (OPS_SHOP_DIRECTOR_TITLES.includes(title)) {
+            if (partsReq.status === "Pending Approval" || partsReq.status === "Quote Provided - Pending Approval") {
+                if (
+                    field === "Status" &&
+                    calcCost(rows as Array<OrderRow>) < 10000 &&
+                    !opsVpApprovalRequired(unit, rows as Array<OrderRow>)
+                ) {
+                    return false
+                }
+
+                if (field !== "Status") {
+                    return false
+                }
+            }
+
+            if (partsReq.status === "Rejected - Adjustments Required" && partsReq.requester === novaUser) {
+                if (field !== "Status") {
+                    return false
+                }
+            }
+
+            if (partsReq.status === "Approved - On Hold") {
+                if (field !== "Amex") {
+                    return false
+                }
+            }
+
+            if (partsReq.status === "Sourcing - Information Required") {
+                if (field !== "Amex") {
+                    return false
+                }
+            }
+
+            if (partsReq.status === "Sourcing - Request to Cancel") {
+                if (field === "Status") {
+                    return false
+                }
+            }
+
+            if (status === "Completed - Parts Staged/Delivered" || status === "Closed - Partially Received") {
+                if (field === "Received") {
+                    return false
+                }
+            }
+
+            return true
+        }
+
+        /* --- Ops VP Permissoins --- */
+        if (OPS_VP_TITLES.includes(title)) {
+            if (partsReq.status === "Pending Approval" || partsReq.status === "Quote Provided - Pending Approval") {
+                if (field === "Status") {
+                    return false
+                }
+            }
+
+            return true
+        }
+
+        /* --- Supply Chain Permissions --- */
+        if (SUPPLY_CHAIN_TITLES.includes(title)) {
+            if (partsReq.status === "Pending Quote") {
+                return false
+            }
+
+            if (partsReq.status === "Approved") {
+                return false
+            }
+
+            if (partsReq.status === "Sourcing - In Progress") {
+                return false
+            }
+
+            if (partsReq.status === "Sourcing - Information Provided") {
+                return false
+            }
+
+            if (partsReq.status === "Sourcing - Amex Approved") {
+                return false
+            }
+
+            if (partsReq.status === "Ordered - Awaiting Parts") {
+                return false
+            }
+
             if (partsReq.status === "Completed - Parts Staged/Delivered" || status === "Completed - Parts Staged/Delivered") {
                 if (field === "Pickup") {
                     return false
                 }
             }
-            if (field === "Item" || field === "Description" || field === "Rate" || field === "Conex") {
+
+            if (field === "Needed" || field === "Item" || field === "Description" || field === "Rate") {
                 return false
             }
 
             return true
         }
 
-        // Supply Chain management permissions
+        /* --- Supply Chain Management Permissions --- */
         if (SC_MANAGEMENT_TITLES.includes(title)) {
             if (partsReq.status === "Pending Quote") {
                 return false
             }
+
             if (partsReq.status === "Pending Approval") {
                 if (field === "Status") {
                     return false
                 }
             }
-            if (partsReq.status === "Approved" || partsReq.status === "Sourcing - Information Required" ||
-                partsReq.status === "Sourcing - Information Provided" || partsReq.status === "Ordered - Awaiting Parts") {
-                if (field === "Status" || field === "Amex") {
-                    return false
-                }
+
+            if (partsReq.status === "Approved") {
+                return false
             }
+
             if (partsReq.status === "Sourcing - In Progress") {
-                if (field === "Status") {
-                    return false
-                }
+                return false
             }
+
+            if (partsReq.status === "Sourcing - Information Provided") {
+                return false
+            }
+
             if (partsReq.status === "Sourcing - Pending Amex Approval") {
                 if (field === "Status") {
                     return false
                 }
             }
+
+            if (partsReq.status === "Sourcing - Amex Approved") {
+                return false
+            }
+
+            if (partsReq.status === "Ordered - Awaiting Parts") {
+                return false
+            }
+
             if (partsReq.status === "Completed - Parts Staged/Delivered" || status === "Completed - Parts Staged/Delivered") {
                 if (field === "Pickup") {
                     return false
                 }
             }
-            if (field === "Item" || field === "Description" || field === "Rate" || field === "Conex") {
+
+            if (field === "Needed" || field === "Item" || field === "Description" || field === "Rate") {
                 return false
             }
 
             return true
         }
 
-        // Exec management permissions
+        /* --- Exec Management Permissions --- */
         if (EXEC_TITLES.includes(title)) {
             return true
         }
 
-        // IT permissions
+        /* --- IT Permissions --- */
         if (IT_TITLES.includes(title)) {
             return false
         }
@@ -950,7 +988,7 @@ export default function EditPartsReqForm(props: Props) {
                                                     </li>
                                             );
                                         }}
-                                        readOnly={denyAccess(novaUser!.jobTitle, status, "Status")}
+                                        readOnly={denyAccess(novaUser!.jobTitle, "Status")}
                                     />
                                 </Box>
                             </Item>
@@ -1269,7 +1307,7 @@ export default function EditPartsReqForm(props: Props) {
                                                     </li>
                                                 );
                                             }}
-                                            readOnly={denyAccess(novaUser!.jobTitle, status, "Pickup")}
+                                            readOnly={denyAccess(novaUser!.jobTitle, "Pickup")}
                                         />
                                     </Box>
                                 </Item>
@@ -1283,10 +1321,10 @@ export default function EditPartsReqForm(props: Props) {
                                         checked={conex}
                                         onChange={onConexChange}
                                         disableRipple
-                                        disabled={denyAccess(novaUser!.jobTitle, status, "Conex")}
+                                        disabled={denyAccess(novaUser!.jobTitle, "Conex")}
                                     />
                                     <Autocomplete
-                                        disabled={!conex || denyAccess(novaUser!.jobTitle, status, "Conex")}
+                                        disabled={!conex || denyAccess(novaUser!.jobTitle, "Conex")}
                                         options={warehouses ? warehouses.filter((location) => location.includes("CONEX") || location.includes("STORAGE")
                                             || (location.includes("TRUCK") && EMISSIONS_MANAGER_TITLES.includes(novaUser!.jobTitle))) : []}
                                         loading={warehousesFetching}
@@ -1484,10 +1522,10 @@ export default function EditPartsReqForm(props: Props) {
                                             checked={amex}
                                             onChange={onAmexChange}
                                             disableRipple
-                                            disabled={denyAccess(novaUser!.jobTitle, status, "Amex") || noRate(rows)}
+                                            disabled={denyAccess(novaUser!.jobTitle, "Amex") || noRate(rows)}
                                         />
                                         <Autocomplete
-                                            disabled={!amex || denyAccess(novaUser!.jobTitle, status, "Amex")}
+                                            disabled={!amex || denyAccess(novaUser!.jobTitle, "Amex")}
                                             options={vendors ? vendors : []}
                                             loading={vendorsFetching}
                                             onChange={onVendorChange}
@@ -1534,13 +1572,13 @@ export default function EditPartsReqForm(props: Props) {
                                         label="New Comment"
                                         value={comment}
                                         onChange={onCommentChange}
-                                        disabled={denyAccess(novaUser!.jobTitle, status, "Comment")}
+                                        disabled={denyAccess(novaUser!.jobTitle, "Comment")}
                                         error={needsComment}
                                         helperText={needsComment && "Please enter a reason for status change"}
                                     />
                                     <IconButton
                                         onClick={onAddComment}
-                                        disabled={!comment || denyAccess(novaUser!.jobTitle, status, "Comment")}
+                                        disabled={!comment || denyAccess(novaUser!.jobTitle, "Comment")}
                                     >
                                         <AddIcon />
                                     </IconButton>
@@ -1575,7 +1613,7 @@ export default function EditPartsReqForm(props: Props) {
                                 />
                                 <AddFileButton
                                     setNewFiles={setNewFiles}
-                                    disabled={denyAccess(novaUser!.jobTitle, status, "Document")}
+                                    disabled={denyAccess(novaUser!.jobTitle, "Document")}
                                 />
                                 <Box
                                     sx={{ maxHeight: "250px", overflow: "auto" }}
@@ -1587,7 +1625,7 @@ export default function EditPartsReqForm(props: Props) {
                                         deleteFiles={deleteFiles}
                                         setDeleteFiles={setDeleteFiles}
                                         folder={"parts-req"}
-                                        disabled={denyAccess(novaUser!.jobTitle, status, "Document")}
+                                        disabled={denyAccess(novaUser!.jobTitle, "Document")}
                                     />
                                 </Box>
                             </Item>
@@ -1668,7 +1706,7 @@ export default function EditPartsReqForm(props: Props) {
                                                                 onChange={onReceivedChange(index)}
                                                                 InputProps={{
                                                                     inputProps: { min: partsReq.parts[index].received, max: row.qty },
-                                                                    readOnly: denyAccess(novaUser!.jobTitle, status, "Received")
+                                                                    readOnly: denyAccess(novaUser!.jobTitle, "Received")
                                                                 }}
                                                                 sx={{ width: "100%" }}
                                                                 helperText={!rows[index].itemNumber && " "}
@@ -1683,7 +1721,7 @@ export default function EditPartsReqForm(props: Props) {
                                                             onChange={onQtyChange(index)}
                                                             InputProps={{
                                                                 inputProps: { min: 1 },
-                                                                readOnly: denyAccess(novaUser!.jobTitle, status, "Needed")
+                                                                readOnly: denyAccess(novaUser!.jobTitle, "Needed")
                                                             }}
                                                             sx={{ width: "100%" }}
                                                             helperText={!rows[index].itemNumber && " "}
@@ -1789,7 +1827,7 @@ export default function EditPartsReqForm(props: Props) {
                                                                 )
                                                             }}
                                                             PopperComponent={CustomPopper}
-                                                            readOnly={denyAccess(novaUser!.jobTitle, status, "Item")}
+                                                            readOnly={denyAccess(novaUser!.jobTitle, "Item")}
                                                         />
                                                     </TableCell>
                                                     <TableCell>
@@ -1800,7 +1838,7 @@ export default function EditPartsReqForm(props: Props) {
                                                             helperText={!rows[index].itemNumber && " "}
                                                             disabled={partExists(rows[index].itemNumber) && partIsInventoryItem(rows[index].itemNumber)}
                                                             InputProps={{
-                                                                readOnly: denyAccess(novaUser!.jobTitle, status, "Description")
+                                                                readOnly: denyAccess(novaUser!.jobTitle, "Description")
                                                             }}
                                                         />
                                                     </TableCell>
@@ -1816,10 +1854,10 @@ export default function EditPartsReqForm(props: Props) {
                                                                     step: "0.01",
                                                                     min: 0
                                                                 },
-                                                                readOnly: denyAccess(novaUser!.jobTitle, status, "Rate")
+                                                                readOnly: denyAccess(novaUser!.jobTitle, "Rate")
                                                             }}
                                                             helperText={!rows[index].itemNumber && " "}
-                                                            disabled={partExists(rows[index].itemNumber) && denyAccess(novaUser!.jobTitle, status, "Rate")}
+                                                            disabled={partExists(rows[index].itemNumber) && denyAccess(novaUser!.jobTitle, "Rate")}
                                                         />
                                                     </TableCell>
                                                     <TableCell sx={{ paddingBottom: 0 }}>{row.cost ? `$${(Number(row.cost) * row.qty).toFixed(2)}` : ""}</TableCell>

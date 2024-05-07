@@ -850,8 +850,7 @@ export const updatePartsReq = async (id: number, user: NovaUser, updateReq: Part
         if (!["Closed - Partially Received", "Closed - Parts in Hand", "Closed - Order Canceled", "Rejected - Closed"].includes(status ?? "")) {
             await sendPrEmail(
                 {
-                    partsReq: convertPartsReq(emailPR),
-                    oldStatus: oldPartsReq?.status
+                    partsReq: convertPartsReq(emailPR)
                 },
                 false
             )

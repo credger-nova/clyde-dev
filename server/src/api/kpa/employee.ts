@@ -1,7 +1,11 @@
 import { NovaUser } from "../../models/novaUser"
 import { LEAD_MECHANICS } from "../../utils/lead-mechanics"
+import { TITLES } from "../../utils/titles"
 
 import { prisma } from "../../utils/prisma-client"
+
+const SUPPLY_CHAIN_TITLES = TITLES.find(item => item.group === "Supply Chain")?.titles ?? []
+const SC_MANAGEMENT_TITLES = TITLES.find(item => item.group === "Supply Chain Management")?.titles ?? []
 
 // Function to cast user to NovaUser
 export function convertUser(user: any) {
@@ -169,6 +173,33 @@ export const getDirectorsEmployees = async (id: string, inactive?: "true") => {
                 lastName: "asc"
             }
         ]
+    })
+
+    // Convert to correct type
+    let novaEmployees = employees.map((employee) => {
+        return convertUser(employee)
+    })
+
+    return novaEmployees
+}
+
+export const getRegionalSupplyChain = async (region: string) => {
+    const allEmployees = await getAllEmployees()
+
+    const scEmployees = allEmployees.filter((employee) =>
+        employee.region.includes(region) && SUPPLY_CHAIN_TITLES.includes(employee.jobTitle)
+    )
+
+    return scEmployees
+}
+
+export const getSupplyChainManagement = async () => {
+    const employees = await prisma.user.findMany({
+        where: {
+            jobTitle: {
+                in: SC_MANAGEMENT_TITLES
+            }
+        }
     })
 
     // Convert to correct type

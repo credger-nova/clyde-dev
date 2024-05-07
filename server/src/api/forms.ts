@@ -8,6 +8,7 @@ import { NovaUser } from "../models/novaUser"
 import { prisma } from "../utils/prisma-client"
 
 import { convertUser, getManagersEmployees, getDirectorsEmployees, getAllEmployees } from "./kpa/employee"
+import { sendPrEmail } from "./postmark/send_email"
 
 const PERMIAN_REGIONS = ["Pecos", "Carlsbad", "North Permian", "South Permian"]
 const PERMIAN_CUSTOMER_SORT = ["APACHE CORPORATION", "CONOCOPHILLIPS CO", "DIAMONDBACK ENERGY", "MATADOR PRODUCTION COMPANY", "VITAL ENERGY INC"]
@@ -188,7 +189,7 @@ function determineReceived(parts: Array<OrderRow> | undefined) {
     }
 }
 
-function calcCost(parts: Array<OrderRow>) {
+export function calcCost(parts: Array<OrderRow>) {
     let sum = 0
 
     for (const part of parts) {
@@ -445,6 +446,8 @@ export const createPartsReq = async (partsReq: CreatePartsReq) => {
     // Ensure no invalid rows are created
     partsReq.parts = partsReq.parts.filter(row => row.itemNumber !== "")
 
+    const status = partsReq.quoteOnly ? "Pending Quote" : await autoApprove(partsReq.afe, calcCost(partsReq.parts as Array<OrderRow>)) ? "Approved" : "Pending Approval"
+
     const newPartsReq = await prisma.partsReq.create({
         data: {
             requesterId: partsReq.requester.id,
@@ -482,7 +485,7 @@ export const createPartsReq = async (partsReq: CreatePartsReq) => {
                     })
                 }
             },
-            status: partsReq.quoteOnly ? "Pending Quote" : await autoApprove(partsReq.afe, calcCost(partsReq.parts as Array<OrderRow>)) ? "Approved" : "Pending Approval",
+            status: status,
             updated: partsReq.updated
         }
     })
@@ -495,6 +498,31 @@ export const createPartsReq = async (partsReq: CreatePartsReq) => {
             files: true
         }
     })
+
+    const emailPR = await prisma.partsReq.findUnique({
+        where: {
+            id: newPartsReq.id
+        },
+        include: {
+            requester: true,
+            contact: true,
+            unit: true,
+            afe: {
+                include: { unit: true }
+            },
+            parts: true,
+            comments: true,
+            files: true
+        }
+    })
+
+    // Send email notification
+    sendPrEmail(
+        {
+            partsReq: convertPartsReq(emailPR)
+        },
+        true
+    )
 
     return createdPartsReq
 }
@@ -799,6 +827,36 @@ export const updatePartsReq = async (id: number, user: NovaUser, updateReq: Part
             }
         }
     })
+
+    const emailPR = await prisma.partsReq.findUnique({
+        where: {
+            id: id
+        },
+        include: {
+            requester: true,
+            contact: true,
+            unit: true,
+            afe: {
+                include: { unit: true }
+            },
+            parts: true,
+            comments: true,
+            files: true
+        }
+    })
+
+    // Send email notification if status has changed
+    if (oldPartsReq?.status !== status) {
+        if (!["Closed - Partially Received", "Closed - Parts in Hand", "Closed - Order Canceled", "Rejected - Closed"].includes(status ?? "")) {
+            await sendPrEmail(
+                {
+                    partsReq: convertPartsReq(emailPR),
+                    oldStatus: oldPartsReq?.status
+                },
+                false
+            )
+        }
+    }
 
     return updatedPartsReq
 }

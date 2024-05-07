@@ -87,6 +87,17 @@ export const getLeadsEmployees = async (id: string) => {
     return novaEmployees
 }
 
+// Get an employee's manager
+export const getEmployeesManager = async (managerId: string) => {
+    const employee = await prisma.user.findUnique({
+        where: {
+            id: managerId
+        }
+    })
+
+    return convertUser(employee)
+}
+
 // Get employees under a manager
 export const getManagersEmployees = async (id: string, inactive?: "true") => {
     const employees = await prisma.user.findMany({
@@ -116,6 +127,17 @@ export const getManagersEmployees = async (id: string, inactive?: "true") => {
     })
 
     return novaEmployees
+}
+
+// Get an employee's director
+export const getEmployeesDirector = async (directorId: string) => {
+    const employee = await prisma.user.findUnique({
+        where: {
+            id: directorId
+        }
+    })
+
+    return convertUser(employee)
 }
 
 // Get employees under a director

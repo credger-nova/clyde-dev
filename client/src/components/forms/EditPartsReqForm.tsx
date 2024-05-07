@@ -173,7 +173,7 @@ function getAvailableStatus(user: NovaUser | undefined, prStatus: string) {
 
         if (prStatus === "Sourcing - In Progress") {
             return [
-                "Souring - Information Required",
+                "Sourcing - Information Required",
                 "Sourcing - Request to Cancel",
                 "Ordered - Awaiting Parts",
                 "Completed - Parts Staged/Delivered"

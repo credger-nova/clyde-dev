@@ -28,7 +28,7 @@ export async function sendPrEmail(emailParams: PrEmailParams, newPR: boolean) {
     const { partsReq } = emailParams
 
     // Determine recipient(s)
-    const recipients = process.env.NODE_ENV === "production" ? await determineRecipients(partsReq, newPR) : ["cdennis@nova-compression.com"]
+    const { recipients, cc } = process.env.NODE_ENV === "production" ? await determineRecipients(partsReq, newPR) : { recipients: ["cdennis@nova-compression.com"], cc: [] }
 
     if (process.env.NODE_ENV !== "production") {
         const testRecipients = await determineRecipients(partsReq, newPR)
@@ -66,6 +66,7 @@ export async function sendPrEmail(emailParams: PrEmailParams, newPR: boolean) {
         postmarkClient.sendEmail({
             "From": "kepler@nova-compression.com",
             "To": recipients.toString(),
+            "Cc": cc.toString(),
             "Subject": subject,
             "HtmlBody": htmlBody,
             "MessageStream": "outbound",
@@ -77,6 +78,7 @@ export async function sendPrEmail(emailParams: PrEmailParams, newPR: boolean) {
 
 async function determineRecipients(partsReq: PartsReq, newPR: boolean) {
     let recipients: Array<string> = []
+    let cc: Array<string> = []
     const prCost = calcCost(partsReq.parts)
 
     // Determine recipients on a new PR submission
@@ -142,9 +144,23 @@ async function determineRecipients(partsReq: PartsReq, newPR: boolean) {
                     recipients.push("tyount@nova-compression.com")
                 }
             }
-        } else if (partsReq.status === "Pending Quote") { // Regional supply chain
+        } else if (partsReq.status === "Pending Quote") { // Regional supply chain + ops manager/director/vp
             const scEmployees = await getRegionalSupplyChain(partsReq.region)
             recipients = recipients.concat(scEmployees.map((employee) => employee.email))
+
+            if (prCost < 5000) { // Manager
+                const manager = await getEmployeesManager(partsReq.requester.supervisorId)
+                cc.push(manager.email)
+            } else if (prCost >= 5000 && prCost < 10000) { // Director
+                const director = await getEmployeesDirector(partsReq.requester.managerId)
+                cc.push(director.email)
+            } else if (prCost >= 10000) { // VP/SVP
+                if (["Carlsbad", "Pecos", "North Permian", "South Permian"].includes(partsReq.region)) {
+                    cc.push("sstewart@nova-compression.com")
+                } else {
+                    cc.push("tyount@nova-compression.com")
+                }
+            }
         } else if (partsReq.status === "Quote Provided - Pending Approval") { // Ops manager/director/VP
             if (prCost < 5000) { // Manager
                 const manager = await getEmployeesManager(partsReq.requester.supervisorId)
@@ -168,15 +184,30 @@ async function determineRecipients(partsReq: PartsReq, newPR: boolean) {
             recipients = recipients.concat(scEmployees.map((employee) => employee.email))
         } else if (partsReq.status === "Sourcing - In Progress") { // None
 
-        } else if (partsReq.status === "Sourcing - Information Required") { // Requester
+        } else if (partsReq.status === "Sourcing - Information Required") { // Requester + ops manager/director/vp
             recipients.push(partsReq.requester.email)
+
+            if (prCost < 5000) { // Manager
+                const manager = await getEmployeesManager(partsReq.requester.supervisorId)
+                cc.push(manager.email)
+            } else if (prCost >= 5000 && prCost < 10000) { // Director
+                const director = await getEmployeesDirector(partsReq.requester.managerId)
+                cc.push(director.email)
+            } else if (prCost >= 10000) { // VP/SVP
+                if (["Carlsbad", "Pecos", "North Permian", "South Permian"].includes(partsReq.region)) {
+                    cc.push("sstewart@nova-compression.com")
+                } else {
+                    cc.push("tyount@nova-compression.com")
+                }
+            }
         } else if (partsReq.status === "Sourcing - Information Provided") { // Supply chain contact
             recipients.push(partsReq.contact!.email)
         } else if (partsReq.status === "Sourcing - Pending Amex Approval") { // Supply chain management
             const scManagement = await getSupplyChainManagement()
             recipients = recipients.concat(scManagement.map((employee) => employee.email))
-        } else if (partsReq.status === "Sourcing - Amex Approved") { // Supply chain contact
-            recipients.push(partsReq.contact!.email)
+        } else if (partsReq.status === "Sourcing - Amex Approved") { // Regional supply chain
+            const scEmployees = await getRegionalSupplyChain(partsReq.region)
+            recipients = recipients.concat(scEmployees.map((employee) => employee.email))
         } else if (partsReq.status === "Sourcing - Request to Cancel") { // Ops manager/director/vp
             if (prCost < 5000) { // Manager
                 const manager = await getEmployeesManager(partsReq.requester.supervisorId)
@@ -191,8 +222,22 @@ async function determineRecipients(partsReq: PartsReq, newPR: boolean) {
                     recipients.push("tyount@nova-compression.com")
                 }
             }
-        } else if (partsReq.status === "Ordered - Awaiting Parts") { // None
+        } else if (partsReq.status === "Ordered - Awaiting Parts") { // Requester and ops manager/director/vp
+            recipients.push(partsReq.requester.email)
 
+            if (prCost < 5000) { // Manager
+                const manager = await getEmployeesManager(partsReq.requester.supervisorId)
+                cc.push(manager.email)
+            } else if (prCost >= 5000 && prCost < 10000) { // Director
+                const director = await getEmployeesDirector(partsReq.requester.managerId)
+                cc.push(director.email)
+            } else if (prCost >= 10000) { // VP/SVP
+                if (["Carlsbad", "Pecos", "North Permian", "South Permian"].includes(partsReq.region)) {
+                    cc.push("sstewart@nova-compression.com")
+                } else {
+                    cc.push("tyount@nova-compression.com")
+                }
+            }
         } else if (partsReq.status === "Completed - Parts Staged/Delivered") { // Requester + manager
             const manager = await getEmployeesManager(partsReq.requester.supervisorId)
             recipients.push(manager.email)
@@ -208,5 +253,5 @@ async function determineRecipients(partsReq: PartsReq, newPR: boolean) {
         }
     }
 
-    return recipients
+    return { recipients, cc }
 }

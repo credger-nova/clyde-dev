@@ -28,21 +28,25 @@ export async function sendPrEmail(emailParams: PrEmailParams, newPR: boolean) {
     const { partsReq } = emailParams
 
     // Determine recipient(s)
-    const recipients = process.env.NODE_ENV === "dev" ? ["cdennis@nova-compression.com"] : await determineRecipients(partsReq, newPR)
+    const recipients = process.env.NODE_ENV === "production" ? await determineRecipients(partsReq, newPR) : ["cdennis@nova-compression.com"]
 
-    console.log(recipients)
+    if (process.env.NODE_ENV !== "production") {
+        const testRecipients = await determineRecipients(partsReq, newPR)
+
+        console.log(testRecipients)
+    }
 
     if (recipients.length > 0) {
         // Generate email subject line
-        const subject = `KEPLER: Parts Requisition #${partsReq.id} - ${partsReq.urgency} ${partsReq.unit ? "- " + partsReq.unit.customer : ""} ${partsReq.unit ? "- " +
-            partsReq.unit.unitNumber : partsReq.truck ? "- " + partsReq.truck : ""} - $${calcCost(partsReq.parts).toFixed(2)}`
+        const subject = `KEPLER: Parts Requisition #${partsReq.id} - ${partsReq.urgency} - ${partsReq.region} ${partsReq.unit ? "- " + partsReq.unit.engineFamily : ""} ${partsReq.unit ? "- " + partsReq.unit.unitNumber : partsReq.truck ? "- " + partsReq.truck : ""} - $${calcCost(partsReq.parts).toFixed(2)}`
 
         // Generate HTML email body
         const htmlBody = `
             <h4>KEPLER PR #${partsReq.id} requires your attention:</h4>
             <p>
-                Region: ${partsReq.region}
+                Order Type: ${partsReq.orderType}
             </p>
+            ${partsReq.unit ? "<p>Customer: " + partsReq.unit.customer + "</p>" : ""}
             ${partsReq.unit ? "<p>Location: " + partsReq.unit.location + "</p>" : ""}
             <p>
                 Status: ${partsReq.status}
@@ -54,9 +58,6 @@ export async function sendPrEmail(emailParams: PrEmailParams, newPR: boolean) {
                 Order Date: ${partsReq.date.toLocaleString()}
             </p>
             ${!newPR ? "<p>Updated: " + partsReq.updated.toLocaleString() + "</p>" : ""}
-            <p>
-                Order Type: ${partsReq.orderType}
-            </p>
             <br/>
             <a href="${frontEndUrl}supply-chain/${partsReq.id}">Click here to go to PR #${partsReq.id}</a>
         `

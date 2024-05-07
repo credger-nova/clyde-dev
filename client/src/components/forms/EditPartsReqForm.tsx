@@ -128,7 +128,8 @@ function getAvailableStatus(user: NovaUser | undefined, prStatus: string) {
                 "Rejected - Adjustments Required",
                 "Rejected - Closed",
                 "Approved - On Hold",
-                "Approved"
+                "Approved",
+                "Pending Quote"
             ]
         }
 

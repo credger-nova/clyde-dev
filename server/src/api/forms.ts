@@ -801,9 +801,9 @@ export const updatePartsReq = async (id: number, user: NovaUser, updateReq: Part
             id: id
         },
         data: {
-            contactId: updateReq.contact ? updateReq.contact.id : undefined,
+            contactId: updateReq.contact ? updateReq.contact.id : null,
             quoteOnly: updateReq.quoteOnly,
-            afeId: updateReq.afe ? updateReq.afe.id : undefined,
+            afeId: updateReq.afe ? updateReq.afe.id : null,
             so: updateReq.so,
             unitNumber: updateReq.unit ? updateReq.unit.unitNumber : null,
             truck: updateReq.truck,

@@ -852,14 +852,12 @@ export const updatePartsReq = async (id: number, user: NovaUser, updateReq: Part
 
     // Send email notification if status has changed
     if (oldPartsReq?.status !== status) {
-        if (!["Closed - Partially Received", "Closed - Parts in Hand", "Closed - Order Canceled", "Rejected - Closed"].includes(status ?? "")) {
-            await sendPrEmail(
-                {
-                    partsReq: convertPartsReq(emailPR)
-                },
-                false
-            )
-        }
+        await sendPrEmail(
+            {
+                partsReq: convertPartsReq(emailPR)
+            },
+            false
+        )
     }
 
     return updatedPartsReq

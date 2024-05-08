@@ -26,6 +26,7 @@ const frontEndUrl = process.env.NODE_ENV === "dev" ? "http://localhost:3000/" :
 
 export async function sendPrEmail(emailParams: PrEmailParams, newPR: boolean) {
     const { partsReq } = emailParams
+    let emailTag: string = ""
 
     // Determine recipient(s)
     const { recipients, cc } = process.env.NODE_ENV === "production" ? await determineRecipients(partsReq, newPR) : { recipients: ["cdennis@nova-compression.com"], cc: [] }
@@ -34,6 +35,25 @@ export async function sendPrEmail(emailParams: PrEmailParams, newPR: boolean) {
         const testRecipients = await determineRecipients(partsReq, newPR)
 
         console.log(testRecipients)
+    }
+
+    // Determine email tag
+    if (newPR) {
+        if (process.env.NODE_ENV === "dev") {
+            emailTag = "DEV New PR"
+        } else if (process.env.NODE_ENV === "test") {
+            emailTag = "TEST New PR"
+        } else if (process.env.NODE_ENV === "production") {
+            emailTag = "PROD New Pr"
+        }
+    } else {
+        if (process.env.NODE_ENV === "dev") {
+            emailTag = "DEV Updated PR"
+        } else if (process.env.NODE_ENV === "test") {
+            emailTag = "TEST Updated PR"
+        } else if (process.env.NODE_ENV === "production") {
+            emailTag = "PROD Updated Pr"
+        }
     }
 
     if (recipients.length > 0) {
@@ -71,7 +91,7 @@ export async function sendPrEmail(emailParams: PrEmailParams, newPR: boolean) {
             "HtmlBody": htmlBody,
             "MessageStream": "outbound",
             "TrackOpens": true,
-            "Tag": newPR ? "New PR" : "Updated PR"
+            "Tag": emailTag
         })
     }
 }

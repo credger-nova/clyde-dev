@@ -738,7 +738,7 @@ export default function EditPartsReqForm(props: Props) {
             if (partsReq.status === "Pending Approval" || partsReq.status === "Quote Provided - Pending Approval") {
                 if (
                     field === "Status" &&
-                    calcCost(rows as Array<OrderRow>) < 5000 &&
+                    (calcCost(rows as Array<OrderRow>) < 5000 || (afe && calcCost(rows as Array<OrderRow>) <= Number(afe.amount))) &&
                     !opsVpApprovalRequired(unit, rows as Array<OrderRow>)
                 ) {
                     return false
@@ -787,7 +787,7 @@ export default function EditPartsReqForm(props: Props) {
             if (partsReq.status === "Pending Approval" || partsReq.status === "Quote Provided - Pending Approval") {
                 if (
                     field === "Status" &&
-                    calcCost(rows as Array<OrderRow>) < 10000 &&
+                    (calcCost(rows as Array<OrderRow>) < 10000 || (afe && calcCost(rows as Array<OrderRow>) <= Number(afe.amount))) &&
                     !opsVpApprovalRequired(unit, rows as Array<OrderRow>)
                 ) {
                     return false

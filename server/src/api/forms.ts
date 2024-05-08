@@ -8,6 +8,7 @@ import { NovaUser } from "../models/novaUser"
 import { prisma } from "../utils/prisma-client"
 
 import { convertUser, getManagersEmployees, getDirectorsEmployees, getAllEmployees } from "./kpa/employee"
+import { sendPrEmail } from "./postmark/send_email"
 
 const PERMIAN_REGIONS = ["Pecos", "Carlsbad", "North Permian", "South Permian"]
 const PERMIAN_CUSTOMER_SORT = ["APACHE CORPORATION", "CONOCOPHILLIPS CO", "DIAMONDBACK ENERGY", "MATADOR PRODUCTION COMPANY", "VITAL ENERGY INC"]
@@ -16,19 +17,19 @@ const URGENCY_SORT = ["LMC Safety Shutdown", "Unit Down", "Unit Set", "Rush", "S
 
 const SERVICE_SORT = ["Rejected - Adjustments Required", "Completed - Parts Staged/Delivered", "Closed - Partially Received", "Pending Approval", "Pending Quote",
     "Quote Provided - Pending Approval", "Approved - On Hold", "Approved", "Sourcing - In Progress", "Sourcing - Information Required", "Sourcing - Information Provided",
-    "Sourcing - Pending Amex Approval", "Sourcing - Amex Approved", "Sourcing - Request to Cancel", "Ordered - Awaiting Parts", "Closed - Parts in Hand", "Rejected - Closed",
+    "Sourcing - Pending Amex Approval", "Sourcing - Amex Approved", "Sourcing - Amex Rejected", "Sourcing - Request to Cancel", "Ordered - Awaiting Parts", "Closed - Parts in Hand", "Rejected - Closed",
     "Closed - Order Canceled"]
 const MANAGER_STATUS_SORT = ["Pending Approval", "Quote Provided - Pending Approval", "Sourcing - Information Required", "Sourcing - Request to Cancel", "Rejected - Adjustments Required",
     "Approved - On Hold", "Approved", "Sourcing - In Progress", "Ordered - Awaiting Parts", "Completed - Parts Staged/Delivered", "Sourcing - Information Provided",
-    "Sourcing - Pending Amex Approval", "Closed - Partially Received", "Closed - Parts in Hand", "Rejected - Closed", "Closed - Order Canceled"]
+    "Sourcing - Pending Amex Approval", "Sourcing - Amex Approved", "Sourcing - Amex Rejected", "Closed - Partially Received", "Closed - Parts in Hand", "Rejected - Closed", "Closed - Order Canceled"]
 
 const ALL_STATUS = ["Pending Approval", "Pending Quote", "Quote Provided - Pending Approval", "Rejected - Adjustments Required", "Approved - On Hold", "Approved",
     "Sourcing - In Progress", "Sourcing - Information Required", "Sourcing - Information Provided", "Sourcing - Pending Amex Approval", "Sourcing - Amex Approved",
-    "Sourcing - Request to Cancel", "Ordered - Awaiting Parts", "Completed - Parts Staged/Delivered", "Closed - Partially Received", "Closed - Parts in Hand", "Rejected - Closed",
-    "Closed - Order Canceled"]
+    "Sourcing - Amex Rejected", "Sourcing - Request to Cancel", "Ordered - Awaiting Parts", "Completed - Parts Staged/Delivered", "Closed - Partially Received", "Closed - Parts in Hand",
+    "Rejected - Closed", "Closed - Order Canceled"]
 const SUPPLY_CHAIN_STATUS = [
     "Pending Quote", "Approved", "Sourcing - In Progress", "Sourcing - Information Required", "Sourcing - Information Provided", "Sourcing - Pending Amex Approval",
-    "Sourcing - Amex Approved", "Sourcing - Request to Cancel", "Ordered - Awaiting Parts", "Completed - Parts Staged/Delivered"
+    "Sourcing - Amex Approved", "Sourcing - Amex Rejected", "Sourcing - Request to Cancel", "Ordered - Awaiting Parts", "Completed - Parts Staged/Delivered"
 ]
 const SVP_STATUS = ["Pending Approval", "Quote Provided - Pending Approval"]
 
@@ -188,7 +189,7 @@ function determineReceived(parts: Array<OrderRow> | undefined) {
     }
 }
 
-function calcCost(parts: Array<OrderRow>) {
+export function calcCost(parts: Array<OrderRow>) {
     let sum = 0
 
     for (const part of parts) {
@@ -445,6 +446,8 @@ export const createPartsReq = async (partsReq: CreatePartsReq) => {
     // Ensure no invalid rows are created
     partsReq.parts = partsReq.parts.filter(row => row.itemNumber !== "")
 
+    const status = partsReq.quoteOnly ? "Pending Quote" : await autoApprove(partsReq.afe, calcCost(partsReq.parts as Array<OrderRow>)) ? "Approved" : "Pending Approval"
+
     const newPartsReq = await prisma.partsReq.create({
         data: {
             requesterId: partsReq.requester.id,
@@ -482,7 +485,7 @@ export const createPartsReq = async (partsReq: CreatePartsReq) => {
                     })
                 }
             },
-            status: partsReq.quoteOnly ? "Pending Quote" : await autoApprove(partsReq.afe, calcCost(partsReq.parts as Array<OrderRow>)) ? "Approved" : "Pending Approval",
+            status: status,
             updated: partsReq.updated
         }
     })
@@ -495,6 +498,31 @@ export const createPartsReq = async (partsReq: CreatePartsReq) => {
             files: true
         }
     })
+
+    const emailPR = await prisma.partsReq.findUnique({
+        where: {
+            id: newPartsReq.id
+        },
+        include: {
+            requester: true,
+            contact: true,
+            unit: true,
+            afe: {
+                include: { unit: true }
+            },
+            parts: true,
+            comments: true,
+            files: true
+        }
+    })
+
+    // Send email notification
+    sendPrEmail(
+        {
+            partsReq: convertPartsReq(emailPR)
+        },
+        true
+    )
 
     return createdPartsReq
 }
@@ -567,6 +595,11 @@ export const updatePartsReq = async (id: number, user: NovaUser, updateReq: Part
 
     if (partsUpdated && updateReq.status === "Completed - Parts Staged/Delivered") {
         status = determineReceived(updateReq.parts)
+    }
+
+    if (updateReq.status === "Sourcing - Amex Rejected" && oldPartsReq?.status !== "Sourcing - Amex Rejected") {
+        updateReq.amex = false
+        updateReq.vendor = ""
     }
 
     if (partsUpdated) {
@@ -768,9 +801,9 @@ export const updatePartsReq = async (id: number, user: NovaUser, updateReq: Part
             id: id
         },
         data: {
-            contactId: updateReq.contact ? updateReq.contact.id : undefined,
+            contactId: updateReq.contact ? updateReq.contact.id : null,
             quoteOnly: updateReq.quoteOnly,
-            afeId: updateReq.afe ? updateReq.afe.id : undefined,
+            afeId: updateReq.afe ? updateReq.afe.id : null,
             so: updateReq.so,
             unitNumber: updateReq.unit ? updateReq.unit.unitNumber : null,
             truck: updateReq.truck,
@@ -799,6 +832,33 @@ export const updatePartsReq = async (id: number, user: NovaUser, updateReq: Part
             }
         }
     })
+
+    const emailPR = await prisma.partsReq.findUnique({
+        where: {
+            id: id
+        },
+        include: {
+            requester: true,
+            contact: true,
+            unit: true,
+            afe: {
+                include: { unit: true }
+            },
+            parts: true,
+            comments: true,
+            files: true
+        }
+    })
+
+    // Send email notification if status has changed
+    if (oldPartsReq?.status !== status) {
+        await sendPrEmail(
+            {
+                partsReq: convertPartsReq(emailPR)
+            },
+            false
+        )
+    }
 
     return updatedPartsReq
 }

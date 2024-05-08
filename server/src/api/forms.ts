@@ -17,19 +17,19 @@ const URGENCY_SORT = ["LMC Safety Shutdown", "Unit Down", "Unit Set", "Rush", "S
 
 const SERVICE_SORT = ["Rejected - Adjustments Required", "Completed - Parts Staged/Delivered", "Closed - Partially Received", "Pending Approval", "Pending Quote",
     "Quote Provided - Pending Approval", "Approved - On Hold", "Approved", "Sourcing - In Progress", "Sourcing - Information Required", "Sourcing - Information Provided",
-    "Sourcing - Pending Amex Approval", "Sourcing - Amex Approved", "Sourcing - Request to Cancel", "Ordered - Awaiting Parts", "Closed - Parts in Hand", "Rejected - Closed",
+    "Sourcing - Pending Amex Approval", "Sourcing - Amex Approved", "Sourcing - Amex Rejected", "Sourcing - Request to Cancel", "Ordered - Awaiting Parts", "Closed - Parts in Hand", "Rejected - Closed",
     "Closed - Order Canceled"]
 const MANAGER_STATUS_SORT = ["Pending Approval", "Quote Provided - Pending Approval", "Sourcing - Information Required", "Sourcing - Request to Cancel", "Rejected - Adjustments Required",
     "Approved - On Hold", "Approved", "Sourcing - In Progress", "Ordered - Awaiting Parts", "Completed - Parts Staged/Delivered", "Sourcing - Information Provided",
-    "Sourcing - Pending Amex Approval", "Closed - Partially Received", "Closed - Parts in Hand", "Rejected - Closed", "Closed - Order Canceled"]
+    "Sourcing - Pending Amex Approval", "Sourcing - Amex Approved", "Sourcing - Amex Rejected", "Closed - Partially Received", "Closed - Parts in Hand", "Rejected - Closed", "Closed - Order Canceled"]
 
 const ALL_STATUS = ["Pending Approval", "Pending Quote", "Quote Provided - Pending Approval", "Rejected - Adjustments Required", "Approved - On Hold", "Approved",
     "Sourcing - In Progress", "Sourcing - Information Required", "Sourcing - Information Provided", "Sourcing - Pending Amex Approval", "Sourcing - Amex Approved",
-    "Sourcing - Request to Cancel", "Ordered - Awaiting Parts", "Completed - Parts Staged/Delivered", "Closed - Partially Received", "Closed - Parts in Hand", "Rejected - Closed",
-    "Closed - Order Canceled"]
+    "Sourcing - Amex Rejected", "Sourcing - Request to Cancel", "Ordered - Awaiting Parts", "Completed - Parts Staged/Delivered", "Closed - Partially Received", "Closed - Parts in Hand",
+    "Rejected - Closed", "Closed - Order Canceled"]
 const SUPPLY_CHAIN_STATUS = [
     "Pending Quote", "Approved", "Sourcing - In Progress", "Sourcing - Information Required", "Sourcing - Information Provided", "Sourcing - Pending Amex Approval",
-    "Sourcing - Amex Approved", "Sourcing - Request to Cancel", "Ordered - Awaiting Parts", "Completed - Parts Staged/Delivered"
+    "Sourcing - Amex Approved", "Sourcing - Amex Rejected", "Sourcing - Request to Cancel", "Ordered - Awaiting Parts", "Completed - Parts Staged/Delivered"
 ]
 const SVP_STATUS = ["Pending Approval", "Quote Provided - Pending Approval"]
 
@@ -595,6 +595,11 @@ export const updatePartsReq = async (id: number, user: NovaUser, updateReq: Part
 
     if (partsUpdated && updateReq.status === "Completed - Parts Staged/Delivered") {
         status = determineReceived(updateReq.parts)
+    }
+
+    if (updateReq.status === "Sourcing - Amex Rejected" && oldPartsReq?.status !== "Sourcing - Amex Rejected") {
+        updateReq.amex = false
+        updateReq.vendor = ""
     }
 
     if (partsUpdated) {

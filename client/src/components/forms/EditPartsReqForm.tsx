@@ -77,6 +77,7 @@ const STATUS = [
     "Sourcing - Information Provided",
     "Sourcing - Pending Amex Approval",
     "Sourcing - Amex Approved",
+    "Sourcing - Amex Rejected",
     "Sourcing - Request to Cancel",
     "Ordered - Awaiting Parts",
     "Completed - Parts Staged/Delivered",
@@ -199,11 +200,21 @@ function getAvailableStatus(user: NovaUser | undefined, prStatus: string) {
         if (prStatus === "Sourcing - Pending Amex Approval") {
             return [
                 "Sourcing - Amex Approved",
-                "Rejected - Adjustments Required"
+                "Sourcing - Amex Rejected"
             ]
         }
 
         if (prStatus === "Sourcing - Amex Approved") {
+            return [
+                "Sourcing - In Progress",
+                "Sourcing - Information Required",
+                "Sourcing - Request to Cancel",
+                "Ordered - Awaiting Parts",
+                "Completed - Parts Staged/Delivered"
+            ]
+        }
+
+        if (prStatus === "Sourcing - Amex Rejected") {
             return [
                 "Sourcing - In Progress",
                 "Sourcing - Information Required",
@@ -360,7 +371,8 @@ export default function EditPartsReqForm(props: Props) {
             (status === "Rejected - Closed" && partsReq.status !== "Rejected - Closed") ||
             (status === "Closed - Order Canceled" && partsReq.status !== "Closed - Order Canceled") ||
             (status === "Sourcing - Request to Cancel" && partsReq.status !== "Sourcing - Request to Cancel") ||
-            (status === "Sourcing - Information Provided" && partsReq.status === "Sourcing - Request to Cancel")
+            (status === "Sourcing - Information Provided" && partsReq.status === "Sourcing - Request to Cancel") ||
+            (status === "Sourcing - Amex Rejected" && partsReq.status === "Sourcing - Pending Amex Approval")
         ) {
             const newComments = (comments as Array<Comment>).filter(comment => !comment.id)
             if (newComments.length === 0) {
@@ -852,6 +864,10 @@ export default function EditPartsReqForm(props: Props) {
                 return false
             }
 
+            if (partsReq.status === "Sourcing - Amex Rejected") {
+                return false
+            }
+
             if (partsReq.status === "Ordered - Awaiting Parts") {
                 return false
             }
@@ -900,6 +916,10 @@ export default function EditPartsReqForm(props: Props) {
             }
 
             if (partsReq.status === "Sourcing - Amex Approved") {
+                return false
+            }
+
+            if (partsReq.status === "Sourcing - Amex Rejected") {
                 return false
             }
 

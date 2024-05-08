@@ -30,8 +30,9 @@ const OPS_VP_TITLES = TITLES.find(item => item.group === "Ops Vice President")?.
 
 const URGENCY = ["Unit Down", "Unit Set", "Rush", "Standard"]
 const STATUS = ["Pending Approval", "Pending Quote", "Quote Provided - Pending Approval", "Rejected - Adjustments Required", "Approved - On Hold", "Approved", "Sourcing - In Progress",
-    "Sourcing - Information Required", "Sourcing - Information Provided", "Sourcing - Pending Amex Approval", "Sourcing - Request to Cancel", "Ordered - Awaiting Parts",
-    "Completed - Parts Staged/Delivered", "Closed - Partially Received", "Closed - Parts in Hand", "Rejected - Closed", "Closed - Order Canceled"]
+    "Sourcing - Information Required", "Sourcing - Information Provided", "Sourcing - Pending Amex Approval", "Sourcing - Amex Approved", "Sourcing - Amex Rejected",
+    "Sourcing - Request to Cancel", "Ordered - Awaiting Parts", "Completed - Parts Staged/Delivered", "Closed - Partially Received", "Closed - Parts in Hand", "Rejected - Closed",
+    "Closed - Order Canceled"]
 
 interface Props {
     partsReqQuery: PartsReqQuery,

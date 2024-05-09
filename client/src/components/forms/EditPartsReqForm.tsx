@@ -345,7 +345,7 @@ export default function EditPartsReqForm(props: Props) {
 
     React.useEffect(() => {
         if (!requester || !orderDate || !urgency || !orderType || !(rows.length > 0) || needsComment ||
-            ((!unit && !truck && !so) && orderType !== "Shop Supplies")) {
+            ((!unit && !truck && !so) && orderType !== "Shop Supplies") || amex && !vendor) {
             setSaveDisabled(true)
         } else {
             if (!rows[0].itemNumber) {
@@ -354,7 +354,7 @@ export default function EditPartsReqForm(props: Props) {
                 setSaveDisabled(false)
             }
         }
-    }, [requester, orderDate, afe, so, urgency, orderType, rows, needsComment, setSaveDisabled, truck, unit])
+    }, [requester, orderDate, afe, so, urgency, orderType, rows, needsComment, truck, unit, amex, vendor, setSaveDisabled])
 
     React.useEffect(() => {
         if (afe) {
@@ -1357,16 +1357,16 @@ export default function EditPartsReqForm(props: Props) {
                                 </Item>
                             }
                             <Item sx={{ marginBottom: "10px" }}>
-                                <b><p style={{ margin: 0 }}>Were all these parts taken from a Conex?</p></b>
-                                <div
-                                    style={{ display: "flex", flexDirection: "row", alignItems: "flex-end" }}
-                                >
+                                <div style={{ display: "flex", alignItems: "center" }}>
                                     <Checkbox
                                         checked={conex}
                                         onChange={onConexChange}
                                         disableRipple
                                         disabled={denyAccess(novaUser!.jobTitle, "Conex")}
                                     />
+                                    <b><p style={{ margin: 0 }}>Were all these parts taken from a Conex?</p></b>
+                                </div>
+                                {conex &&
                                     <Autocomplete
                                         disabled={!conex || denyAccess(novaUser!.jobTitle, "Conex")}
                                         options={warehouses ? warehouses.filter((location) => location.includes("CONEX") || location.includes("STORAGE")
@@ -1403,7 +1403,7 @@ export default function EditPartsReqForm(props: Props) {
                                             );
                                         }}
                                     />
-                                </div>
+                                }
                             </Item>
                             <Item>
                                 <Box>
@@ -1558,16 +1558,16 @@ export default function EditPartsReqForm(props: Props) {
                                 "Approved - On Hold", "Rejected - Closed"
                             ].includes(status) &&
                                 <Item sx={{ marginBottom: "10px" }}>
-                                    <b><p style={{ margin: 0 }}>Is this an Amex request?</p></b>
-                                    <div
-                                        style={{ display: "flex", flexDirection: "row", alignItems: "flex-end" }}
-                                    >
+                                    <div style={{ display: "flex", alignItems: "center" }}>
                                         <Checkbox
                                             checked={amex}
                                             onChange={onAmexChange}
                                             disableRipple
                                             disabled={denyAccess(novaUser!.jobTitle, "Amex") || noRate(rows)}
                                         />
+                                        <b><p style={{ margin: 0 }}>Is this an Amex request?</p></b>
+                                    </div>
+                                    {amex && <React.Fragment>
                                         <Autocomplete
                                             disabled={!amex || denyAccess(novaUser!.jobTitle, "Amex")}
                                             options={vendors ? vendors : []}
@@ -1578,6 +1578,8 @@ export default function EditPartsReqForm(props: Props) {
                                                 {...params}
                                                 variant="standard"
                                                 label="Vendor"
+                                                error={amex && !vendor}
+                                                helperText={(amex && !vendor) && "Please select a vendor"}
                                             />}
                                             sx={{ width: "100%" }}
                                             renderOption={(props, option, { inputValue }) => {
@@ -1603,7 +1605,12 @@ export default function EditPartsReqForm(props: Props) {
                                                 );
                                             }}
                                         />
-                                    </div>
+                                        {/*<StyledTextField
+                                            variant="standard"
+                                            label="NetSuite PO #"
+                                        />*/}
+                                    </React.Fragment>
+                                    }
                                 </Item>
                             }
                             <Item style={{ overflow: "auto" }}>

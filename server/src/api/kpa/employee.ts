@@ -183,16 +183,21 @@ export const getDirectorsEmployees = async (id: string, inactive?: "true") => {
     return novaEmployees
 }
 
+// Get regional supply chain employees
 export const getRegionalSupplyChain = async (region: string) => {
-    const allEmployees = await getAllEmployees()
+    let allEmployees = await getAllEmployees()
+
+    // Filter out test accounts
+    allEmployees = allEmployees.filter((employee) => employee.firstName !== "Test")
 
     const scEmployees = allEmployees.filter((employee) =>
-        employee.region.includes(region) && SUPPLY_CHAIN_TITLES.includes(employee.jobTitle)
+        employee.region.includes(region) && (SUPPLY_CHAIN_TITLES.includes(employee.jobTitle) && employee.jobTitle !== "Parts Runner - Supply Chain")
     )
 
     return scEmployees
 }
 
+// Get supply chain management employees
 export const getSupplyChainManagement = async () => {
     const employees = await prisma.user.findMany({
         where: {
@@ -208,4 +213,15 @@ export const getSupplyChainManagement = async () => {
     })
 
     return novaEmployees
+}
+
+// Get regional parts runners
+export const getRegionalPartsRunners = async (region: string) => {
+    const allEmployees = await getAllEmployees()
+
+    const partsRunners = allEmployees.filter((employee) =>
+        employee.region.includes(region) && employee.jobTitle === "Parts Runner - Supply Chain"
+    )
+
+    return partsRunners
 }

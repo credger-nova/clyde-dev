@@ -59,6 +59,7 @@ import Typography from '@mui/material/Typography'
 import Menu from '@mui/material/Menu'
 import MenuItem from '@mui/material/MenuItem'
 import CloseIcon from '@mui/icons-material/Close'
+import TextSnippetIcon from '@mui/icons-material/TextSnippet'
 
 const PERMIAN_REGIONS = ["North Permian", "South Permian", "Pecos", "Carlsbad"]
 
@@ -522,6 +523,26 @@ export default function EditPartsReqForm(props: Props) {
     }
     const onPickupChange = (_e: React.SyntheticEvent, value: string | null) => {
         setPickup(value ?? "")
+    }
+
+    const onExportCSV = () => {
+        // Generate CSV content
+        const csvRows = rows.map((row) =>
+            [
+                `${row.qty},` +
+                '"' + `${row.itemNumber.replace(/"/g, '""')}` + '"' + ',' +
+                '"' + `${row.description?.replace(/"/g, '""')}` + '"'
+            ]
+        )
+        const csvContent = "data:text/csv;charset=utf-8," + csvRows.map(e => e.join(",")).join("\n")
+        // Encode content
+        const encodedURI = encodeURI(csvContent)
+        const csvLink = document.createElement("a")
+        csvLink.setAttribute("href", encodedURI)
+        csvLink.setAttribute("download", `PR #${partsReq.id} - Parts.csv`)
+        document.body.appendChild(csvLink) // Required for FireFox
+        // Download CSV
+        csvLink.click()
     }
 
     const onCreateRow = () => {
@@ -1965,6 +1986,20 @@ export default function EditPartsReqForm(props: Props) {
                                     }}
                                 >
                                     Add Item
+                                </Button>
+                                <Button
+                                    variant="contained"
+                                    startIcon={<TextSnippetIcon />}
+                                    onClick={onExportCSV}
+                                    disabled={partsFetching}
+                                    sx={{
+                                        marginTop: "5px", marginLeft: "5px", backgroundColor: theme.palette.primary.dark,
+                                        "&.MuiButton-root:hover": {
+                                            backgroundColor: theme.palette.primary.dark
+                                        }
+                                    }}
+                                >
+                                    Export CSV
                                 </Button>
                             </Item>
                         </Grid>

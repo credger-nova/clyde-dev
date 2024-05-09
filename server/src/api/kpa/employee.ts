@@ -199,13 +199,16 @@ export const getRegionalSupplyChain = async (region: string) => {
 
 // Get supply chain management employees
 export const getSupplyChainManagement = async () => {
-    const employees = await prisma.user.findMany({
+    let employees = await prisma.user.findMany({
         where: {
             jobTitle: {
                 in: SC_MANAGEMENT_TITLES
             }
         }
     })
+
+    // Filter out test accounts
+    employees = employees.filter((employee) => employee.firstName !== "Test")
 
     // Convert to correct type
     let novaEmployees = employees.map((employee) => {

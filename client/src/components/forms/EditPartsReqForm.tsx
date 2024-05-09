@@ -368,8 +368,10 @@ export default function EditPartsReqForm(props: Props) {
     // Check if a comment is needed
     React.useEffect(() => {
         if (
+            (status === "Rejected - Adjustments Required" && partsReq.status !== "Rejected - Adjustments Required") ||
             (status === "Rejected - Closed" && partsReq.status !== "Rejected - Closed") ||
             (status === "Closed - Order Canceled" && partsReq.status !== "Closed - Order Canceled") ||
+            (status === "Sourcing - Information Required" && partsReq.status !== "Sourcing - Information Required") ||
             (status === "Sourcing - Request to Cancel" && partsReq.status !== "Sourcing - Request to Cancel") ||
             (status === "Sourcing - Information Provided" && partsReq.status === "Sourcing - Request to Cancel") ||
             (status === "Sourcing - Amex Rejected" && partsReq.status === "Sourcing - Pending Amex Approval")

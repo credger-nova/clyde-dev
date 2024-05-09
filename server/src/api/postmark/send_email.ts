@@ -5,7 +5,7 @@ import { TITLES } from "../../utils/titles"
 import dotenv from "dotenv"
 import { calcCost } from "../forms"
 import { postmarkClient } from "../../utils/postmark/postmark-client"
-import { getEmployeesDirector, getEmployeesManager, getRegionalSupplyChain, getSupplyChainManagement } from "../kpa/employee"
+import { getEmployeesDirector, getEmployeesManager, getRegionalSupplyChain, getSupplyChainManagement, getRegionalPartsRunners } from "../kpa/employee"
 
 dotenv.config()
 
@@ -242,7 +242,7 @@ async function determineRecipients(partsReq: PartsReq, newPR: boolean) {
                     recipients.push("tyount@nova-compression.com")
                 }
             }
-        } else if (partsReq.status === "Ordered - Awaiting Parts") { // Requester and ops manager/director/vp
+        } else if (partsReq.status === "Ordered - Awaiting Parts") { // Requester, ops manager/director/vp, regional supply chain, parts runners
             recipients.push(partsReq.requester.email)
 
             if (prCost < 5000) { // Manager
@@ -258,10 +258,20 @@ async function determineRecipients(partsReq: PartsReq, newPR: boolean) {
                     cc.push("tyount@nova-compression.com")
                 }
             }
-        } else if (partsReq.status === "Completed - Parts Staged/Delivered") { // Requester + manager
+
+            const scEmployees = await getRegionalSupplyChain(partsReq.region)
+            recipients = recipients.concat(scEmployees.map((employee) => employee.email))
+
+            const partsRunners = await getRegionalPartsRunners(partsReq.region)
+            recipients.concat(partsRunners.map((employee) => employee.email))
+        } else if (partsReq.status === "Completed - Parts Staged/Delivered") { // Requester, manager, parts runners
+            recipients.push(partsReq.requester.email)
+
             const manager = await getEmployeesManager(partsReq.requester.supervisorId)
             recipients.push(manager.email)
-            recipients.push(partsReq.requester.email)
+
+            const partsRunners = await getRegionalPartsRunners(partsReq.region)
+            recipients.concat(partsRunners.map((employee) => employee.email))
         } else if (partsReq.status === "Closed - Partially Received") { // None
 
         } else if (partsReq.status === "Closed - Parts in Hand") { // None

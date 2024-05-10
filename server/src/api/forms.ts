@@ -4,11 +4,12 @@ import { UNIT_PLANNING } from "../utils/unitPlanning"
 import { PartsReq, PartsReqQuery, CreatePartsReq, UpdatePartsReq, OrderRow } from "../models/partsReq"
 import { AFE } from "../models/afe"
 import { NovaUser } from "../models/novaUser"
+import { sendPrEmail } from "./postmark/send_email"
+import { Comment } from "../models/comment"
 
 import { prisma } from "../utils/prisma-client"
 
 import { convertUser, getManagersEmployees, getDirectorsEmployees, getAllEmployees } from "./kpa/employee"
-import { sendPrEmail } from "./postmark/send_email"
 
 const PERMIAN_REGIONS = ["Pecos", "Carlsbad", "North Permian", "South Permian"]
 const PERMIAN_CUSTOMER_SORT = ["APACHE CORPORATION", "CONOCOPHILLIPS CO", "DIAMONDBACK ENERGY", "MATADOR PRODUCTION COMPANY", "VITAL ENERGY INC"]
@@ -861,4 +862,18 @@ export const updatePartsReq = async (id: number, user: NovaUser, updateReq: Part
     }
 
     return updatedPartsReq
+}
+
+// Function to get comments given a PR id
+export const getPartsReqComments = async (id: number) => {
+    const comments = await prisma.comment.findMany({
+        where: {
+            partsReqId: id
+        },
+        orderBy: {
+            timestamp: "desc"
+        }
+    })
+
+    return comments as Array<Comment>
 }

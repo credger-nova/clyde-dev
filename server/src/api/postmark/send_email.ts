@@ -3,7 +3,7 @@ import { PartsReq } from "../../models/partsReq"
 import { TITLES } from "../../utils/titles"
 
 import dotenv from "dotenv"
-import { calcCost } from "../forms"
+import { calcCost, getPartsReqComments } from "../forms"
 import { postmarkClient } from "../../utils/postmark/postmark-client"
 import { getEmployeesDirector, getEmployeesManager, getRegionalSupplyChain, getSupplyChainManagement, getRegionalPartsRunners } from "../kpa/employee"
 
@@ -225,9 +225,16 @@ async function determineRecipients(partsReq: PartsReq, newPR: boolean) {
         } else if (partsReq.status === "Sourcing - Pending Amex Approval") { // Supply chain management
             const scManagement = await getSupplyChainManagement()
             recipients = recipients.concat(scManagement.map((employee) => employee.email))
-        } else if (partsReq.status === "Sourcing - Amex Approved") { // Regional supply chain
+        } else if (partsReq.status === "Sourcing - Amex Approved") { // Regional supply chain + supply chain management (that didn't approve)
             const scEmployees = await getRegionalSupplyChain(partsReq.region)
             recipients = recipients.concat(scEmployees.map((employee) => employee.email))
+
+            const scManagement = await getSupplyChainManagement()
+            const approverComment = (await getPartsReqComments(partsReq.id)).find(comment => comment.comment.includes("-> Sourcing - Amex Approved"))
+            if (approverComment) {
+                const scManagementFiltered = scManagement.filter((employee) => `${employee.firstName} ${employee.lastName}` !== approverComment.name)
+                cc.concat(scManagementFiltered.map((employee) => employee.email))
+            }
         } else if (partsReq.status === "Sourcing - Request to Cancel") { // Ops manager/director/vp
             if (prCost < 5000) { // Manager
                 const manager = await getEmployeesManager(partsReq.requester.supervisorId)

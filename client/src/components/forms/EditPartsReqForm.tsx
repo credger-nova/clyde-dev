@@ -59,6 +59,7 @@ import Typography from '@mui/material/Typography'
 import Menu from '@mui/material/Menu'
 import MenuItem from '@mui/material/MenuItem'
 import CloseIcon from '@mui/icons-material/Close'
+import TextSnippetIcon from '@mui/icons-material/TextSnippet'
 
 const PERMIAN_REGIONS = ["North Permian", "South Permian", "Pecos", "Carlsbad"]
 
@@ -344,7 +345,7 @@ export default function EditPartsReqForm(props: Props) {
 
     React.useEffect(() => {
         if (!requester || !orderDate || !urgency || !orderType || !(rows.length > 0) || needsComment ||
-            ((!unit && !truck && !so) && orderType !== "Shop Supplies")) {
+            ((!unit && !truck && !so) && orderType !== "Shop Supplies") || amex && !vendor) {
             setSaveDisabled(true)
         } else {
             if (!rows[0].itemNumber) {
@@ -353,7 +354,7 @@ export default function EditPartsReqForm(props: Props) {
                 setSaveDisabled(false)
             }
         }
-    }, [requester, orderDate, afe, so, urgency, orderType, rows, needsComment, setSaveDisabled, truck, unit])
+    }, [requester, orderDate, afe, so, urgency, orderType, rows, needsComment, truck, unit, amex, vendor, setSaveDisabled])
 
     React.useEffect(() => {
         if (afe) {
@@ -368,8 +369,10 @@ export default function EditPartsReqForm(props: Props) {
     // Check if a comment is needed
     React.useEffect(() => {
         if (
+            (status === "Rejected - Adjustments Required" && partsReq.status !== "Rejected - Adjustments Required") ||
             (status === "Rejected - Closed" && partsReq.status !== "Rejected - Closed") ||
             (status === "Closed - Order Canceled" && partsReq.status !== "Closed - Order Canceled") ||
+            (status === "Sourcing - Information Required" && partsReq.status !== "Sourcing - Information Required") ||
             (status === "Sourcing - Request to Cancel" && partsReq.status !== "Sourcing - Request to Cancel") ||
             (status === "Sourcing - Information Provided" && partsReq.status === "Sourcing - Request to Cancel") ||
             (status === "Sourcing - Amex Rejected" && partsReq.status === "Sourcing - Pending Amex Approval")
@@ -520,6 +523,26 @@ export default function EditPartsReqForm(props: Props) {
     }
     const onPickupChange = (_e: React.SyntheticEvent, value: string | null) => {
         setPickup(value ?? "")
+    }
+
+    const onExportCSV = () => {
+        // Generate CSV content
+        const csvRows = rows.map((row) =>
+            [
+                `${row.qty},` +
+                '"' + `${row.itemNumber.replace(/"/g, '""')}` + '"' + ',' +
+                '"' + `${row.description?.replace(/"/g, '""')}` + '"'
+            ]
+        )
+        const csvContent = "data:text/csv;charset=utf-8," + csvRows.map(e => e.join(",")).join("\n")
+        // Encode content
+        const encodedURI = encodeURI(csvContent)
+        const csvLink = document.createElement("a")
+        csvLink.setAttribute("href", encodedURI)
+        csvLink.setAttribute("download", `PR #${partsReq.id} - Parts.csv`)
+        document.body.appendChild(csvLink) // Required for FireFox
+        // Download CSV
+        csvLink.click()
     }
 
     const onCreateRow = () => {
@@ -1334,16 +1357,16 @@ export default function EditPartsReqForm(props: Props) {
                                 </Item>
                             }
                             <Item sx={{ marginBottom: "10px" }}>
-                                <b><p style={{ margin: 0 }}>Were all these parts taken from a Conex?</p></b>
-                                <div
-                                    style={{ display: "flex", flexDirection: "row", alignItems: "flex-end" }}
-                                >
+                                <div style={{ display: "flex", alignItems: "center" }}>
                                     <Checkbox
                                         checked={conex}
                                         onChange={onConexChange}
                                         disableRipple
                                         disabled={denyAccess(novaUser!.jobTitle, "Conex")}
                                     />
+                                    <b><p style={{ margin: 0 }}>Were all these parts taken from a Conex?</p></b>
+                                </div>
+                                {conex &&
                                     <Autocomplete
                                         disabled={!conex || denyAccess(novaUser!.jobTitle, "Conex")}
                                         options={warehouses ? warehouses.filter((location) => location.includes("CONEX") || location.includes("STORAGE")
@@ -1380,7 +1403,7 @@ export default function EditPartsReqForm(props: Props) {
                                             );
                                         }}
                                     />
-                                </div>
+                                }
                             </Item>
                             <Item>
                                 <Box>
@@ -1535,16 +1558,16 @@ export default function EditPartsReqForm(props: Props) {
                                 "Approved - On Hold", "Rejected - Closed"
                             ].includes(status) &&
                                 <Item sx={{ marginBottom: "10px" }}>
-                                    <b><p style={{ margin: 0 }}>Is this an Amex request?</p></b>
-                                    <div
-                                        style={{ display: "flex", flexDirection: "row", alignItems: "flex-end" }}
-                                    >
+                                    <div style={{ display: "flex", alignItems: "center" }}>
                                         <Checkbox
                                             checked={amex}
                                             onChange={onAmexChange}
                                             disableRipple
                                             disabled={denyAccess(novaUser!.jobTitle, "Amex") || noRate(rows)}
                                         />
+                                        <b><p style={{ margin: 0 }}>Is this an Amex request?</p></b>
+                                    </div>
+                                    {amex && <React.Fragment>
                                         <Autocomplete
                                             disabled={!amex || denyAccess(novaUser!.jobTitle, "Amex")}
                                             options={vendors ? vendors : []}
@@ -1555,6 +1578,8 @@ export default function EditPartsReqForm(props: Props) {
                                                 {...params}
                                                 variant="standard"
                                                 label="Vendor"
+                                                error={amex && !vendor}
+                                                helperText={(amex && !vendor) && "Please select a vendor"}
                                             />}
                                             sx={{ width: "100%" }}
                                             renderOption={(props, option, { inputValue }) => {
@@ -1580,7 +1605,12 @@ export default function EditPartsReqForm(props: Props) {
                                                 );
                                             }}
                                         />
-                                    </div>
+                                        {/*<StyledTextField
+                                            variant="standard"
+                                            label="NetSuite PO #"
+                                        />*/}
+                                    </React.Fragment>
+                                    }
                                 </Item>
                             }
                             <Item style={{ overflow: "auto" }}>
@@ -1963,6 +1993,20 @@ export default function EditPartsReqForm(props: Props) {
                                     }}
                                 >
                                     Add Item
+                                </Button>
+                                <Button
+                                    variant="contained"
+                                    startIcon={<TextSnippetIcon />}
+                                    onClick={onExportCSV}
+                                    disabled={partsFetching}
+                                    sx={{
+                                        marginTop: "5px", marginLeft: "5px", backgroundColor: theme.palette.primary.dark,
+                                        "&.MuiButton-root:hover": {
+                                            backgroundColor: theme.palette.primary.dark
+                                        }
+                                    }}
+                                >
+                                    Export CSV
                                 </Button>
                             </Item>
                         </Grid>

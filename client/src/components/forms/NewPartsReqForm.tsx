@@ -679,15 +679,15 @@ export default function PartsReqForm() {
                         </Grid>
                         <Grid xs={12} sm={4}>
                             <Item sx={{ marginBottom: "10px" }}>
-                                <b><p style={{ margin: 0 }}>Were all these parts taken from a Conex?</p></b>
-                                <div
-                                    style={{ display: "flex", flexDirection: "row", alignItems: "flex-end" }}
-                                >
+                                <div style={{ display: "flex", alignItems: "center" }}>
                                     <Checkbox
                                         checked={conex}
                                         onChange={onConexChange}
                                         disableRipple
                                     />
+                                    <b><p style={{ margin: 0 }}>Were all these parts taken from a Conex?</p></b>
+                                </div>
+                                {conex &&
                                     <Autocomplete
                                         disabled={!conex}
                                         options={locations ? locations.filter((location) => location.includes("CONEX") || location.includes("STORAGE") ||
@@ -724,7 +724,7 @@ export default function PartsReqForm() {
                                             );
                                         }}
                                     />
-                                </div>
+                                }
                             </Item>
                             <Item>
                                 <Box>

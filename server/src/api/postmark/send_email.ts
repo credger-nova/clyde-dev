@@ -75,9 +75,9 @@ export async function sendPrEmail(emailParams: PrEmailParams, newPR: boolean) {
                 Requester: ${partsReq.requester.firstName} ${partsReq.requester.lastName}
             </p>
             <p>
-                Order Date: ${partsReq.date.toLocaleString()}
+                Order Date: ${partsReq.date.toLocaleString("en-US", { timeZone: "America/Chicago" })}
             </p>
-            ${!newPR ? "<p>Updated: " + partsReq.updated.toLocaleString() + "</p>" : ""}
+            ${!newPR ? "<p>Updated: " + partsReq.updated.toLocaleString("en-US", { timeZone: "America/Chicago" }) + "</p>" : ""}
             <br/>
             <a href="${frontEndUrl}supply-chain/${partsReq.id}">Click here to go to PR #${partsReq.id}</a>
         `

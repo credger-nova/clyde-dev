@@ -230,13 +230,15 @@ function opsVpApprovalRequired(unitNumber: string, hp: number, rows: Array<Order
     }
 }
 
-async function autoApprove(afe: AFE | undefined, prCost: number) {
+async function autoApprove(afe: AFE | undefined, prCost: number, title: string) {
     if (afe) {
         const existingCost = await sumPrWithAfe(afe)
 
         if (afe.amount && (prCost <= (Number(afe.amount) - existingCost))) {
             return true
         }
+    } else if (OPS_SHOP_DIRECTOR_TITLES.includes(title) && prCost < 10000) {
+        return true
     }
 
     return false
@@ -447,7 +449,8 @@ export const createPartsReq = async (partsReq: CreatePartsReq) => {
     // Ensure no invalid rows are created
     partsReq.parts = partsReq.parts.filter(row => row.itemNumber !== "")
 
-    const status = partsReq.quoteOnly ? "Pending Quote" : await autoApprove(partsReq.afe, calcCost(partsReq.parts as Array<OrderRow>)) ? "Approved" : "Pending Approval"
+    const status = partsReq.quoteOnly ? "Pending Quote" : await autoApprove(partsReq.afe, calcCost(partsReq.parts as Array<OrderRow>), partsReq.requester.jobTitle) ?
+        "Approved" : "Pending Approval"
 
     const newPartsReq = await prisma.partsReq.create({
         data: {

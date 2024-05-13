@@ -39,7 +39,7 @@ export const getAllTrucks = async () => {
         {
             headers: {
                 "Content-Type": "application/json",
-                Authorization: `Bearer ${jwt.access_token} `
+                Authorization: `Bearer ${jwt.access_token}`
             }
         })
 
@@ -54,7 +54,7 @@ export const getAllSalesOrders = async () => {
         {
             headers: {
                 "Content-Type": "application/json",
-                Authorization: `Bearer ${jwt.access_token} `
+                Authorization: `Bearer ${jwt.access_token}`
             }
         })
 
@@ -69,7 +69,7 @@ export const getAllLocations = async () => {
         {
             headers: {
                 "Content-Type": "application/json",
-                Authorization: `Bearer ${jwt.access_token} `
+                Authorization: `Bearer ${jwt.access_token}`
             }
         })
 

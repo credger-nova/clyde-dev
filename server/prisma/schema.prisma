@@ -197,3 +197,46 @@ model User {
 
   @@map("user")
 }
+
+model Part {
+  id          String  @id @default(uuid())
+  itemNumber  String  @map("item_number")
+  description String?
+  cost        Float?
+  mode        String?
+  type        String
+  active      Boolean
+
+  @@map("part")
+}
+
+model Truck {
+  id      String @id @default(uuid())
+  name    String
+  altName String @map("alt_name")
+
+  @@map("truck")
+}
+
+model SalesOrder {
+  id     String @id @default(uuid())
+  number String
+  status String
+
+  @@map("sales_order")
+}
+
+model Location {
+  id   String @id @default(uuid())
+  name String
+
+  @@map("location")
+}
+
+model Vendor {
+  id     String  @id @default(uuid())
+  name   String
+  active Boolean
+
+  @@map("vendor")
+}

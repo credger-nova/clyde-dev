@@ -362,10 +362,10 @@ function PartsReqPDF(props: PartsReqPDF) {
                                     Conex:
                                 </Text>
                                 <Text style={pdfStyles.fieldValue}>
-                                    {partsReq.conexName}
+                                    {partsReq.conexName ? partsReq.conexName.name : ""}
                                 </Text>
                             </View>}
-                            {(partsReq.afe || partsReq.so) &&
+                            {(partsReq.afe || partsReq.salesOrder) &&
                                 <>
                                     <Text style={pdfStyles.sectionText}>
                                         Class
@@ -384,7 +384,7 @@ function PartsReqPDF(props: PartsReqPDF) {
                                     {partsReq.afe.number}
                                 </Text>
                             </View>}
-                            {partsReq.so && <View style={pdfStyles.infoRow}>
+                            {partsReq.salesOrder && <View style={pdfStyles.infoRow}>
                                 <Text
                                     style={pdfStyles.fieldTitle}
                                 >
@@ -393,7 +393,7 @@ function PartsReqPDF(props: PartsReqPDF) {
                                 <Text
                                     style={pdfStyles.fieldValue}
                                 >
-                                    {partsReq.so}
+                                    {partsReq.salesOrder.number}
                                 </Text>
                             </View>}
                             <Text style={pdfStyles.sectionText}>
@@ -460,7 +460,7 @@ function PartsReqPDF(props: PartsReqPDF) {
                                     <Text
                                         style={pdfStyles.fieldValue}
                                     >
-                                        {partsReq.truck}
+                                        {partsReq.truck ? partsReq.truck.name : ""}
                                     </Text>
                                 </View>
                             }
@@ -477,7 +477,7 @@ function PartsReqPDF(props: PartsReqPDF) {
                                 <Text
                                     style={pdfStyles.fieldValue}
                                 >
-                                    {partsReq.pickup}
+                                    {partsReq.pickup.name}
                                 </Text>
                             </View>
                         </View>}

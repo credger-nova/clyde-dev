@@ -1,14 +1,17 @@
 import { File, Unit, Comment } from "@prisma/client"
 import { NovaUser } from "./novaUser"
 import { AFE } from "./afe"
+import { SalesOrder } from "./netsuite/sales-order"
+import { Truck } from "./netsuite/truck"
+import { Location } from "./netsuite/location"
 
 export interface OrderRow {
     id: string,
     qty: number,
     itemNumber: string,
     description: string | null,
-    cost: string | null,
-    mode: string,
+    cost: number | null,
+    mode: string | null,
     received: number
 }
 
@@ -21,12 +24,12 @@ export interface PartsReq {
     quoteOnly: boolean,
     warrantyJob: boolean,
     afe?: AFE,
-    so?: string,
+    salesOrder?: SalesOrder,
     unit?: Unit,
-    truck?: string,
+    truck?: Truck,
     urgency: string,
     orderType: string,
-    pickup?: string,
+    pickup?: Location,
     region: string,
     parts: Array<OrderRow>,
     comments: Array<Comment>,
@@ -35,7 +38,7 @@ export interface PartsReq {
     amex: boolean,
     vendor?: string,
     conex: boolean,
-    conexName?: string,
+    conexName?: Location,
     updated: Date
 }
 
@@ -44,9 +47,9 @@ export interface PartsReqQuery {
     searchString?: string,
     id?: string,
     afe?: Array<string>, // Array of AFE IDs
-    so?: Array<string>,
+    salesOrder?: Array<string> // Array of SO IDs,
     unitNumber?: Array<string>,
-    truck?: Array<string>,
+    truck?: Array<string>, // Array of Truck IDs
     part?: Array<string>,
     requester?: Array<string>, // Array of user IDs
     customer?: Array<string>,

@@ -103,9 +103,9 @@ model PartsReqRow {
   qty         Int
   itemNumber  String    @map("item_number")
   description String?
-  cost        String?
+  cost        Float?
   received    Int       @default(0)
-  mode        String    @default("")
+  mode        String?   @default("")
   partsReq    PartsReq? @relation(fields: [partsReqId], references: [id], onDelete: Cascade)
   partsReqId  Int?      @map("parts_req_id")
 
@@ -126,10 +126,10 @@ model PartsReq {
   truck       String?
   urgency     String
   orderType   String        @map("order_type")
-  pickup      String        @default("")
+  pickup      String?
   region      String
   amex        Boolean       @default(false)
-  vendor      String        @default("")
+  vendor      String?
   conex       Boolean       @default(false)
   conexName   String?       @map("conex_name")
   parts       PartsReqRow[]

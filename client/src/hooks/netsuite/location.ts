@@ -10,6 +10,6 @@ const getAllLocations = async () => {
     return data
 }
 
-export function useWarehouses() {
-    return useQuery({ queryKey: ["warehouses"], queryFn: getAllLocations })
+export function useLocations() {
+    return useQuery({ queryKey: ["locations"], queryFn: getAllLocations })
 }

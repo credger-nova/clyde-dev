@@ -2,24 +2,27 @@ import * as React from "react"
 
 import { useAuth0 } from "@auth0/auth0-react"
 import { useAFEs } from "../../hooks/afe"
-import { useSOs } from "../../hooks/so"
+import { useSalesOrders } from "../../hooks/netsuite/sales-order"
 import { useUnits } from "../../hooks/unit"
-import { useTrucks } from "../../hooks/truck"
-import { useParts } from "../../hooks/parts"
+import { useTrucks } from "../../hooks/netsuite/truck"
+import { useParts } from "../../hooks/netsuite/part"
 import { useCreatePartsReq, useSumPrWithAfe } from "../../hooks/partsReq"
 import { useUploadFiles } from "../../hooks/storage"
 import { useNovaUser } from "../../hooks/user"
-import { useWarehouses } from "../../hooks/warehouse"
+import { useLocations } from "../../hooks/netsuite/location"
 
 import { toTitleCase, calcCost, opsVpApprovalRequired } from "../../utils/helperFunctions"
 import { TITLES } from "../../utils/titles"
 
 import { OrderRow, CreatePartsReq } from "../../types/partsReq"
-import { Part } from "../../types/part"
+import { Part } from "../../types/netsuite/part"
 import { Comment } from "../../types/comment"
 import { Unit } from "../../types/unit"
 import { NovaUser } from "../../types/novaUser"
 import { AFE } from "../../types/afe"
+import { SalesOrder } from "../../types/netsuite/sales-order"
+import { Truck } from "../../types/netsuite/truck"
+import { Location } from "../../types/netsuite/location"
 
 import { styled } from '@mui/material/styles'
 import Paper from '@mui/material/Paper'
@@ -96,11 +99,11 @@ export default function PartsReqForm() {
     const { data: novaUser, isFetched } = useNovaUser(user?.email)
 
     const { data: afes, isFetching: afeFetching } = useAFEs()
-    const { data: soNumbers, isFetching: soFetching } = useSOs()
+    const { data: salesOrders, isFetching: salesOrdersFetching } = useSalesOrders()
     const { data: unitNumbers, isFetching: unitsFetching } = useUnits()
     const { data: trucks, isFetching: trucksFetching } = useTrucks()
     const { data: parts, isFetching: partsFetching } = useParts()
-    const { data: locations, isFetching: locationsFetching } = useWarehouses()
+    const { data: locations, isFetching: locationsFetching } = useLocations()
 
     const { mutateAsync: createPartsReq } = useCreatePartsReq()
     const { mutateAsync: uploadFiles } = useUploadFiles()
@@ -111,19 +114,19 @@ export default function PartsReqForm() {
     const [quoteOnly, setQuoteOnly] = React.useState<boolean>(false)
     const [warrantyJob, setWarrantyJob] = React.useState<boolean>(false)
     const [afe, setAfe] = React.useState<AFE | null>(null)
-    const [so, setSo] = React.useState<string | null>(null)
+    const [salesOrder, setSalesOrder] = React.useState<SalesOrder | null>(null)
     const [unit, setUnit] = React.useState<Unit | null>(null)
-    const [truck, setTruck] = React.useState<string | null>(null)
+    const [truck, setTruck] = React.useState<Truck | null>(null)
     const [urgency, setUrgency] = React.useState<string | null>(null)
     const [orderType, setOrderType] = React.useState<string | null>(null)
     const [region, setRegion] = React.useState<string | null>(SHOP_TITLES.includes(novaUser!.jobTitle) ? novaUser!.region[0] : null)
-    const [rows, setRows] = React.useState<Array<Omit<OrderRow, "id">>>([{ qty: 1, itemNumber: "", description: "", cost: "", mode: "", received: 0 }])
+    const [rows, setRows] = React.useState<Array<Omit<OrderRow, "id">>>([{ qty: 1, itemNumber: "", description: null, cost: null, mode: null, received: 0 }])
     const [comment, setComment] = React.useState<string>("")
     const [comments, setComments] = React.useState<Array<Omit<Comment, "id">>>([])
     const [newFiles, setNewFiles] = React.useState<Array<File>>([])
     const [deleteFiles, setDeleteFiles] = React.useState<Array<string>>([])
     const [conex, setConex] = React.useState<boolean>(false)
-    const [conexName, setConexName] = React.useState<string | null>(null)
+    const [conexName, setConexName] = React.useState<Location | null>(null)
     const [disableSubmit, setDisableSubmit] = React.useState<boolean>(true)
     const [prExceedsAfe, setPrExceedsAfe] = React.useState<boolean>(false)
     const [submitting, setSubmitting] = React.useState<boolean>(false)
@@ -145,7 +148,7 @@ export default function PartsReqForm() {
 
     React.useEffect(() => {
         if (!requester || !orderDate || !urgency || !orderType || (billable && !unit) || !(rows.length > 0) ||
-            ((!unit && !truck && !so) && orderType !== "Shop Supplies")) {
+            ((!unit && !truck && !salesOrder) && orderType !== "Shop Supplies")) {
             setDisableSubmit(true)
         } else {
             if (!rows[0].itemNumber) {
@@ -154,7 +157,7 @@ export default function PartsReqForm() {
                 setDisableSubmit(false)
             }
         }
-    }, [requester, orderDate, billable, unit, afe, so, urgency, orderType, rows, truck])
+    }, [requester, orderDate, billable, unit, afe, salesOrder, urgency, orderType, rows, truck])
 
     React.useEffect(() => {
         if (afe) {
@@ -178,12 +181,12 @@ export default function PartsReqForm() {
             quoteOnly: quoteOnly,
             warrantyJob: warrantyJob,
             afe: afe ?? undefined,
-            so: so ?? undefined,
+            salesOrder: salesOrder ?? undefined,
             unit: unit ?? undefined,
             truck: truck ?? undefined,
             urgency: urgency ?? "",
             orderType: orderType ?? "",
-            pickup: "",
+            pickup: undefined,
             region: region ?? "",
             parts: rows,
             comments: comments,
@@ -218,7 +221,7 @@ export default function PartsReqForm() {
         setBillable(!billable)
 
         if (billable && unit) {
-            setSo(null)
+            setSalesOrder(null)
         }
     }
 
@@ -227,7 +230,7 @@ export default function PartsReqForm() {
     }
 
     const onAfeChange = (_e: React.SyntheticEvent, value: AFE | null) => {
-        setAfe(value ?? null)
+        setAfe(value)
 
         console.log(value)
 
@@ -239,19 +242,19 @@ export default function PartsReqForm() {
             onUnitNumberChange(undefined, null)
         }
     }
-    const onSoChange = (_e: React.SyntheticEvent, value: string | null) => {
-        setSo(value ?? null)
+    const onSalesOrderChange = (_e: React.SyntheticEvent, value: SalesOrder | null) => {
+        setSalesOrder(value)
 
         setOrderType(value ? billable ? "Rental" : "Third-Party" : null)
     }
     const onUnitNumberChange = (_e: React.SyntheticEvent | undefined, value: Unit | null) => {
-        setUnit(value ?? null)
+        setUnit(value)
 
         if (!billable) {
-            onSoChange(_e!, null)
+            onSalesOrderChange(_e!, null)
         }
 
-        setOrderType(value ? "Rental" : so ? "Third-Party" : null)
+        setOrderType(value ? "Rental" : salesOrder ? "Third-Party" : null)
         if (!SHOP_TITLES.includes(novaUser!.jobTitle)) {
             setRegion(
                 value ?
@@ -264,15 +267,15 @@ export default function PartsReqForm() {
             )
         }
     }
-    const onTruckChange = (_e: React.SyntheticEvent | undefined, value: string | null) => {
-        setTruck(value ?? null)
+    const onTruckChange = (_e: React.SyntheticEvent | undefined, value: Truck | null) => {
+        setTruck(value)
     }
     const onCommentChange = (e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
         setComment(e.target.value)
     }
 
     const onCreateRow = () => {
-        setRows([...rows, { qty: 1, itemNumber: "", description: "", cost: "", mode: "", received: 0 }])
+        setRows([...rows, { qty: 1, itemNumber: "", description: null, cost: null, mode: null, received: 0 }])
     }
 
     function removeRow(index: number) {
@@ -318,20 +321,20 @@ export default function PartsReqForm() {
                 row.mode = part.mode
             } else {
                 row.itemNumber = value
-                row.description = ""
-                row.cost = ""
-                row.mode = ""
+                row.description = null
+                row.cost = null
+                row.mode = null
             }
         } else if (value && value.inputValue) {
             row.itemNumber = value.inputValue
-            row.description = ""
-            row.cost = ""
-            row.mode = ""
+            row.description = null
+            row.cost = null
+            row.mode = null
         } else {
             row.itemNumber = value?.itemNumber ? value.itemNumber : ""
-            row.description = value?.description ? value.description : ""
-            row.cost = value?.cost ? value.cost : ""
-            row.mode = value?.mode ? value.mode : ""
+            row.description = value?.description ?? null
+            row.cost = value?.cost ?? null
+            row.mode = value?.mode ?? null
         }
 
         tempRows[index] = row
@@ -349,7 +352,7 @@ export default function PartsReqForm() {
     const onCostChange = (index: number) => (e: React.ChangeEvent<HTMLInputElement>) => {
         const tempRows = [...rows]
         const row = { ...tempRows[index] }
-        row.cost = e.target.value
+        row.cost = Number(e.target.value)
         tempRows[index] = row
         setRows(tempRows)
     }
@@ -363,7 +366,7 @@ export default function PartsReqForm() {
         }
     }
 
-    const onConexNameChange = (_e: React.SyntheticEvent, value: string | null) => {
+    const onConexNameChange = (_e: React.SyntheticEvent, value: Location | null) => {
         setConexName(value)
     }
 
@@ -487,7 +490,7 @@ export default function PartsReqForm() {
                                             variant="standard"
                                             label="AFE #"
                                         />}
-                                        disabled={!!so}
+                                        disabled={!!salesOrder}
                                         filterOptions={afeFilter}
                                         renderOption={(props, option, { inputValue }) => {
                                             // Get matches in AFE number
@@ -554,7 +557,7 @@ export default function PartsReqForm() {
                                         options={soNumbers ? soNumbers : []}
                                         onChange={onSoChange}
                                         loading={soFetching}
-                                        value={so}
+                                        value={salesOrder}
                                         renderInput={(params) => <StyledTextField
                                             {...params}
                                             variant="standard"
@@ -751,7 +754,7 @@ export default function PartsReqForm() {
                                     </FormControl>
                                     <b><p style={{ margin: "20px 0px 0px 0px" }}>Order Type:</p></b>
                                     <Divider />
-                                    <FormControl disabled={!!unit || !!so}>
+                                    <FormControl disabled={!!unit || !!salesOrder}>
                                         <RadioGroup row>
                                             {ORDER_TYPE.map((val) => {
                                                 const canAccess = val.titles ? (val.titles.findIndex(el => novaUser!.jobTitle.includes(el)) !== -1) : true

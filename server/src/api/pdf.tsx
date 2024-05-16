@@ -346,7 +346,7 @@ function PartsReqPDF(props: PartsReqPDF) {
                                     Vendor:
                                 </Text>
                                 <Text style={pdfStyles.fieldValue}>
-                                    {partsReq.vendor}
+                                    {partsReq.vendor?.name}
                                 </Text>
                             </View>}
                             <View style={pdfStyles.checkboxRow}>

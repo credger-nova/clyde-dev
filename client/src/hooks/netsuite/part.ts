@@ -5,7 +5,7 @@ import { Part } from "../../types/netsuite/part"
 
 // Get all Parts
 const getAllParts = async () => {
-    const { data } = await axios.get<Array<Part>>(`${import.meta.env.VITE_API_BASE}/netsuite/items`)
+    const { data } = await axios.get<Array<Part>>(`${import.meta.env.VITE_API_BASE}/netsuite/parts`)
 
     return data
 }

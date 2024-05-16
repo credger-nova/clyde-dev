@@ -8,9 +8,9 @@ import { PartsReqQuery } from "../../types/partsReq"
 import { AFE } from "../../types/afe"
 
 import { useAFEs } from "../../hooks/afe"
-import { useSOs } from "../../hooks/so"
-import { useCustomers, useLocations, useRegions, useUnits } from "../../hooks/unit"
-import { useTrucks } from "../../hooks/truck"
+import { useSalesOrders } from "../../hooks/netsuite/sales-order"
+import { useCustomers, useUnitLocations, useRegions, useUnits } from "../../hooks/unit"
+import { useTrucks } from "../../hooks/netsuite/truck"
 import { useAllNovaUsers } from "../../hooks/user"
 //import { useParts } from "../../hooks/parts"
 
@@ -24,6 +24,8 @@ import match from 'autosuggest-highlight/match'
 import Switch from '@mui/material/Switch'
 import FormControlLabel from '@mui/material/FormControlLabel'
 import Typography from '@mui/material/Typography'
+import { SalesOrder } from "../../types/netsuite/sales-order"
+import { Truck } from "../../types/netsuite/truck"
 
 const SUPPLY_CHAIN_TITLES = TITLES.find(item => item.group === "Supply Chain")?.titles ?? []
 const OPS_VP_TITLES = TITLES.find(item => item.group === "Ops Vice President")?.titles ?? []
@@ -60,13 +62,13 @@ export default function SearchFilter(props: Props) {
     } = props
 
     const { data: afeNumbers, isFetching: afeFetching } = useAFEs()
-    const { data: soNumbers, isFetching: soFetching } = useSOs()
+    const { data: salesOrders, isFetching: salesOrdersFetching } = useSalesOrders()
     const { data: unitNumbers, isFetching: unitsFetching } = useUnits()
     const { data: trucks, isFetching: trucksFetching } = useTrucks()
     //const { data: parts, isFetching: partsFetching } = useParts() // TODO: add search/filter by part # - ON HOLD
     const { data: requesters, isFetching: requestersFetching } = useAllNovaUsers()
     const { data: customers, isFetching: customersFetching } = useCustomers()
-    const { data: locations, isFetching: locationsFetching } = useLocations()
+    const { data: unitLocations, isFetching: unitLocationsFetching } = useUnitLocations()
     const { data: regions, isFetching: regionsFetching } = useRegions()
 
     const handleSearchStringChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -83,10 +85,10 @@ export default function SearchFilter(props: Props) {
         }))
     }
 
-    const handleSoChange = (_e: React.SyntheticEvent<Element, Event>, value: Array<string>) => {
+    const handleSalesOrderChange = (_e: React.SyntheticEvent<Element, Event>, value: Array<SalesOrder>) => {
         setPartsReqQuery(prevState => ({
             ...prevState,
-            so: value
+            salesOrder: value.map((val) => val.id)
         }))
     }
 
@@ -97,10 +99,10 @@ export default function SearchFilter(props: Props) {
         }))
     }
 
-    const handleTruckChange = (_e: React.SyntheticEvent<Element, Event>, value: Array<string>) => {
+    const handleTruckChange = (_e: React.SyntheticEvent<Element, Event>, value: Array<Truck>) => {
         setPartsReqQuery(prevState => ({
             ...prevState,
-            truck: value
+            truck: value.map((val) => val.id)
         }))
     }
 
@@ -237,9 +239,10 @@ export default function SearchFilter(props: Props) {
                             filterSelectedOptions
                             limitTags={3}
                             size="small"
-                            options={soNumbers ? soNumbers : []}
-                            loading={soFetching}
-                            onChange={handleSoChange}
+                            options={salesOrders ? salesOrders : []}
+                            getOptionLabel={(option) => option.number}
+                            loading={salesOrdersFetching}
+                            onChange={handleSalesOrderChange}
                             renderInput={(params) => <StyledTextField
                                 {...params}
                                 variant="standard"
@@ -247,8 +250,8 @@ export default function SearchFilter(props: Props) {
                             />}
                             sx={{ width: "330px" }}
                             renderOption={(props, option, { inputValue }) => {
-                                const matches = match(option, inputValue, { insideWords: true, requireMatchAll: true });
-                                const parts = parse(option, matches);
+                                const matches = match(option.number, inputValue, { insideWords: true, requireMatchAll: true });
+                                const parts = parse(option.number, matches);
 
                                 return (
                                     <li {...props}>
@@ -317,6 +320,7 @@ export default function SearchFilter(props: Props) {
                             limitTags={3}
                             size="small"
                             options={trucks ? trucks : []}
+                            getOptionLabel={(option) => option.name}
                             loading={trucksFetching}
                             onChange={handleTruckChange}
                             renderInput={(params) => <StyledTextField
@@ -326,8 +330,8 @@ export default function SearchFilter(props: Props) {
                             />}
                             sx={{ width: "330px" }}
                             renderOption={(props, option, { inputValue }) => {
-                                const matches = match(option, inputValue, { insideWords: true, requireMatchAll: true });
-                                const parts = parse(option, matches);
+                                const matches = match(option.name, inputValue, { insideWords: true, requireMatchAll: true });
+                                const parts = parse(option.name, matches);
 
                                 return (
                                     <li {...props}>
@@ -513,8 +517,8 @@ export default function SearchFilter(props: Props) {
                             filterSelectedOptions
                             limitTags={3}
                             size="small"
-                            options={locations ? locations : []}
-                            loading={locationsFetching}
+                            options={unitLocations ? unitLocations : []}
+                            loading={unitLocationsFetching}
                             onChange={handleLocationChange}
                             renderInput={(params) => <StyledTextField
                                 {...params}

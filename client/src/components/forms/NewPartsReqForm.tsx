@@ -193,7 +193,7 @@ export default function PartsReqForm() {
             files: newFiles.map((file) => file.name),
             status: quoteOnly ? "Pending Quote" : "Pending Approval",
             amex: false,
-            vendor: "",
+            vendor: undefined,
             conex: conex,
             conexName: conexName ?? undefined,
             updated: new Date()
@@ -554,9 +554,10 @@ export default function PartsReqForm() {
                                         }}
                                     />
                                     <Autocomplete
-                                        options={soNumbers ? soNumbers : []}
-                                        onChange={onSoChange}
-                                        loading={soFetching}
+                                        options={salesOrders ? salesOrders : []}
+                                        getOptionLabel={(option) => option.number}
+                                        onChange={onSalesOrderChange}
+                                        loading={salesOrdersFetching}
                                         value={salesOrder}
                                         renderInput={(params) => <StyledTextField
                                             {...params}
@@ -565,8 +566,8 @@ export default function PartsReqForm() {
                                         />}
                                         disabled={!!afe || (!billable && !!unit)}
                                         renderOption={(props, option, { inputValue }) => {
-                                            const matches = match(option, inputValue, { insideWords: true, requireMatchAll: true });
-                                            const parts = parse(option, matches);
+                                            const matches = match(option.number, inputValue, { insideWords: true, requireMatchAll: true });
+                                            const parts = parse(option.number, matches);
 
                                             return (
                                                 <li {...props}>
@@ -645,6 +646,7 @@ export default function PartsReqForm() {
                                     <b><p style={{ margin: "5px 0px 0px 0px" }}>OR:</p></b>
                                     <Autocomplete
                                         options={trucks ? trucks : []}
+                                        getOptionLabel={(option) => option.name}
                                         onChange={onTruckChange}
                                         loading={trucksFetching}
                                         value={truck}
@@ -655,8 +657,8 @@ export default function PartsReqForm() {
                                         />}
                                         disabled={!!unit}
                                         renderOption={(props, option, { inputValue }) => {
-                                            const matches = match(option, inputValue, { insideWords: true, requireMatchAll: true });
-                                            const parts = parse(option, matches);
+                                            const matches = match(option.name, inputValue, { insideWords: true, requireMatchAll: true });
+                                            const parts = parse(option.name, matches);
 
                                             return (
                                                 <li {...props}>
@@ -693,8 +695,9 @@ export default function PartsReqForm() {
                                 {conex &&
                                     <Autocomplete
                                         disabled={!conex}
-                                        options={locations ? locations.filter((location) => location.includes("CONEX") || location.includes("STORAGE") ||
-                                            location.includes("TRUCK")) : []}
+                                        options={locations ? locations.filter((location) => location.name.includes("CONEX") || location.name.includes("STORAGE") ||
+                                            location.name.includes("TRUCK")) : []}
+                                        getOptionLabel={(option) => option.name}
                                         loading={locationsFetching}
                                         onChange={onConexNameChange}
                                         value={conexName}
@@ -705,8 +708,8 @@ export default function PartsReqForm() {
                                         />}
                                         sx={{ width: "100%" }}
                                         renderOption={(props, option, { inputValue }) => {
-                                            const matches = match(option, inputValue, { insideWords: true, requireMatchAll: true });
-                                            const parts = parse(option, matches);
+                                            const matches = match(option.name, inputValue, { insideWords: true, requireMatchAll: true });
+                                            const parts = parse(option.name, matches);
 
                                             return (
                                                 <li {...props}>
@@ -996,7 +999,7 @@ export default function PartsReqForm() {
                                                                     inputValue.toUpperCase() === option.itemNumber.toUpperCase()
                                                                 )
                                                                 const isDescriptionExisting = options.some((option) =>
-                                                                    inputValue.toUpperCase() === option.description.toUpperCase()
+                                                                    inputValue.toUpperCase() === option.description?.toUpperCase()
                                                                 )
 
                                                                 const isExisting = isItemNumberExisting || isDescriptionExisting
@@ -1006,10 +1009,11 @@ export default function PartsReqForm() {
                                                                         inputValue,
                                                                         itemNumber: `Add "${inputValue}"`,
                                                                         id: inputValue,
-                                                                        description: "",
-                                                                        cost: "",
-                                                                        mode: "",
-                                                                        type: ""
+                                                                        description: null,
+                                                                        cost: null,
+                                                                        mode: null,
+                                                                        type: "",
+                                                                        active: true
                                                                     })
                                                                 }
 
@@ -1028,9 +1032,9 @@ export default function PartsReqForm() {
                                                                 const itemNumberParts = parse(option.itemNumber, itemNumberMatches)
 
                                                                 // Get matches in description
-                                                                const descriptionMatches = match(option.description, inputValue, { insideWords: true, requireMatchAll: true })
+                                                                const descriptionMatches = match(option.description ?? "", inputValue, { insideWords: true, requireMatchAll: true })
                                                                 // Get parts from description matches
-                                                                const descriptionParts = parse(option.description, descriptionMatches)
+                                                                const descriptionParts = parse(option.description ?? "", descriptionMatches)
 
                                                                 return (
                                                                     <li {...props} style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>

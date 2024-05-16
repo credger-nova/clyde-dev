@@ -91,14 +91,14 @@ export default function PartsReqTable(props: Props) {
                             <StyledTableCell>{new Date(partsReq.date).toLocaleDateString()}</StyledTableCell>
                             {partsReq.afe ?
                                 <StyledTableCell>{`AFE: ${partsReq.afe.number}`}</StyledTableCell> :
-                                partsReq.so ?
-                                    <StyledTableCell>{`SO: ${partsReq.so}`}</StyledTableCell> :
+                                partsReq.salesOrder ?
+                                    <StyledTableCell>{`SO: ${partsReq.salesOrder.number}`}</StyledTableCell> :
                                     <StyledTableCell />
                             }
                             {partsReq.unit ?
                                 <StyledTableCell>{`Unit: ${partsReq.unit.unitNumber}`}</StyledTableCell> :
                                 partsReq.truck ?
-                                    <StyledTableCell>{`Truck: ${partsReq.truck}`}</StyledTableCell> :
+                                    <StyledTableCell>{`Truck: ${partsReq.truck.name}`}</StyledTableCell> :
                                     <StyledTableCell />
                             }
                             {partsReq.unit ?

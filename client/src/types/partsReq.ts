@@ -6,6 +6,7 @@ import { AFE } from "./afe"
 import { SalesOrder } from "./netsuite/sales-order"
 import { Truck } from "./netsuite/truck"
 import { Location } from "./netsuite/location"
+import { Vendor } from "./netsuite/vendor"
 
 export interface OrderRow {
     id: string,
@@ -38,7 +39,7 @@ export interface PartsReq {
     files: Array<File>,
     status: string,
     amex: boolean,
-    vendor?: string,
+    vendor?: Vendor,
     conex: boolean,
     conexName?: Location,
     updated: Date

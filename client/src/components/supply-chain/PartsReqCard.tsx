@@ -136,9 +136,9 @@ export default function PartsReqCard(props: Props) {
                                     {`AFE ${partsReq.afe.number}`}
                                 </Typography> : null
                             }
-                            {partsReq.so ?
+                            {partsReq.salesOrder ?
                                 <Typography variant="body2" sx={{ width: "65%" }}>
-                                    {`SO ${partsReq.so}`}
+                                    {`SO ${partsReq.salesOrder.number}`}
                                 </Typography> : null
                             }
                         </div>
@@ -152,7 +152,7 @@ export default function PartsReqCard(props: Props) {
                                 </Typography> :
                                 partsReq.truck ?
                                     <Typography variant="body2" sx={{ width: "65%" }}>
-                                        {`Truck ${partsReq.truck}`}
+                                        {`Truck ${partsReq.truck.name}`}
                                     </Typography> : null
                             }
                         </div>

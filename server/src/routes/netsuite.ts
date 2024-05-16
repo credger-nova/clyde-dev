@@ -1,10 +1,16 @@
-import { FastifyInstance } from "fastify"
-import { getAllItems, getAllLocations, getAllSalesOrders, getAllTrucks, getAllVendors } from "../api/netsuite"
+import { FastifyInstance, FastifyRequest } from "fastify"
+import { getAllVendors } from "../api/netsuite/vendor"
+import { getAllLocations } from "../api/netsuite/location"
+import { getAllSalesOrders } from "../api/netsuite/sales-order"
+import { getAllTrucks } from "../api/netsuite/truck"
+import { getAllParts } from "../api/netsuite/part"
 
 async function routes(fastify: FastifyInstance) {
     // Route to get all items
-    fastify.get("/items", async (req, res) => {
-        const parts = await getAllItems()
+    fastify.get("/parts", async (req: FastifyRequest<{ Querystring: { inactive: "true" } }>, res) => {
+        const { inactive } = req.query
+
+        const parts = await getAllParts(inactive)
 
         res.status(200).send(parts)
     })
@@ -17,10 +23,12 @@ async function routes(fastify: FastifyInstance) {
     })
 
     // Route to get SO #s
-    fastify.get("/sales-orders", async (req, res) => {
-        const soNums = await getAllSalesOrders()
+    fastify.get("/sales-orders", async (req: FastifyRequest<{ Querystring: { inactive: "true" } }>, res) => {
+        const { inactive } = req.query
 
-        res.status(200).send(soNums)
+        const salesOrders = await getAllSalesOrders(inactive)
+
+        res.status(200).send(salesOrders)
     })
 
     // Route to get Locations
@@ -31,8 +39,10 @@ async function routes(fastify: FastifyInstance) {
     })
 
     // Route to get Vendors
-    fastify.get("/vendors", async (req, res) => {
-        const vendors = await getAllVendors()
+    fastify.get("/vendors", async (req: FastifyRequest<{ Querystring: { inactive: "true" } }>, res) => {
+        const { inactive } = req.query
+
+        const vendors = await getAllVendors(inactive)
 
         res.status(200).send(vendors)
     })

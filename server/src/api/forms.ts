@@ -61,7 +61,7 @@ function convertPartsReq(partsReq: any) {
             amount: partsReq.afe.amount,
             unit: partsReq.afe.unit
         } as AFE : undefined,
-        so: partsReq.so,
+        salesOrder: partsReq.salesOrder,
         unit: partsReq.unit,
         truck: partsReq.truck,
         urgency: partsReq.urgency,
@@ -194,7 +194,7 @@ export function calcCost(parts: Array<OrderRow>) {
     let sum = 0
 
     for (const part of parts) {
-        sum += Number(part.cost) * part.qty
+        sum += part.cost ?? 0 * part.qty
     }
 
     return sum
@@ -357,9 +357,9 @@ export const getPartsReqs = async (query: PartsReqQuery) => {
                 {
                     AND: [
                         query.afe && query.afe.length > 0 ? { afe: { id: { in: query.afe } } } : {},
-                        query.so && query.so.length > 0 ? { so: { in: query.so } } : {},
+                        query.salesOrder && query.salesOrder.length > 0 ? { salesOrder: { id: { in: query.salesOrder } } } : {},
                         query.unitNumber && query.unitNumber.length > 0 ? { unitNumber: { in: query.unitNumber } } : {},
-                        query.truck && query.truck.length > 0 ? { truck: { in: query.truck } } : {},
+                        query.truck && query.truck.length > 0 ? { truck: { id: { in: query.truck } } } : {},
                         {}, // TODO: parts
                         query.requester && query.requester.length > 0 ? { requester: { id: { in: query.requester } } } : {},
                         query.customer && query.customer.length > 0 ? { unit: { customer: { in: query.customer } } } : {},
@@ -373,9 +373,9 @@ export const getPartsReqs = async (query: PartsReqQuery) => {
                     OR: [
                         { id: Number(query.searchString) ? { in: query.searchString ? [Number(query.searchString)] : [] } : {} },
                         { afe: { number: { contains: query.searchString ?? "", mode: "insensitive" } } },
-                        { so: { contains: query.searchString ?? "", mode: "insensitive" } },
+                        { salesOrder: { number: { contains: query.searchString ?? "", mode: "insensitive" } } },
                         { unitNumber: { contains: query.searchString ?? "", mode: "insensitive" } },
-                        { truck: { contains: query.searchString ?? "", mode: "insensitive" } },
+                        { truck: { name: { contains: query.searchString ?? "", mode: "insensitive" } } },
                         {
                             requester: {
                                 OR: [
@@ -398,6 +398,10 @@ export const getPartsReqs = async (query: PartsReqQuery) => {
             afe: {
                 include: { unit: true }
             },
+            salesOrder: true,
+            truck: true,
+            pickup: true,
+            conexName: true,
             parts: true,
             comments: true,
             files: true
@@ -431,6 +435,10 @@ export const getPartsReq = async (id: number) => {
             afe: {
                 include: { unit: true }
             },
+            salesOrder: true,
+            truck: true,
+            pickup: true,
+            conexName: true,
             parts: true,
             comments: true,
             files: true
@@ -459,17 +467,17 @@ export const createPartsReq = async (partsReq: CreatePartsReq) => {
             billable: partsReq.billable,
             quoteOnly: partsReq.quoteOnly,
             warrantyJob: partsReq.warrantyJob,
-            afeId: partsReq.afe ? partsReq.afe.id : undefined,
-            so: partsReq.so,
+            afeId: partsReq.afe ? partsReq.afe.id : null,
+            salesOrderId: partsReq.salesOrder ? partsReq.salesOrder.id : null,
             unitNumber: partsReq.unit ? partsReq.unit.unitNumber : null,
-            truck: partsReq.truck,
+            truckId: partsReq.truck ? partsReq.truck.id : null,
             urgency: partsReq.urgency,
             orderType: partsReq.orderType,
             region: partsReq.region ?? "",
             amex: partsReq.amex,
-            vendor: partsReq.vendor,
+            vendor: partsReq.vendor?.name,
             conex: partsReq.conex,
-            conexName: partsReq.conexName,
+            conexId: partsReq.conexName ? partsReq.conexName.id : null,
             parts: {
                 createMany: {
                     data: partsReq.parts
@@ -514,6 +522,10 @@ export const createPartsReq = async (partsReq: CreatePartsReq) => {
             afe: {
                 include: { unit: true }
             },
+            salesOrder: true,
+            truck: true,
+            pickup: true,
+            conexName: true,
             parts: true,
             comments: true,
             files: true
@@ -548,6 +560,10 @@ export const updatePartsReq = async (id: number, user: NovaUser, updateReq: Part
             afe: {
                 include: { unit: true }
             },
+            salesOrder: true,
+            truck: true,
+            pickup: true,
+            conexName: true,
             parts: true,
             comments: true,
             files: true
@@ -603,7 +619,7 @@ export const updatePartsReq = async (id: number, user: NovaUser, updateReq: Part
 
     if (updateReq.status === "Sourcing - Amex Rejected" && oldPartsReq?.status !== "Sourcing - Amex Rejected") {
         updateReq.amex = false
-        updateReq.vendor = ""
+        updateReq.vendor = undefined
     }
 
     if (partsUpdated) {
@@ -700,9 +716,9 @@ export const updatePartsReq = async (id: number, user: NovaUser, updateReq: Part
         await genSystemComment(message, user, id)
     }
     // SO change
-    if (oldPartsReq?.so !== updateReq.so) {
+    if (oldPartsReq?.salesOrder?.id !== updateReq.salesOrder?.id) {
         updated = true
-        const message = `SO Change: ${oldPartsReq?.so} -> ${updateReq.so}`
+        const message = `SO Change: ${oldPartsReq?.salesOrder?.number} -> ${updateReq.salesOrder?.number}`
 
         await genSystemComment(message, user, id)
     }
@@ -716,9 +732,9 @@ export const updatePartsReq = async (id: number, user: NovaUser, updateReq: Part
         }
     }
     // Truck change
-    if (oldPartsReq?.truck !== updateReq.truck) {
+    if (oldPartsReq?.truck?.id !== updateReq.truck?.id) {
         updated = true
-        const message = `Truck Change: ${oldPartsReq?.truck} -> ${updateReq.truck}`
+        const message = `Truck Change: ${oldPartsReq?.truck?.name} -> ${updateReq.truck?.name}`
 
         await genSystemComment(message, user, id)
     }
@@ -737,9 +753,9 @@ export const updatePartsReq = async (id: number, user: NovaUser, updateReq: Part
         await genSystemComment(message, user, id)
     }
     // Pickup Location change
-    if (oldPartsReq?.pickup !== updateReq.pickup) {
+    if (oldPartsReq?.pickup?.id !== updateReq.pickup?.id) {
         updated = true
-        const message = `Pick Up Location Change: ${oldPartsReq?.pickup} -> ${updateReq.pickup}`
+        const message = `Pick Up Location Change: ${oldPartsReq?.pickup?.name} -> ${updateReq.pickup?.name}`
 
         await genSystemComment(message, user, id)
     }
@@ -770,9 +786,9 @@ export const updatePartsReq = async (id: number, user: NovaUser, updateReq: Part
         await genSystemComment(message, user, id)
     }
     // Conex change
-    if (oldPartsReq?.conexName !== updateReq.conexName) {
+    if (oldPartsReq?.conexName?.id !== updateReq.conexName?.id) {
         updated = true
-        const message = `Conex Change: ${oldPartsReq?.conexName} -> ${updateReq.conexName}`
+        const message = `Conex Change: ${oldPartsReq?.conexName?.name} -> ${updateReq.conexName?.name}`
 
         await genSystemComment(message, user, id)
     }
@@ -808,17 +824,17 @@ export const updatePartsReq = async (id: number, user: NovaUser, updateReq: Part
             contactId: updateReq.contact ? updateReq.contact.id : null,
             quoteOnly: updateReq.quoteOnly,
             afeId: updateReq.afe ? updateReq.afe.id : null,
-            so: updateReq.so,
+            salesOrderId: updateReq.salesOrder ? updateReq.salesOrder.id : null,
             unitNumber: updateReq.unit ? updateReq.unit.unitNumber : null,
-            truck: updateReq.truck,
+            truckId: updateReq.truck ? updateReq.truck.id : null,
             urgency: updateReq.urgency,
             orderType: updateReq.orderType,
-            pickup: updateReq.pickup,
+            pickupId: updateReq.pickup ? updateReq.pickup.id : null,
             region: updateReq.region,
             amex: updateReq.amex,
-            vendor: updateReq.vendor,
+            vendor: updateReq.vendor?.name,
             conex: updateReq.conex,
-            conexName: updateReq.conexName,
+            conexId: updateReq.conexName ? updateReq.conexName.id : null,
             status: status,
             updated: new Date().toISOString()
         }
@@ -848,6 +864,10 @@ export const updatePartsReq = async (id: number, user: NovaUser, updateReq: Part
             afe: {
                 include: { unit: true }
             },
+            salesOrder: true,
+            truck: true,
+            pickup: true,
+            conexName: true,
             parts: true,
             comments: true,
             files: true

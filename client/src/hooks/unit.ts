@@ -25,14 +25,14 @@ export function useCustomers() {
 }
 
 // Get Locations
-const getAllLocations = async () => {
+const getAllUnitLocations = async () => {
     const { data } = await axios.get<Array<string>>(`${import.meta.env.VITE_API_BASE}/unit/location`)
 
     return data
 }
 
-export function useLocations() {
-    return useQuery({ queryKey: ["locations"], queryFn: getAllLocations })
+export function useUnitLocations() {
+    return useQuery({ queryKey: ["unit locations"], queryFn: getAllUnitLocations })
 }
 
 // Get Regions

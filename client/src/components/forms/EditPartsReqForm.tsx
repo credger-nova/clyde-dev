@@ -2,26 +2,31 @@ import * as React from "react"
 
 import { useAuth0 } from "@auth0/auth0-react"
 import { useAFEs } from "../../hooks/afe"
-import { useSOs } from "../../hooks/so"
+import { useSalesOrders } from "../../hooks/netsuite/sales-order"
 import { useUnits } from "../../hooks/unit"
-import { useTrucks } from "../../hooks/truck"
-import { useParts } from "../../hooks/parts"
-import { useWarehouses } from "../../hooks/warehouse"
+import { useTrucks } from "../../hooks/netsuite/truck"
+import { useParts } from "../../hooks/netsuite/part"
+import { useLocations } from "../../hooks/netsuite/location"
 import { useNovaUser } from "../../hooks/user"
 import { useUpdatePartsReq, useSumPrWithAfe } from "../../hooks/partsReq"
 import { useUploadFiles } from "../../hooks/storage"
-import { useVendors } from "../../hooks/vendor"
+import { useVendors } from "../../hooks/netsuite/vendor"
 import { useNavigate } from "react-router-dom"
 
 import { opsVpApprovalRequired, toTitleCase, calcCost } from "../../utils/helperFunctions"
 import { TITLES } from "../../utils/titles"
 
+import { File as IFile } from "../../types/file"
 import { OrderRow, PartsReq, UpdatePartsReq } from "../../types/partsReq"
 import { Unit } from "../../types/unit"
-import { Part } from "../../types/part"
+import { Part } from "../../types/netsuite/part"
 import { Comment } from "../../types/comment"
 import { NovaUser } from "../../types/novaUser"
 import { AFE } from "../../types/afe"
+import { SalesOrder } from "../../types/netsuite/sales-order"
+import { Truck } from "../../types/netsuite/truck"
+import { Location } from "../../types/netsuite/location"
+import { Vendor } from "../../types/netsuite/vendor"
 
 import { styled } from '@mui/material/styles'
 import Paper from '@mui/material/Paper'
@@ -50,7 +55,6 @@ import theme from "../../css/theme"
 import Popper, { PopperProps } from '@mui/material/Popper'
 import Files from "./Files"
 import AddFileButton from "./AddFileButton"
-import { File as IFile } from "../../types/file"
 import Skeleton from '@mui/material/Skeleton'
 import Checkbox from '@mui/material/Checkbox'
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline'
@@ -290,11 +294,11 @@ export default function EditPartsReqForm(props: Props) {
     const { data: novaUser, isFetched } = useNovaUser(user?.email)
 
     const { data: afes, isFetching: afeFetching } = useAFEs()
-    const { data: soNumbers, isFetching: soFetching } = useSOs()
+    const { data: salesOrders, isFetching: salesOrdersFetching } = useSalesOrders()
     const { data: unitNumbers, isFetching: unitsFetching } = useUnits()
     const { data: trucks, isFetching: trucksFetching } = useTrucks()
     const { data: parts, isFetching: partsFetching } = useParts()
-    const { data: warehouses, isFetching: warehousesFetching } = useWarehouses()
+    const { data: locations, isFetching: locationsFetching } = useLocations()
     const { data: vendors, isFetching: vendorsFetching } = useVendors()
 
     const { mutateAsync: updatePartsReq } = useUpdatePartsReq()
@@ -307,12 +311,12 @@ export default function EditPartsReqForm(props: Props) {
     const [billable] = React.useState<boolean>(partsReq.billable)
     const [warrantyJob] = React.useState<boolean>(partsReq.warrantyJob)
     const [afe, setAfe] = React.useState<AFE | null>(partsReq.afe ?? null)
-    const [so, setSo] = React.useState<string | null>(partsReq.so ?? null)
+    const [salesOrder, setSalesOrder] = React.useState<SalesOrder | null>(partsReq.salesOrder ?? null)
     const [unit, setUnit] = React.useState<Unit | null>(partsReq.unit ?? null)
-    const [truck, setTruck] = React.useState<string | null>(partsReq.truck ?? null)
+    const [truck, setTruck] = React.useState<Truck | null>(partsReq.truck ?? null)
     const [urgency, setUrgency] = React.useState<string | null>(partsReq.urgency)
     const [orderType, setOrderType] = React.useState<string | null>(partsReq.orderType)
-    const [pickup, setPickup] = React.useState<string | null>(partsReq.pickup ?? null)
+    const [pickup, setPickup] = React.useState<Location | null>(partsReq.pickup ?? null)
     const [region, setRegion] = React.useState<string | null>(partsReq.region)
     const [rows, setRows] = React.useState<Array<Omit<OrderRow, "id">>>(partsReq.parts)
     const [delRows, setDelRows] = React.useState<Array<OrderRow>>([])
@@ -322,9 +326,9 @@ export default function EditPartsReqForm(props: Props) {
     const [newFiles, setNewFiles] = React.useState<Array<File>>([])
     const [deleteFiles, setDeleteFiles] = React.useState<Array<string>>([])
     const [amex, setAmex] = React.useState<boolean>(partsReq.amex)
-    const [vendor, setVendor] = React.useState<string | null>(partsReq.vendor ?? null)
+    const [vendor, setVendor] = React.useState<Vendor | null>(partsReq.vendor ?? null)
     const [conex, setConex] = React.useState<boolean>(partsReq.conex)
-    const [conexName, setConexName] = React.useState<string | null>(partsReq.conexName ?? null)
+    const [conexName, setConexName] = React.useState<Location | null>(partsReq.conexName ?? null)
     const [prExceedsAfe, setPrExceedsAfe] = React.useState<boolean>(false)
     const [needsComment, setNeedsComment] = React.useState<boolean>(false)
     const [menuIndex, setMenuIndex] = React.useState<number | null>(null)
@@ -345,7 +349,7 @@ export default function EditPartsReqForm(props: Props) {
 
     React.useEffect(() => {
         if (!requester || !orderDate || !urgency || !orderType || !(rows.length > 0) || needsComment ||
-            ((!unit && !truck && !so) && orderType !== "Shop Supplies") || amex && !vendor) {
+            ((!unit && !truck && !salesOrder) && orderType !== "Shop Supplies") || amex && !vendor) {
             setSaveDisabled(true)
         } else {
             if (!rows[0].itemNumber) {
@@ -354,7 +358,7 @@ export default function EditPartsReqForm(props: Props) {
                 setSaveDisabled(false)
             }
         }
-    }, [requester, orderDate, afe, so, urgency, orderType, rows, needsComment, truck, unit, amex, vendor, setSaveDisabled])
+    }, [requester, orderDate, afe, salesOrder, urgency, orderType, rows, needsComment, truck, unit, amex, vendor, setSaveDisabled])
 
     React.useEffect(() => {
         if (afe) {
@@ -394,7 +398,7 @@ export default function EditPartsReqForm(props: Props) {
             setStatus(partsReq.status)
             setContact(partsReq.contact ?? null)
             setAfe(partsReq.afe ?? null)
-            setSo(partsReq.so ?? null)
+            setSalesOrder(partsReq.salesOrder ?? null)
             setUnit(partsReq.unit ?? null)
             setTruck(partsReq.truck ?? null)
             setUrgency(partsReq.urgency)
@@ -427,7 +431,7 @@ export default function EditPartsReqForm(props: Props) {
                     billable: billable,
                     warrantyJob: warrantyJob,
                     afe: afe,
-                    so: so,
+                    salesOrder: salesOrder,
                     unit: unit,
                     truck: truck,
                     urgency: urgency,
@@ -478,7 +482,7 @@ export default function EditPartsReqForm(props: Props) {
     }
 
     const onAfeChange = (_e: React.SyntheticEvent, value: AFE | null) => {
-        setAfe(value ?? null)
+        setAfe(value)
 
         console.log(value)
 
@@ -490,19 +494,19 @@ export default function EditPartsReqForm(props: Props) {
             onUnitNumberChange(undefined, null)
         }
     }
-    const onSoChange = (_e: React.SyntheticEvent, value: string | null) => {
-        setSo(value ?? null)
+    const onSalesOrderChange = (_e: React.SyntheticEvent, value: SalesOrder | null) => {
+        setSalesOrder(value)
 
         setOrderType(value ? billable ? "Rental" : "Third-Party" : null)
     }
     const onUnitNumberChange = (_e: React.SyntheticEvent | undefined, value: Unit | null) => {
-        setUnit(value ?? null)
+        setUnit(value)
 
         if (!billable) {
-            onSoChange(_e!, null)
+            onSalesOrderChange(_e!, null)
         }
 
-        setOrderType(value ? "Rental" : so ? "Third-Party" : null)
+        setOrderType(value ? "Rental" : salesOrder ? "Third-Party" : null)
         setRegion(
             value ?
                 SHOP_TITLES.includes(novaUser!.jobTitle) ?
@@ -515,14 +519,14 @@ export default function EditPartsReqForm(props: Props) {
                 null
         )
     }
-    const onTruckChange = (_e: React.SyntheticEvent | undefined, value: string | null) => {
-        setTruck(value ?? null)
+    const onTruckChange = (_e: React.SyntheticEvent | undefined, value: Truck | null) => {
+        setTruck(value)
     }
     const onCommentChange = (e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
         setComment(e.target.value)
     }
-    const onPickupChange = (_e: React.SyntheticEvent, value: string | null) => {
-        setPickup(value ?? "")
+    const onPickupChange = (_e: React.SyntheticEvent, value: Location | null) => {
+        setPickup(value)
     }
 
     const onExportCSV = () => {
@@ -546,7 +550,7 @@ export default function EditPartsReqForm(props: Props) {
     }
 
     const onCreateRow = () => {
-        setRows([...rows, { qty: 1, itemNumber: "", description: "", cost: "", mode: "", received: 0 }])
+        setRows([...rows, { qty: 1, itemNumber: "", description: null, cost: null, mode: null, received: 0 }])
     }
 
     function removeRow(index: number) {
@@ -596,20 +600,20 @@ export default function EditPartsReqForm(props: Props) {
                 row.mode = part.mode
             } else {
                 row.itemNumber = value
-                row.description = ""
-                row.cost = ""
-                row.mode = ""
+                row.description = null
+                row.cost = null
+                row.mode = null
             }
         } else if (value && value.inputValue) {
             row.itemNumber = value.inputValue
-            row.description = ""
-            row.cost = ""
-            row.mode = ""
+            row.description = null
+            row.cost = null
+            row.mode = null
         } else {
             row.itemNumber = value?.itemNumber ? value.itemNumber : ""
-            row.description = value?.description ? value.description : ""
-            row.cost = value?.cost ? value.cost : ""
-            row.mode = value?.mode ? value.mode : ""
+            row.description = value?.description ?? null
+            row.cost = value?.cost ?? null
+            row.mode = value?.mode ?? null
         }
 
         tempRows[index] = row
@@ -627,7 +631,7 @@ export default function EditPartsReqForm(props: Props) {
     const onCostChange = (index: number) => (e: React.ChangeEvent<HTMLInputElement>) => {
         const tempRows = [...rows]
         const row = { ...tempRows[index] }
-        row.cost = e.target.value
+        row.cost = Number(e.target.value)
         tempRows[index] = row
         setRows(tempRows)
     }
@@ -656,14 +660,14 @@ export default function EditPartsReqForm(props: Props) {
     const onAmexChange = () => {
         if (amex) {
             setAmex(false)
-            setVendor("")
+            setVendor(null)
         } else {
             setAmex(true)
         }
     }
 
-    const onVendorChange = (_e: React.SyntheticEvent, value: string | null) => {
-        setVendor(value ?? "")
+    const onVendorChange = (_e: React.SyntheticEvent, value: Vendor | null) => {
+        setVendor(value)
     }
 
     const onConexChange = () => {
@@ -675,7 +679,7 @@ export default function EditPartsReqForm(props: Props) {
         }
     }
 
-    const onConexNameChange = (_e: React.SyntheticEvent, value: string | null) => {
+    const onConexNameChange = (_e: React.SyntheticEvent, value: Location | null) => {
         setConexName(value)
     }
 
@@ -1118,7 +1122,7 @@ export default function EditPartsReqForm(props: Props) {
                                             variant="standard"
                                             label="AFE #"
                                         />}
-                                        disabled={!!so}
+                                        disabled={!!salesOrder}
                                         filterOptions={afeFilter}
                                         renderOption={(props, option, { inputValue }) => {
                                             // Get matches in AFE number
@@ -1183,10 +1187,11 @@ export default function EditPartsReqForm(props: Props) {
                                         readOnly={denyAccess(novaUser!.jobTitle, status)}
                                     />
                                     <Autocomplete
-                                        options={soNumbers ? soNumbers : []}
-                                        onChange={onSoChange}
-                                        loading={soFetching}
-                                        value={so}
+                                        options={salesOrders ? salesOrders : []}
+                                        getOptionLabel={(option) => option.number}
+                                        onChange={onSalesOrderChange}
+                                        loading={salesOrdersFetching}
+                                        value={salesOrder}
                                         renderInput={(params) => <StyledTextField
                                             {...params}
                                             variant="standard"
@@ -1194,8 +1199,8 @@ export default function EditPartsReqForm(props: Props) {
                                         />}
                                         disabled={!!afe}
                                         renderOption={(props, option, { inputValue }) => {
-                                            const matches = match(option, inputValue, { insideWords: true, requireMatchAll: true });
-                                            const parts = parse(option, matches);
+                                            const matches = match(option.number, inputValue, { insideWords: true, requireMatchAll: true });
+                                            const parts = parse(option.number, matches);
 
                                             return (
                                                 <li {...props}>
@@ -1277,6 +1282,7 @@ export default function EditPartsReqForm(props: Props) {
                                     <b><p style={{ margin: "5px 0px 0px 0px" }}>OR:</p></b>
                                     <Autocomplete
                                         options={trucks ? trucks : []}
+                                        getOptionLabel={(option) => option.name}
                                         onChange={onTruckChange}
                                         loading={trucksFetching}
                                         value={truck}
@@ -1287,8 +1293,8 @@ export default function EditPartsReqForm(props: Props) {
                                         />}
                                         disabled={!!unit}
                                         renderOption={(props, option, { inputValue }) => {
-                                            const matches = match(option, inputValue, { insideWords: true, requireMatchAll: true });
-                                            const parts = parse(option, matches);
+                                            const matches = match(option.name, inputValue, { insideWords: true, requireMatchAll: true });
+                                            const parts = parse(option.name, matches);
 
                                             return (
                                                 <li {...props}>
@@ -1319,19 +1325,19 @@ export default function EditPartsReqForm(props: Props) {
                                 <Item sx={{ marginBottom: "15px" }}>
                                     <Box>
                                         <Autocomplete
-                                            options={warehouses ? warehouses.concat("WILL CALL") : []}
-                                            loading={warehousesFetching}
+                                            options={locations ? locations : []}
+                                            getOptionLabel={(option) => option.name}
                                             onChange={onPickupChange}
-                                            value={pickup ?? ""}
-                                            disableClearable
+                                            loading={locationsFetching}
+                                            value={pickup}
                                             renderInput={(params) => <StyledTextField
                                                 {...params}
                                                 variant="standard"
                                                 label="Pick Up Location"
                                             />}
                                             renderOption={(props, option, { inputValue }) => {
-                                                const matches = match(option, inputValue, { insideWords: true, requireMatchAll: true });
-                                                const parts = parse(option, matches);
+                                                const matches = match(option.name, inputValue, { insideWords: true, requireMatchAll: true });
+                                                const parts = parse(option.name, matches);
 
                                                 return (
                                                     <li {...props}>
@@ -1369,9 +1375,10 @@ export default function EditPartsReqForm(props: Props) {
                                 {conex &&
                                     <Autocomplete
                                         disabled={!conex || denyAccess(novaUser!.jobTitle, "Conex")}
-                                        options={warehouses ? warehouses.filter((location) => location.includes("CONEX") || location.includes("STORAGE")
-                                            || (location.includes("TRUCK") && EMISSIONS_MANAGER_TITLES.includes(novaUser!.jobTitle))) : []}
-                                        loading={warehousesFetching}
+                                        options={locations ? locations.filter((location) => location.name.includes("CONEX") || location.name.includes("STORAGE")
+                                            || (location.name.includes("TRUCK") && EMISSIONS_MANAGER_TITLES.includes(novaUser!.jobTitle))) : []}
+                                        getOptionLabel={(option) => option.name}
+                                        loading={locationsFetching}
                                         onChange={onConexNameChange}
                                         value={conexName}
                                         renderInput={(params) => <StyledTextField
@@ -1381,8 +1388,8 @@ export default function EditPartsReqForm(props: Props) {
                                         />}
                                         sx={{ width: "100%" }}
                                         renderOption={(props, option, { inputValue }) => {
-                                            const matches = match(option, inputValue, { insideWords: true, requireMatchAll: true });
-                                            const parts = parse(option, matches);
+                                            const matches = match(option.name, inputValue, { insideWords: true, requireMatchAll: true });
+                                            const parts = parse(option.name, matches);
 
                                             return (
                                                 <li {...props}>
@@ -1430,7 +1437,7 @@ export default function EditPartsReqForm(props: Props) {
                                     </FormControl>
                                     <b><p style={{ margin: "20px 0px 0px 0px" }}>Order Type:</p></b>
                                     <Divider />
-                                    <FormControl disabled={(!!unit || !!so) || denyAccess(novaUser!.jobTitle, status)}>
+                                    <FormControl disabled={(!!unit || !!salesOrder) || denyAccess(novaUser!.jobTitle, status)}>
                                         <RadioGroup row>
                                             {ORDER_TYPE.map((val) => {
                                                 const canAccess = val.titles ? (val.titles.findIndex(el => novaUser!.jobTitle.includes(el)) !== -1) : true
@@ -1571,6 +1578,7 @@ export default function EditPartsReqForm(props: Props) {
                                         <Autocomplete
                                             disabled={!amex || denyAccess(novaUser!.jobTitle, "Amex")}
                                             options={vendors ? vendors : []}
+                                            getOptionLabel={(option) => option.name}
                                             loading={vendorsFetching}
                                             onChange={onVendorChange}
                                             value={vendor}
@@ -1583,8 +1591,8 @@ export default function EditPartsReqForm(props: Props) {
                                             />}
                                             sx={{ width: "100%" }}
                                             renderOption={(props, option, { inputValue }) => {
-                                                const matches = match(option, inputValue, { insideWords: true, requireMatchAll: true });
-                                                const parts = parse(option, matches);
+                                                const matches = match(option.name, inputValue, { insideWords: true, requireMatchAll: true });
+                                                const parts = parse(option.name, matches);
 
                                                 return (
                                                     <li {...props}>
@@ -1807,7 +1815,7 @@ export default function EditPartsReqForm(props: Props) {
                                                                     inputValue.toUpperCase() === option.itemNumber.toUpperCase()
                                                                 )
                                                                 const isDescriptionExisting = options.some((option) =>
-                                                                    inputValue.toUpperCase() === option.description.toUpperCase()
+                                                                    inputValue.toUpperCase() === option.description?.toUpperCase()
                                                                 )
 
                                                                 const isExisting = isItemNumberExisting || isDescriptionExisting
@@ -1817,10 +1825,11 @@ export default function EditPartsReqForm(props: Props) {
                                                                         inputValue,
                                                                         itemNumber: `Add "${inputValue}"`,
                                                                         id: inputValue,
-                                                                        description: "",
-                                                                        cost: "",
-                                                                        mode: "",
-                                                                        type: ""
+                                                                        description: null,
+                                                                        cost: null,
+                                                                        mode: null,
+                                                                        type: "",
+                                                                        active: true
                                                                     })
                                                                 }
 
@@ -1839,9 +1848,9 @@ export default function EditPartsReqForm(props: Props) {
                                                                 const itemNumberParts = parse(option.itemNumber, itemNumberMatches)
 
                                                                 // Get matches in description
-                                                                const descriptionMatches = match(option.description, inputValue, { insideWords: true, requireMatchAll: true })
+                                                                const descriptionMatches = match(option.description ?? "", inputValue, { insideWords: true, requireMatchAll: true })
                                                                 // Get parts from description matches
-                                                                const descriptionParts = parse(option.description, descriptionMatches)
+                                                                const descriptionParts = parse(option.description ?? "", descriptionMatches)
 
                                                                 return (
                                                                     <li {...props} style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>

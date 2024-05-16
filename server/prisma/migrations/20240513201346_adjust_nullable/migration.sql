@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "part" ALTER COLUMN "description" DROP NOT NULL,
+ALTER COLUMN "cost" DROP NOT NULL;

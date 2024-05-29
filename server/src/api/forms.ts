@@ -6,6 +6,7 @@ import { AFE } from "../models/afe"
 import { NovaUser } from "../models/novaUser"
 import { sendPrEmail } from "./postmark/send_email"
 import { Comment } from "../models/comment"
+import { Vendor } from "../models/netsuite/vendor"
 
 import { prisma } from "../utils/prisma-client"
 
@@ -46,7 +47,7 @@ const EXEC_TITLES = TITLES.find(item => item.group === "Executive Management")?.
 const IT_TITLES = TITLES.find(item => item.group === "IT")?.titles ?? []
 
 // Function to cast to prisma PR to FE usable typing
-function convertPartsReq(partsReq: any) {
+async function convertPartsReq(partsReq: any) {
     const typedPR = {
         id: partsReq.id,
         requester: convertUser(partsReq.requester),
@@ -73,7 +74,15 @@ function convertPartsReq(partsReq: any) {
         files: partsReq.files,
         status: partsReq.status,
         amex: partsReq.amex,
-        vendors: partsReq.vendors,
+        vendors: await Promise.all(partsReq.vendors.map(async (vendorOnPr: any) => {
+            const vendor = await prisma.vendor.findUnique({
+                where: {
+                    id: vendorOnPr.vendorId
+                }
+            })
+
+            return vendor as Vendor
+        })),
         conex: partsReq.conex,
         conexName: partsReq.conexName,
         updated: partsReq.updated
@@ -409,7 +418,7 @@ export const getPartsReqs = async (query: PartsReqQuery) => {
         }
     })
 
-    let partsReqs = result.map((partsReq) => convertPartsReq(partsReq))
+    let partsReqs = await Promise.all(result.map(async (partsReq) => await convertPartsReq(partsReq)))
 
     // Filter Ops Vice President results to only units that require Ops Vice President privileges if vp toggle is on
     if (query.vpApproval) {
@@ -527,6 +536,7 @@ export const createPartsReq = async (partsReq: CreatePartsReq) => {
             truck: true,
             pickup: true,
             conexName: true,
+            vendors: true,
             parts: true,
             comments: true,
             files: true
@@ -536,7 +546,7 @@ export const createPartsReq = async (partsReq: CreatePartsReq) => {
     // Send email notification
     sendPrEmail(
         {
-            partsReq: convertPartsReq(emailPR)
+            partsReq: await convertPartsReq(emailPR)
         },
         true
     )
@@ -702,6 +712,64 @@ export const updatePartsReq = async (id: number, user: NovaUser, updateReq: Part
         await genSystemComment(message, user, id)
     }
 
+    // Get changes in vendors
+    const existingVendorOnPR = await prisma.vendorOnPartsReq.findMany({
+        where: {
+            partsReqId: id
+        }
+    })
+
+    // New vendors to be added to relation table
+    const newVendors = (updateReq.vendors ?? []).filter((vendor) => {
+        return !existingVendorOnPR.some((existingVendor) => {
+            return vendor.id === existingVendor.vendorId
+        })
+    })
+
+    // Vendors to remove from relation table
+    const removeVendors = (existingVendorOnPR).filter((existingVendor) => {
+        return !(updateReq.vendors ?? []).some((vendor) => {
+            return existingVendor.vendorId === vendor.id
+        })
+    })
+
+    // Create new vendor to PR relations
+    for (const vendor of newVendors) {
+        await prisma.vendorOnPartsReq.create({
+            data: {
+                partsReqId: id,
+                vendorId: vendor.id
+            }
+        })
+
+        // Generate system comment
+        const message = `Added Vendor: ${vendor.name}`
+        await genSystemComment(message, user, id)
+    }
+
+    // Delete removed vendor to PR relations
+    for (const vendorOnPr of removeVendors) {
+        await prisma.vendorOnPartsReq.delete({
+            where: {
+                id: vendorOnPr.id
+            }
+        })
+
+        const removedVendor = await prisma.vendor.findUnique({
+            where: {
+                id: vendorOnPr.vendorId!
+            }
+        })
+
+        // Generate system comment
+        const message = `Removed Vendor: ${removedVendor?.name}`
+        await genSystemComment(message, user, id)
+    }
+
+    if (newVendors.length > 0 || removeVendors.length > 0) {
+        updated = true
+    }
+
     // Generate system comments based on what fields have changed
     // Status change
     if (oldPartsReq?.status !== status) {
@@ -777,13 +845,6 @@ export const updatePartsReq = async (id: number, user: NovaUser, updateReq: Part
         }
 
         const message = `Amex Request Change: ${oldPartsReq?.amex} -> ${updateReq.amex}`
-
-        await genSystemComment(message, user, id)
-    }
-    // Vendor change
-    if (oldPartsReq?.vendors !== updateReq.vendors) {
-        updated = true
-        const message = `Vendor Change: ${oldPartsReq?.vendors} -> ${updateReq.vendors}`
 
         await genSystemComment(message, user, id)
     }
@@ -869,6 +930,7 @@ export const updatePartsReq = async (id: number, user: NovaUser, updateReq: Part
             truck: true,
             pickup: true,
             conexName: true,
+            vendors: true,
             parts: true,
             comments: true,
             files: true
@@ -879,7 +941,7 @@ export const updatePartsReq = async (id: number, user: NovaUser, updateReq: Part
     if (oldPartsReq?.status !== status) {
         await sendPrEmail(
             {
-                partsReq: convertPartsReq(emailPR)
+                partsReq: await convertPartsReq(emailPR)
             },
             false
         )

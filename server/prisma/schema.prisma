@@ -113,38 +113,39 @@ model PartsReqRow {
 }
 
 model PartsReq {
-  id           Int           @id @default(autoincrement())
-  requesterId  String        @default("") @map("requester_id")
-  contactId    String?       @map("contact_id")
-  date         DateTime      @db.Timestamptz(6)
-  billable     Boolean       @default(false)
-  quoteOnly    Boolean       @default(false) @map("quote_only")
-  warrantyJob  Boolean       @default(false) @map("warranty_job")
-  afeId        String?       @map("afe_id")
-  salesOrderId String?       @map("sales_order_id")
-  unitNumber   String?       @map("unit_number")
-  truckId      String?       @map("truck_id")
+  id           Int                @id @default(autoincrement())
+  requesterId  String             @default("") @map("requester_id")
+  contactId    String?            @map("contact_id")
+  date         DateTime           @db.Timestamptz(6)
+  billable     Boolean            @default(false)
+  quoteOnly    Boolean            @default(false) @map("quote_only")
+  warrantyJob  Boolean            @default(false) @map("warranty_job")
+  afeId        String?            @map("afe_id")
+  salesOrderId String?            @map("sales_order_id")
+  unitNumber   String?            @map("unit_number")
+  truckId      String?            @map("truck_id")
   urgency      String
-  orderType    String        @map("order_type")
-  pickupId     String?       @map("pickup_id")
+  orderType    String             @map("order_type")
+  pickupId     String?            @map("pickup_id")
   region       String
-  amex         Boolean       @default(false)
+  amex         Boolean            @default(false)
   vendor       String?
-  conex        Boolean       @default(false)
-  conexId      String?       @map("conex_id")
+  vendors      VendorOnPartsReq[]
+  conex        Boolean            @default(false)
+  conexId      String?            @map("conex_id")
   parts        PartsReqRow[]
   comments     Comment[]
   status       String
-  updated      DateTime      @db.Timestamptz(6)
+  updated      DateTime           @db.Timestamptz(6)
   files        File[]
-  unit         Unit?         @relation(fields: [unitNumber], references: [unitNumber], onDelete: Cascade)
-  afe          AFE?          @relation(fields: [afeId], references: [id], onDelete: Cascade)
-  salesOrder   SalesOrder?   @relation(fields: [salesOrderId], references: [id], onDelete: Cascade)
-  truck        Truck?        @relation(fields: [truckId], references: [id], onDelete: Cascade)
-  pickup       Location?     @relation("Pickup", fields: [pickupId], references: [id], onDelete: Cascade)
-  conexName    Location?     @relation("ConexName", fields: [conexId], references: [id], onDelete: Cascade)
-  requester    User?         @relation("Requester", fields: [requesterId], references: [id], onDelete: Cascade)
-  contact      User?         @relation("Contact", fields: [contactId], references: [id], onDelete: Cascade)
+  unit         Unit?              @relation(fields: [unitNumber], references: [unitNumber], onDelete: Cascade)
+  afe          AFE?               @relation(fields: [afeId], references: [id], onDelete: Cascade)
+  salesOrder   SalesOrder?        @relation(fields: [salesOrderId], references: [id], onDelete: Cascade)
+  truck        Truck?             @relation(fields: [truckId], references: [id], onDelete: Cascade)
+  pickup       Location?          @relation("Pickup", fields: [pickupId], references: [id], onDelete: Cascade)
+  conexName    Location?          @relation("ConexName", fields: [conexId], references: [id], onDelete: Cascade)
+  requester    User?              @relation("Requester", fields: [requesterId], references: [id], onDelete: Cascade)
+  contact      User?              @relation("Contact", fields: [contactId], references: [id], onDelete: Cascade)
 
   @@map("parts_req")
 }
@@ -242,9 +243,20 @@ model Location {
 }
 
 model Vendor {
-  id     String  @id @default(uuid())
-  name   String
-  active Boolean
+  id        String             @id @default(uuid())
+  name      String
+  active    Boolean
+  partsReqs VendorOnPartsReq[]
 
   @@map("vendor")
+}
+
+model VendorOnPartsReq {
+  id         String    @id @default(uuid())
+  vendor     Vendor?   @relation(fields: [vendorId], references: [id])
+  vendorId   String?   @map("vendor_id")
+  partsReq   PartsReq? @relation(fields: [partsReqId], references: [id])
+  partsReqId Int?      @map("parts_req_id")
+
+  @@map("vendor_on_pr")
 }

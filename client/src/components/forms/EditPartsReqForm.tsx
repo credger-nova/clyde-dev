@@ -326,7 +326,7 @@ export default function EditPartsReqForm(props: Props) {
     const [newFiles, setNewFiles] = React.useState<Array<File>>([])
     const [deleteFiles, setDeleteFiles] = React.useState<Array<string>>([])
     const [amex, setAmex] = React.useState<boolean>(partsReq.amex)
-    const [vendor, setVendor] = React.useState<Vendor | null>(partsReq.vendor ?? null)
+    const [prVendors, setPrVendors] = React.useState<Array<Vendor>>(partsReq.vendors)
     const [conex, setConex] = React.useState<boolean>(partsReq.conex)
     const [conexName, setConexName] = React.useState<Location | null>(partsReq.conexName ?? null)
     const [prExceedsAfe, setPrExceedsAfe] = React.useState<boolean>(false)
@@ -660,14 +660,14 @@ export default function EditPartsReqForm(props: Props) {
     const onAmexChange = () => {
         if (amex) {
             setAmex(false)
-            setVendor(null)
+            setPrVendors([])
         } else {
             setAmex(true)
         }
     }
 
     const onVendorChange = (_e: React.SyntheticEvent, value: Vendor | null) => {
-        setVendor(value)
+        setPrVendors(value)
     }
 
     const onConexChange = () => {
@@ -1581,13 +1581,13 @@ export default function EditPartsReqForm(props: Props) {
                                             getOptionLabel={(option) => option.name}
                                             loading={vendorsFetching}
                                             onChange={onVendorChange}
-                                            value={vendor}
+                                            value={prVendors}
                                             renderInput={(params) => <StyledTextField
                                                 {...params}
                                                 variant="standard"
                                                 label="Vendor"
-                                                error={amex && !vendor}
-                                                helperText={(amex && !vendor) && "Please select a vendor"}
+                                                error={amex && !prVendors}
+                                                helperText={(amex && !prVendors) && "Please select a vendor"}
                                             />}
                                             sx={{ width: "100%" }}
                                             renderOption={(props, option, { inputValue }) => {

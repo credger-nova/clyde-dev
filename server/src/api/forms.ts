@@ -73,7 +73,7 @@ function convertPartsReq(partsReq: any) {
         files: partsReq.files,
         status: partsReq.status,
         amex: partsReq.amex,
-        vendor: partsReq.vendor,
+        vendors: partsReq.vendors,
         conex: partsReq.conex,
         conexName: partsReq.conexName,
         updated: partsReq.updated
@@ -402,6 +402,7 @@ export const getPartsReqs = async (query: PartsReqQuery) => {
             truck: true,
             pickup: true,
             conexName: true,
+            vendors: true,
             parts: true,
             comments: true,
             files: true
@@ -439,6 +440,7 @@ export const getPartsReq = async (id: number) => {
             truck: true,
             pickup: true,
             conexName: true,
+            vendors: true,
             parts: true,
             comments: true,
             files: true
@@ -475,7 +477,6 @@ export const createPartsReq = async (partsReq: CreatePartsReq) => {
             orderType: partsReq.orderType,
             region: partsReq.region ?? "",
             amex: partsReq.amex,
-            vendor: partsReq.vendor?.name,
             conex: partsReq.conex,
             conexId: partsReq.conexName ? partsReq.conexName.id : null,
             parts: {
@@ -564,6 +565,7 @@ export const updatePartsReq = async (id: number, user: NovaUser, updateReq: Part
             truck: true,
             pickup: true,
             conexName: true,
+            vendors: true,
             parts: true,
             comments: true,
             files: true
@@ -619,7 +621,7 @@ export const updatePartsReq = async (id: number, user: NovaUser, updateReq: Part
 
     if (updateReq.status === "Sourcing - Amex Rejected" && oldPartsReq?.status !== "Sourcing - Amex Rejected") {
         updateReq.amex = false
-        updateReq.vendor = undefined
+        updateReq.vendors = []
     }
 
     if (partsUpdated) {
@@ -779,9 +781,9 @@ export const updatePartsReq = async (id: number, user: NovaUser, updateReq: Part
         await genSystemComment(message, user, id)
     }
     // Vendor change
-    if (oldPartsReq?.vendor !== updateReq.vendor) {
+    if (oldPartsReq?.vendors !== updateReq.vendors) {
         updated = true
-        const message = `Vendor Change: ${oldPartsReq?.vendor} -> ${updateReq.vendor}`
+        const message = `Vendor Change: ${oldPartsReq?.vendors} -> ${updateReq.vendors}`
 
         await genSystemComment(message, user, id)
     }
@@ -832,7 +834,6 @@ export const updatePartsReq = async (id: number, user: NovaUser, updateReq: Part
             pickupId: updateReq.pickup ? updateReq.pickup.id : null,
             region: updateReq.region,
             amex: updateReq.amex,
-            vendor: updateReq.vendor?.name,
             conex: updateReq.conex,
             conexId: updateReq.conexName ? updateReq.conexName.id : null,
             status: status,

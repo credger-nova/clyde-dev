@@ -326,7 +326,7 @@ export default function EditPartsReqForm(props: Props) {
     const [newFiles, setNewFiles] = React.useState<Array<File>>([])
     const [deleteFiles, setDeleteFiles] = React.useState<Array<string>>([])
     const [amex, setAmex] = React.useState<boolean>(partsReq.amex)
-    const [vendor, setVendor] = React.useState<Vendor | null>(partsReq.vendor ?? null)
+    const [prVendors, setPrVendors] = React.useState<Array<Vendor>>(partsReq.vendors)
     const [conex, setConex] = React.useState<boolean>(partsReq.conex)
     const [conexName, setConexName] = React.useState<Location | null>(partsReq.conexName ?? null)
     const [prExceedsAfe, setPrExceedsAfe] = React.useState<boolean>(false)
@@ -349,7 +349,7 @@ export default function EditPartsReqForm(props: Props) {
 
     React.useEffect(() => {
         if (!requester || !orderDate || !urgency || !orderType || !(rows.length > 0) || needsComment ||
-            ((!unit && !truck && !salesOrder) && orderType !== "Shop Supplies") || amex && !vendor) {
+            ((!unit && !truck && !salesOrder) && orderType !== "Shop Supplies") || amex && prVendors.length === 0) {
             setSaveDisabled(true)
         } else {
             if (!rows[0].itemNumber) {
@@ -358,7 +358,7 @@ export default function EditPartsReqForm(props: Props) {
                 setSaveDisabled(false)
             }
         }
-    }, [requester, orderDate, afe, salesOrder, urgency, orderType, rows, needsComment, truck, unit, amex, vendor, setSaveDisabled])
+    }, [requester, orderDate, afe, salesOrder, urgency, orderType, rows, needsComment, truck, unit, amex, prVendors, setSaveDisabled])
 
     React.useEffect(() => {
         if (afe) {
@@ -412,7 +412,7 @@ export default function EditPartsReqForm(props: Props) {
             setNewFiles([])
             setDeleteFiles([])
             setAmex(partsReq.amex)
-            setVendor(partsReq.vendor ?? null)
+            setPrVendors(partsReq.vendors)
             setConex(partsReq.conex)
             setConexName(partsReq.conexName ?? null)
 
@@ -441,7 +441,7 @@ export default function EditPartsReqForm(props: Props) {
                     parts: rows as Array<OrderRow>,
                     comments: comments as Array<Comment>,
                     amex: amex,
-                    vendor: vendor,
+                    vendors: prVendors,
                     conex: conex,
                     conexName: conexName,
                     newFiles: newFiles.map((file) => file.name),
@@ -660,14 +660,14 @@ export default function EditPartsReqForm(props: Props) {
     const onAmexChange = () => {
         if (amex) {
             setAmex(false)
-            setVendor(null)
+            setPrVendors([])
         } else {
             setAmex(true)
         }
     }
 
-    const onVendorChange = (_e: React.SyntheticEvent, value: Vendor | null) => {
-        setVendor(value)
+    const onVendorChange = (_e: React.SyntheticEvent, value: Array<Vendor>) => {
+        setPrVendors(value)
     }
 
     const onConexChange = () => {
@@ -1576,18 +1576,22 @@ export default function EditPartsReqForm(props: Props) {
                                     </div>
                                     {amex && <React.Fragment>
                                         <Autocomplete
+                                            multiple
+                                            filterSelectedOptions
+                                            limitTags={3}
+                                            size="small"
                                             disabled={!amex || denyAccess(novaUser!.jobTitle, "Amex")}
                                             options={vendors ? vendors : []}
                                             getOptionLabel={(option) => option.name}
                                             loading={vendorsFetching}
                                             onChange={onVendorChange}
-                                            value={vendor}
+                                            value={prVendors}
                                             renderInput={(params) => <StyledTextField
                                                 {...params}
                                                 variant="standard"
-                                                label="Vendor"
-                                                error={amex && !vendor}
-                                                helperText={(amex && !vendor) && "Please select a vendor"}
+                                                label="Vendor(s)"
+                                                error={amex && prVendors.length === 0}
+                                                helperText={(amex && prVendors.length === 0) && "Please select a vendor"}
                                             />}
                                             sx={{ width: "100%" }}
                                             renderOption={(props, option, { inputValue }) => {

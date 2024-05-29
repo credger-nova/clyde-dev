@@ -343,12 +343,15 @@ function PartsReqPDF(props: PartsReqPDF) {
                             </View>
                             {partsReq.amex && <View style={pdfStyles.infoRow}>
                                 <Text style={pdfStyles.fieldTitle}>
-                                    Vendor:
-                                </Text>
-                                <Text style={pdfStyles.fieldValue}>
-                                    {partsReq.vendor?.name}
+                                    Vendors:
                                 </Text>
                             </View>}
+                            {partsReq.vendors.map((vendor) => <View style={pdfStyles.infoRow}>
+                                <Text style={pdfStyles.fieldValue}>
+                                    {vendor.name}
+                                </Text>
+                            </View>
+                            )}
                             <View style={pdfStyles.checkboxRow}>
                                 {partsReq.conex ? <CheckedCheckbox /> : <EmptyCheckbox />}
                                 <Text

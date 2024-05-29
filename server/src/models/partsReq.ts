@@ -37,7 +37,7 @@ export interface PartsReq {
     files: Array<File>,
     status: string,
     amex: boolean,
-    vendor?: Vendor,
+    vendors: Array<Vendor>,
     conex: boolean,
     conexName?: Location,
     updated: Date

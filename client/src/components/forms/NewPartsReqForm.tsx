@@ -193,7 +193,7 @@ export default function PartsReqForm() {
             files: newFiles.map((file) => file.name),
             status: quoteOnly ? "Pending Quote" : "Pending Approval",
             amex: false,
-            vendor: undefined,
+            vendors: [],
             conex: conex,
             conexName: conexName ?? undefined,
             updated: new Date()

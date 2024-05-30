@@ -1,5 +1,5 @@
 import { CreatePartsReq, PartsReq, PartsReqQuery, UpdatePartsReq } from "../types/partsReq"
-import { NovaUser } from "../types/novaUser"
+import { NovaUser } from "../types/kpa/novaUser"
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import axios from "axios"

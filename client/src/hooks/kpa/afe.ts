@@ -1,4 +1,4 @@
-import { AFE } from "../types/afe"
+import { AFE } from "../../types/kpa/afe"
 
 import { useQuery } from "@tanstack/react-query"
 import axios from "axios"

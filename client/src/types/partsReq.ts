@@ -1,7 +1,7 @@
 import { Unit } from "./unit"
 import { Comment } from "./comment"
 import { File } from "./file"
-import { NovaUser } from "./novaUser"
+import { NovaUser } from "./kpa/novaUser"
 import { AFE } from "./afe"
 import { SalesOrder } from "./netsuite/sales-order"
 import { Truck } from "./netsuite/truck"

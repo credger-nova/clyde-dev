@@ -2,7 +2,7 @@ import * as React from "react"
 
 import theme from "../../css/theme"
 
-import { NovaUser } from "../../types/novaUser"
+import { NovaUser } from "../../types/kpa/novaUser"
 
 import { useParams, useNavigate } from "react-router-dom"
 import { usePartsReq, useGeneratePDF } from "../../hooks/partsReq"

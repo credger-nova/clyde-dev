@@ -1,4 +1,4 @@
-import { NovaUser } from "../types/novaUser"
+import { NovaUser } from "../../types/kpa/novaUser"
 
 import { useQuery } from "@tanstack/react-query"
 import axios from "axios"

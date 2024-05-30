@@ -1,5 +1,5 @@
 import { useAuth0, withAuthenticationRequired } from "@auth0/auth0-react"
-import { useNovaUser } from "../../hooks/user"
+import { useNovaUser } from "../../hooks/kpa/user"
 import { ReactNode } from "react"
 import { Navigate } from "react-router-dom"
 import Layout from "../layout/Layout"

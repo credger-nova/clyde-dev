@@ -1,11 +1,11 @@
 import * as React from "react"
 
-import { NovaUser } from "../../../types/novaUser"
+import { NovaUser } from "../../../types/kpa/novaUser"
 import { PartsReq, PartsReqQuery } from "../../../types/partsReq"
 
 import { calcCost, opsVpApprovalRequired, toTitleCase } from "../../../utils/helperFunctions"
 
-import { useLeadsEmployees, useManagersEmployees, useDirectorsEmployees } from "../../../hooks/user"
+import { useLeadsEmployees, useManagersEmployees, useDirectorsEmployees } from "../../../hooks/kpa/user"
 import { usePartsReqs } from "../../../hooks/partsReq"
 import { useRegions } from "../../../hooks/unit"
 import { useNavigate } from "react-router-dom"

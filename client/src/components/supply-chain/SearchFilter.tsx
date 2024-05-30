@@ -3,15 +3,15 @@ import * as React from "react"
 import { TITLES } from "../../utils/titles"
 
 import { Unit } from "../../types/unit"
-import { NovaUser } from "../../types/novaUser"
+import { NovaUser } from "../../types/kpa/novaUser"
 import { PartsReqQuery } from "../../types/partsReq"
-import { AFE } from "../../types/afe"
+import { AFE } from "../../types/kpa/afe"
 
-import { useAFEs } from "../../hooks/afe"
+import { useAFEs } from "../../hooks/kpa/afe"
 import { useSalesOrders } from "../../hooks/netsuite/sales-order"
 import { useCustomers, useUnitLocations, useRegions, useUnits } from "../../hooks/unit"
 import { useTrucks } from "../../hooks/netsuite/truck"
-import { useAllNovaUsers } from "../../hooks/user"
+import { useAllNovaUsers } from "../../hooks/kpa/user"
 //import { useParts } from "../../hooks/parts"
 
 import { styled } from '@mui/material/styles'

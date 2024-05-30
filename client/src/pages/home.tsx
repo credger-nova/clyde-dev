@@ -1,7 +1,7 @@
 import * as React from "react"
 
 import { useAuth0 } from "@auth0/auth0-react"
-import { useNovaUser } from "../hooks/user"
+import { useNovaUser } from "../hooks/kpa/user"
 
 import { TITLES } from "../utils/titles"
 

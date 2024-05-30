@@ -1,5 +1,5 @@
 import { PartsReqQuery, CreatePartsReq, UpdatePartsReq } from "../models/partsReq"
-import { NovaUser } from "../models/novaUser"
+import { NovaUser } from "../models/kpa/novaUser"
 
 import { FastifyInstance, FastifyRequest } from "fastify"
 import { createPartsReq, updatePartsReq, getPartsReqs, getPartsReq, sumPrWithAfe } from "../api/forms"

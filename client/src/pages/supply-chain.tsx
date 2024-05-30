@@ -2,11 +2,11 @@ import * as React from "react"
 
 import { TITLES } from "../utils/titles"
 
-import { NovaUser } from "../types/novaUser"
+import { NovaUser } from "../types/kpa/novaUser"
 
 import { useAuth0 } from "@auth0/auth0-react"
 import { usePartsReqs } from "../hooks/partsReq"
-import { useNovaUser } from "../hooks/user"
+import { useNovaUser } from "../hooks/kpa/user"
 import { useLocation } from "react-router-dom"
 import { useQueryClient } from "@tanstack/react-query"
 

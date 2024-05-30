@@ -5,32 +5,35 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import axios from "axios"
 
 // Get all Parts Reqs
-const getAllPartsReqs = async (partsReqQuery: PartsReqQuery) => {
-    const { data } = await axios.post(`${import.meta.env.VITE_API_BASE}/forms/parts-req`, partsReqQuery)
+const getAllPartsReqs = async (token: string, partsReqQuery: PartsReqQuery) => {
+    const { data } = await axios.post(`${import.meta.env.VITE_API_BASE}/forms/parts-req`, partsReqQuery,
+        { headers: { Authorization: `Bearer ${token}` } })
 
     return data as Array<PartsReq>
 }
 
-export function usePartsReqs(partsReqQuery: PartsReqQuery) {
-    return useQuery({ queryKey: ["partsReq", partsReqQuery], queryFn: () => getAllPartsReqs(partsReqQuery), enabled: !!partsReqQuery.user })
+export function usePartsReqs(token: string, partsReqQuery: PartsReqQuery) {
+    return useQuery({ queryKey: ["partsReq", partsReqQuery], queryFn: () => getAllPartsReqs(token, partsReqQuery), enabled: !!partsReqQuery.user })
 }
 
 // Get single Parts Req
-const getPartsReq = async (id: number) => {
-    const { data } = await axios.get<PartsReq>(`${import.meta.env.VITE_API_BASE}/forms/parts-req/${id}`)
+const getPartsReq = async (token: string, id: number) => {
+    const { data } = await axios.get<PartsReq>(`${import.meta.env.VITE_API_BASE}/forms/parts-req/${id}`,
+        { headers: { Authorization: `Bearer ${token}` } })
 
     return data
 }
 
-export function usePartsReq(id: number) {
-    return useQuery({ queryKey: ["partsReq", id], queryFn: () => getPartsReq(id), enabled: id !== null })
+export function usePartsReq(token: string, id: number) {
+    return useQuery({ queryKey: ["partsReq", id], queryFn: () => getPartsReq(token, id), enabled: id !== null })
 }
 
 // Create Parts Req
-const createPartsReq = async ({ partsReq }: { partsReq: CreatePartsReq }) => {
+const createPartsReq = async ({ token, partsReq }: { token: string, partsReq: CreatePartsReq }) => {
     const body = { partsReq: partsReq }
 
-    const { data } = await axios.post<PartsReq>(`${import.meta.env.VITE_API_BASE}/forms/parts-req/create`, body)
+    const { data } = await axios.post<PartsReq>(`${import.meta.env.VITE_API_BASE}/forms/parts-req/create`, body,
+        { headers: { Authorization: `Bearer ${token}` } })
 
     return data
 }
@@ -42,10 +45,11 @@ export function useCreatePartsReq() {
 }
 
 // Update Parts Req
-const updatePartsReq = async ({ user, updateReq }: { user: NovaUser, updateReq: Partial<UpdatePartsReq> }) => {
+const updatePartsReq = async ({ token, user, updateReq }: { token: string, user: NovaUser, updateReq: Partial<UpdatePartsReq> }) => {
     const body = { user: user, updateReq: updateReq }
 
-    const { data } = await axios.put<PartsReq>(`${import.meta.env.VITE_API_BASE}/forms/parts-req/${updateReq.id}`, body)
+    const { data } = await axios.put<PartsReq>(`${import.meta.env.VITE_API_BASE}/forms/parts-req/${updateReq.id}`, body,
+        { headers: { Authorization: `Bearer ${token}` } })
 
     return data
 }
@@ -61,7 +65,7 @@ export function useUpdatePartsReq() {
 }
 
 // Generate PDF for a Parts Req
-const generatePartsReqPDF = async ({ id, pricing }: { id: number, pricing: boolean }) => {
+const generatePartsReqPDF = async ({ token, id, pricing }: { token: string, id: number, pricing: boolean }) => {
     const { data } = await axios.get(`${import.meta.env.VITE_API_BASE}/forms/parts-req/export/${id}${pricing ? '?pricing=true' : ''}`,
         {
             responseType: "arraybuffer",
@@ -69,7 +73,8 @@ const generatePartsReqPDF = async ({ id, pricing }: { id: number, pricing: boole
             headers:
             {
                 "Accept": "*",
-                "Content-Disposition": "attachment; filename=test.pdf"
+                "Content-Disposition": "attachment; filename=test.pdf",
+                "Authorization": `Bearer ${token}`
             }
         })
 
@@ -89,12 +94,13 @@ export function useGeneratePDF() {
 }
 
 // Get sum of PR costs with an associated AFE #
-const sumPrWithAfe = async (afeNumber: string) => {
-    const { data } = await axios.get<number>(`${import.meta.env.VITE_API_BASE}/forms/parts-req/cost/${afeNumber}`)
+const sumPrWithAfe = async (token: string, afeNumber: string) => {
+    const { data } = await axios.get<number>(`${import.meta.env.VITE_API_BASE}/forms/parts-req/cost/${afeNumber}`,
+        { headers: { Authorization: `Bearer ${token}` } })
 
     return data
 }
 
-export function useSumPrWithAfe(afeNumber: string) {
-    return useQuery({ queryKey: ["AFE sum", afeNumber], queryFn: () => sumPrWithAfe(afeNumber), enabled: !!afeNumber })
+export function useSumPrWithAfe(token: string, afeNumber: string) {
+    return useQuery({ queryKey: ["AFE sum", afeNumber], queryFn: () => sumPrWithAfe(token, afeNumber), enabled: !!afeNumber })
 }

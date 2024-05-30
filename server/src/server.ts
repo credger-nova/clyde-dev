@@ -19,7 +19,7 @@ const createServer = async () => {
     })
 
     // Only need to verify JWT on deployed environments
-    if (process.env.NODE_ENV === "production" || process.env.NODE_ENV === "dev") {
+    if (process.env.NODE_ENV === "production" || process.env.NODE_ENV === "test") {
         fastify.addHook("onRequest", async (req, res) => {
             try {
                 await req.jwtVerify()

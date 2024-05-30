@@ -12,5 +12,5 @@ const getAllParts = async (token: string) => {
 }
 
 export function useParts(token: string) {
-    return useQuery({ queryKey: ["parts"], queryFn: () => getAllParts(token) })
+    return useQuery({ queryKey: ["parts"], queryFn: () => getAllParts(token), enabled: !!token })
 }

@@ -12,5 +12,5 @@ const getAllAFEs = async (token: string) => {
 }
 
 export function useAFEs(token: string) {
-    return useQuery({ queryKey: ["AFEs"], queryFn: () => getAllAFEs(token) })
+    return useQuery({ queryKey: ["AFEs"], queryFn: () => getAllAFEs(token), enabled: !!token })
 }

@@ -11,7 +11,7 @@ const getAllUnits = async (token: string) => {
 }
 
 export function useUnits(token: string) {
-    return useQuery({ queryKey: ["units"], queryFn: () => getAllUnits(token) })
+    return useQuery({ queryKey: ["units"], queryFn: () => getAllUnits(token), enabled: !!token })
 }
 
 // Get Customers
@@ -23,7 +23,7 @@ const getAllCustomers = async (token: string) => {
 }
 
 export function useCustomers(token: string) {
-    return useQuery({ queryKey: ["customers"], queryFn: () => getAllCustomers(token) })
+    return useQuery({ queryKey: ["customers"], queryFn: () => getAllCustomers(token), enabled: !!token })
 }
 
 // Get Locations
@@ -35,7 +35,7 @@ const getAllUnitLocations = async (token: string) => {
 }
 
 export function useUnitLocations(token: string) {
-    return useQuery({ queryKey: ["unit locations"], queryFn: () => getAllUnitLocations(token) })
+    return useQuery({ queryKey: ["unit locations"], queryFn: () => getAllUnitLocations(token), enabled: !!token })
 }
 
 // Get Regions
@@ -47,7 +47,7 @@ const getAllRegions = async (token: string) => {
 }
 
 export function useRegions(token: string) {
-    return useQuery({ queryKey: ["regions"], queryFn: () => getAllRegions(token) })
+    return useQuery({ queryKey: ["regions"], queryFn: () => getAllRegions(token), enabled: !!token })
 }
 
 // Get Managers
@@ -59,5 +59,5 @@ const getAllManagers = async (token: string) => {
 }
 
 export function useManagers(token: string) {
-    return useQuery({ queryKey: ["managers"], queryFn: () => getAllManagers(token) })
+    return useQuery({ queryKey: ["managers"], queryFn: () => getAllManagers(token), enabled: !!token })
 }

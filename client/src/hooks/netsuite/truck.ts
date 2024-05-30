@@ -12,5 +12,5 @@ const getAllTrucks = async (token: string) => {
 }
 
 export function useTrucks(token: string) {
-    return useQuery({ queryKey: ["trucks"], queryFn: () => getAllTrucks(token) })
+    return useQuery({ queryKey: ["trucks"], queryFn: () => getAllTrucks(token), enabled: !!token })
 }

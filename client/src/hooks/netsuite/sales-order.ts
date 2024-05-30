@@ -12,5 +12,5 @@ const getAllSalesOrders = async (token: string, inactive?: boolean) => {
 }
 
 export function useSalesOrders(token: string, inactive?: boolean) {
-    return useQuery({ queryKey: ["Sales Orders"], queryFn: () => getAllSalesOrders(token, inactive) })
+    return useQuery({ queryKey: ["Sales Orders"], queryFn: () => getAllSalesOrders(token, inactive), enabled: !!token })
 }

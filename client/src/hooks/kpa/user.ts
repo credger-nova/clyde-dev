@@ -16,7 +16,7 @@ export function useNovaUser(token: string, email: string | undefined) {
     return useQuery({
         queryKey: ["user", email],
         queryFn: () => getNovaUser(token, email!),
-        enabled: email !== undefined
+        enabled: email !== undefined && !!token
     })
 }
 
@@ -30,7 +30,8 @@ const getAllNovaUsers = async (token: string) => {
 export function useAllNovaUsers(token: string) {
     return useQuery({
         queryKey: ["users"],
-        queryFn: () => getAllNovaUsers(token)
+        queryFn: () => getAllNovaUsers(token),
+        enabled: !!token
     })
 }
 
@@ -43,7 +44,7 @@ const getLeadsEmployees = async (token: string, user: NovaUser) => {
 }
 
 export function useLeadsEmployees(token: string, user: NovaUser) {
-    return useQuery({ queryKey: ["employees", user.id], queryFn: () => getLeadsEmployees(token, user), enabled: user.jobTitle.includes("Lead") })
+    return useQuery({ queryKey: ["employees", user.id], queryFn: () => getLeadsEmployees(token, user), enabled: user.jobTitle.includes("Lead") && !!token })
 }
 
 // Get all manager's employees
@@ -55,7 +56,14 @@ const getManagersEmployees = async (token: string, user: NovaUser) => {
 }
 
 export function useManagersEmployees(token: string, user: NovaUser) {
-    return useQuery({ queryKey: ["employees", user.id], queryFn: () => getManagersEmployees(token, user), enabled: user.jobTitle.includes("Manager") || user.jobTitle === "Supervisor - Shop" })
+    return useQuery({
+        queryKey: ["employees", user.id], queryFn: () => getManagersEmployees(token, user), enabled:
+            (
+                user.jobTitle.includes("Manager") ||
+                user.jobTitle === "Supervisor - Shop"
+            ) &&
+            !!token
+    })
 }
 
 // Get all director's employees
@@ -67,5 +75,5 @@ const getDirectorsEmployees = async (token: string, user: NovaUser) => {
 }
 
 export function useDirectorsEmployees(token: string, user: NovaUser) {
-    return useQuery({ queryKey: ["employees", user.id], queryFn: () => getDirectorsEmployees(token, user), enabled: user.jobTitle.includes("Director") })
+    return useQuery({ queryKey: ["employees", user.id], queryFn: () => getDirectorsEmployees(token, user), enabled: user.jobTitle.includes("Director") && !!token })
 }

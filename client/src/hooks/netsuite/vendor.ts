@@ -12,5 +12,5 @@ const getAllVendors = async (token: string) => {
 }
 
 export function useVendors(token: string) {
-    return useQuery({ queryKey: ["vendors"], queryFn: () => getAllVendors(token) })
+    return useQuery({ queryKey: ["vendors"], queryFn: () => getAllVendors(token), enabled: !!token })
 }

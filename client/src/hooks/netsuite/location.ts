@@ -13,5 +13,5 @@ const getAllLocations = async (token: string) => {
 }
 
 export function useLocations(token: string) {
-    return useQuery({ queryKey: ["locations"], queryFn: () => getAllLocations(token) })
+    return useQuery({ queryKey: ["locations"], queryFn: () => getAllLocations(token), enabled: !!token })
 }

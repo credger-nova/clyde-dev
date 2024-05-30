@@ -13,7 +13,7 @@ const getAllPartsReqs = async (token: string, partsReqQuery: PartsReqQuery) => {
 }
 
 export function usePartsReqs(token: string, partsReqQuery: PartsReqQuery) {
-    return useQuery({ queryKey: ["partsReq", partsReqQuery], queryFn: () => getAllPartsReqs(token, partsReqQuery), enabled: !!partsReqQuery.user })
+    return useQuery({ queryKey: ["partsReq", partsReqQuery], queryFn: () => getAllPartsReqs(token, partsReqQuery), enabled: !!partsReqQuery.user && !!token })
 }
 
 // Get single Parts Req
@@ -25,7 +25,7 @@ const getPartsReq = async (token: string, id: number) => {
 }
 
 export function usePartsReq(token: string, id: number) {
-    return useQuery({ queryKey: ["partsReq", id], queryFn: () => getPartsReq(token, id), enabled: id !== null })
+    return useQuery({ queryKey: ["partsReq", id], queryFn: () => getPartsReq(token, id), enabled: id !== null && !!token })
 }
 
 // Create Parts Req
@@ -102,5 +102,5 @@ const sumPrWithAfe = async (token: string, afeNumber: string) => {
 }
 
 export function useSumPrWithAfe(token: string, afeNumber: string) {
-    return useQuery({ queryKey: ["AFE sum", afeNumber], queryFn: () => sumPrWithAfe(token, afeNumber), enabled: !!afeNumber })
+    return useQuery({ queryKey: ["AFE sum", afeNumber], queryFn: () => sumPrWithAfe(token, afeNumber), enabled: !!afeNumber && !!token })
 }

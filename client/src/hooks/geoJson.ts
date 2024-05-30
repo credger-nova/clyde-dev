@@ -11,7 +11,7 @@ const getUnitsLayer = async (token: string, manager?: string) => {
 }
 
 export function useUnitsLayer(token: string, manager?: string) {
-    return useQuery({ queryKey: ["unitsLayer"], queryFn: () => getUnitsLayer(token, manager) })
+    return useQuery({ queryKey: ["unitsLayer"], queryFn: () => getUnitsLayer(token, manager), enabled: !!token })
 }
 
 // Get centroid for GeoJSON point layer
@@ -23,5 +23,5 @@ const getCentroid = async (token: string, layer: GeoJSONLayer) => {
 }
 
 export function useCentroid(token: string, layer: GeoJSONLayer | undefined, layerFetching: boolean) {
-    return useQuery({ queryKey: ["centroid"], queryFn: () => getCentroid(token, layer!), enabled: !layerFetching })
+    return useQuery({ queryKey: ["centroid"], queryFn: () => getCentroid(token, layer!), enabled: !layerFetching && !!token })
 }

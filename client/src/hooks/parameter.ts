@@ -11,5 +11,5 @@ const getAllStatuses = async (token: string) => {
 }
 
 export function useStatuses(token: string) {
-    return useQuery({ queryKey: ["statuses"], queryFn: () => getAllStatuses(token) })
+    return useQuery({ queryKey: ["statuses"], queryFn: () => getAllStatuses(token), enabled: !!token })
 }

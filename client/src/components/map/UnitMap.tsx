@@ -132,7 +132,11 @@ export default function UnitMap(props: Props) {
             <LayersControl position="bottomleft">
                 {managers?.map((manager, index) => {
                     return (
-                        <LayersControl.Overlay checked name={manager}>
+                        <LayersControl.Overlay
+                            checked
+                            name={manager}
+                            key={manager}
+                        >
                             <GeoJSON
                                 data={unitsLayer as GeoJSON.FeatureCollection}
                                 pointToLayer={(_feature, latlng) => circleMarker(latlng)}

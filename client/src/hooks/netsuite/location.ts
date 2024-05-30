@@ -4,12 +4,14 @@ import axios from "axios"
 import { Location } from "../../types/netsuite/location"
 
 // Get all NetSuite Locations
-const getAllLocations = async () => {
-    const { data } = await axios.get<Array<Location>>(`${import.meta.env.VITE_API_BASE}/netsuite/locations`)
+const getAllLocations = async (token: string) => {
+    const { data } = await axios.get<Array<Location>>(`${import.meta.env.VITE_API_BASE}/netsuite/locations`,
+        { headers: { Authorization: `Bearer ${token}` } }
+    )
 
     return data
 }
 
-export function useLocations() {
-    return useQuery({ queryKey: ["locations"], queryFn: getAllLocations })
+export function useLocations(token: string) {
+    return useQuery({ queryKey: ["locations"], queryFn: () => getAllLocations(token), enabled: !!token })
 }

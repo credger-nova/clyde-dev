@@ -1,7 +1,8 @@
 import * as React from "react"
 
 import { useAuth0 } from "@auth0/auth0-react"
-import { useNovaUser } from "../hooks/user"
+import { useNovaUser } from "../hooks/kpa/user"
+import { useAuth0Token } from "../hooks/utils"
 
 import { TITLES } from "../utils/titles"
 
@@ -11,7 +12,8 @@ import PartsReqSummary from "../components/dashboard/parts-reqs/PartsReqSummary"
 
 export default function Home() {
     const { user } = useAuth0()
-    const { data: novaUser, isFetched } = useNovaUser(user?.email)
+    const token = useAuth0Token()
+    const { data: novaUser, isFetched } = useNovaUser(token, user?.email)
 
     const [userGroup, setUserGroup] = React.useState<string | undefined>()
 

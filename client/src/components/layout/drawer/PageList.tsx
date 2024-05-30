@@ -10,7 +10,7 @@ import ListItemText from "@mui/material/ListItemText"
 import { Link as RouterLink } from "react-router-dom"
 import { StyledListItemButton } from "../../common/StyledListItemButton"
 
-import { NovaUser } from "../../../types/novaUser"
+import { NovaUser } from "../../../types/kpa/novaUser"
 
 interface Page {
     name: string,

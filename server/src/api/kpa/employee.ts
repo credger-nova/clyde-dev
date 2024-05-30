@@ -1,4 +1,4 @@
-import { NovaUser } from "../../models/novaUser"
+import { NovaUser } from "../../models/kpa/novaUser"
 import { LEAD_MECHANICS } from "../../utils/lead-mechanics"
 import { TITLES } from "../../utils/titles"
 

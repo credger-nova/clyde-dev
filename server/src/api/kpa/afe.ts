@@ -1,4 +1,4 @@
-import { AFE } from "../../models/afe"
+import { AFE } from "../../models/kpa/afe"
 
 import { prisma } from "../../utils/prisma-client"
 

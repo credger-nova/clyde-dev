@@ -1,14 +1,15 @@
 import * as React from "react"
 
 import { useAuth0 } from "@auth0/auth0-react"
-import { useAFEs } from "../../hooks/afe"
+import { useAuth0Token } from "../../hooks/utils"
+import { useAFEs } from "../../hooks/kpa/afe"
 import { useSalesOrders } from "../../hooks/netsuite/sales-order"
 import { useUnits } from "../../hooks/unit"
 import { useTrucks } from "../../hooks/netsuite/truck"
 import { useParts } from "../../hooks/netsuite/part"
 import { useCreatePartsReq, useSumPrWithAfe } from "../../hooks/partsReq"
 import { useUploadFiles } from "../../hooks/storage"
-import { useNovaUser } from "../../hooks/user"
+import { useNovaUser } from "../../hooks/kpa/user"
 import { useLocations } from "../../hooks/netsuite/location"
 
 import { toTitleCase, calcCost, opsVpApprovalRequired } from "../../utils/helperFunctions"
@@ -18,8 +19,8 @@ import { OrderRow, CreatePartsReq } from "../../types/partsReq"
 import { Part } from "../../types/netsuite/part"
 import { Comment } from "../../types/comment"
 import { Unit } from "../../types/unit"
-import { NovaUser } from "../../types/novaUser"
-import { AFE } from "../../types/afe"
+import { NovaUser } from "../../types/kpa/novaUser"
+import { AFE } from "../../types/kpa/afe"
 import { SalesOrder } from "../../types/netsuite/sales-order"
 import { Truck } from "../../types/netsuite/truck"
 import { Location } from "../../types/netsuite/location"
@@ -95,15 +96,16 @@ interface PartOption extends Part {
 
 export default function PartsReqForm() {
     const { user } = useAuth0()
+    const token = useAuth0Token()
 
-    const { data: novaUser, isFetched } = useNovaUser(user?.email)
+    const { data: novaUser, isFetched } = useNovaUser(token, user?.email)
 
-    const { data: afes, isFetching: afeFetching } = useAFEs()
-    const { data: salesOrders, isFetching: salesOrdersFetching } = useSalesOrders()
-    const { data: unitNumbers, isFetching: unitsFetching } = useUnits()
-    const { data: trucks, isFetching: trucksFetching } = useTrucks()
-    const { data: parts, isFetching: partsFetching } = useParts()
-    const { data: locations, isFetching: locationsFetching } = useLocations()
+    const { data: afes, isFetching: afeFetching } = useAFEs(token)
+    const { data: salesOrders, isFetching: salesOrdersFetching } = useSalesOrders(token)
+    const { data: unitNumbers, isFetching: unitsFetching } = useUnits(token)
+    const { data: trucks, isFetching: trucksFetching } = useTrucks(token)
+    const { data: parts, isFetching: partsFetching } = useParts(token)
+    const { data: locations, isFetching: locationsFetching } = useLocations(token)
 
     const { mutateAsync: createPartsReq } = useCreatePartsReq()
     const { mutateAsync: uploadFiles } = useUploadFiles()
@@ -134,7 +136,7 @@ export default function PartsReqForm() {
     const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null)
     const confirmDeleteRowOpen = Boolean(anchorEl)
 
-    const { data: afeExistingAmount } = useSumPrWithAfe(afe ? afe.number : "")
+    const { data: afeExistingAmount } = useSumPrWithAfe(token, afe ? afe.number : "")
 
     const afeFilter = createFilterOptions<AFE>({
         matchFrom: "any",
@@ -199,14 +201,14 @@ export default function PartsReqForm() {
             updated: new Date()
         }
 
-        await createPartsReq({ partsReq }).then(async (res) => {
+        await createPartsReq({ token, partsReq }).then(async (res) => {
             for (let i = 0; i < newFiles.length; i++) {
                 const formData = new FormData()
                 formData.append("bucket", import.meta.env.VITE_BUCKET)
                 formData.append("folder", "parts-req")
                 formData.append("file", newFiles[i], `${res.files[i].id}.${res.files[i].name.split(".").pop()}`)
 
-                await uploadFiles({ formData })
+                await uploadFiles({ token, formData })
             }
         })
 

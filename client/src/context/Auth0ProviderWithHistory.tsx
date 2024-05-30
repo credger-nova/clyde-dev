@@ -15,7 +15,8 @@ const Auth0ProviderWithHistory: React.FunctionComponent<{ children: React.ReactN
             clientId={import.meta.env.VITE_AUTH0_CLIENT_ID}
             onRedirectCallback={onRedirectCallback}
             authorizationParams={{
-                redirect_uri: window.location.origin
+                redirect_uri: window.location.origin,
+                audience: import.meta.env.VITE_AUTH0_AUDIENCE
             }}
         >
             {children}

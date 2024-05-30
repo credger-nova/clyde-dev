@@ -1,14 +1,15 @@
 import * as React from "react"
 
-import { NovaUser } from "../../../types/novaUser"
+import { NovaUser } from "../../../types/kpa/novaUser"
 import { PartsReq, PartsReqQuery } from "../../../types/partsReq"
 
 import { calcCost, opsVpApprovalRequired, toTitleCase } from "../../../utils/helperFunctions"
 
-import { useLeadsEmployees, useManagersEmployees, useDirectorsEmployees } from "../../../hooks/user"
+import { useLeadsEmployees, useManagersEmployees, useDirectorsEmployees } from "../../../hooks/kpa/user"
 import { usePartsReqs } from "../../../hooks/partsReq"
 import { useRegions } from "../../../hooks/unit"
 import { useNavigate } from "react-router-dom"
+import { useAuth0Token } from "../../../hooks/utils"
 
 import { styled } from '@mui/material/styles'
 import Accordion from '@mui/material/Accordion'
@@ -171,14 +172,16 @@ function calcUnitDown(partsReqs: Array<PartsReq>, region: string) {
 export default function SummaryTable(props: Props) {
     const { novaUser, group } = props
 
+    const token = useAuth0Token()
+
     const [partsReqQuery, setPartsReqQuery] = React.useState<PartsReqQuery>({ user: novaUser })
     const [managerOnly, setManagerOnly] = React.useState<Array<NovaUser>>([])
 
-    const { data: leadsEmployees, isFetching: leadsEmployeesFetching } = useLeadsEmployees(novaUser)
-    const { data: managersEmployees, isFetching: managersEmployeesFetching } = useManagersEmployees(novaUser)
-    const { data: directorsEmployees, isFetching: directorsEmployeesFetching } = useDirectorsEmployees(novaUser)
-    const { data: partsReqs, isFetching: partsReqsFetching } = usePartsReqs(partsReqQuery)
-    const { data: regions, isFetching: regionsFetching } = useRegions()
+    const { data: leadsEmployees, isFetching: leadsEmployeesFetching } = useLeadsEmployees(token, novaUser)
+    const { data: managersEmployees, isFetching: managersEmployeesFetching } = useManagersEmployees(token, novaUser)
+    const { data: directorsEmployees, isFetching: directorsEmployeesFetching } = useDirectorsEmployees(token, novaUser)
+    const { data: partsReqs, isFetching: partsReqsFetching } = usePartsReqs(token, partsReqQuery)
+    const { data: regions, isFetching: regionsFetching } = useRegions(token)
     const navigate = useNavigate()
 
     React.useEffect(() => {

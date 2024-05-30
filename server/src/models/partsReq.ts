@@ -1,6 +1,6 @@
 import { File, Unit, Comment } from "@prisma/client"
-import { NovaUser } from "./novaUser"
-import { AFE } from "./afe"
+import { NovaUser } from "./kpa/novaUser"
+import { AFE } from "./kpa/afe"
 import { SalesOrder } from "./netsuite/sales-order"
 import { Truck } from "./netsuite/truck"
 import { Location } from "./netsuite/location"

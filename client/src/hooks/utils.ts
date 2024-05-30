@@ -11,7 +11,11 @@ export const useAuth0Token = () => {
 
     React.useEffect(() => {
         (async () => {
-            const tkn = await getAccessTokenSilently()
+            const tkn = await getAccessTokenSilently({
+                authorizationParams: {
+                    audience: import.meta.env.VITE_AUTH0_AUDIENCE
+                }
+            })
             setToken(tkn)
         })()
     }, [getAccessTokenSilently])

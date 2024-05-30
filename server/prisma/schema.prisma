@@ -129,7 +129,6 @@ model PartsReq {
   pickupId     String?            @map("pickup_id")
   region       String
   amex         Boolean            @default(false)
-  vendor       String?
   vendors      VendorOnPartsReq[]
   conex        Boolean            @default(false)
   conexId      String?            @map("conex_id")

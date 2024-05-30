@@ -62,7 +62,7 @@ export default function SearchFilter(props: Props) {
     } = props
 
     const { data: afeNumbers, isFetching: afeFetching } = useAFEs()
-    const { data: salesOrders, isFetching: salesOrdersFetching } = useSalesOrders()
+    const { data: salesOrders, isFetching: salesOrdersFetching } = useSalesOrders(true)
     const { data: unitNumbers, isFetching: unitsFetching } = useUnits()
     const { data: trucks, isFetching: trucksFetching } = useTrucks()
     //const { data: parts, isFetching: partsFetching } = useParts() // TODO: add search/filter by part # - ON HOLD

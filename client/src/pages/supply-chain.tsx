@@ -5,6 +5,7 @@ import { TITLES } from "../utils/titles"
 import { NovaUser } from "../types/kpa/novaUser"
 
 import { useAuth0 } from "@auth0/auth0-react"
+import { useAuth0Token } from "../hooks/utils"
 import { usePartsReqs } from "../hooks/partsReq"
 import { useNovaUser } from "../hooks/kpa/user"
 import { useLocation } from "react-router-dom"
@@ -52,7 +53,8 @@ const OPS_VP_TITLES = TITLES.find(item => item.group === "Ops Vice President")?.
 
 export default function SupplyChain() {
     const { user } = useAuth0()
-    const { data: novaUser, isFetched } = useNovaUser(user?.email)
+    const token = useAuth0Token()
+    const { data: novaUser, isFetched } = useNovaUser(token, user?.email)
     const { state } = useLocation()
     const queryClient = useQueryClient()
     const { statuses, requesters, region, urgency } = state ?? {}
@@ -74,7 +76,7 @@ export default function SupplyChain() {
         scAll: scAll
     })
 
-    const { data: partsReqs, isFetching: partsReqsFetching } = usePartsReqs(partsReqQuery)
+    const { data: partsReqs, isFetching: partsReqsFetching } = usePartsReqs(token, partsReqQuery)
 
     React.useEffect(() => {
         if (window.screen.width <= 600) {

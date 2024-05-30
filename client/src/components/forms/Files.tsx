@@ -1,6 +1,7 @@
 import * as React from "react"
 
 import { useGetSignedURL } from "../../hooks/storage"
+import { useAuth0Token } from "../../hooks/utils"
 
 import { File as IFile } from "../../types/file"
 import List from '@mui/material/List'
@@ -24,6 +25,8 @@ interface Props {
 export default function Files(props: Props) {
     const { newFiles, setNewFiles, files, deleteFiles, setDeleteFiles, folder, disabled } = props
 
+    const token = useAuth0Token()
+
     const { mutateAsync: getSignedURL } = useGetSignedURL()
 
     const handleRemoveNewFile = (index: number) => {
@@ -34,6 +37,7 @@ export default function Files(props: Props) {
 
     const handleDownload = async (file: IFile) => {
         const signedURL = await getSignedURL({
+            token,
             bucket: import.meta.env.VITE_BUCKET,
             fileName: encodeURIComponent(`${folder}/${file.id}.${file.name.split(".").pop()}`)
         })

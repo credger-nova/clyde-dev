@@ -5,6 +5,7 @@ import theme from "../../css/theme"
 import { NovaUser } from "../../types/kpa/novaUser"
 
 import { useParams, useNavigate } from "react-router-dom"
+import { useAuth0Token } from "../../hooks/utils"
 import { usePartsReq, useGeneratePDF } from "../../hooks/partsReq"
 
 import Dialog from '@mui/material/Dialog'
@@ -31,10 +32,12 @@ interface Props {
 export default function EditDialog(props: Props) {
     const { novaUser, isFetched } = props
 
+    const token = useAuth0Token()
+
     const { mutateAsync: generatePDF } = useGeneratePDF()
     const { id } = useParams()
     const navigate = useNavigate()
-    const { data: partsReq } = usePartsReq(Number(id))
+    const { data: partsReq } = usePartsReq(token, Number(id))
 
     const [edit, setEdit] = React.useState<boolean>(false)
     const [save, setSave] = React.useState<boolean>(false)
@@ -74,7 +77,7 @@ export default function EditDialog(props: Props) {
         setPDFLoading(true)
         setAnchorEl(null)
 
-        generatePDF({ id, pricing }).then(() => {
+        generatePDF({ token, id, pricing }).then(() => {
             setPDFLoading(false)
         })
     }

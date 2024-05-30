@@ -7,6 +7,7 @@ import { NovaUser } from "../../types/kpa/novaUser"
 import { PartsReqQuery } from "../../types/partsReq"
 import { AFE } from "../../types/kpa/afe"
 
+import { useAuth0Token } from "../../hooks/utils"
 import { useAFEs } from "../../hooks/kpa/afe"
 import { useSalesOrders } from "../../hooks/netsuite/sales-order"
 import { useCustomers, useUnitLocations, useRegions, useUnits } from "../../hooks/unit"
@@ -61,15 +62,17 @@ export default function SearchFilter(props: Props) {
         scAll, setScAll
     } = props
 
-    const { data: afeNumbers, isFetching: afeFetching } = useAFEs()
-    const { data: salesOrders, isFetching: salesOrdersFetching } = useSalesOrders(true)
-    const { data: unitNumbers, isFetching: unitsFetching } = useUnits()
-    const { data: trucks, isFetching: trucksFetching } = useTrucks()
+    const token = useAuth0Token()
+
+    const { data: afeNumbers, isFetching: afeFetching } = useAFEs(token)
+    const { data: salesOrders, isFetching: salesOrdersFetching } = useSalesOrders(token, true)
+    const { data: unitNumbers, isFetching: unitsFetching } = useUnits(token)
+    const { data: trucks, isFetching: trucksFetching } = useTrucks(token)
     //const { data: parts, isFetching: partsFetching } = useParts() // TODO: add search/filter by part # - ON HOLD
-    const { data: requesters, isFetching: requestersFetching } = useAllNovaUsers()
-    const { data: customers, isFetching: customersFetching } = useCustomers()
-    const { data: unitLocations, isFetching: unitLocationsFetching } = useUnitLocations()
-    const { data: regions, isFetching: regionsFetching } = useRegions()
+    const { data: requesters, isFetching: requestersFetching } = useAllNovaUsers(token)
+    const { data: customers, isFetching: customersFetching } = useCustomers(token)
+    const { data: unitLocations, isFetching: unitLocationsFetching } = useUnitLocations(token)
+    const { data: regions, isFetching: regionsFetching } = useRegions(token)
 
     const handleSearchStringChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         setPartsReqQuery(prevState => ({

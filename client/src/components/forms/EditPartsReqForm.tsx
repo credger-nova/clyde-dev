@@ -1,6 +1,7 @@
 import * as React from "react"
 
 import { useAuth0 } from "@auth0/auth0-react"
+import { useAuth0Token } from "../../hooks/utils"
 import { useAFEs } from "../../hooks/kpa/afe"
 import { useSalesOrders } from "../../hooks/netsuite/sales-order"
 import { useUnits } from "../../hooks/unit"
@@ -289,17 +290,18 @@ export default function EditPartsReqForm(props: Props) {
     const { partsReq, save, setSave, setSaveDisabled, edit, reset, setReset } = props
 
     const { user } = useAuth0()
+    const token = useAuth0Token()
     const navigate = useNavigate()
 
-    const { data: novaUser, isFetched } = useNovaUser(user?.email)
+    const { data: novaUser, isFetched } = useNovaUser(token, user?.email)
 
-    const { data: afes, isFetching: afeFetching } = useAFEs()
-    const { data: salesOrders, isFetching: salesOrdersFetching } = useSalesOrders()
-    const { data: unitNumbers, isFetching: unitsFetching } = useUnits()
-    const { data: trucks, isFetching: trucksFetching } = useTrucks()
-    const { data: parts, isFetching: partsFetching } = useParts()
-    const { data: locations, isFetching: locationsFetching } = useLocations()
-    const { data: vendors, isFetching: vendorsFetching } = useVendors()
+    const { data: afes, isFetching: afeFetching } = useAFEs(token)
+    const { data: salesOrders, isFetching: salesOrdersFetching } = useSalesOrders(token)
+    const { data: unitNumbers, isFetching: unitsFetching } = useUnits(token)
+    const { data: trucks, isFetching: trucksFetching } = useTrucks(token)
+    const { data: parts, isFetching: partsFetching } = useParts(token)
+    const { data: locations, isFetching: locationsFetching } = useLocations(token)
+    const { data: vendors, isFetching: vendorsFetching } = useVendors(token)
 
     const { mutateAsync: updatePartsReq } = useUpdatePartsReq()
     const { mutateAsync: uploadFiles } = useUploadFiles()
@@ -335,7 +337,7 @@ export default function EditPartsReqForm(props: Props) {
     const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null)
     const confirmDeleteRowOpen = Boolean(anchorEl)
 
-    const { data: afeExistingAmount } = useSumPrWithAfe(afe ? afe.number : "")
+    const { data: afeExistingAmount } = useSumPrWithAfe(token, afe ? afe.number : "")
 
     const afeFilter = createFilterOptions<AFE>({
         matchFrom: "any",
@@ -424,6 +426,7 @@ export default function EditPartsReqForm(props: Props) {
     React.useEffect(() => {
         async function update() {
             const updateReq = {
+                token: token,
                 user: novaUser!,
                 updateReq: {
                     id: partsReq.id,
@@ -458,7 +461,7 @@ export default function EditPartsReqForm(props: Props) {
                     formData.append("folder", "parts-req")
                     formData.append("file", newFiles[i], `${res.files[i].id}.${res.files[i].name.split(".").pop()}`)
 
-                    await uploadFiles({ formData })
+                    await uploadFiles({ token, formData })
                 }
             }).then(() => {
                 navigate("../")

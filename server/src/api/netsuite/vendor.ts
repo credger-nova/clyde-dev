@@ -5,11 +5,11 @@ import { prisma } from "../../utils/prisma-client"
 export const getAllVendors = async (inactive?: "true") => {
     let vendors = await prisma.vendor.findMany({
         where: {
-            ...(inactive !== "true" ? { active: true } : {})
+            ...(inactive !== "true" ? { active: true } : {}),
         },
         orderBy: {
-            name: "asc"
-        }
+            name: "asc",
+        },
     })
 
     return vendors as Array<Vendor>

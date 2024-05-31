@@ -11,11 +11,7 @@ async function routes(fastify: FastifyInstance) {
         const buffer = await data?.toBuffer()
 
         if (data) {
-            await uploadFile(
-                (data.fields as any).bucket.value,
-                `${(data.fields as any).folder.value}/${data.filename}`,
-                buffer
-            )
+            await uploadFile((data.fields as any).bucket.value, `${(data.fields as any).folder.value}/${data.filename}`, buffer)
 
             res.status(204)
         } else {
@@ -24,7 +20,7 @@ async function routes(fastify: FastifyInstance) {
     })
 
     // Get a signed URL for a given file
-    fastify.get<{ Params: { bucket: string, fileName: string } }>("/:bucket/:fileName", async (req, res) => {
+    fastify.get<{ Params: { bucket: string; fileName: string } }>("/:bucket/:fileName", async (req, res) => {
         const { bucket, fileName } = req.params
 
         const signedURL = await generateSignedURL(bucket, fileName)

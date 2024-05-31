@@ -7,7 +7,10 @@ import dotenv from "dotenv"
 
 dotenv.config()
 
-const fastify = Fastify({ querystringParser: str => qs.parse(str), logger: true })
+const fastify = Fastify({
+    querystringParser: (str) => qs.parse(str),
+    logger: true,
+})
 
 const createServer = async () => {
     await fastify.register(cors)
@@ -15,7 +18,7 @@ const createServer = async () => {
     await fastify.register(fastifyAuth0Verify, {
         domain: process.env.AUTH0_DOMAIN,
         audience: process.env.AUTH0_AUDIENCE,
-        secret: process.env.AUTH0_CLIENT_SECRET
+        secret: process.env.AUTH0_CLIENT_SECRET,
     })
 
     // Only need to verify JWT on deployed environments

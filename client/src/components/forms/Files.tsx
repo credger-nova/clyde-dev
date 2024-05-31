@@ -4,21 +4,21 @@ import { useGetSignedURL } from "../../hooks/storage"
 import { useAuth0Token } from "../../hooks/utils"
 
 import { File as IFile } from "../../types/file"
-import List from '@mui/material/List'
-import ListItem from '@mui/material/ListItem'
-import IconButton from '@mui/material/IconButton'
+import List from "@mui/material/List"
+import ListItem from "@mui/material/ListItem"
+import IconButton from "@mui/material/IconButton"
 import ListItemText from "@mui/material/ListItemText"
-import DeleteIcon from '@mui/icons-material/Delete'
-import DeleteForeverIcon from '@mui/icons-material/DeleteForever'
-import DownloadIcon from '@mui/icons-material/Download'
+import DeleteIcon from "@mui/icons-material/Delete"
+import DeleteForeverIcon from "@mui/icons-material/DeleteForever"
+import DownloadIcon from "@mui/icons-material/Download"
 
 interface Props {
-    newFiles: Array<File>,
-    setNewFiles: React.Dispatch<React.SetStateAction<Array<File>>>,
-    files: Array<IFile>,
-    deleteFiles: Array<string>,
-    setDeleteFiles: React.Dispatch<React.SetStateAction<Array<string>>>,
-    folder: string,
+    newFiles: Array<File>
+    setNewFiles: React.Dispatch<React.SetStateAction<Array<File>>>
+    files: Array<IFile>
+    deleteFiles: Array<string>
+    setDeleteFiles: React.Dispatch<React.SetStateAction<Array<string>>>
+    folder: string
     disabled: boolean
 }
 
@@ -39,7 +39,7 @@ export default function Files(props: Props) {
         const signedURL = await getSignedURL({
             token,
             bucket: import.meta.env.VITE_BUCKET,
-            fileName: encodeURIComponent(`${folder}/${file.id}.${file.name.split(".").pop()}`)
+            fileName: encodeURIComponent(`${folder}/${file.id}.${file.name.split(".").pop()}`),
         })
 
         window.open(signedURL, "_blank")
@@ -53,29 +53,34 @@ export default function Files(props: Props) {
             tempRows.splice(index, 1)
             setDeleteFiles(tempRows)
         } else {
-            setDeleteFiles(prevState => [...prevState, id])
+            setDeleteFiles((prevState) => [...prevState, id])
         }
-
     }
 
     return (
         <div>
-            {newFiles ?
+            {newFiles ? (
                 <React.Fragment>
-                    <List
-                        dense
-                        sx={{ padding: "0px" }}
-                    >
+                    <List dense sx={{ padding: "0px" }}>
                         {Array.from(newFiles).map((file, index) => {
                             return (
                                 <React.Fragment>
                                     <ListItem
                                         key={`${index} - ${file.name}`}
-                                        sx={{ padding: "5px", marginBottom: "5px", borderRadius: "0.25rem", backgroundColor: "background.paper" }}
+                                        sx={{
+                                            padding: "5px",
+                                            marginBottom: "5px",
+                                            borderRadius: "0.25rem",
+                                            backgroundColor: "background.paper",
+                                        }}
                                     >
                                         <ListItemText>{file.name}</ListItemText>
                                         <div
-                                            style={{ display: "flex", justifyContent: "flex-end", alignItems: "center" }}
+                                            style={{
+                                                display: "flex",
+                                                justifyContent: "flex-end",
+                                                alignItems: "center",
+                                            }}
                                         >
                                             <p
                                                 style={{
@@ -86,7 +91,7 @@ export default function Files(props: Props) {
                                                     borderRadius: "1rem",
                                                     fontWeight: "bold",
                                                     backgroundColor: "#00800030",
-                                                    height: "fit-content"
+                                                    height: "fit-content",
                                                 }}
                                             >
                                                 New
@@ -105,58 +110,53 @@ export default function Files(props: Props) {
                             )
                         })}
                     </List>
-                </React.Fragment> : null
-            }
-            <List
-                dense
-                sx={{ padding: "0px" }}
-            >
-                {files ? files.map((file, index) =>
-                    !file.isDeleted &&
-                    <ListItem
-                        key={`${index} - ${file.name}`}
-                        sx={{ padding: "5px", marginBottom: "5px", borderRadius: "0.25rem", backgroundColor: "background.paper" }}
-                    >
-                        <ListItemText>{file.name.split("/").pop()}</ListItemText>
-                        <div
-                            style={{ display: "flex", justifyContent: "flex-end", alignItems: "center" }}
-                        >
-                            {deleteFiles.includes(file.id) ? <p
-                                style={{
-                                    color: "red",
-                                    margin: "0px",
-                                    padding: "0px 5px",
-                                    border: "2px solid red",
-                                    borderRadius: "1rem",
-                                    fontWeight: "bold",
-                                    backgroundColor: "#80000030",
-                                    height: "fit-content"
-                                }}
-                            >
-                                Delete
-                            </p> : null}
-                            {!deleteFiles.includes(file.id) ?
-                                <IconButton
-                                    disableRipple
-                                    onClick={() => handleDownload(file)}
-                                    sx={{ padding: "5px" }}
-                                >
-                                    <DownloadIcon />
-                                </IconButton> : null}
-                            <IconButton
-                                disableRipple
-                                onClick={() => handleDelete(file.id)}
-                                disabled={disabled}
-                                sx={{ padding: "5px" }}
-                            >
-                                {deleteFiles.includes(file.id) ?
-                                    <DeleteForeverIcon /> :
-                                    <DeleteIcon />
-                                }
-                            </IconButton>
-                        </div>
-                    </ListItem>
-                ) : null}
+                </React.Fragment>
+            ) : null}
+            <List dense sx={{ padding: "0px" }}>
+                {files
+                    ? files.map(
+                          (file, index) =>
+                              !file.isDeleted && (
+                                  <ListItem
+                                      key={`${index} - ${file.name}`}
+                                      sx={{
+                                          padding: "5px",
+                                          marginBottom: "5px",
+                                          borderRadius: "0.25rem",
+                                          backgroundColor: "background.paper",
+                                      }}
+                                  >
+                                      <ListItemText>{file.name.split("/").pop()}</ListItemText>
+                                      <div style={{ display: "flex", justifyContent: "flex-end", alignItems: "center" }}>
+                                          {deleteFiles.includes(file.id) ? (
+                                              <p
+                                                  style={{
+                                                      color: "red",
+                                                      margin: "0px",
+                                                      padding: "0px 5px",
+                                                      border: "2px solid red",
+                                                      borderRadius: "1rem",
+                                                      fontWeight: "bold",
+                                                      backgroundColor: "#80000030",
+                                                      height: "fit-content",
+                                                  }}
+                                              >
+                                                  Delete
+                                              </p>
+                                          ) : null}
+                                          {!deleteFiles.includes(file.id) ? (
+                                              <IconButton disableRipple onClick={() => handleDownload(file)} sx={{ padding: "5px" }}>
+                                                  <DownloadIcon />
+                                              </IconButton>
+                                          ) : null}
+                                          <IconButton disableRipple onClick={() => handleDelete(file.id)} disabled={disabled} sx={{ padding: "5px" }}>
+                                              {deleteFiles.includes(file.id) ? <DeleteForeverIcon /> : <DeleteIcon />}
+                                          </IconButton>
+                                      </div>
+                                  </ListItem>
+                              )
+                      )
+                    : null}
             </List>
         </div>
     )

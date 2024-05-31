@@ -34,7 +34,7 @@ async function routes(fastify: FastifyInstance) {
     })
 
     // Route to get all employees under a manager
-    fastify.get("/manager/:id/employees", async (req: FastifyRequest<{ Params: { id: string }, Querystring: { inactive: "true" } }>, res) => {
+    fastify.get("/manager/:id/employees", async (req: FastifyRequest<{ Params: { id: string }; Querystring: { inactive: "true" } }>, res) => {
         const { id } = req.params
         const { inactive } = req.query
 
@@ -44,7 +44,7 @@ async function routes(fastify: FastifyInstance) {
     })
 
     // Route to get all employees under a director
-    fastify.get("/director/:id/employees", async (req: FastifyRequest<{ Params: { id: string }, Querystring: { inactive: "true" } }>, res) => {
+    fastify.get("/director/:id/employees", async (req: FastifyRequest<{ Params: { id: string }; Querystring: { inactive: "true" } }>, res) => {
         const { id } = req.params
         const { inactive } = req.query
 

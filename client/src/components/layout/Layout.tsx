@@ -42,7 +42,6 @@ const DrawerHeader = styled("div")(({ theme }) => ({
     justifyContent: "flex-end",
 }))
 
-
 type Props = {
     children: React.ReactNode
 }
@@ -58,38 +57,25 @@ export default function Layout({ children }: Props) {
 
     return (
         <Box sx={{ display: "flex", height: "100%" }}>
-            <AppBar
-                position="fixed"
-                sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}
-            >
+            <AppBar position="fixed" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
                 <Toolbar
                     sx={{
                         alignItems: "center",
-                        justifyContent: "space-between"
+                        justifyContent: "space-between",
                     }}
                 >
                     <div style={{ display: "flex", alignItems: "center" }}>
-                        <IconButton
-                            color="inherit"
-                            aria-label="open drawer"
-                            onClick={onDrawerToggle}
-                            edge="start"
-                        >
+                        <IconButton color="inherit" aria-label="open drawer" onClick={onDrawerToggle} edge="start">
                             <MenuIcon />
                         </IconButton>
-                        <Link
-                            component={RouterLink}
-                            to="/"
-                        >
+                        <Link component={RouterLink} to="/">
                             <img
                                 src="https://res.cloudinary.com/dvdturlak/image/upload/v1701810257/Kepler/nova-simple_yrdti4.svg"
                                 alt="Nova Compression"
                                 style={{ height: "3.5em", marginLeft: "5px" }}
                             />
                         </Link>
-                        <h3
-                            style={{ margin: "0px 0px 0px 20px", fontSize: "40px", fontWeight: 100, color: "orange" }}
-                        >
+                        <h3 style={{ margin: "0px 0px 0px 20px", fontSize: "40px", fontWeight: 100, color: "orange" }}>
                             {ENV === "test" ? "TEST" : null}
                         </h3>
                     </div>

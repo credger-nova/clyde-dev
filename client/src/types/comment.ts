@@ -1,6 +1,6 @@
 export interface Comment {
-    id: string,
-    comment: string,
-    name: string,
+    id: string
+    comment: string
+    name: string
     timestamp: Date
 }

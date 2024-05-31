@@ -22,9 +22,9 @@ export const getAllUnits = async () => {
     const allUnits = await prisma.unit.findMany({
         orderBy: [
             {
-                unitNumber: "asc"
-            }
-        ]
+                unitNumber: "asc",
+            },
+        ],
     })
 
     return allUnits
@@ -34,8 +34,8 @@ export const getAllUnits = async () => {
 export const getUnit = async (unitNum: string) => {
     const unit = await prisma.unit.findUnique({
         where: {
-            unitNumber: unitNum
-        }
+            unitNumber: unitNum,
+        },
     })
 
     return unit
@@ -46,13 +46,13 @@ export const getAllCustomers = async () => {
     const allUnits = await prisma.unit.findMany({
         distinct: ["customer"],
         select: {
-            customer: true
-        }
+            customer: true,
+        },
     })
 
     const customers = allUnits
-        .map(item => item.customer)
-        .filter(item => item)
+        .map((item) => item.customer)
+        .filter((item) => item)
         .sort()
 
     return customers
@@ -63,13 +63,13 @@ export const getAllLocations = async () => {
     const allUnits = await prisma.unit.findMany({
         distinct: ["location"],
         select: {
-            location: true
-        }
+            location: true,
+        },
     })
 
     const locations = allUnits
-        .map(item => item.location)
-        .filter(item => item)
+        .map((item) => item.location)
+        .filter((item) => item)
         .sort()
 
     return locations
@@ -80,13 +80,13 @@ export const getAllRegions = async () => {
     const allUnits = await prisma.unit.findMany({
         distinct: ["operationalRegion"],
         select: {
-            operationalRegion: true
-        }
+            operationalRegion: true,
+        },
     })
 
     const regions = allUnits
-        .map(item => item.operationalRegion)
-        .filter(item => item)
+        .map((item) => item.operationalRegion)
+        .filter((item) => item)
         .sort((a, b) => REGION_SORT.indexOf(a ?? "") - REGION_SORT.indexOf(b ?? ""))
 
     return regions
@@ -97,13 +97,13 @@ export const getAllManagers = async () => {
     const allUnits = await prisma.unit.findMany({
         distinct: ["assignedManager"],
         select: {
-            assignedManager: true
-        }
+            assignedManager: true,
+        },
     })
 
     const managers = allUnits
-        .map(item => item.assignedManager)
-        .filter(item => item)
+        .map((item) => item.assignedManager)
+        .filter((item) => item)
         .sort()
 
     return managers
@@ -117,8 +117,8 @@ export const generateUnitsLayer = async (manager?: string) => {
     if (manager) {
         allUnits = await prisma.unit.findMany({
             where: {
-                assignedManager: manager
-            }
+                assignedManager: manager,
+            },
         })
     } else {
         allUnits = await prisma.unit.findMany()
@@ -130,7 +130,7 @@ export const generateUnitsLayer = async (manager?: string) => {
                 type: "Feature",
                 geometry: {
                     type: "Point",
-                    coordinates: formatCoordinates(unit.coordinates)
+                    coordinates: formatCoordinates(unit.coordinates),
                 },
                 properties: {
                     unitNumber: unit.unitNumber,
@@ -146,8 +146,8 @@ export const generateUnitsLayer = async (manager?: string) => {
                     mechanic: unit.assignedTechnician,
                     manager: unit.assignedManager,
                     director: unit.assignedDirector,
-                    coordinates: unit.coordinates
-                }
+                    coordinates: unit.coordinates,
+                },
             } as GeoJSONFeature
 
             features.push(feature)
@@ -156,7 +156,7 @@ export const generateUnitsLayer = async (manager?: string) => {
 
     const layer = {
         type: "FeatureCollection",
-        features: features
+        features: features,
     }
 
     return layer
@@ -180,5 +180,5 @@ export const getCentroid = (features: Array<GeoJSONFeature>) => {
     const latCenter = (minLat + maxLat) / 2
     const longCenter = (minLong + maxLong) / 2
 
-    return ([latCenter, longCenter])
+    return [latCenter, longCenter]
 }

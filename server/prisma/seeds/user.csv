@@ -1,0 +1,353 @@
+"id","first_name","last_name","email","cell_phone","job_title","region","manager_id","supervisor_id","termination_date"
+"642c32f56fd94002bacf355e","Cole","Shugart","cshugart@nova-compression.com","254-203-2036","Field Service Technician","South Texas","621d02f3b1acc9410c52a2c1","6564b11fe730e40021ce6a5c",NULL
+"621d02f4b1acc9410c52a308","Kane (Kendall)","Moreland","kmoreland@nova-compression.com","979-877-8255","Field Service Technician - Lead","Pecos","621d02f3b1acc9410c52a2c2","621d02f3b1acc9410c52a2c2","2024-04-22 05:00:00"
+"6418a9659b7bd71b5a1a1824","Wyatt","Williamson","wwilliamson@nova-compression.com","318-535-3548","Field Service Technician","East Texas","621d02f3b1acc9410c52a2c1","621d02f4b1acc9410c52a2db",NULL
+"6282c043095b240034e8e0d6","Casey","Sullivan","csullivan@nova-compression.com","806-290-8742","Field Service Technician - Lead","North Permian","623373f22a8c0500144d2783","6390a788e2e8a433f3a3c230",NULL
+"6297af63e88ab90022324f24","Justin","Briscoe","jbriscoe@nova-compression.com","903-388-4017","Coordinator - Supply Chain","South Texas","633f207e075a3f07a42cd43f","65c63e66ca4b920017327c9f",NULL
+"64e61f0cecacbe6938dbe730","Garret","Wilson","gwilson@nova-compression.com","580-822-5728","Field Service Technician","Midcon","621d02f5b1acc9410c52a327","621d02f5b1acc9410c52a31c",NULL
+"621d02f3b1acc9410c52a2bb","Amanda","Wright","awright@nova-compression.com","405-808-2627","Manager - Office","Corporate","621d02f3b1acc9410c52a2b7","621d02f3b1acc9410c52a2b9",NULL
+"621d02f4b1acc9410c52a30d","Jim","Reeves","jreeves@nova-compression.com","","Field Service Technician","Pecos","621d02f4b1acc9410c52a2ec","621d02f4b1acc9410c52a301","2022-06-23 05:00:00"
+"62f672ecfb861b4dc7b7b26f","Brian","Rector","brector@nova-compression.com","817-821-7947","Field Service Technician - Third Party","East Texas,South Texas","621d02f4b1acc9410c52a2ec","621d02f3b1acc9410c52a2cd","2022-09-29 05:00:00"
+"621d02f4b1acc9410c52a301","Kevin","Gills","kgills@nova-compression.com","432-352-8328","Manager - Operations","North Permian","621d02f4b1acc9410c52a2ec","621d02f3b1acc9410c52a2d4","2022-10-10 05:00:00"
+"62335eb6f6fec8003fc5d642","Tony","Tarango","jtarango@nova-compression.com","432-889-6513","Field Service Technician","North Permian","621d02f3b1acc9410c52a2d4","621d02f4b1acc9410c52a30a","2022-10-10 05:00:00"
+"637be4637b95513dfb43adb6","Blake","Marceaux","bmarceaux@nova-compression.com","318-717-2755","Field Service Technician","Carlsbad","621d02f4b1acc9410c52a2ec","621d02f3b1acc9410c52a2c2","2023-06-02 05:00:00"
+"647e42f11f53392675ae0d03","Dakota","Brittain","dbrittain@nova-compression.com","409-429-0649","Field Service Technician","South Texas","621d02f3b1acc9410c52a2c1","621d02f3b1acc9410c52a2d1","2023-07-31 05:00:00"
+"64ff234d97e662005872a511","George","Morrison","gmorrison@nova-compression.com","337-459-4479","Field Service Technician - Senior","North Permian","621d02f3b1acc9410c52a2c2","623373f22a8c0500144d2783","2023-10-02 05:00:00"
+"621d02f5b1acc9410c52a326","Kelby","Martin","kmartin@nova-compression.com","580-922-1993","Field Service Technician","Midcon","621d02f5b1acc9410c52a327","621d02f5b1acc9410c52a31c","2023-12-08 06:00:00"
+"657b25a94bd47edc78221b56","Abraham","Arevalo","aarevalo@nova-compression.com","432-248-9114","Parts Runner - Supply Chain","Carlsbad,North Permian,Pecos,South Permian","65805f6c6647a10021ea05a7","640b5fd5ee88ef1fd69a0543",NULL
+"628266899a986d003f844611","Doug","Collins","dcollins@nova-compression.com","405-623-7294","Coordinator - Supply Chain","Corporate","633f207e075a3f07a42cd43f","65805f6c6647a10021ea05a7",NULL
+"6424939da9cc06001a977c51","Carter","Dennis","cdennis@nova-compression.com","405-543-7407","Software Developer","Corporate","621d02f3b1acc9410c52a2b9","621d02f3b1acc9410c52a2ba",NULL
+"621d02f3b1acc9410c52a2b5","Katie","Edwards","kedwards@nova-compression.com","580-774-9470","Supervisor - Human Resources","Corporate","621d02f3b1acc9410c52a2b7","621d02f3b1acc9410c52a2b9",NULL
+"62586b47466a500034f32b71","Eliacer","Alvarado","ealvarado@nova-compression.com","932-488-9776","Field Service Technician","South Permian","657733f96bb7a8001a2dba01","621d02f4b1acc9410c52a30a","2023-12-28 06:00:00"
+"62ffad04c418ac19d55cf554","Matthew","Hicks","mhicks@nova-compression.com","903-578-1517","Field Service Technician","East Texas","621d02f3b1acc9410c52a2c1","621d02f4b1acc9410c52a2db",NULL
+"63b30392acb9bd003f0341ef","Chris","Hussong","chussong@nova-compression.com","318-452-0747","Field Service Technician","Carlsbad","621d02f3b1acc9410c52a2c2","648243d491b5354ea81fead2",NULL
+"64ac0c5eb99adf6c5d9e09a8","Caleb","Kirk","ckirk@nova-compression.com","580-374-4887","Field Service Technician","Midcon","621d02f5b1acc9410c52a327","621d02f5b1acc9410c52a329",NULL
+"621d02f4b1acc9410c52a2db","Bob","Lewis","rlewis@nova-compression.com","903-806-1902","Manager - Operations","East Texas","621d02f4b1acc9410c52a2ec","621d02f3b1acc9410c52a2c1",NULL
+"621d02f3b1acc9410c52a2b8","Elizabeth","Redger","eredger@nova-compression.com","405-256-8021","Supervisor - Accounting","Corporate","621d02f3b1acc9410c52a2b9","62c8695a5e5f372b0b4acf22",NULL
+"663ce2438918890025bb34b3","Jorge","Renteria","jrenteria@nova-compression.com","915-615-9051","Electrician - Master","North Permian","6543d0f0cac23529fce06820","623373f22a8c0500144d2783",NULL
+"621d02f4b1acc9410c52a2e0","Ryan","Sanders","rsanders@nova-compression.com","903-722-4479","Shop Service Technician","East Texas","621d02f3b1acc9410c52a2cd","643ec5ea48ece34f57e73334",NULL
+"621d02f4b1acc9410c52a2e7","Jason","Waldon","jwaldon@nova-compression.com","903-452-3441","Shop Service Technician - Lead","East Texas","621d02f4b1acc9410c52a2ec","621d02f3b1acc9410c52a2cd","2023-07-17 05:00:00"
+"66461d6760ebff002554ebcc","Nadran","Anthony","nanthony@nova-compression.com","682-368-8245","Field Service Technician - Senior","North Permian","623373f22a8c0500144d2783","6390a788e2e8a433f3a3c230",NULL
+"64be9293d251fd0a92ec5882","Anthony","Blanchard","ablanchard@nova-compression.com","850-797-4510","Field Service Technician","Pecos","621d02f3b1acc9410c52a2c2","621d02f3b1acc9410c52a2c2",NULL
+"621d02f5b1acc9410c52a31d","Anthony","Davenport","adavenport@nova-compression.com","806-662-4745","Field Service Technician","Midcon","621d02f5b1acc9410c52a327","621d02f5b1acc9410c52a328",NULL
+"621d02f4b1acc9410c52a2de","Terry","Miller","tmiller@nova-compression.com","765-561-6419","Shop Service Technician","East Texas","621d02f3b1acc9410c52a2cd","643ec5ea48ece34f57e73334",NULL
+"621d02f3b1acc9410c52a2c5","Jeremy","Judd","jjudd@nova-compression.com","832-494-7298","Field Service Technician","South Texas","621d02f3b1acc9410c52a2c1","621d02f3b1acc9410c52a2c2","2022-07-20 05:00:00"
+"621d02f3b1acc9410c52a2c3","Lee","Fogle","lfogle@nova-compression.com","903-388-9378","Field Service Technician","South Texas","621d02f3b1acc9410c52a2c1","621d02f3b1acc9410c52a2cd","2022-08-15 05:00:00"
+"621d02f4b1acc9410c52a304","Steve","Jameson II","sjameson@nova-compression.com","936-590-5222","Field Service Technician","Pecos","621d02f4b1acc9410c52a301","623373f22a8c0500144d2783","2022-07-14 05:00:00"
+"65b13736fb5ffb0016ddb500","Test","Test1","test1@nova-compression.com","","Field Service Technician","North Permian","65e9f18019ad6d0034338574","65b1381840e5cd002ae92bd0",NULL
+"66300486070ea4001e4b67bd","Akim","Sasu","asasu@nova-compression.com","432-940-2416","I&E Technician","North Permian","623373f22a8c0500144d2783","6390a788e2e8a433f3a3c230",NULL
+"6476155f70792c0a78b00a84","Nick","Railey","nrailey@nova-compression.com","936-933-2590","Field Service Technician","South Texas","621d02f3b1acc9410c52a2c1","621d02f3b1acc9410c52a2d1","2023-06-05 05:00:00"
+"62e2b6d96bf83700227a32e2","Bob","Carter","bob@rwccc.com","","Diligence","Administrative",NULL,NULL,NULL
+"62b9d3420dc48f0014250f9d","Brian","Arthur, Jr.","barthurjr@nova-compression.com","706-220-0111","Field Service Technician","North Permian","623373f22a8c0500144d2783","6390a788e2e8a433f3a3c230","2024-04-23 05:00:00"
+"62f28749a16b490034de6a2d","Michael","Daughtrey","mdaughtrey@nova-compression.com","979-203-0547","Field Service Technician","South Texas","621d02f3b1acc9410c52a2c1","6564b11fe730e40021ce6a5c",NULL
+"62c86adee17bd01074a597e2","Rusty","Nail","rnail@nova-compression.com","903-424-7241","Shop Service Technician - Lead","East Texas","621d02f3b1acc9410c52a2d0","6228f473e10b0a0022d2903c","2023-06-24 05:00:00"
+"663bd9433fb69500254ba256","Larry","Dempsey","ldempsey@nova-compression.com","254-203-1251","Field Service Technician","Pecos","621d02f3b1acc9410c52a2c2","621d02f3b1acc9410c52a2c2",NULL
+"640b5fd5ee88ef1fd69a0543","Edward","Heredia","eheredia@nova-compression.com","432-999-8775","Warehouse Supervisor - Supply Chain","Carlsbad,North Permian,Pecos,South Permian","633f207e075a3f07a42cd43f","65805f6c6647a10021ea05a7",NULL
+"621d02f4b1acc9410c52a2ed","Mike","Aaron","maaron@nova-compression.com","432-381-8481","Director - Operations","Carlsbad","621d02f3b1acc9410c52a2b7","621d02f4b1acc9410c52a303","2022-06-02 05:00:00"
+"621d02f4b1acc9410c52a2e4","Adarius","Stanley","astanley@nova-compression.com","903-987-2328","Field Service Technician - Lead","East Texas","621d02f3b1acc9410c52a2c1","621d02f4b1acc9410c52a2db",NULL
+"6317891472799a01445f40b4","Chris","Holy","choly@nova-compression.com","936-662-9251","Field Service Technician","East Texas","621d02f3b1acc9410c52a2c1","621d02f3b1acc9410c52a2d1","2023-11-03 05:00:00"
+"642c323badee5b04f4f20c22","Robert","Burchett","rburchett@nova-compression.com","936-355-1038","Field Service Technician","North Permian","621d02f3b1acc9410c52a2c2","623373f22a8c0500144d2783","2023-08-04 05:00:00"
+"6627e154bc2c1500259ea983","Charlie","Perez","cperez@nova-compression.com","580-829-2010","Field Service Technician","Midcon","621d02f5b1acc9410c52a327","621d02f5b1acc9410c52a31c",NULL
+"64ac11dc19eb490f5f26e4a2","Daron","Trull","dtrull@nova-compression.com","337-356-1953","Field Service Technician","Carlsbad","621d02f3b1acc9410c52a2c2","648243d491b5354ea81fead2","2023-10-28 05:00:00"
+"621d02f4b1acc9410c52a306","Mason","Linney","mlinney@nova-compression.com","432-444-1322","Field Service Technician - Lead","North Permian","623373f22a8c0500144d2783","6390a788e2e8a433f3a3c230",NULL
+"65805e886dd558002c05d7a9","Ryan","Wingo","rwingo@nova-compression.com","405-537-7311","Field Service Technician","Midcon","621d02f5b1acc9410c52a327","621d02f5b1acc9410c52a329",NULL
+"621d02f3b1acc9410c52a2ba","Jason","Taylor","jtaylor@nova-compression.com","405-570-8884","Vice President - Supply Chain and Analysis","Corporate","621d02f3b1acc9410c52a2b7","621d02f3b1acc9410c52a2b7",NULL
+"621d02f4b1acc9410c52a30a","Clayton","Peavy","cpeavy@nova-compression.com","432-269-3119","Manager - Operations","South Permian","6543d0f0cac23529fce06820","623373f22a8c0500144d2783",NULL
+"621d02f3b1acc9410c52a2ce","Donnie","Berry","nberry@nova-compression.com","318-245-3327","Field Service Technician","East Texas","621d02f4b1acc9410c52a2db","621d02f4b1acc9410c52a2db","2022-07-22 05:00:00"
+"621d02f3b1acc9410c52a2bc","Bobby","Beldin","bbeldin@nova-compression.com","254-625-0556","Supervisor - Shop","South Texas","621d02f3b1acc9410c52a2c1","621d02f3b1acc9410c52a2cd",NULL
+"621d02f3b1acc9410c52a2be","Jimmy","Bourland Sr.","jbourland@nova-compression.com","903-808-0278","Field Service Technician - Third Party Lead","East Texas","621d02f4b1acc9410c52a2ec","621d02f3b1acc9410c52a2c1",NULL
+"621d02f3b1acc9410c52a2d2","Kaz","Ephraim","kephraim@nova-compression.com","903-690-4472","Field Service Technician - Lead","Carlsbad","621d02f3b1acc9410c52a2c2","648243d491b5354ea81fead2",NULL
+"621d02f4b1acc9410c52a2f9","Bertha","Carrillo","bcarrillo@nova-compression.com","432-230-3754","Associate - Accounting","Carlsbad,North Permian,Pecos,South Permian","62c8695a5e5f372b0b4acf22","621d02f4b1acc9410c52a2e1",NULL
+"621d02f4b1acc9410c52a2ea","Daniel","Watts","dwatts@nova-compression.com","903-619-3027","Supervisor - Shop","East Texas","621d02f4b1acc9410c52a2ec","621d02f3b1acc9410c52a2d0","2023-06-24 05:00:00"
+"62589899b6d35f00298f51eb","Lucas","Gosling","lgosling@nova-compression.com","682-936-9915","Field Service Technician - Senior","North Permian","623373f22a8c0500144d2783","6390a788e2e8a433f3a3c230",NULL
+"aa341d00-5c46-4ba0-900c-88c328e39228","Test","Test10","test10@nova-compression.com","","Field Service Technician","South Permian","65e9f18019ad6d0034338574","65b1386a093dd9004b7f3870",NULL
+"65b13795ab5e3800209cd659","Test","Test2","test2@nova-compression.com","","Field Service Technician - Lead","North Permian","65e9f18019ad6d0034338574","65b1381840e5cd002ae92bd0",NULL
+"65b1381840e5cd002ae92bd0","Test","Test3","test3@nova-compression.com","","Manager - Operations","North Permian","65f9c83fe8321f004e8975c3","65e9f18019ad6d0034338574",NULL
+"65b1386a093dd9004b7f3870","Test","Test4","test4@nova-compression.com","","Manager - Operations","South Permian","65f9c83fe8321f004e8975c3","65e9f18019ad6d0034338574",NULL
+"65e9f18019ad6d0034338574","Test","Test5","test5@nova-compression.com","","Director - Operations","North Permian,South Permian",NULL,"65f9c83fe8321f004e8975c3",NULL
+"65f9c83fe8321f004e8975c3","Test","Test6","test6@nova-compression.com","","Vice President - Operations","Corporate",NULL,NULL,NULL
+"d298b421-b779-4e8d-bafe-553cd6ff62ed","Test","Test9","test9@nova-compression.com","","Vice President - Supply Chain and Analysis","Corporate",NULL,NULL,NULL
+"65f9c8989cfe6c00341f68c5","Test","Test7","test7@nova-compression.com","","Supervisor - Supply Chain","Carlsbad,Pecos,North Permian,South Permian","d298b421-b779-4e8d-bafe-553cd6ff62ed","a10f85ca-7e9b-4665-8aa2-41c020bfb775",NULL
+"a10f85ca-7e9b-4665-8aa2-41c020bfb775","Test","Test8","test8@nova-compression.com","","Manager - Supply Chain","Corporate",NULL,"d298b421-b779-4e8d-bafe-553cd6ff62ed",NULL
+"6261c830e1f79d64865fb316","Jason","Wright","jwright@nova-compression.com","405-210-2574","Manager - IT","Corporate","621d02f3b1acc9410c52a2b9","621d02f3b1acc9410c52a2ba",NULL
+"621d02f5b1acc9410c52a31c","Dylan","Cunningham","dcunningham@nova-compression.com","580-732-0380","Manager - Operations","Midcon","621d02f4b1acc9410c52a2ec","621d02f5b1acc9410c52a327",NULL
+"6511e657a07ada0058eee951","Brandon","Stehling","bstehling@nova-compression.com","361-571-9858","Field Service Technician","South Texas","621d02f3b1acc9410c52a2c1","6564b11fe730e40021ce6a5c",NULL
+"621d02f4b1acc9410c52a2fc","Brandon","Donnell","bdonnell@nova-compression.com","936-219-8595","Field Service Technician - Lead","North Permian","623373f22a8c0500144d2783","6390a788e2e8a433f3a3c230",NULL
+"651d805225a7cc0042f5b9e2","Seth","Knighton","sknighton@nova-compression.com","903-987-1585","Field Service Technician","East Texas","621d02f3b1acc9410c52a2c1","621d02f4b1acc9410c52a2db",NULL
+"62571941915b040034277042","Kendra","Redfearn","kredfearn@nova-compression.com","580-571-4628","Revenue Analyst","Midcon","621d02f3b1acc9410c52a2ba","621d02f3b1acc9410c52a2b8",NULL
+"621d02f3b1acc9410c52a2c9","Joe","Treadaway","jtreadaway@nova-compression.com","936-533-7241","Field Service Technician","South Texas","621d02f3b1acc9410c52a2c1","621d02f3b1acc9410c52a2c2","2022-05-30 05:00:00"
+"65085f1544a40d003362d68a","Mikel","Cox","mcox@nova-compression.com","337-250-6037","Field Service Technician","Pecos","621d02f3b1acc9410c52a2c2","623373f22a8c0500144d2783","2023-10-09 05:00:00"
+"6543d393a15c120042d16c23","Austin","McGinnis","amcginnis@nova-compression.com","806-252-3043","Field Service Technician","South Permian","623373f22a8c0500144d2783","621d02f4b1acc9410c52a30a",NULL
+"62f27e5c36dc3e0038df67fa","Pete","Torres","ptorres@nova-compression.com","325-276-7869","Field Service Technician","South Permian","623373f22a8c0500144d2783","621d02f4b1acc9410c52a30a",NULL
+"621d02f4b1acc9410c52a2ec","Travis","Yount","tyount@nova-compression.com","903-918-1997","Sr. Vice President - Operations","East Texas","621d02f3b1acc9410c52a2b7","621d02f3b1acc9410c52a2b7",NULL
+"621d02f4b1acc9410c52a303","Mason","Henderson","mhenderson@nova-compression.com","432-272-9916","","Administrative","621d02f3b1acc9410c52a2b7","621d02f3b1acc9410c52a2b7","2022-05-31 05:00:00"
+"65c10fc7cd54c20066521e9e","Unassigned","Truck","","","","",NULL,NULL,"2024-04-23 05:00:00"
+"621d02f5b1acc9410c52a320","Tyler","Hacker","thacker@nova-compression.com","405-892-7182","Field Service Technician","Midcon","621d02f5b1acc9410c52a327","621d02f5b1acc9410c52a329",NULL
+"651d8112c57942001a976e6d","Dalten","Kuper","dkuper@nova-compression.com","580-940-0084","Field Service Technician","Midcon","621d02f5b1acc9410c52a327","621d02f5b1acc9410c52a329",NULL
+"625721b7915b04003427c119","Ruben","Hurtado","rhurtado@nova-compression.com","432-234-2364","Field Service Technician","Pecos","62e3fac12725d7003487fed7","623373f22a8c0500144d2783","2022-08-17 05:00:00"
+"621d02f4b1acc9410c52a2dd","Jessie","Martinez","jmartinez@nova-compression.com","903-241-8470","Shop Service Technician","East Texas","621d02f3b1acc9410c52a2cd","643ec5ea48ece34f57e73334",NULL
+"6261bf8bcc9aad72ad3e6c14","Jose","Baeza","jbaeza@nova-compression.com","575-263-6400","Field Service Technician - Third Party","North Permian","621d02f4b1acc9410c52a301","621d02f4b1acc9410c52a30a","2022-09-19 05:00:00"
+"65fda11e1a7f7d919d0070a8","Anibal","Medina","amedina@nova-compression.com","432-853-0935","Field Service Technician","North Permian","623373f22a8c0500144d2783","6390a788e2e8a433f3a3c230",NULL
+"651d7fa6c57942001a974ca7","Dominic","Pacheco","dpacheco@nova-compression.com","575-200-4147","Field Service Technician","Carlsbad","621d02f3b1acc9410c52a2c2","648243d491b5354ea81fead2","2023-10-09 05:00:00"
+"621d02f4b1acc9410c52a2e2","Cary","Small","csmall@nova-compression.com","903-237-9992","Shop Service Technician","East Texas","621d02f3b1acc9410c52a2cd","643ec5ea48ece34f57e73334",NULL
+"63ff822062128b0042bd1888","Joseph","Hartman","jhartman@nova-compression.com","936-525-7218","Field Service Technician","South Texas","621d02f3b1acc9410c52a2c1","621d02f3b1acc9410c52a2ca","2023-11-13 06:00:00"
+"64d909ba99ace619456bd0aa","William","Smith","wsmith@nova-compression.com","318-570-0489","Field Service Technician","East Texas","621d02f3b1acc9410c52a2c1","621d02f4b1acc9410c52a2db",NULL
+"621d02f4b1acc9410c52a2fb","Bo","Cummings Sr.","tcummings@nova-compression.com","","Field Service Technician","Administrative","621d02f4b1acc9410c52a303","621d02f4b1acc9410c52a301","2022-04-30 05:00:00"
+"621d02f5b1acc9410c52a324","Greg","Kirby","gkirby@nova-compression.com","806-567-1209","Field Service Technician","Midcon","621d02f5b1acc9410c52a327","621d02f5b1acc9410c52a328","2022-07-22 05:00:00"
+"621d02f3b1acc9410c52a2d1","Lewis","Davis","ldavis@nova-compression.com","903-576-3724","Manager - Operations","East Texas","621d02f3b1acc9410c52a2c1","621d02f4b1acc9410c52a2db","2023-11-15 06:00:00"
+"64468e83c831da68c512ff55","Don","Barela","dbarela@nova-compression.com","432-599-8091","Field Service Technician","North Permian","621d02f3b1acc9410c52a2c2","623373f22a8c0500144d2783","2023-11-22 06:00:00"
+"66030c4e9faa12001b18e156","Jeffrey","Anderson","janderson@nova-compression.com","325-213-9717","Field Service Technician","Pecos","621d02f3b1acc9410c52a2c2","621d02f3b1acc9410c52a2c2",NULL
+"63cab898fa9a8279eb7ff801","Eric","Brannen","ebrannen@nova-compression.com","936-245-7356","Parts Runner - Supply Chain","South Texas","633f207e075a3f07a42cd43f","621d02f4b1acc9410c52a2d9","2023-06-25 05:00:00"
+"62eb0b52549b10241012196c","Koeby","House","khouse@nova-compression.com","580-922-0667","Field Service Technician","Midcon","621d02f5b1acc9410c52a327","621d02f5b1acc9410c52a329","2023-11-06 06:00:00"
+"65e77c9bdc672c001b5cd694","Garrett","Bell","gbell@nova-compression.com","254-734-5257","Field Service Technician","North Permian","623373f22a8c0500144d2783","6390a788e2e8a433f3a3c230",NULL
+"628265d1cc70f800225d1212","Major","Melson","mmelson@nova-compression.com","817-822-4554","Intern","Corporate","621d02f3b1acc9410c52a2b9","63b44b10651be716f4938155","2022-07-25 05:00:00"
+"621d02f4b1acc9410c52a2e9","George","Watts","gwatts@nova-compression.com","903-790-0330","Shop Service Technician","East Texas","621d02f3b1acc9410c52a2cd","643ec5ea48ece34f57e73334",NULL
+"64c7c6c34d2a6e1fba00fea3","Cashan","Carrico","ccarrico@nova-compression.com","580-334-6197","Parts Runner - Supply Chain","Midcon","633f207e075a3f07a42cd43f","621d02f5b1acc9410c52a32a",NULL
+"62584fa86c4ccb00228a55f7","Ariel","Matute","amatute@nova-compression.com","936-443-0522","Field Service Technician","South Permian","623373f22a8c0500144d2783","621d02f4b1acc9410c52a30a",NULL
+"6627debfbc2c1500259e9164","Ralph","Morales","rmorales@nova-compression.com","361-649-8863","Field Service Technician","South Texas","621d02f3b1acc9410c52a2c1","6564b11fe730e40021ce6a5c",NULL
+"621d02f4b1acc9410c52a2e6","Robert","Thomas","rthomas@nova-compression.com","903-503-3818","Field Service Technician","East Texas","621d02f3b1acc9410c52a2c1","621d02f4b1acc9410c52a2db",NULL
+"621d02f3b1acc9410c52a2ca","Brian","Warman","bwarman@nova-compression.com","832-627-8246","Manager - Operations","East Texas","621d02f4b1acc9410c52a2ec","621d02f3b1acc9410c52a2c1",NULL
+"621d02f3b1acc9410c52a2cb","Anthony","Wilkins","awilkins@nova-compression.com","254-537-2960","Field Service Technician","Pecos","621d02f3b1acc9410c52a2c2","621d02f3b1acc9410c52a2c2",NULL
+"621d02f4b1acc9410c52a2f0","Shane","Anderson","sanderson@nova-compression.com","","","Administrative","621d02f4b1acc9410c52a309","621d02f4b1acc9410c52a301","2022-04-11 05:00:00"
+"621d02f3b1acc9410c52a2b7","Jonathan","Mitchell","jmitchell@nova-compression.com","405-401-4701","President and Chief Executive Officer","Corporate",NULL,NULL,NULL
+"621d02f4b1acc9410c52a2f4","Macain","Brock","mbrock@nova-compression.com","","","Administrative","621d02f4b1acc9410c52a303","621d02f4b1acc9410c52a301","2022-04-17 05:00:00"
+"621d02f4b1acc9410c52a2ee","Luke","Albin","lalbin@nova-compression.com","","Field Service Technician","Administrative","621d02f4b1acc9410c52a2ed","621d02f4b1acc9410c52a2ed","2022-04-18 05:00:00"
+"621d02f4b1acc9410c52a2eb","Chad","White","cwhite@nova-compression.com","903-720-2655","Supervisor - Supply Chain","East Texas","621d02f3b1acc9410c52a2b9","621d02f3b1acc9410c52a2ba","2022-04-28 05:00:00"
+"621d02f4b1acc9410c52a305","Thomas","Kasten","tkasten@nova-compression.com","","Field Service Technician","Administrative","621d02f4b1acc9410c52a2ed","621d02f4b1acc9410c52a2ed","2022-04-29 05:00:00"
+"621d02f5b1acc9410c52a315","Roy","Zuniga","rzuniga@nova-compression.com","","","Administrative","621d02f4b1acc9410c52a2ed","621d02f4b1acc9410c52a2ed","2022-05-02 05:00:00"
+"6261c507e1f79d64865fa0e1","Roman","Bermudez","rbermudez@nova-compression.com","432-215-0951","Field Service Technician - Third Party","North Permian","621d02f4b1acc9410c52a301","621d02f4b1acc9410c52a30a","2022-07-26 05:00:00"
+"6418aa190b7dd2002102c0c3","Christopher","Davis","cdavis@nova-compression.com","870-788-7236","Field Service Technician","North Permian","623373f22a8c0500144d2783","6390a788e2e8a433f3a3c230","2024-04-29 05:00:00"
+"631780271e87b90fb8a7718d","Tobie","Joubert","tjoubert@nova-compression.com","337-335-5400","Field Service Technician","North Permian","621d02f3b1acc9410c52a2d4","634974dd0bd69b03c2f16a16","2023-02-14 06:00:00"
+"621d02f4b1acc9410c52a312","Mark","Washburn","mwashburn@nova-compression.com","432-202-7427","Field Service Technician","North Permian","621d02f3b1acc9410c52a2d4","621d02f4b1acc9410c52a301","2022-10-03 05:00:00"
+"637bd00a32d0bc4592bd597e","Jacob","Cruz","jcruz@nova-compression.com","	512-661-1243","Associate - Supply Chain","Administrative","621d02f3b1acc9410c52a2ba","621d02f4b1acc9410c52a2dc","2023-02-27 06:00:00"
+"621d02f5b1acc9410c52a31f","Robert","Greer","rgreer@nova-compression.com","580-560-1143","Field Service Technician","Midcon","621d02f5b1acc9410c52a327","621d02f5b1acc9410c52a31c","2022-12-02 06:00:00"
+"63850a43037ac90037a2a465","Michael","Anzaldua","manzaldua@nova-compression.com","361-407-3766","Field Service Technician","South Texas","621d02f3b1acc9410c52a2c0",NULL,"2022-12-05 06:00:00"
+"63d405df7b40914003827506","Bradley","Wiggins","bwiggins@nova-compression.com","318-439-7508","Field Service Technician","Carlsbad","621d02f3b1acc9410c52a2c2","62d99ce76165bc003425d0f6","2023-03-03 06:00:00"
+"6257204efd6693002213ef30","Edgar","Caballero","ecaballero@nova-compression.com","432-664-4479","Field Service Technician","Pecos","621d02f3b1acc9410c52a2c2","623373f22a8c0500144d2783","2022-12-16 06:00:00"
+"62c866f8c484780faa0b936d","Matt","Castenada","mcastaneda@nova-compression.com","325-436-4988","Field Service Technician","North Permian","621d02f3b1acc9410c52a2d4","621d02f4b1acc9410c52a30a","2022-12-28 06:00:00"
+"621d02f5b1acc9410c52a314","Dayvion","Young","dyoung@nova-compression.com","432-816-5230","Field Service Technician","North Permian","621d02f3b1acc9410c52a2d4","621d02f4b1acc9410c52a30a","2022-12-28 06:00:00"
+"623ce5594668f8003fdc4294","Christopher","Chewning","cchewning@nova-compression.com","361-412-9318","Field Service Technician - Lead","South Texas","621d02f3b1acc9410c52a2c1","621d02f3b1acc9410c52a2c0","2022-12-30 06:00:00"
+"623ce7c9e7afef002222e64c","Irvin","Hinojosa","ihinojosa@nova-compression.com","956-652-6129","Field Service Technician","North Permian","621d02f3b1acc9410c52a2d4","621d02f4b1acc9410c52a30a","2022-12-30 06:00:00"
+"62c8695a5e5f372b0b4acf22","Emma","Nell","enell@nova-compression.com","918-284-4744","Manager - Accounting","Corporate","621d02f3b1acc9410c52a2b7","621d02f3b1acc9410c52a2b9",NULL
+"62c868302d34b80fd7fa1f03","Dustin","Wise","dwise@nova-compression.com","713-828-9330","Field Service Technician","Pecos","621d02f3b1acc9410c52a2c2","621d02f3b1acc9410c52a2c2",NULL
+"621d02f4b1acc9410c52a313","Mark","Wright","mwright@nova-compression.com","","Field Service Technician","Administrative","621d02f4b1acc9410c52a303","621d02f4b1acc9410c52a301","2022-04-04 05:00:00"
+"63178e0367c3e53622792e4e","Mark","Juneau","mjuneau@nova-compression.com","318-498-1985","Field Service Technician","Pecos","62e3fac12725d7003487fed7","623373f22a8c0500144d2783","2022-09-20 05:00:00"
+"62e3f36473832144843cbfdf","Keith","Day","kday@nova-compression.com","903-530-5651","Shop Service Technician","East Texas","621d02f3b1acc9410c52a2d0","6228f473e10b0a0022d2903c","2022-09-22 05:00:00"
+"62e3f81e1912120029401692","Brian","Smith","bsmith@nova-compression.com","903-309-8182","Field Service Technician","East Texas","621d02f3b1acc9410c52a2c1","621d02f4b1acc9410c52a2db","2022-12-30 06:00:00"
+"621d02f4b1acc9410c52a30f","Tyler","Smith","tsmith@nova-compression.com","325-259-3909","Field Service Technician","North Permian","621d02f3b1acc9410c52a2d4","621d02f4b1acc9410c52a30a","2023-01-27 06:00:00"
+"63c96b480d062e45cfa09992","Jeremy","Merano","jmerano@nova-compression.com","817-774-1998","Field Service Technician","North Permian","621d02f3b1acc9410c52a2d4","634974dd0bd69b03c2f16a16","2023-01-30 06:00:00"
+"62362ec8c7d60d0014a3fe11","Phillip","Ward","pward@nova-compression.com","501-434-0700","Field Service Technician","North Permian","621d02f3b1acc9410c52a2d4","634974dd0bd69b03c2f16a16","2023-02-10 06:00:00"
+"6245ddb6f9636d0022804dcb","Nathan","Lewis","nlewis@nova-compression.com","580-851-2008","Field Service Technician","Midcon","621d02f5b1acc9410c52a327","621d02f5b1acc9410c52a329","2022-09-30 05:00:00"
+"63dd36ff4f4cee0fbfaa8b60","Hector","Calderon","hcalderon@nova-compression.com","432-310-2838","Analyst - Safety","Administrative","621d02f4b1acc9410c52a2ec","6217f9a97b64924c262c6976","2023-02-13 06:00:00"
+"621d02f4b1acc9410c52a2d8","Dylan","Jackson","djackson@nova-compression.com","469-634-9082","Shop Service Technician","East Texas","621d02f4b1acc9410c52a2ec","621d02f3b1acc9410c52a2d0","2023-05-17 05:00:00"
+"621d02f3b1acc9410c52a2c4","Jonathan","Jones","jjones@nova-compression.com","409-504-2341","Field Service Technician - Lead","South Texas","621d02f3b1acc9410c52a2c1","621d02f3b1acc9410c52a2d1","2023-05-18 05:00:00"
+"645ab2421281f03934dd5ea1","Drake","Stoops","dstoops@nova-compression.com","405-464-8708","Intern","Corporate","621d02f3b1acc9410c52a2b9","621d02f3b1acc9410c52a2ba","2023-05-19 05:00:00"
+"645a84f4d0f568003e950f9a","Caleb","Criswell","ccriswell@nova-compression.com","405-894-3756","Parts Runner - Supply Chain","Midcon","633f207e075a3f07a42cd43f","62d99de25c39b5003fe9cc89","2023-07-07 05:00:00"
+"645bec1b29a254214c848db1","Jaime","Ortiz","jortiz@nova-compression.com","575-640-6013","Field Service Technician","Carlsbad","621d02f3b1acc9410c52a2c2","648243d491b5354ea81fead2","2023-07-14 05:00:00"
+"64907056833aee002c454b65","Dylon","Walters","dwalters@nova-compression.com","409-202-9001","Field Service Technician","East Texas","621d02f3b1acc9410c52a2c1","621d02f3b1acc9410c52a2d1","2023-07-14 05:00:00"
+"621d02f5b1acc9410c52a321","Berlin","Harrison","bharrison@nova-compression.com","580-227-6045","Field Service Technician","Midcon","621d02f5b1acc9410c52a327","621d02f5b1acc9410c52a31c","2023-08-04 05:00:00"
+"643567fa8deb6a17ac30913f","David","Whisnant","dwhisnant@nova-compression.com","979-451-4230","Field Service Technician","South Texas","621d02f3b1acc9410c52a2ca","62ff965d2e08ef713f38d70e","2023-05-24 05:00:00"
+"63c6bbf83f9acb1639e3392b","Thomas","Burns","tburns@nova-compression.com","903-235-8475","Shop Service Technician","East Texas","621d02f3b1acc9410c52a2d0","6228f473e10b0a0022d2903c","2023-05-26 05:00:00"
+"63e1325301f5e33f2cc03eb9","Coty","Rios","crios@nova-compression.com","432-664-8656","Field Service Technician","North Permian","621d02f4b1acc9410c52a2ec","634974dd0bd69b03c2f16a16","2023-05-30 05:00:00"
+"62f66f59abddfe5694f71fa1","Jason","Vincent","jvincent@nova-compression.com","254-722-6190","Field Service Technician - Third Party","East Texas","621d02f3b1acc9410c52a2c1","621d02f3b1acc9410c52a2cd","2023-08-16 05:00:00"
+"63bc2cb69472911b1baeaebd","Adrian","Dominguez","adominguez@nova-compression.com","915-342-3489","Field Service Technician","North Permian","621d02f3b1acc9410c52a2d4","634974dd0bd69b03c2f16a16","2023-03-26 05:00:00"
+"63991d34ca0d540043b2c8dc","Brandon","Mullins","bmullins@nova-compression.com","432-212-9837","Field Service Technician","South Texas","621d02f3b1acc9410c52a2c1","621d02f3b1acc9410c52a2c0","2023-03-27 05:00:00"
+"6272ec1813cdfc001465fe44","Sergio","Rios","srios@nova-compression.com","432-813-7154","Coordinator - Supply Chain","Administrative","621d02f3b1acc9410c52a2ba","621d02f4b1acc9410c52a2dc","2023-06-02 05:00:00"
+"646255e18754035465d2f99f","Hunter","Faircloth","hfaircloth@nova-compression.com","318-517-8519","Field Service Technician","East Texas","621d02f3b1acc9410c52a2c1","621d02f4b1acc9410c52a2db","2023-06-24 05:00:00"
+"6408e44fa88536355d0e1a1e","Katelyn","Fuentes","kfuentes@nova-compression.com","432-994-1961","Associate - Supply Chain","Administrative","621d02f3b1acc9410c52a2ba","621d02f4b1acc9410c52a2dc","2023-03-31 05:00:00"
+"642c2ef064dc170317eee4da","Michael","Gonzalez","mgonzalez@nova-compression.com","956-286-0035","Field Service Technician","Pecos","621d02f3b1acc9410c52a2c2","623373f22a8c0500144d2783","2023-04-10 05:00:00"
+"6307be7bd7592f63fce663ed","Trevor","Gibbins","tgibbins@nova-compression.com","405-590-8223","Field Service Technician","Midcon","621d02f5b1acc9410c52a327","621d02f5b1acc9410c52a31c","2023-04-21 05:00:00"
+"63725ba2accc73660525ee92","Russell","Sykes","rsykes@nova-compression.com","432-254-3241","Field Service Technician - Lead","North Permian","621d02f4b1acc9410c52a2ec","634974dd0bd69b03c2f16a16","2023-06-26 05:00:00"
+"621d02f3b1acc9410c52a2d4","Kelly","Glover","kglover@nova-compression.com","903-261-0853","Director - Operations","North Permian,South Permian","621d02f3b1acc9410c52a2b7","621d02f4b1acc9410c52a2ec","2023-04-25 05:00:00"
+"63e121aa15e3781b45dc2379","Aaron","Fuente","afuente@nova-compression.com","361-703-9221","Field Service Technician","South Texas","621d02f3b1acc9410c52a2c1","621d02f3b1acc9410c52a2ca","2023-06-28 05:00:00"
+"64761264ae531675f5518869","Jeremy","Staires","jstaires@nova-compression.com","432-559-2893","Supervisor - Supply Chain","Administrative","633f207e075a3f07a42cd43f","621d02f4b1acc9410c52a2dc","2023-07-02 05:00:00"
+"621d02f3b1acc9410c52a2c0","Cory","Burns","cburns@nova-compression.com","936-707-9037","Manager - Operations","South Texas","621d02f4b1acc9410c52a2ec","621d02f3b1acc9410c52a2c1","2023-05-16 05:00:00"
+"621d02f3b1acc9410c52a2cd","Tyler","Yount","ttyount@nova-compression.com","903-985-1555","Director - Shops","East Texas,South Texas","621d02f3b1acc9410c52a2b7","621d02f4b1acc9410c52a2ec",NULL
+"645e55ce68814b0037f8d687","Corey","Key","ckey@nova-compression.com","903-240-5737","Field Service Technician","East Texas","621d02f3b1acc9410c52a2c1","621d02f4b1acc9410c52a2db","2023-08-19 05:00:00"
+"647e0df4f7437f7baa606c33","Joshua","Nelson","jnelson@nova-compression.com","806-201-0738","Field Service Technician","North Permian","621d02f3b1acc9410c52a2c2","623373f22a8c0500144d2783","2023-08-24 05:00:00"
+"64c024f54cea78003710072a","Travis","Schmidt","tschmidt@nova-compression.com","361-235-1768","Field Service Technician","South Texas","621d02f3b1acc9410c52a2c1","621d02f3b1acc9410c52a2ca","2023-08-25 05:00:00"
+"641874a667c4531ea151849a","Casey","Younger","cyounger@nova-compression.com","979-203-7603","Field Service Technician","North Permian","621d02f3b1acc9410c52a2c2","623373f22a8c0500144d2783","2023-08-27 05:00:00"
+"621d02f4b1acc9410c52a2dc","Jeff","Lingle","jlingle@nova-compression.com","512-818-0879","Supervisor - Supply Chain","Administrative","621d02f3b1acc9410c52a2ba","633f207e075a3f07a42cd43f","2023-09-04 05:00:00"
+"621d02f4b1acc9410c52a2e3","John","Smith","jsmith@nova-compression.com","903-638-1807","Shop Service Technician - Lead","East Texas","621d02f3b1acc9410c52a2cd","643ec5ea48ece34f57e73334","2023-09-05 05:00:00"
+"64ee08840a62eb002c6e3715","Ryane","Haley","rhaley@nova-compression.com","575-602-1286","Coordinator - Supply Chain","Carlsbad","621d02f3b1acc9410c52a2ba","633f207e075a3f07a42cd43f","2023-09-08 05:00:00"
+"621d02f3b1acc9410c52a2c1","Allen","Carter","acarter@nova-compression.com","903-388-0800","Director - Operations","East Texas,South Texas","621d02f3b1acc9410c52a2b7","621d02f4b1acc9410c52a2ec",NULL
+"621d02f4b1acc9410c52a2da","Donnis","Lewis","dlewis@nova-compression.com","903-522-1718","Account Manager - Business Development","East Texas","621d02f3b1acc9410c52a2b7","621d02f3b1acc9410c52a2b6",NULL
+"621d02f3b1acc9410c52a2b6","James","Merrell","jmerrell@nova-compression.com","979-209-4644","Vice President - Business Development","Corporate","621d02f3b1acc9410c52a2b7","621d02f3b1acc9410c52a2b7",NULL
+"6217f9a97b64924c262c6976","James","Mode","jmode@nova-compression.com","405-696-3474","Director - Environmental, Health and Safety","Corporate","621d02f3b1acc9410c52a2b7","621d02f4b1acc9410c52a2ec",NULL
+"621d02f3b1acc9410c52a2b9","Nic","Rogers","nrogers@nova-compression.com","405-476-4642","Chief Financial Officer","Corporate","621d02f3b1acc9410c52a2b7","621d02f3b1acc9410c52a2b7",NULL
+"621d02f4b1acc9410c52a2e1","Betty","Seymour","bseymour@nova-compression.com","903-918-5376","Supervisor - Accounting","East Texas","621d02f3b1acc9410c52a2b9","62c8695a5e5f372b0b4acf22",NULL
+"62682466300bab003f76b1a7","Joel","Deville","jdeville@nova-compression.com","337-254-0506","Field Service Technician","South Permian","621d02f3b1acc9410c52a2c2","621d02f4b1acc9410c52a30a","2023-10-02 05:00:00"
+"621d02f4b1acc9410c52a2d9","James","Knight","jknight@nova-compression.com","903-629-5570","Supervisor - Supply Chain","East Texas","621d02f3b1acc9410c52a2ba","633f207e075a3f07a42cd43f","2024-01-24 06:00:00"
+"621d02f5b1acc9410c52a322","Casey","Hufford","chufford@nova-compression.com","580-737-0062","Field Service Technician","Midcon","621d02f5b1acc9410c52a327","621d02f5b1acc9410c52a31c","2024-01-25 06:00:00"
+"63bc78426e00760034eddcac","Isaac","Stoops","istoops@nova-compression.com","405-464-3717","Analyst - Business Development","Corporate","621d02f3b1acc9410c52a2b7","621d02f3b1acc9410c52a2b6","2024-02-02 06:00:00"
+"6564b02e9ddc26001343e584","Marshall","Weaver","mweaver@nova-compression.com","979-270-9361","Field Service Technician","South Texas","621d02f3b1acc9410c52a2c1","6564b11fe730e40021ce6a5c","2024-03-14 05:00:00"
+"650860d6361625002cfaeb20","Joey","Owens","jowens@nova-compression.com","254-203-1064","Field Service Technician - Third Party","East Texas","621d02f3b1acc9410c52a2c1","621d02f3b1acc9410c52a2cd","2024-03-18 05:00:00"
+"621d02f5b1acc9410c52a316","Chris","Beach","cbeach@nova-compression.com","405-938-6700","Field Service Technician","Midcon","621d02f5b1acc9410c52a327","621d02f5b1acc9410c52a328",NULL
+"621d02f4b1acc9410c52a2ff","Robert","Franco","rfranco@nova-compression.com","432-310-5178","Field Service Technician","Pecos","621d02f3b1acc9410c52a2c2","621d02f3b1acc9410c52a2c2",NULL
+"621d02f5b1acc9410c52a323","Austin","Jackson","ajackson@nova-compression.com","580-302-1606","Field Service Technician","Midcon","621d02f5b1acc9410c52a327","621d02f5b1acc9410c52a329",NULL
+"623372fa2a8c0500144d21bb","Justin","Melton","jmelton@nova-compression.com","405-779-0415","Field Service Technician","Midcon","621d02f5b1acc9410c52a327","621d02f5b1acc9410c52a31c",NULL
+"621d02f5b1acc9410c52a328","Mark","Tarpley","mtarpley@nova-compression.com","806-664-2689","Manager - Operations","Midcon","621d02f4b1acc9410c52a2ec","621d02f5b1acc9410c52a327",NULL
+"6228f473e10b0a0022d2903c","Austin","Cooper","acooper@nova-compression.com","903-245-9910","Supervisor - Shop","East Texas","621d02f4b1acc9410c52a2ec","621d02f3b1acc9410c52a2d0","2023-06-28 05:00:00"
+"621d02f3b1acc9410c52a2c8","Daniel","Pate","dpate@nova-compression.com","903-388-7935","Shop Service Technician","South Texas","621d02f3b1acc9410c52a2d0","621d02f3b1acc9410c52a2bc","2023-02-10 06:00:00"
+"62d99f1dd3bf5e0014f8aa0d","Jason","McCoy","jmccoy@nova-compression.com","318-707-2482","Field Service Technician","East Texas","621d02f3b1acc9410c52a2c1","621d02f4b1acc9410c52a2db","2023-07-14 05:00:00"
+"62571aa4915b040034277c83","Brian","Arthur","barthur@nova-compression.com","432-214-0411","Field Service Technician","North Permian","621d02f3b1acc9410c52a2d4","634974dd0bd69b03c2f16a16","2023-02-27 06:00:00"
+"62a8b97bc04b2e00227080ab","Cody","Wedemeier","cwedemeier@nova-compression.com","361-935-2810","Field Service Technician","South Texas","621d02f3b1acc9410c52a2c1","621d02f3b1acc9410c52a2ca","2023-07-20 05:00:00"
+"629a27be93f321529a7fe115","Jeremy","Shields","jshields@nova-compression.com","318-655-7583","Field Service Technician","South Texas","621d02f3b1acc9410c52a2c1","621d02f3b1acc9410c52a2c0","2023-03-15 05:00:00"
+"62d1ae58a476ed00292d7b39","Catarino","Orona","corona@nova-compression.com","432-755-4053","Field Service Technician","Pecos","621d02f3b1acc9410c52a2c2","623373f22a8c0500144d2783","2023-03-16 05:00:00"
+"62d99ce76165bc003425d0f6","Skyler","Diaz","sdiaz@nova-compression.com","325-330-0702","Field Service Technician - Senior","Pecos","621d02f3b1acc9410c52a2c2","623373f22a8c0500144d2783","2023-08-11 05:00:00"
+"626028128bfe8e003f44435e","David","Vick","dvick@nova-compression.com","970-618-9127","Director - Operations","Administrative","621d02f3b1acc9410c52a2b7","621d02f4b1acc9410c52a303","2022-06-03 05:00:00"
+"640f1e898097653a87ef0f1f","Joel","Orosco","jorosco@nova-compression.com","432-227-1283","Field Service Technician","North Permian","621d02f3b1acc9410c52a2d4","634974dd0bd69b03c2f16a16","2023-03-28 05:00:00"
+"62c864bb5fb8ab184eea7991","Braden","Gray","bgray@nova-compression.com","432-260-2267","Field Service Technician","North Permian","621d02f3b1acc9410c52a2c2","623373f22a8c0500144d2783","2023-08-18 05:00:00"
+"63cfef34c456e503a7086e35","Sean","Conway","sconway@nova-compression.com","903-331-7236","Field Service Technician","East Texas","621d02f3b1acc9410c52a2c1","621d02f4b1acc9410c52a2db","2023-04-21 05:00:00"
+"62389d7d99c2a9001be613b9","Jason","Pence","jpence@nova-compression.com","903-373-3105","Shop Service Technician","East Texas","621d02f4b1acc9410c52a2ec","6228f473e10b0a0022d2903c","2022-07-08 05:00:00"
+"621d02f4b1acc9410c52a2df","John","Pearson","jpearson@nova-compression.com","405-626-2974","Coordinator - Supply Chain","East Texas","621d02f3b1acc9410c52a2ba","621d02f4b1acc9410c52a2dc","2022-07-15 05:00:00"
+"621d02f4b1acc9410c52a2d5","Rick","Goetz","fgoetz@nova-compression.com","903-399-2503","Shop Service Technician","East Texas","621d02f4b1acc9410c52a2ec","621d02f3b1acc9410c52a2d0","2023-05-16 05:00:00"
+"63640202031a422ed9dc0f0b","Jonathan","Watson","jwatson@nova-compression.com","318-780-2029","Field Service Technician - Senior","Pecos","621d02f3b1acc9410c52a2c2","623373f22a8c0500144d2783","2022-12-16 06:00:00"
+"6390a603e2e8a433f3a3b04f","Ryan","Bohnet","rbohnet@nova-compression.com","580-744-1628","Field Service Technician","Midcon","621d02f5b1acc9410c52a327","621d02f5b1acc9410c52a329","2023-05-22 05:00:00"
+"63ebb011d64dd700130a9880","Branson","James","bjames@nova-compression.com","806-216-1374","Field Service Technician","North Permian","621d02f4b1acc9410c52a2ec","634974dd0bd69b03c2f16a16","2023-06-01 05:00:00"
+"621d02f4b1acc9410c52a2f1","Quentin","Ausbie","qausbie@nova-compression.com","432-816-7778","Coordinator - Supply Chain","Administrative","621d02f3b1acc9410c52a2ba","621d02f4b1acc9410c52a2dc","2022-12-28 06:00:00"
+"621d02f3b1acc9410c52a2d0","Hunter","Cox","hcox@mustangcompression.com","903-987-3553","Director - Shops","East Texas","621d02f3b1acc9410c52a2b7","621d02f4b1acc9410c52a2ec","2023-06-24 05:00:00"
+"6346c6dd9401ca4bb4baed94","David","Harrison","dharrison@nova-compression.com","903-932-7377","Shop Service Technician","East Texas","621d02f3b1acc9410c52a2d0","6228f473e10b0a0022d2903c","2022-12-29 06:00:00"
+"634974dd0bd69b03c2f16a16","Tony","Harrison","tharrison@nova-compression.com","325-450-7910","Manager - Operations","North Permian","621d02f4b1acc9410c52a2ec","621d02f4b1acc9410c52a2ec","2023-06-25 05:00:00"
+"62ffa8ebd8595e3386c21d28","Clay","Smith","csmith@nova-compression.com","903-644-8387","Field Service Technician - Lead","South Texas","621d02f3b1acc9410c52a2c1","621d02f3b1acc9410c52a2c0","2022-12-30 06:00:00"
+"621d02f3b1acc9410c52a2b4","Erik","Anderson","eanderson@nova-compression.com","786-223-5539","","Corporate","621d02f3b1acc9410c52a2b7","621d02f3b1acc9410c52a2b9","2023-02-10 06:00:00"
+"633f1efcf514177004051a62","Chance","Funderburk","cfunderburk@nova-compression.com","254-661-0869","Field Service Technician","South Texas","621d02f3b1acc9410c52a2c1","621d02f3b1acc9410c52a2c0","2023-03-17 05:00:00"
+"63f7e53655eac9710b1df01e","David","Hudson","dhudson@nova-compression.com","210-501-4184","Analyst - Safety","Carlsbad,North Permian,Pecos,South Permian","621d02f4b1acc9410c52a2ec","6217f9a97b64924c262c6976","2023-08-11 05:00:00"
+"64c7c879dea85514556cbbd3","Tommy","Moore","tmoore@nova-compression.com","361-935-6158","Field Service Technician","South Texas","621d02f3b1acc9410c52a2c1","621d02f3b1acc9410c52a2ca","2023-09-01 05:00:00"
+"6351863268fcfc0bd2388e7b","Aaron","Turner","aturner@nova-compression.com","479-213-7203","Field Service Technician","Pecos","621d02f3b1acc9410c52a2c2","623373f22a8c0500144d2783","2023-09-26 05:00:00"
+"621d02f4b1acc9410c52a310","Matthew","Urzendowski","murzendowski@nova-compression.com","432-227-5701","Field Service Technician - Lead","South Permian","621d02f3b1acc9410c52a2c2","621d02f4b1acc9410c52a30a","2023-10-09 05:00:00"
+"627c1172cbbd98001417471e","Jaden","Gills","jgills@nova-compression.com","432-213-2357","Associate - Supply Chain","Administrative","621d02f3b1acc9410c52a2ba","633f207e075a3f07a42cd43f","2023-10-30 05:00:00"
+"64da93a3ba0f8a034b9c1e66","Jason","Medina","jmedina@nova-compression.com","832-302-1735","Field Service Technician","East Texas","621d02f3b1acc9410c52a2c1","621d02f3b1acc9410c52a2d1","2023-11-13 06:00:00"
+"64c7c929d385f227d4ed08d9","Caleb","Ladelle","cladelle@nova-compression.com","337-275-6688","Field Service Technician","North Permian","621d02f3b1acc9410c52a2c2","623373f22a8c0500144d2783","2023-11-27 06:00:00"
+"6231fdf86572ef00224aecef","David","Head","dhead@nova-compression.com","903-261-2354","Associate - Supply Chain","East Texas","633f207e075a3f07a42cd43f","621d02f4b1acc9410c52a2d9","2024-01-24 06:00:00"
+"64ef651e5cda1c0013be36d1","Sean","Estes","sestes@nova-compression.com","361-243-1291","Field Service Technician","South Texas","621d02f3b1acc9410c52a2c1","6564b11fe730e40021ce6a5c","2024-02-03 06:00:00"
+"621d02f5b1acc9410c52a317","Bobby","Bohnsack","bbohnsack@nova-compression.com","580-334-4671","Field Service Technician","Midcon","621d02f5b1acc9410c52a327","621d02f5b1acc9410c52a329",NULL
+"63b453a7c585bf1c1157fcb1","Payton","Doyle","pdoyle@nova-compression.com","318-541-2308","Field Service Technician","Pecos","621d02f3b1acc9410c52a2c2","654e62caf38aff0013ce0efd","2024-02-19 06:00:00"
+"621d02f5b1acc9410c52a318","Kevin","Carter","kcarter@nova-compression.com","580-334-1322","Account Manager - Business Development","Midcon","621d02f3b1acc9410c52a2b7","621d02f3b1acc9410c52a2b6",NULL
+"621d02f5b1acc9410c52a31a","Rudy","Cobos","rcobos@nova-compression.com","806-367-2540","Field Service Technician - Third Party","Midcon","621d02f5b1acc9410c52a327","621d02f5b1acc9410c52a328",NULL
+"621d02f5b1acc9410c52a31b","Nathan","Colvard","ncolvard@nova-compression.com","580-922-5508","Field Service Technician","Midcon","621d02f5b1acc9410c52a327","621d02f5b1acc9410c52a31c",NULL
+"6390a788e2e8a433f3a3c230","Daniel","Powell","dpowell@nova-compression.com","325-721-8785","Manager - Operations","North Permian","6543d0f0cac23529fce06820","623373f22a8c0500144d2783",NULL
+"62c86a10c484780faa0bd2de","David","Easley","deasley@nova-compression.com","979-451-2682","Field Service Technician - Senior","North Permian","621d02f3b1acc9410c52a2d4","634974dd0bd69b03c2f16a16","2022-12-28 06:00:00"
+"623373f22a8c0500144d2783","Michael","Earnheart","mearnheart@nova-compression.com","972-849-9632","Director - Operations","North Permian","621d02f3b1acc9410c52a2b7","6543d0f0cac23529fce06820",NULL
+"621d02f4b1acc9410c52a30b","Irvin","Duarte","iduarte@nova-compression.com","432-238-9569","Field Service Technician","North Permian","621d02f3b1acc9410c52a2d4","634974dd0bd69b03c2f16a16","2022-12-22 06:00:00"
+"643ebc60a2aff947f0842d41","Charles","Demmer","cdemmer@nova-compression.com","361-237-8588","Field Service Technician","South Texas","621d02f3b1acc9410c52a2c1","621d02f3b1acc9410c52a2ca","2023-08-21 05:00:00"
+"621d02f5b1acc9410c52a325","Gary","Martin","gmartin@nova-compression.com","580-886-5032","Field Service Technician","Midcon","621d02f5b1acc9410c52a327","621d02f5b1acc9410c52a31c",NULL
+"621d02f3b1acc9410c52a2c2","Adam","Easterling","aeasterling@nova-compression.com","903-522-0080","Director - Operations","Carlsbad,Pecos","621d02f3b1acc9410c52a2b7","6543d0f0cac23529fce06820",NULL
+"62d99de25c39b5003fe9cc89","Sherri","Bailey","sbailey@nova-compression.com","580-216-1816","Coordinator - Supply Chain","Midcon","633f207e075a3f07a42cd43f","621d02f5b1acc9410c52a32a",NULL
+"62c863a140819262c13c36a8","Rodney","Williams","rwilliams@nova-compression.com","205-534-2344","Field Service Technician","South Permian","621d02f3b1acc9410c52a2d4","621d02f4b1acc9410c52a30a","2022-12-25 06:00:00"
+"635698bc8c684d27e0dd9d14","James","Boutte","jboutte@nova-compression.com","337-577-5454","Field Service Technician","South Permian","621d02f3b1acc9410c52a2c2","621d02f4b1acc9410c52a30a","2023-10-23 05:00:00"
+"626c137e5fff7700439951d4","Justin","Headen","jheaden@nova-compression.com","903-452-6486","Field Service Technician - Third Party","East Texas","621d02f3b1acc9410c52a2c1","621d02f4b1acc9410c52a2db",NULL
+"621d02f5b1acc9410c52a327","Chris","Murray","cmurray@nova-compression.com","918-209-9387","Director - Operations","Midcon","621d02f3b1acc9410c52a2b7","621d02f4b1acc9410c52a2ec",NULL
+"633f207e075a3f07a42cd43f","Chris","Brooks","cbrooks@nova-compression.com","405-306-1716","Manager - Supply Chain","Corporate","621d02f3b1acc9410c52a2b9","621d02f3b1acc9410c52a2ba",NULL
+"62571f69228347003ff6e87a","Jose","Jimenez","jjimenez@nova-compression.com","325-650-7683","Field Service Technician - Lead","South Permian","623373f22a8c0500144d2783","621d02f4b1acc9410c52a30a",NULL
+"621d02f3b1acc9410c52a2cc","Kevin","Williams","kwilliams@nova-compression.com","903-390-1218","Field Service Technician","South Texas","621d02f3b1acc9410c52a2c1","621d02f3b1acc9410c52a2c0","2023-03-10 06:00:00"
+"621d02f5b1acc9410c52a329","Matt","Tune","mtune@nova-compression.com","580-254-1109","Manager - Operations","Midcon","621d02f4b1acc9410c52a2ec","621d02f5b1acc9410c52a327",NULL
+"631789c7f1afb60bf116ad09","Larry","Nolen","lnolen@nova-compression.com","337-509-8693","Field Service Technician","North Permian","621d02f3b1acc9410c52a2c2","623373f22a8c0500144d2783","2023-11-19 06:00:00"
+"6418ab060b7dd2002102cc87","Kirk","Easterling","keasterling@nova-compression.com","318-498-2414","Field Service Technician","Carlsbad","621d02f3b1acc9410c52a2c2","648243d491b5354ea81fead2","2024-02-04 06:00:00"
+"621d02f5b1acc9410c52a32a","Kendall","Widick","kwidick@nova-compression.com","580-334-7378","Supervisor - Supply Chain","Midcon","621d02f3b1acc9410c52a2ba","633f207e075a3f07a42cd43f",NULL
+"62accd1c33a91b3ce662516a","Alex","Carrillo","acarrillo@nova-compression.com","325-716-5649","Field Service Technician","South Permian","623373f22a8c0500144d2783","621d02f4b1acc9410c52a30a",NULL
+"63ac6367efa1344574139d16","Michael","Smallwood","msmallwood@nova-compression.com","936-244-6588","Field Service Technician","East Texas","621d02f3b1acc9410c52a2c1","621d02f3b1acc9410c52a2d1","2023-05-08 05:00:00"
+"63b301c56ada6b0034407a71","Rickey","Haddock","rhaddock@nova-compression.com","903-261-5976","Shop Service Technician","East Texas","621d02f3b1acc9410c52a2c1","621d02f3b1acc9410c52a2cd","2023-06-26 05:00:00"
+"621d02f3b1acc9410c52a2d3","Michelle","Crawford","mcrawford@nova-compression.com","903-218-4457","Associate - Accounting","East Texas","62c8695a5e5f372b0b4acf22","621d02f4b1acc9410c52a2e1",NULL
+"62ff965d2e08ef713f38d70e","Jeremy","Latham","jlatham@nova-compression.com","254-747-2039","Field Service Technician - Lead","South Texas","621d02f3b1acc9410c52a2c1","6564b11fe730e40021ce6a5c",NULL
+"621d02f5b1acc9410c52a32b","Zach","Williams","zwilliams@nova-compression.com","620-388-0404","Field Service Technician","Midcon","621d02f5b1acc9410c52a327","621d02f5b1acc9410c52a329",NULL
+"6320a5354563393f12d9bb47","Jarrid","Morey","jmorey@nova-compression.com","903-390-5604","Shop Service Technician","East Texas","621d02f3b1acc9410c52a2cd","643ec5ea48ece34f57e73334","2024-03-11 05:00:00"
+"65de2465ddfb81002d7a1e9b","Lee","Boggs","lboggs@nova-compression.com","979-227-4235","Field Service Technician","South Texas","621d02f3b1acc9410c52a2c1","6564b11fe730e40021ce6a5c","2024-03-17 05:00:00"
+"633aefa9aef19c5758feeafc","Cody","Pyle","cpyle@nova-compression.com","903-512-4656","Coordinator - Supply Chain","South Texas","621d02f3b1acc9410c52a2ba","621d02f4b1acc9410c52a2dc","2022-12-20 06:00:00"
+"64d9086ba01c01239c596dcc","Marcus","Morris","mmorris@nova-compression.com","318-498-9471","Field Service Technician","North Permian","621d02f3b1acc9410c52a2c2","623373f22a8c0500144d2783","2023-08-14 05:00:00"
+"635186dc68fcfc0bd238a0f1","Brennen","Dumas","bdumas@nova-compression.com","806-570-9774","Associate - Supply Chain","South Texas","633f207e075a3f07a42cd43f","65c63e66ca4b920017327c9f",NULL
+"621d02f3b1acc9410c52a2c6","Brent","Lee","blee@nova-compression.com","281-761-4795","Field Service Technician","East Texas","621d02f3b1acc9410c52a2c1","621d02f3b1acc9410c52a2ca",NULL
+"63178c987623800d6b8f811f","Steven","Harrell","sharrell@nova-compression.com","903-402-9965","Field Service Technician - Third Party","East Texas","621d02f3b1acc9410c52a2c1","621d02f4b1acc9410c52a2db",NULL
+"645a56f3803e41180d4a3911","Bryan","Palma","bpalma@nova-compression.com","432-889-1071","Parts Runner - Supply Chain","Carlsbad,North Permian,Pecos,South Permian","65805f6c6647a10021ea05a7","640b5fd5ee88ef1fd69a0543",NULL
+"647e3fd1d06e073349f0d997","Chad","Schovajsa","cschovajsa@nova-compression.com","979-227-4235","Field Service Technician","South Texas","621d02f3b1acc9410c52a2c1","6564b11fe730e40021ce6a5c",NULL
+"643ee36508c034002c086950","Catherine","Brown","cbrown@nova-compression.com","432-235-4003","Coordinator - Supply Chain","Carlsbad,North Permian,Pecos,South Permian","633f207e075a3f07a42cd43f","65805f6c6647a10021ea05a7",NULL
+"63e3da21eab68c14f3975a75","Cody","Adams","cadams@nova-compression.com","903-388-2146","Field Service Technician","Pecos","621d02f3b1acc9410c52a2c2","621d02f3b1acc9410c52a2c2",NULL
+"65392781d57d0b003668c333","Carlos","Linares","clinares@nova-compression.com","786-590-9520","Field Service Technician","Carlsbad","621d02f3b1acc9410c52a2c2","648243d491b5354ea81fead2",NULL
+"645a5bab1d96fd319ee9021d","Jason","Pence Jr","jpencejr@nova-compression.com","903-305-9427","Associate - Supply Chain","East Texas","633f207e075a3f07a42cd43f","65c63e66ca4b920017327c9f",NULL
+"64481d6c98a9dd4954a1b736","Justin","Henington","jhenington@nova-compression.com","918-429-2763","Field Service Technician","Midcon","621d02f5b1acc9410c52a327","621d02f5b1acc9410c52a31c",NULL
+"646281a18444142406373297","Israel","LittleCoyote","ilittlecoyote@nova-compression.com","580-922-0582","Field Service Technician","Midcon","621d02f5b1acc9410c52a327","621d02f5b1acc9410c52a31c",NULL
+"6543d0f0cac23529fce06820","Sean","Stewart","sstewart@nova-compression.com","405-664-4171","Vice President - Operations","Corporate","621d02f3b1acc9410c52a2b7","621d02f3b1acc9410c52a2b7",NULL
+"632b2754c4dadc29ad960152","Davonte","Allen","dallen@nova-compression.com","318-535-2174","Field Service Technician","Carlsbad","621d02f3b1acc9410c52a2c2","648243d491b5354ea81fead2",NULL
+"63b44b10651be716f4938155","Chris","Aven","caven@nova-compression.com","405-830-6661","Manager - Financial Planning and Treasury","Corporate","621d02f3b1acc9410c52a2b7","621d02f3b1acc9410c52a2b9",NULL
+"6511a9b0ee88e1001a3355b0","Gabby","Moore","gmoore@nova-compression.com","405-887-0096","Associate - Human Resources","Corporate","621d02f3b1acc9410c52a2b9","621d02f3b1acc9410c52a2b5",NULL
+"6466345f6e67dd66cd2b5309","Gerardo","Rico","grico@nova-compression.com","432-257-7299","Field Service Technician - Lead","South Permian","623373f22a8c0500144d2783","621d02f4b1acc9410c52a30a",NULL
+"6331d45a680ce3001bfee405","Mason","Carter","mcarter@nova-compression.com","830-890-0977","Field Service Technician","Carlsbad","621d02f3b1acc9410c52a2c2","648243d491b5354ea81fead2",NULL
+"643ef71b9a47f22e66c81778","Andrew","Blackmon","ablackmon@nova-compression.com","318-451-4728","Field Service Technician","North Permian","623373f22a8c0500144d2783","6390a788e2e8a433f3a3c230",NULL
+"6349743f4ec5e26805f57cd9","Jimmy","Bourland, Jr.","jbourlandjr@nova-compression.com","903-808-5835","Field Service Technician - Third Party","East Texas","621d02f4b1acc9410c52a2ec","621d02f3b1acc9410c52a2c1",NULL
+"651da360c57942001a9a90d0","Luis","Hernandez","lhernandez@nova-compression.com","432-741-5621","Associate - Supply Chain","Carlsbad,North Permian,Pecos,South Permian","633f207e075a3f07a42cd43f","65805f6c6647a10021ea05a7",NULL
+"6331da38e58a420043c270dd","Steven","Moore","smoore@nova-compression.com","903-470-0387","Shop Service Technician","East Texas","621d02f3b1acc9410c52a2cd","643ec5ea48ece34f57e73334",NULL
+"651d9e29899ef80847211870","Craig","Overstreet","coverstreet@nova-compression.com","409-200-9395","Field Service Technician","East Texas","621d02f3b1acc9410c52a2c1","621d02f3b1acc9410c52a2ca",NULL
+"648243d491b5354ea81fead2","Ryen","Christensen","rchristensen@nova-compression.com","505-215-9360","Manager - Operations","Carlsbad","6543d0f0cac23529fce06820","621d02f3b1acc9410c52a2c2",NULL
+"6408cb344ab4401232db48e3","Dylan","Howland","dhowland@nova-compression.com","318-499-2361","Field Service Technician - Lead","Carlsbad","621d02f3b1acc9410c52a2c2","648243d491b5354ea81fead2",NULL
+"652559721447af003e6e0f47","Larry","Robinson","lrobinson@nova-compression.com","870-819-2052","Field Service Technician","North Permian","623373f22a8c0500144d2783","6390a788e2e8a433f3a3c230",NULL
+"6537d6bfccf8ba0013d69364","Mario","Rodriguez","mrodriguez@nova-compression.com","817-773-0666","Field Service Technician","South Permian","623373f22a8c0500144d2783","621d02f4b1acc9410c52a30a",NULL
+"63209e5c89167653a4bd5cfc","Austin","Wilkins","ahwilkins@nova-compression.com","843-683-2884","Field Service Technician","Pecos","621d02f3b1acc9410c52a2c2","621d02f3b1acc9410c52a2c2",NULL
+"643ec5ea48ece34f57e73334","Alex","Williams","awilliams@nova-compression.com","903-806-5867","Supervisor - Shop","East Texas","621d02f4b1acc9410c52a2ec","621d02f3b1acc9410c52a2cd",NULL
+"631792b71e87b90fb8a84966","Lisandro","Escamilla","lescamilla@nova-compression.com","806-255-3588","Field Service Technician","Midcon","621d02f5b1acc9410c52a327","621d02f5b1acc9410c52a328",NULL
+"647deb3a9e5f9e1716839134","Brent","Hudspeth","bhudspeth@nova-compression.com","936-488-9031","Field Service Technician","East Texas","621d02f3b1acc9410c52a2c1","621d02f4b1acc9410c52a2db",NULL
+"649de9260557e171a18fd9fc","Diego","Gonzalez","dgonzalez@nova-compression.com","903-812-8553","Shop Service Technician","East Texas","621d02f3b1acc9410c52a2cd","643ec5ea48ece34f57e73334",NULL
+"65494709b2127d0021e8c2c8","Zavada","Herod","zherod@nova-compression.com","682-446-5920","Analyst - Safety","Carlsbad,North Permian,Pecos,South Permian","621d02f4b1acc9410c52a2ec","6217f9a97b64924c262c6976",NULL
+"621d02f4b1acc9410c52a309","Brian","Olsen","bolsen@nova-compression.com","","Director - Operations","Administrative","621d02f3b1acc9410c52a2b7","621d02f4b1acc9410c52a303","2022-03-31 05:00:00"
+"65e76d61784d470014ac4360","Lyndon","Cochran","lcochran@nova-compression.com","903-787-1793","Parts Runner - Supply Chain","East Texas","633f207e075a3f07a42cd43f","65c63e66ca4b920017327c9f",NULL
+"6548fc694e7f89001a9641c3","Gilberto","Sanchez","gsanchez@nova-compression.com","830-765-3688","Field Service Technician","South Permian","623373f22a8c0500144d2783","621d02f4b1acc9410c52a30a",NULL
+"65522e5989a87b00139a16fe","William","Cordova","wcordova@nova-compression.com","432-232-8512","Field Service Technician","Carlsbad","621d02f3b1acc9410c52a2c2","648243d491b5354ea81fead2",NULL
+"65805f6c6647a10021ea05a7","Dustin","Kite","dkite@nova-compression.com","432-638-6733","Supervisor - Supply Chain","Carlsbad,North Permian,Pecos,South Permian","621d02f3b1acc9410c52a2ba","633f207e075a3f07a42cd43f",NULL
+"6564b11fe730e40021ce6a5c","Brandon","Lampley","blampley@nova-compression.com","361-293-1790","Manager - Operations","South Texas","621d02f4b1acc9410c52a2ec","621d02f3b1acc9410c52a2c1",NULL
+"654e62caf38aff0013ce0efd","Robert","Muir","rmuir@nova-compression.com","432-202-7780","Manager - Emissions","Carlsbad,North Permian,Pecos,South Permian","621d02f4b1acc9410c52a2ec","6217f9a97b64924c262c6976",NULL
+"6568a61033d16b00429b9b50","Jose","Pena","jpena@nova-compression.com","325-812-2046","Field Service Technician","North Permian","623373f22a8c0500144d2783","6390a788e2e8a433f3a3c230",NULL
+"656f34a46ed70a002cef548f","Orlando","Reyna","oreyna@nova-compression.com","325-500-5376","Field Service Technician","South Permian","623373f22a8c0500144d2783","621d02f4b1acc9410c52a30a",NULL
+"65e7741a42e933005982b64e","Roy","Savell","rsavell@nova-compression.com","337-356-2267","Field Service Technician","Carlsbad","621d02f3b1acc9410c52a2c2","648243d491b5354ea81fead2",NULL
+"65c63e66ca4b920017327c9f","Matt","Thompson","mthompson@nova-compression.com","405-639-9576","Supervisor - Supply Chain","East Texas,South Texas","621d02f3b1acc9410c52a2ba","633f207e075a3f07a42cd43f",NULL
+"621d02f4b1acc9410c52a2fe","Bruce","Evans","bevans@nova-compression.com","","","Administrative","621d02f4b1acc9410c52a2ed","621d02f4b1acc9410c52a2ed","2022-04-04 05:00:00"
+"621d02f4b1acc9410c52a2fa","Christopher","Cole","ccole@nova-compression.com","","Field Service Technician","Administrative","621d02f4b1acc9410c52a303","621d02f4b1acc9410c52a301","2022-04-22 05:00:00"
+"621d02f3b1acc9410c52a2bd","Jeremiah","Boop","jboop@nova-compression.com","361-212-8622","Field Service Technician","South Texas","621d02f3b1acc9410c52a2c1","621d02f3b1acc9410c52a2c2","2022-05-18 05:00:00"
+"621d02f5b1acc9410c52a319","Ryan","Chappell","rchappell@nova-compression.com","580-548-6388","Field Service Technician","Midcon","621d02f5b1acc9410c52a327","621d02f5b1acc9410c52a31c","2022-05-27 05:00:00"
+"657733f96bb7a8001a2dba01","Frank","Wimbish","fwimbish@nova-compression.com","713-410-4033","Account Manager - Business Development","North Permian,South Permian","621d02f3b1acc9410c52a2b7","621d02f3b1acc9410c52a2b6",NULL
+"621d02f4b1acc9410c52a2ef","Jestin","Allen","jallen@nova-compression.com","","","Administrative","621d02f4b1acc9410c52a2ed","621d02f4b1acc9410c52a2ed","2022-03-04 06:00:00"
+"621d02f4b1acc9410c52a30e","David","Roche","droche@nova-compression.com","","","Administrative","621d02f4b1acc9410c52a303","621d02f4b1acc9410c52a301","2022-03-04 06:00:00"
+"6605ddfc5e46de004e4cd254","Jacob","Holcomb","jholcomb@nova-compression.com","903-508-0165","Field Service Technician","South Texas","621d02f3b1acc9410c52a2c1","6564b11fe730e40021ce6a5c","2024-04-19 05:00:00"
+"655b7633cc25eb005841560d","Kevin","Bearden","kbearden@nova-compression.com","409-423-0878","Field Service Technician","East Texas","621d02f3b1acc9410c52a2c1","621d02f3b1acc9410c52a2ca",NULL
+"65a94dc78dd111002a376a3a","James","Brown","jbrown@nova-compression.com","325-262-5386","Field Service Technician","Pecos","621d02f3b1acc9410c52a2c2","621d02f3b1acc9410c52a2c2",NULL
+"655231b73326860013f36045","Trace","Busby","tbusby@nova-compression.com","337-423-2401","Field Service Technician","North Permian","623373f22a8c0500144d2783","6390a788e2e8a433f3a3c230",NULL
+"65958734746a2d0016fe1f5f","Steve","Cabrera","scabrera@nova-compression.com","325-277-7591","Field Service Technician - Lead","Pecos","621d02f3b1acc9410c52a2c2","621d02f3b1acc9410c52a2c2",NULL
+"65c3bb00b7b93c00170c76b0","Orrin","Cox","ocox@nova-compression.com","806-216-2360","Field Service Technician","Midcon","621d02f5b1acc9410c52a327","621d02f5b1acc9410c52a31c",NULL
+"65cd0900b9bfe5002be1e2f9","Roberto","Gonzalez","rgonzalez@nova-compression.com","903-390-9223","Parts Runner - Supply Chain","South Texas","633f207e075a3f07a42cd43f","65c63e66ca4b920017327c9f",NULL
+"65557843d2c1cf001a51c057","Adam","Graham","agraham@nova-compression.com","575-247-5450","Field Service Technician","Carlsbad","621d02f3b1acc9410c52a2c2","648243d491b5354ea81fead2",NULL
+"6584a36915402f00498d4657","Mason","Harris","mharris@nova-compression.com","936-635-4920","Field Service Technician","South Texas","621d02f3b1acc9410c52a2c1","621d02f3b1acc9410c52a2ca",NULL
+"66030db4949f010029fe4b00","Austin","Castaneda","acastaneda@nova-compression.com","325-206-3768","Field Service Technician","South Permian","623373f22a8c0500144d2783","621d02f4b1acc9410c52a30a",NULL
+"6228ef193be91800299015a9","John","Halstead","jhalstead@nova-compression.com","936-590-5227","Field Service Technician","East Texas","621d02f3b1acc9410c52a2c1","621d02f3b1acc9410c52a2d1","2022-08-11 05:00:00"
+"627d8249beb3700029a83dd4","Brian","Gamble","bgamble@nova-compression.com","361-573-5027","Field Service Technician - Third Party","South Texas","621d02f4b1acc9410c52a2ec","621d02f3b1acc9410c52a2c1","2022-06-08 05:00:00"
+"621d02f4b1acc9410c52a2f6","Floyd","Bryan","fbryan@nova-compression.com","","","North Permian","621d02f4b1acc9410c52a301","621d02f4b1acc9410c52a30a","2022-06-20 05:00:00"
+"621d02f4b1acc9410c52a2d7","Matt","Hill","mhill@nova-compression.com","936-645-1401","Field Service Technician","East Texas","621d02f4b1acc9410c52a2db","621d02f3b1acc9410c52a2d1","2022-08-11 05:00:00"
+"6261bc5283963f6d13c4be05","Andy","Merrill","amerrill@nova-compression.com","903-277-1545","Field Service Technician","Carlsbad","621d02f4b1acc9410c52a2ec","621d02f4b1acc9410c52a301","2022-06-20 05:00:00"
+"621d02f4b1acc9410c52a30c","Garrett","Rather","grather@nova-compression.com","940-682-6171","Field Service Technician","North Permian","621d02f4b1acc9410c52a301","621d02f4b1acc9410c52a30a","2022-08-13 05:00:00"
+"62accfdd7c2f0b41d0c0dcaf","Christopher","Parr","cparr@nova-compression.com","361-550-8550","","South Texas","621d02f3b1acc9410c52a2c1","621d02f3b1acc9410c52a2c2","2022-08-14 05:00:00"
+"621d02f4b1acc9410c52a307","Billy","Merrill","bmerrill@nova-compression.com","","Field Service Technician","Carlsbad","621d02f4b1acc9410c52a2ec","621d02f4b1acc9410c52a301","2022-06-20 05:00:00"
+"621d02f5b1acc9410c52a31e","Justin","Duncan","jduncan@nova-compression.com","580-216-3932","Coordinator - Supply Chain","Administrative","621d02f3b1acc9410c52a2ba","621d02f4b1acc9410c52a2dc","2022-06-30 05:00:00"
+"621d02f4b1acc9410c52a2d6","Kyle","Head","khead@nova-compression.com","903-237-9960","Shop Service Technician","East Texas","621d02f4b1acc9410c52a2ec","6228f473e10b0a0022d2903c","2022-08-19 05:00:00"
+"621d02f4b1acc9410c52a302","Mike","Hansen","mhansen@nova-compression.com","432-215-6448","Field Service Technician","North Permian","621d02f4b1acc9410c52a301","621d02f4b1acc9410c52a30a","2022-06-30 05:00:00"
+"621d02f4b1acc9410c52a2fd","Randy","Elder","relder@nova-compression.com","870-214-8293","Field Service Technician - Lead","North Permian","621d02f4b1acc9410c52a301","621d02f4b1acc9410c52a30a","2022-08-23 05:00:00"
+"621d02f4b1acc9410c52a2f8","Jeremy","Cain","jcain@nova-compression.com","505-787-7153","Field Service Technician","Carlsbad","621d02f4b1acc9410c52a2ec","621d02f4b1acc9410c52a301","2022-07-11 05:00:00"
+"62d9a0d251f7203b93045074","Fred","Balcazar","fbalcazar@nova-compression.com","432-310-4895","Field Service Technician - Third Party Lead","North Permian","621d02f4b1acc9410c52a301","621d02f4b1acc9410c52a30a","2022-08-25 05:00:00"
+"621d02f4b1acc9410c52a2f5","Joseph","Brotherton","jbrotherton@nova-compression.com","979-943-8610","Field Service Technician","Carlsbad","621d02f4b1acc9410c52a2ec","62e3fac12725d7003487fed7","2022-08-27 05:00:00"
+"621d02f4b1acc9410c52a311","Clay","Vickers Jr.","rvickers@nova-compression.com","817-771-3033","Field Service Technician - Lead","Carlsbad","621d02f4b1acc9410c52a2ec","621d02f4b1acc9410c52a301","2022-07-11 05:00:00"
+"621d02f4b1acc9410c52a2e8","Kevin","Washburn","kwashburn@nova-compression.com","903-808-2303","Shop Service Technician","East Texas","621d02f3b1acc9410c52a2d0","6228f473e10b0a0022d2903c","2022-07-22 05:00:00"
+"62826638a41716001b1616dd","Ethan","Lane","elane@nova-compression.com","817-673-1233","Intern","Corporate","621d02f3b1acc9410c52a2b7","621d02f3b1acc9410c52a2b9","2022-09-01 05:00:00"
+"621d02f3b1acc9410c52a2c7","Noberto","Munoz","nmunoz@nova-compression.com","830-202-0712","Field Service Technician","South Texas","621d02f3b1acc9410c52a2c1","621d02f3b1acc9410c52a2c2","2022-06-03 05:00:00"
+"621d02f4b1acc9410c52a2e5","Tanner","Swaner","tswaner@nova-compression.com","","Field Service Technician","East Texas","621d02f4b1acc9410c52a2db","621d02f3b1acc9410c52a2d1","2022-06-03 05:00:00"
+"621d02f4b1acc9410c52a2f2","Dex","Barclay","dbarclay@nova-compression.com","432-634-8415","Field Service Technician","Carlsbad","621d02f4b1acc9410c52a2ec","621d02f4b1acc9410c52a301","2022-07-24 05:00:00"
+"62d996fc5c39b5003fe991c9","Dwayne","Mott","dmott@nova-compression.com","832-562-1846","","South Texas","621d02f3b1acc9410c52a2c1","621d02f3b1acc9410c52a2c2","2022-08-08 05:00:00"
+"62c86582e17bd01074a57525","Jesus","Dominguez","jdominguez@nova-compression.com","432-234-8232","Associate - Supply Chain","Administrative","621d02f3b1acc9410c52a2ba","621d02f4b1acc9410c52a2f3","2022-09-09 05:00:00"
+"630638e1494ff50014a652f8","Cody","Tesch","ctesch@nova-compression.com","361-484-2515","Field Service Technician","South Texas","621d02f3b1acc9410c52a2c1","62ed3a5ad7b4390bc8fe0bd8","2022-09-28 05:00:00"
+"62ed3a5ad7b4390bc8fe0bd8","Carl (Sonny)","Young","cyoung@nova-compression.com","903-388-7019","Manager - Operations","South Texas","621d02f4b1acc9410c52a2ec","621d02f3b1acc9410c52a2c1","2022-11-04 05:00:00"
+"62f512d82683817d56d0f343","Johnathan","Schmidt","jschmidt@nova-compression.com","325-315-7867","Field Service Technician - Third Party","East Texas","621d02f4b1acc9410c52a2ec","621d02f3b1acc9410c52a2cd","2022-11-10 06:00:00"
+"6317790472799a01445e5a5a","Seth","Sebastian","ssebastian@nova-compression.com","318-780-0582","Field Service Technician","East Texas","621d02f3b1acc9410c52a2c1","621d02f4b1acc9410c52a2db","2022-11-22 06:00:00"
+"621d02f3b1acc9410c52a2bf","Charles","Bucklew","cbucklew@nova-compression.com","936-348-4550","Field Service Technician","South Texas","621d02f3b1acc9410c52a2c1","62ed3a5ad7b4390bc8fe0bd8","2022-11-28 06:00:00"
+"633f21cd7a7e2b6f57c07a30","Jory","Caldwell","jcaldwell@nova-compression.com","817-751-2580","Shop Service Technician","East Texas","621d02f3b1acc9410c52a2d0","6228f473e10b0a0022d2903c","2022-10-10 05:00:00"
+"6320a1dc53c424446307498b","Cole","Garrett","cgarrett@nova-compression.com","254-595-1855","Field Service Technician","East Texas","621d02f3b1acc9410c52a2c1","621d02f3b1acc9410c52a2d1","2022-10-10 05:00:00"
+"621d02f4b1acc9410c52a300","Melanie","Gee","mgee@nova-compression.com","409-293-2749","Account Manager - Business Development","Administrative","621d02f3b1acc9410c52a2b7","621d02f3b1acc9410c52a2b6","2022-10-14 05:00:00"
+"621d02f4b1acc9410c52a2f3","Vernon","Benton","vbenton@nova-compression.com","432-880-6379","Supervisor - Supply Chain","Administrative","621d02f3b1acc9410c52a2b9","621d02f3b1acc9410c52a2ba","2022-10-21 05:00:00"
+"635be8aa3d7e614675d75b49","Justin","Ellison","jellison@nova-compression.com","325-725-4207","Field Service Technician","North Permian","621d02f4b1acc9410c52a2ec","621d02f3b1acc9410c52a2d4","2022-10-31 05:00:00"
+"62f66b32fb861b4dc7b76687","Stephen","Young","syoung@nova-compression.com","","Field Service Technician - Third Party Lead","East Texas","621d02f4b1acc9410c52a2ec","621d02f3b1acc9410c52a2c2","2022-11-01 05:00:00"
+"621d02f3b1acc9410c52a2cf","Darrell","Bushong","dbushong@nova-compression.com","903-987-3043","Director - Business Development","East Texas","621d02f3b1acc9410c52a2b7","621d02f3b1acc9410c52a2b6","2022-11-03 05:00:00"
+"62e3fac12725d7003487fed7","Cole","Wiemers","cwiemers@nova-compression.com","325-939-3031","Director - Operations","Carlsbad,Pecos","621d02f3b1acc9410c52a2b7","621d02f4b1acc9410c52a2ec","2022-11-04 05:00:00"

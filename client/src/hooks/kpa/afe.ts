@@ -5,8 +5,7 @@ import axios from "axios"
 
 // Get all AFE #s
 const getAllAFEs = async (token: string) => {
-    const { data } = await axios.get<Array<AFE>>(`${import.meta.env.VITE_API_BASE}/kpa/afe`,
-        { headers: { Authorization: `Bearer ${token}` } })
+    const { data } = await axios.get<Array<AFE>>(`${import.meta.env.VITE_API_BASE}/kpa/afe`, { headers: { Authorization: `Bearer ${token}` } })
 
     return data
 }

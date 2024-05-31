@@ -1,5 +1,5 @@
 export interface Vendor {
-    id: string,
-    name: string,
+    id: string
+    name: string
     active: boolean
 }

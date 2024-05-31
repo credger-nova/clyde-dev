@@ -1,5 +1,5 @@
-import CircularProgress, { circularProgressClasses, CircularProgressProps } from '@mui/material/CircularProgress';
-import Box from '@mui/material/Box';
+import CircularProgress, { circularProgressClasses, CircularProgressProps } from "@mui/material/CircularProgress"
+import Box from "@mui/material/Box"
 
 function NovaCircularLoad(props: CircularProgressProps) {
     return (
@@ -7,9 +7,8 @@ function NovaCircularLoad(props: CircularProgressProps) {
             <CircularProgress
                 variant="determinate"
                 sx={{
-                    color: (theme) =>
-                        theme.palette.grey[800],
-                    position: "fixed"
+                    color: (theme) => theme.palette.grey[800],
+                    position: "fixed",
                 }}
                 size={60}
                 thickness={6}
@@ -20,7 +19,7 @@ function NovaCircularLoad(props: CircularProgressProps) {
                 variant="indeterminate"
                 sx={{
                     color: "white",
-                    animationDuration: '1500ms',
+                    animationDuration: "1500ms",
                     left: 0,
                     [`& .${circularProgressClasses.circle}`]: {
                         strokeLinecap: "round",

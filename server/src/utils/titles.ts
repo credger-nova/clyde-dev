@@ -1,4 +1,4 @@
-export const TITLES: Array<{ group: string, titles: Array<string> }> = [
+export const TITLES: Array<{ group: string; titles: Array<string> }> = [
     {
         group: "Field Service",
         titles: [
@@ -6,52 +6,36 @@ export const TITLES: Array<{ group: string, titles: Array<string> }> = [
             "Field Service Technician - Lead",
             "Field Service Technician - Senior",
             "Field Service Technician - Third Party",
-            "Field Service Technician - Third Party Lead"
-        ]
+            "Field Service Technician - Third Party Lead",
+        ],
     },
     {
         group: "Ops Manager",
-        titles: [
-            "Manager - Operations"
-        ]
+        titles: ["Manager - Operations"],
     },
     {
         group: "Ops Director",
-        titles: [
-            "Director - Operations"
-        ]
+        titles: ["Director - Operations"],
     },
     {
         group: "Ops Vice President",
-        titles: [
-            "Vice President - Operations",
-            "Sr. Vice President - Operations"
-        ]
+        titles: ["Vice President - Operations", "Sr. Vice President - Operations"],
     },
     {
         group: "Shop Service",
-        titles: [
-            "Shop Service Technician",
-            "Shop Service Technician - Lead"
-        ]
+        titles: ["Shop Service Technician", "Shop Service Technician - Lead"],
     },
     {
         group: "Shop Supervisor",
-        titles: [
-            "Supervisor - Shop"
-        ]
+        titles: ["Supervisor - Shop"],
     },
     {
         group: "Shop Director",
-        titles: [
-            "Director - Shops"
-        ]
+        titles: ["Director - Shops"],
     },
     {
         group: "Emissions Manager",
-        titles: [
-            "Manager - Emissions"
-        ]
+        titles: ["Manager - Emissions"],
     },
     {
         group: "Supply Chain",
@@ -62,35 +46,23 @@ export const TITLES: Array<{ group: string, titles: Array<string> }> = [
             "Parts Runner - Supply Chain",
             "Supervisor - Supply Chain",
             "Warehouse Associate - Supply Chain",
-            "Warehouse Supervisor - Supply Chain"
-        ]
+            "Warehouse Supervisor - Supply Chain",
+        ],
     },
     {
         group: "Supply Chain Management",
-        titles: [
-            "Manager - Supply Chain",
-            "Director - Supply Chain and Analysis",
-            "Vice President - Supply Chain and Analysis"
-        ]
+        titles: ["Manager - Supply Chain", "Director - Supply Chain and Analysis", "Vice President - Supply Chain and Analysis"],
     },
     {
         group: "Admin",
-        titles: [
-            "Revenue Analyst"
-        ]
+        titles: ["Revenue Analyst"],
     },
     {
         group: "Executive Management",
-        titles: [
-            "Chief Financial Officer",
-            "President and Chief Executive Officer"
-        ]
+        titles: ["Chief Financial Officer", "President and Chief Executive Officer"],
     },
     {
         group: "IT",
-        titles: [
-            "Software Developer",
-            "Manager - IT"
-        ]
-    }
+        titles: ["Software Developer", "Manager - IT"],
+    },
 ]

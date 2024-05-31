@@ -1,8 +1,5 @@
 import { FastifyInstance, FastifyRequest } from "fastify"
-import {
-    getAllUnits, getAllCustomers, getAllLocations, getAllRegions, getUnit, generateUnitsLayer,
-    getAllManagers, getCentroid
-} from "../api/unit"
+import { getAllUnits, getAllCustomers, getAllLocations, getAllRegions, getUnit, generateUnitsLayer, getAllManagers, getCentroid } from "../api/unit"
 import { GeoJSONFeature } from "../models/geoJson"
 
 async function routes(fastify: FastifyInstance) {

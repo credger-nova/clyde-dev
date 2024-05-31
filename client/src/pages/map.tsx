@@ -15,13 +15,11 @@ export default function Map() {
 
     return (
         <div className="page-container" style={{ position: "relative" }}>
-            {unitsLayerFetching || managersFetching || centroidFetching || !unitsLayer ? <Loader /> :
-                <UnitMap
-                    unitsLayer={unitsLayer}
-                    centroid={centroid ?? []}
-                    managers={managers}
-                />
-            }
+            {unitsLayerFetching || managersFetching || centroidFetching || !unitsLayer ? (
+                <Loader />
+            ) : (
+                <UnitMap unitsLayer={unitsLayer} centroid={centroid ?? []} managers={managers} />
+            )}
         </div>
     )
 }

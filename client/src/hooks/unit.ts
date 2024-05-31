@@ -4,8 +4,7 @@ import { Unit } from "../types/unit"
 
 // Get all Unit #s
 const getAllUnits = async (token: string) => {
-    const { data } = await axios.get<Array<Unit>>(`${import.meta.env.VITE_API_BASE}/unit`,
-        { headers: { Authorization: `Bearer ${token}` } })
+    const { data } = await axios.get<Array<Unit>>(`${import.meta.env.VITE_API_BASE}/unit`, { headers: { Authorization: `Bearer ${token}` } })
 
     return data
 }
@@ -16,8 +15,9 @@ export function useUnits(token: string) {
 
 // Get Customers
 const getAllCustomers = async (token: string) => {
-    const { data } = await axios.get<Array<string>>(`${import.meta.env.VITE_API_BASE}/unit/customer`,
-        { headers: { Authorization: `Bearer ${token}` } })
+    const { data } = await axios.get<Array<string>>(`${import.meta.env.VITE_API_BASE}/unit/customer`, {
+        headers: { Authorization: `Bearer ${token}` },
+    })
 
     return data
 }
@@ -28,8 +28,9 @@ export function useCustomers(token: string) {
 
 // Get Locations
 const getAllUnitLocations = async (token: string) => {
-    const { data } = await axios.get<Array<string>>(`${import.meta.env.VITE_API_BASE}/unit/location`,
-        { headers: { Authorization: `Bearer ${token}` } })
+    const { data } = await axios.get<Array<string>>(`${import.meta.env.VITE_API_BASE}/unit/location`, {
+        headers: { Authorization: `Bearer ${token}` },
+    })
 
     return data
 }
@@ -40,8 +41,7 @@ export function useUnitLocations(token: string) {
 
 // Get Regions
 const getAllRegions = async (token: string) => {
-    const { data } = await axios.get<Array<string>>(`${import.meta.env.VITE_API_BASE}/unit/region`,
-        { headers: { Authorization: `Bearer ${token}` } })
+    const { data } = await axios.get<Array<string>>(`${import.meta.env.VITE_API_BASE}/unit/region`, { headers: { Authorization: `Bearer ${token}` } })
 
     return data
 }
@@ -52,8 +52,9 @@ export function useRegions(token: string) {
 
 // Get Managers
 const getAllManagers = async (token: string) => {
-    const { data } = await axios.get<Array<string>>(`${import.meta.env.VITE_API_BASE}/unit/manager`,
-        { headers: { Authorization: `Bearer ${token}` } })
+    const { data } = await axios.get<Array<string>>(`${import.meta.env.VITE_API_BASE}/unit/manager`, {
+        headers: { Authorization: `Bearer ${token}` },
+    })
 
     return data
 }

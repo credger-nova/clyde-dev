@@ -23,9 +23,7 @@ export default function Providers({ children }: Props) {
                     <Auth0ProviderWithHistory>
                         <UIStateProvider>
                             {children}
-                            {import.meta.env.DEV && (
-                                <ReactQueryDevtools initialIsOpen={false} buttonPosition="bottom-left" />
-                            )}
+                            {import.meta.env.DEV && <ReactQueryDevtools initialIsOpen={false} buttonPosition="bottom-left" />}
                         </UIStateProvider>
                     </Auth0ProviderWithHistory>
                 </Router>

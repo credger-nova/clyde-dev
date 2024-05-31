@@ -5,9 +5,9 @@ import { Location } from "../../types/netsuite/location"
 
 // Get all NetSuite Locations
 const getAllLocations = async (token: string) => {
-    const { data } = await axios.get<Array<Location>>(`${import.meta.env.VITE_API_BASE}/netsuite/locations`,
-        { headers: { Authorization: `Bearer ${token}` } }
-    )
+    const { data } = await axios.get<Array<Location>>(`${import.meta.env.VITE_API_BASE}/netsuite/locations`, {
+        headers: { Authorization: `Bearer ${token}` },
+    })
 
     return data
 }

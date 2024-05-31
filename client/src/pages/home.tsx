@@ -6,8 +6,8 @@ import { useAuth0Token } from "../hooks/utils"
 
 import { TITLES } from "../utils/titles"
 
-import Box from '@mui/material/Box'
-import Grid from '@mui/material/Unstable_Grid2'
+import Box from "@mui/material/Box"
+import Grid from "@mui/material/Unstable_Grid2"
 import PartsReqSummary from "../components/dashboard/parts-reqs/PartsReqSummary"
 
 export default function Home() {
@@ -19,30 +19,33 @@ export default function Home() {
 
     React.useEffect(() => {
         if (isFetched && novaUser) {
-            setUserGroup(TITLES.find(item => item.titles.includes(novaUser.jobTitle))?.group)
+            setUserGroup(TITLES.find((item) => item.titles.includes(novaUser.jobTitle))?.group)
         }
     }, [isFetched, novaUser])
 
     return (
         <div className="page-container">
-            {novaUser &&
+            {novaUser && (
                 <Box sx={{ width: "100%", height: "100%" }}>
-                    <Grid
-                        container
-                        direction="row"
-                    >
+                    <Grid container direction="row">
                         <Grid
                             xs={12}
-                            sm={userGroup === "Supply Chain Management" || userGroup === "Ops Vice President" || userGroup === "Executive Management" ||
-                                userGroup === "Admin" || userGroup === "IT" ? 12 : 6}
-                            sx={{ padding: "20px" }}>
-                            <PartsReqSummary
-                                novaUser={novaUser}
-                            />
+                            sm={
+                                userGroup === "Supply Chain Management" ||
+                                userGroup === "Ops Vice President" ||
+                                userGroup === "Executive Management" ||
+                                userGroup === "Admin" ||
+                                userGroup === "IT"
+                                    ? 12
+                                    : 6
+                            }
+                            sx={{ padding: "20px" }}
+                        >
+                            <PartsReqSummary novaUser={novaUser} />
                         </Grid>
                     </Grid>
                 </Box>
-            }
+            )}
         </div>
     )
 }

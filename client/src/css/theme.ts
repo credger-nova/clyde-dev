@@ -1,15 +1,15 @@
-import { createTheme, Theme } from "@mui/material/styles";
+import { createTheme, Theme } from "@mui/material/styles"
 
-export const PRIMARY_MAIN = "#FFFFFF";
-export const PRIMARY_LIGHT = "#FCBB93";
-export const PRIMARY_DARK = "#334787";
-export const SECONDARY_MAIN = "#680bce";
-export const SECONDARY_LIGHT = "#680bce";
-export const SECONDARY_DARK = "#1A1E22";
-export const BACKGROUND = "#1C252F";
-export const PAPER = "#16181A";
-export const ERROR_MAIN = "#EB5959";
-export const ERROR_DARK = "#BE1010";
+export const PRIMARY_MAIN = "#FFFFFF"
+export const PRIMARY_LIGHT = "#FCBB93"
+export const PRIMARY_DARK = "#334787"
+export const SECONDARY_MAIN = "#680bce"
+export const SECONDARY_LIGHT = "#680bce"
+export const SECONDARY_DARK = "#1A1E22"
+export const BACKGROUND = "#1C252F"
+export const PAPER = "#16181A"
+export const ERROR_MAIN = "#EB5959"
+export const ERROR_DARK = "#BE1010"
 export const SUCCESS_MAIN = "#1C812F"
 export const SUCCESS_DARK = "#1C812F"
 
@@ -38,8 +38,8 @@ const theme: Theme = createTheme({
         },
         success: {
             main: SUCCESS_MAIN,
-            dark: SUCCESS_DARK
-        }
+            dark: SUCCESS_DARK,
+        },
     },
     typography: {
         fontFamily: [
@@ -65,10 +65,9 @@ const theme: Theme = createTheme({
         },
         button: {
             textTransform: "none",
-            fontWeight: "400"
-        }
+            fontWeight: "400",
+        },
     },
+})
 
-});
-
-export default theme;
+export default theme

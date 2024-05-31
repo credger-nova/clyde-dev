@@ -1,13 +1,13 @@
-import { styled } from '@mui/material/styles';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell, { tableCellClasses } from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-import Paper from '@mui/material/Paper';
-import CircleIcon from '@mui/icons-material/Circle';
-import { UnitStatus as IUnitStatus } from "../../types/unit";
+import { styled } from "@mui/material/styles"
+import Table from "@mui/material/Table"
+import TableBody from "@mui/material/TableBody"
+import TableCell, { tableCellClasses } from "@mui/material/TableCell"
+import TableContainer from "@mui/material/TableContainer"
+import TableHead from "@mui/material/TableHead"
+import TableRow from "@mui/material/TableRow"
+import Paper from "@mui/material/Paper"
+import CircleIcon from "@mui/icons-material/Circle"
+import { UnitStatus as IUnitStatus } from "../../types/unit"
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -17,17 +17,17 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.body}`]: {
         fontSize: 14,
     },
-}));
+}))
 
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
-    '&:nth-of-type(odd)': {
+    "&:nth-of-type(odd)": {
         backgroundColor: theme.palette.action.hover,
     },
     // hide last border
-    '&:last-child td, &:last-child th': {
+    "&:last-child td, &:last-child th": {
         border: 0,
     },
-}));
+}))
 
 interface Props {
     parameters: Array<IUnitStatus> | undefined
@@ -51,17 +51,23 @@ export default function UnitStatus(props: Props) {
                 </TableHead>
                 <TableBody>
                     {props.parameters?.map((param: IUnitStatus) => (
-                        <StyledTableRow
-                            key={param.unitNumber}
-                            sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                        >
+                        <StyledTableRow key={param.unitNumber} sx={{ "&:last-child td, &:last-child th": { border: 0 } }}>
                             <StyledTableCell>
                                 <div style={{ display: "flex", alignItems: "center" }}>
-                                    <CircleIcon sx={{
-                                        color: param.status === "Stopped" ? "red" : param.status === "Cold" ? "deepskyblue" : param.status === "Running" ? "green" : "gray",
-                                        fontSize: "1.25rem",
-                                        marginRight: "5px"
-                                    }} />
+                                    <CircleIcon
+                                        sx={{
+                                            color:
+                                                param.status === "Stopped"
+                                                    ? "red"
+                                                    : param.status === "Cold"
+                                                    ? "deepskyblue"
+                                                    : param.status === "Running"
+                                                    ? "green"
+                                                    : "gray",
+                                            fontSize: "1.25rem",
+                                            marginRight: "5px",
+                                        }}
+                                    />
                                     {param.unitNumber}
                                 </div>
                             </StyledTableCell>

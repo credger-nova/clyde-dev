@@ -12,26 +12,26 @@ import { useLocation } from "react-router-dom"
 import { useQueryClient } from "@tanstack/react-query"
 
 import PartsReqCard, { SkeletonCard } from "../components/supply-chain/PartsReqCard"
-import Grid from '@mui/material/Unstable_Grid2'
-import Box from '@mui/material/Box'
+import Grid from "@mui/material/Unstable_Grid2"
+import Box from "@mui/material/Box"
 import EditDialog from "../components/supply-chain/EditDialog"
 import { PartsReqQuery } from "../types/partsReq"
 import SearchFilter from "../components/supply-chain/SearchFilter"
-import Collapse from '@mui/material/Collapse'
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
-import ExpandLessIcon from '@mui/icons-material/ExpandLess'
-import ToggleButton from '@mui/material/ToggleButton'
-import ToggleButtonGroup, { toggleButtonGroupClasses } from '@mui/material/ToggleButtonGroup'
-import AppsIcon from '@mui/icons-material/Apps'
-import TableRowsIcon from '@mui/icons-material/TableRows'
-import { styled } from '@mui/material/styles'
-import Tooltip from '@mui/material/Tooltip'
-import TablePagination from '@mui/material/TablePagination'
+import Collapse from "@mui/material/Collapse"
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore"
+import ExpandLessIcon from "@mui/icons-material/ExpandLess"
+import ToggleButton from "@mui/material/ToggleButton"
+import ToggleButtonGroup, { toggleButtonGroupClasses } from "@mui/material/ToggleButtonGroup"
+import AppsIcon from "@mui/icons-material/Apps"
+import TableRowsIcon from "@mui/icons-material/TableRows"
+import { styled } from "@mui/material/styles"
+import Tooltip from "@mui/material/Tooltip"
+import TablePagination from "@mui/material/TablePagination"
 import PartsReqTable from "../components/supply-chain/PartsReqTable"
 import { Routes, Route } from "react-router-dom"
-import Button from '@mui/material/Button'
-import theme from '../css/theme'
-import RefreshIcon from '@mui/icons-material/Refresh'
+import Button from "@mui/material/Button"
+import theme from "../css/theme"
+import RefreshIcon from "@mui/icons-material/Refresh"
 
 const StyledToggleButtonGroup = styled(ToggleButtonGroup)(({ theme }) => ({
     [`& .${toggleButtonGroupClasses.grouped}`]: {
@@ -42,14 +42,13 @@ const StyledToggleButtonGroup = styled(ToggleButtonGroup)(({ theme }) => ({
             border: 0,
         },
     },
-    [`& .${toggleButtonGroupClasses.middleButton},& .${toggleButtonGroupClasses.lastButton}`]:
-    {
+    [`& .${toggleButtonGroupClasses.middleButton},& .${toggleButtonGroupClasses.lastButton}`]: {
         marginLeft: -1,
-        borderLeft: '1px solid transparent',
+        borderLeft: "1px solid transparent",
     },
-}));
+}))
 
-const OPS_VP_TITLES = TITLES.find(item => item.group === "Ops Vice President")?.titles ?? []
+const OPS_VP_TITLES = TITLES.find((item) => item.group === "Ops Vice President")?.titles ?? []
 
 export default function SupplyChain() {
     const { user } = useAuth0()
@@ -73,7 +72,7 @@ export default function SupplyChain() {
         region: region ? [region.toUpperCase()] : [],
         urgency: urgency ? [urgency] : [],
         vpApproval: vpApproval,
-        scAll: scAll
+        scAll: scAll,
     })
 
     const { data: partsReqs, isFetching: partsReqsFetching } = usePartsReqs(token, partsReqQuery)
@@ -114,10 +113,7 @@ export default function SupplyChain() {
     return (
         <div className="page-container" style={{ flexDirection: "column" }}>
             <Box sx={{ marginBottom: "20px" }}>
-                <Collapse
-                    in={open}
-                    sx={{ margin: "0px 20px" }}
-                >
+                <Collapse in={open} sx={{ margin: "0px 20px" }}>
                     <SearchFilter
                         partsReqQuery={partsReqQuery}
                         setPartsReqQuery={setPartsReqQuery}
@@ -132,43 +128,33 @@ export default function SupplyChain() {
                         setScAll={setScAll}
                     />
                 </Collapse>
-                <div
-                    style={{ display: "flex", justifyContent: "space-between", margin: "0px 20px" }}
-                >
+                <div style={{ display: "flex", justifyContent: "space-between", margin: "0px 20px" }}>
                     <div className="collapse-button" onClick={handleOpenChange}>
                         Search and Filter
-                        {open ?
-                            <ExpandLessIcon
-                                sx={{ height: "20px" }}
-                            /> :
-                            <ExpandMoreIcon
-                                sx={{ height: "20px" }}
-                            />
-                        }
+                        {open ? <ExpandLessIcon sx={{ height: "20px" }} /> : <ExpandMoreIcon sx={{ height: "20px" }} />}
                     </div>
                     <Button
                         onClick={handleRefreshPartsReqs}
                         startIcon={<RefreshIcon />}
                         sx={{
-                            backgroundColor: theme.palette.primary.dark, marginBottom: "10px",
+                            backgroundColor: theme.palette.primary.dark,
+                            marginBottom: "10px",
                             "&.MuiButton-root:hover": {
-                                backgroundColor: theme.palette.primary.dark
+                                backgroundColor: theme.palette.primary.dark,
                             },
-                            margin: "5px"
+                            margin: "5px",
                         }}
                     >
                         Refresh
                     </Button>
                     <Box
                         sx={{
-                            backgroundColor: "background.paper", borderBottomRightRadius: "0.5rem", borderBottomLeftRadius: "0.5rem"
+                            backgroundColor: "background.paper",
+                            borderBottomRightRadius: "0.5rem",
+                            borderBottomLeftRadius: "0.5rem",
                         }}
                     >
-                        <StyledToggleButtonGroup
-                            value={uiType}
-                            exclusive
-                            onChange={handleUIChange}
-                        >
+                        <StyledToggleButtonGroup value={uiType} exclusive onChange={handleUIChange}>
                             <Tooltip
                                 title="Cards"
                                 enterDelay={1000}
@@ -176,14 +162,12 @@ export default function SupplyChain() {
                                     tooltip: {
                                         sx: {
                                             border: "1px solid white",
-                                            bgcolor: "background.paper"
-                                        }
-                                    }
+                                            bgcolor: "background.paper",
+                                        },
+                                    },
                                 }}
                             >
-                                <ToggleButton
-                                    value="card"
-                                >
+                                <ToggleButton value="card">
                                     <AppsIcon />
                                 </ToggleButton>
                             </Tooltip>
@@ -194,15 +178,12 @@ export default function SupplyChain() {
                                     tooltip: {
                                         sx: {
                                             border: "1px solid white",
-                                            bgcolor: "background.paper"
-                                        }
-                                    }
+                                            bgcolor: "background.paper",
+                                        },
+                                    },
                                 }}
                             >
-                                <ToggleButton
-                                    value="table"
-                                    disabled={disabled}
-                                >
+                                <ToggleButton value="table" disabled={disabled}>
                                     <TableRowsIcon />
                                 </ToggleButton>
                             </Tooltip>
@@ -211,46 +192,34 @@ export default function SupplyChain() {
                 </div>
             </Box>
             <Box sx={{ height: "calc(100% - 74px - 52px)", margin: "0px 20px" }}>
-                {uiType === "card" ?
-                    <Grid
-                        container
-                        direction="row"
-                        justifyContent="flex-start"
-                        sx={{ width: "100%" }}
-                    >
-                        {partsReqsFetching ? Array(20).fill(0).map((_, index) => {
-                            return (
-                                <Grid
-                                    key={index}
-                                >
-                                    <SkeletonCard />
-                                </Grid>
-                            )
-                        }) : partsReqs?.slice(page * itemsPerPage, page * itemsPerPage + itemsPerPage).map((partsReq) => {
-                            return (
-                                <Grid
-                                    key={partsReq.id}
-                                >
-                                    <PartsReqCard
-                                        partsReq={partsReq}
-                                    />
-                                </Grid>
-                            )
-                        })}
-                    </Grid> :
+                {uiType === "card" ? (
+                    <Grid container direction="row" justifyContent="flex-start" sx={{ width: "100%" }}>
+                        {partsReqsFetching
+                            ? Array(20)
+                                  .fill(0)
+                                  .map((_, index) => {
+                                      return (
+                                          <Grid key={index}>
+                                              <SkeletonCard />
+                                          </Grid>
+                                      )
+                                  })
+                            : partsReqs?.slice(page * itemsPerPage, page * itemsPerPage + itemsPerPage).map((partsReq) => {
+                                  return (
+                                      <Grid key={partsReq.id}>
+                                          <PartsReqCard partsReq={partsReq} />
+                                      </Grid>
+                                  )
+                              })}
+                    </Grid>
+                ) : (
                     <PartsReqTable
                         partsReqs={partsReqs?.slice(page * itemsPerPage, page * itemsPerPage + itemsPerPage)}
                         fetching={partsReqsFetching}
                     />
-                }
+                )}
                 <Routes>
-                    <Route path="/:id" element={
-                        <EditDialog
-                            novaUser={novaUser}
-                            isFetched={isFetched}
-                        />
-                    }>
-                    </Route>
+                    <Route path="/:id" element={<EditDialog novaUser={novaUser} isFetched={isFetched} />}></Route>
                 </Routes>
                 <TablePagination
                     count={partsReqs ? partsReqs.length : 0}

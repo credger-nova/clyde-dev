@@ -22,12 +22,9 @@ const Route = ({ children, titles }: Props) => {
         if (novaUser) {
             const canAccess = titles ? titles.includes(novaUser.jobTitle) : true
 
-            return (canAccess ?
-                <Layout>{children}</Layout> :
-                <Navigate to="/" /> // TODO: Create an Unauthorized page
-            )
+            return canAccess ? <Layout>{children}</Layout> : <Navigate to="/" /> // TODO: Create an Unauthorized page
         } else {
-            <Navigate to="/login" /> // TODO: Create page to redirect to login
+            return <Navigate to="/login" /> // TODO: Create page to redirect to login
         }
     } else {
         return <Loader />
@@ -35,7 +32,7 @@ const Route = ({ children, titles }: Props) => {
 }
 
 const PrivateRoute = withAuthenticationRequired(Route, {
-    onRedirecting: () => <Loader />
+    onRedirecting: () => <Loader />,
 })
 
 export default PrivateRoute

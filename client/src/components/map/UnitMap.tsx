@@ -9,23 +9,12 @@ import MapSearch from "./MapSearch"
 import { UIContext } from "../../context/UIContext"
 
 interface Props {
-    unitsLayer: GeoJSONLayer | undefined,
-    centroid: Array<number>,
+    unitsLayer: GeoJSONLayer | undefined
+    centroid: Array<number>
     managers: Array<string> | undefined
 }
 
-const COLORS = [
-    "#ffe119",
-    "#e6194B",
-    "#800000",
-    "#000000",
-    "#f032e6",
-    "#42d4f4",
-    "#3cb44b",
-    "#fabed4",
-    "#911eb4",
-    "#f58231"
-]
+const COLORS = ["#ffe119", "#e6194B", "#800000", "#000000", "#f032e6", "#42d4f4", "#3cb44b", "#fabed4", "#911eb4", "#f58231"]
 
 const createPopup = (feature: GeoJSON.Feature, layer: Layer) => {
     layer.bindPopup(
@@ -94,7 +83,7 @@ const createStyle = (index: number) => {
         fillColor: getColor(index),
         fillOpacity: 1,
         weight: 1,
-        radius: 6
+        radius: 6,
     }
 }
 
@@ -113,30 +102,14 @@ export default function UnitMap(props: Props) {
     }, [context?.state.isDrawerOpen])
 
     return (
-        <MapContainer
-            ref={setMap}
-            center={centroid as LatLngExpression}
-            zoom={6}
-            zoomControl={false}
-            style={{ width: "100%", height: "100%" }}
-        >
-            <Control
-                prepend
-                position="topleft"
-            >
-                <MapSearch
-                    features={unitsLayer!.features}
-                    map={map}
-                />
+        <MapContainer ref={setMap} center={centroid as LatLngExpression} zoom={6} zoomControl={false} style={{ width: "100%", height: "100%" }}>
+            <Control prepend position="topleft">
+                <MapSearch features={unitsLayer!.features} map={map} />
             </Control>
             <LayersControl position="bottomleft">
                 {managers?.map((manager, index) => {
                     return (
-                        <LayersControl.Overlay
-                            checked
-                            name={manager}
-                            key={manager}
-                        >
+                        <LayersControl.Overlay checked name={manager} key={manager}>
                             <GeoJSON
                                 data={unitsLayer as GeoJSON.FeatureCollection}
                                 pointToLayer={(_feature, latlng) => circleMarker(latlng)}

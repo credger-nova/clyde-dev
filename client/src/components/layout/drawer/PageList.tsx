@@ -13,9 +13,9 @@ import { StyledListItemButton } from "../../common/StyledListItemButton"
 import { NovaUser } from "../../../types/kpa/novaUser"
 
 interface Page {
-    name: string,
-    url: string,
-    icon: JSX.Element,
+    name: string
+    url: string
+    icon: JSX.Element
     titles?: Array<string>
 }
 
@@ -36,40 +36,21 @@ export default function PageList(props: Props) {
     }
 
     return (
-        <List
-            sx={{ padding: 0 }}
-        >
+        <List sx={{ padding: 0 }}>
             {pages.map((page) => {
                 const canAccess = page.titles ? page.titles.includes(user.jobTitle) : true
 
-                return (canAccess ?
-                    (
-                        <React.Fragment
-                            key={page.url}
-                        >
-                            <Link
-                                component={RouterLink}
-                                sx={{ display: "flex", width: "100%" }}
-                                to={`/${page.url}`}
-                                underline="none"
-                            >
-                                <StyledListItemButton
-                                    selected={selectedPage === page.url}
-                                    onClick={() => handleClick(page.url)}
-                                >
-                                    <ListItemIcon
-                                        sx={{ minWidth: "35px" }}
-                                    >
-                                        {page.icon}
-                                    </ListItemIcon>
-                                    <ListItemText primary={page.name} />
-                                </StyledListItemButton>
-                            </Link>
-                            <Divider />
-                        </React.Fragment>
-                    ) :
-                    null
-                )
+                return canAccess ? (
+                    <React.Fragment key={page.url}>
+                        <Link component={RouterLink} sx={{ display: "flex", width: "100%" }} to={`/${page.url}`} underline="none">
+                            <StyledListItemButton selected={selectedPage === page.url} onClick={() => handleClick(page.url)}>
+                                <ListItemIcon sx={{ minWidth: "35px" }}>{page.icon}</ListItemIcon>
+                                <ListItemText primary={page.name} />
+                            </StyledListItemButton>
+                        </Link>
+                        <Divider />
+                    </React.Fragment>
+                ) : null
             })}
         </List>
     )

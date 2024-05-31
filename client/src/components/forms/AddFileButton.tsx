@@ -1,9 +1,9 @@
 import * as React from "react"
-import Button from '@mui/material/Button'
-import theme from '../../css/theme'
+import Button from "@mui/material/Button"
+import theme from "../../css/theme"
 
 interface Props {
-    setNewFiles: React.Dispatch<React.SetStateAction<Array<File>>>,
+    setNewFiles: React.Dispatch<React.SetStateAction<Array<File>>>
     disabled: boolean
 }
 
@@ -23,10 +23,12 @@ export default function AddFileButton(props: Props) {
             component="label"
             disabled={disabled}
             sx={{
-                width: "100%", backgroundColor: theme.palette.primary.dark, marginBottom: "10px",
+                width: "100%",
+                backgroundColor: theme.palette.primary.dark,
+                marginBottom: "10px",
                 "&.MuiButton-root:hover": {
-                    backgroundColor: theme.palette.primary.dark
-                }
+                    backgroundColor: theme.palette.primary.dark,
+                },
             }}
         >
             Add Document(s)
@@ -35,7 +37,7 @@ export default function AddFileButton(props: Props) {
                 multiple
                 accept="application/pdf, image/*"
                 onChange={handleFileChange}
-                onClick={(event) => (event.target as HTMLInputElement).value = ""} // Clear value
+                onClick={(event) => ((event.target as HTMLInputElement).value = "")} // Clear value
                 hidden
             />
         </Button>

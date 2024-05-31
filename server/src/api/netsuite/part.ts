@@ -5,11 +5,11 @@ import { prisma } from "../../utils/prisma-client"
 export const getAllParts = async (inactive?: "true") => {
     let parts = await prisma.part.findMany({
         where: {
-            ...(inactive !== "true" ? { active: true } : {})
+            ...(inactive !== "true" ? { active: true } : {}),
         },
         orderBy: {
-            itemNumber: "asc"
-        }
+            itemNumber: "asc",
+        },
     })
 
     return parts as Array<Part>

@@ -224,18 +224,7 @@ const seedTruck = async () => {
 const seedUser = async () => {
     console.log("Seeding User Table")
 
-    const headers = [
-        "id",
-        "firstName",
-        "lastName",
-        "email",
-        "cellPhone",
-        "jobTitle",
-        "region",
-        "managerId",
-        "supervisorId",
-        "terminationDate",
-    ]
+    const headers = ["id", "firstName", "lastName", "email", "cellPhone", "jobTitle", "region", "managerId", "supervisorId", "terminationDate"]
 
     const parser = fs.createReadStream(`${__dirname}/seeds/user.csv`).pipe(
         parse({

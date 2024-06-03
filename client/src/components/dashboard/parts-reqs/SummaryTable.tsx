@@ -937,7 +937,13 @@ export default function SummaryTable(props: Props) {
         ) : (
             <AccordionSkeleton statuses={SC_GROUPS} />
         )
-    } else if (group === "Supply Chain Management" || group === "Executive Management" || group === "IT" || group === "Admin") {
+    } else if (
+        group === "Supply Chain Management" ||
+        group === "Admin" ||
+        group === "Business Development" ||
+        group === "Executive Management" ||
+        group === "IT"
+    ) {
         return !partsReqsFetching && !regionsFetching ? (
             regions?.map((region) => {
                 region = toTitleCase(region)

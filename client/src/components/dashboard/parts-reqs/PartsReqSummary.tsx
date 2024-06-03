@@ -31,6 +31,7 @@ const ALLOWED_GROUPS = [
     "Supply Chain",
     "Supply Chain Management",
     "Admin",
+    "Business Development",
     "Executive Management",
     "IT",
 ]
@@ -65,8 +66,9 @@ export default function PartsReqSummary(props: Props) {
                         direction={
                             userType.group === "Supply Chain Management" ||
                             userType.group === "Ops Vice President" ||
-                            userType.group === "Executive Management" ||
                             userType.group === "Admin" ||
+                            userType.group === "Business Development" ||
+                            userType.group === "Executive Management" ||
                             userType.group === "IT"
                                 ? "row"
                                 : "column"

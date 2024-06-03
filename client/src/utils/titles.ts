@@ -58,6 +58,15 @@ export const TITLES: Array<{ group: string; titles: Array<string> }> = [
         titles: ["Revenue Analyst"],
     },
     {
+        group: "Business Development",
+        titles: [
+            "Analyst - Business Development",
+            "Account Manager - Business Development",
+            "Director - Business Development",
+            "Vice President - Business Development",
+        ],
+    },
+    {
         group: "Executive Management",
         titles: ["Chief Financial Officer", "President and Chief Executive Officer"],
     },

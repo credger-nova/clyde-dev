@@ -33,8 +33,9 @@ export default function Home() {
                             sm={
                                 userGroup === "Supply Chain Management" ||
                                 userGroup === "Ops Vice President" ||
-                                userGroup === "Executive Management" ||
                                 userGroup === "Admin" ||
+                                userGroup === "Business Development" ||
+                                userGroup === "Executive Management" ||
                                 userGroup === "IT"
                                     ? 12
                                     : 6

@@ -121,6 +121,7 @@ const SHOP_TITLES = TITLES.filter((item) => item.group.includes("Shop"))
 const EMISSIONS_MANAGER_TITLES = TITLES.find((item) => item.group === "Emissions Manager")?.titles ?? []
 const SUPPLY_CHAIN_TITLES = TITLES.find((item) => item.group === "Supply Chain")?.titles ?? []
 const SC_MANAGEMENT_TITLES = TITLES.find((item) => item.group === "Supply Chain Management")?.titles ?? []
+const BD_TITLES = TITLES.find((item) => item.group === "Business Development")?.titles ?? []
 const EXEC_TITLES = TITLES.find((item) => item.group === "Executive Management")?.titles ?? []
 const IT_TITLES = TITLES.find((item) => item.group === "IT")?.titles ?? []
 
@@ -963,6 +964,11 @@ export default function EditPartsReqForm(props: Props) {
             return true
         }
 
+        /* --- Business Development Permissions */
+        if (BD_TITLES.includes(title)) {
+            return true
+        }
+
         /* --- Exec Management Permissions --- */
         if (EXEC_TITLES.includes(title)) {
             return true
@@ -1432,7 +1438,12 @@ export default function EditPartsReqForm(props: Props) {
                                                         value={urgency}
                                                         onChange={() => setUrgency(val.urgency)}
                                                         control={
-                                                            <Radio disableRipple sx={{ paddingRight: "2px" }} checked={urgency === val.urgency} />
+                                                            <Radio
+                                                                disableRipple
+                                                                sx={{ paddingRight: "2px" }}
+                                                                checked={urgency === val.urgency}
+                                                                disabled={denyAccess(novaUser!.jobTitle)}
+                                                            />
                                                         }
                                                         label={val.urgency}
                                                         defaultChecked={false}
@@ -1998,7 +2009,11 @@ export default function EditPartsReqForm(props: Props) {
                                                                     <ErrorOutlineIcon sx={{ color: "red" }} />
                                                                 </Tooltip>
                                                             ) : null}
-                                                            <IconButton onClick={(e) => handleDeleteRowClick(e, index)} disableRipple>
+                                                            <IconButton
+                                                                onClick={(e) => handleDeleteRowClick(e, index)}
+                                                                disableRipple
+                                                                disabled={denyAccess(novaUser!.jobTitle, "Item")}
+                                                            >
                                                                 <DeleteIcon />
                                                             </IconButton>
                                                             <Menu

@@ -158,7 +158,8 @@ export default function EditDialog(props: Props) {
                                 partsReq.status === "Closed - Parts in Hand" ||
                                 partsReq.status === "Rejected - Closed" ||
                                 partsReq.status === "Closed - Order Canceled" ||
-                                (isFetched && novaUser?.jobTitle.includes("Lead") && partsReq.requester.id !== novaUser.id)
+                                (isFetched && novaUser?.jobTitle.includes("Lead") && partsReq.requester.id !== novaUser.id) ||
+                                (isFetched && novaUser?.jobTitle.includes("Business Development"))
                             }
                             sx={{
                                 backgroundColor: theme.palette.primary.dark,

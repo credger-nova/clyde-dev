@@ -726,7 +726,12 @@ export const updatePartsReq = async (id: number, user: NovaUser, updateReq: Part
             ? "Pending Approval"
             : updateReq.status
 
-    if (partsUpdated && (oldPartsReq?.status === "Approved" || oldPartsReq?.status === "Sourcing - Information Provided")) {
+    if (
+        partsUpdated &&
+        (oldPartsReq?.status === "Approved" ||
+            oldPartsReq?.status === "Sourcing - Information Provided" ||
+            oldPartsReq?.status === "Sourcing - In Progress")
+    ) {
         status = "Pending Approval"
     }
 

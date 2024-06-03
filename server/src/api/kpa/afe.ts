@@ -5,21 +5,21 @@ import { prisma } from "../../utils/prisma-client"
 export const getAllAfe = async () => {
     let afes = await prisma.aFE.findMany({
         include: {
-            unit: true
-        }
+            unit: true,
+        },
     })
 
     // Filter out any closed AFEs
-    afes = afes.filter(afe => /^-?\d+\.?\d*$/.test(afe.number))
+    afes = afes.filter((afe) => /^-?\d+\.?\d*$/.test(afe.number))
 
     // Convert to correct type
     let tyepdAfes = afes.map((afe) => {
-        return ({
+        return {
             id: afe.id,
             number: afe.number,
             amount: afe.amount,
-            unit: afe.unit
-        } as AFE)
+            unit: afe.unit,
+        } as AFE
     })
 
     return tyepdAfes
@@ -28,11 +28,11 @@ export const getAllAfe = async () => {
 export const getAfeByNumber = async (afeNumber: string) => {
     const afe = await prisma.aFE.findFirst({
         where: {
-            number: afeNumber
+            number: afeNumber,
         },
         include: {
-            unit: true
-        }
+            unit: true,
+        },
     })
 
     if (afe) {
@@ -40,7 +40,7 @@ export const getAfeByNumber = async (afeNumber: string) => {
             id: afe.id,
             number: afe.number,
             amount: afe.amount,
-            unit: afe.unit
+            unit: afe.unit,
         } as AFE
     } else {
         return null

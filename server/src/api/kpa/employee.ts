@@ -4,8 +4,8 @@ import { TITLES } from "../../utils/titles"
 
 import { prisma } from "../../utils/prisma-client"
 
-const SUPPLY_CHAIN_TITLES = TITLES.find(item => item.group === "Supply Chain")?.titles ?? []
-const SC_MANAGEMENT_TITLES = TITLES.find(item => item.group === "Supply Chain Management")?.titles ?? []
+const SUPPLY_CHAIN_TITLES = TITLES.find((item) => item.group === "Supply Chain")?.titles ?? []
+const SC_MANAGEMENT_TITLES = TITLES.find((item) => item.group === "Supply Chain Management")?.titles ?? []
 
 // Function to cast user to NovaUser
 export function convertUser(user: any) {
@@ -19,23 +19,23 @@ export function convertUser(user: any) {
         jobTitle: user.jobTitle,
         region: user.region.split(","),
         supervisorId: user.supervisorId,
-        managerId: user.managerId
+        managerId: user.managerId,
     } as NovaUser
 }
 
 export const getAllEmployees = async (inactive?: "true") => {
     const employees = await prisma.user.findMany({
         where: {
-            ...(inactive !== "true" ? { terminationDate: null } : {})
+            ...(inactive !== "true" ? { terminationDate: null } : {}),
         },
         orderBy: [
             {
-                firstName: "asc"
+                firstName: "asc",
             },
             {
-                lastName: "asc"
-            }
-        ]
+                lastName: "asc",
+            },
+        ],
     })
 
     // Convert to correct type
@@ -50,8 +50,8 @@ export const getAllEmployees = async (inactive?: "true") => {
 export const getEmployee = async (email: string) => {
     const employee = await prisma.user.findFirst({
         where: {
-            email: email
-        }
+            email: email,
+        },
     })
 
     if (employee) {
@@ -71,16 +71,16 @@ export const getLeadsEmployees = async (id: string) => {
 
     const employees = await prisma.user.findMany({
         where: {
-            id: { in: ids ?? [] }
+            id: { in: ids ?? [] },
         },
         orderBy: [
             {
-                firstName: "asc"
+                firstName: "asc",
             },
             {
-                lastName: "asc"
-            }
-        ]
+                lastName: "asc",
+            },
+        ],
     })
 
     // Convert to correct type
@@ -95,8 +95,8 @@ export const getLeadsEmployees = async (id: string) => {
 export const getEmployeesManager = async (managerId: string) => {
     const employee = await prisma.user.findUnique({
         where: {
-            id: managerId
-        }
+            id: managerId,
+        },
     })
 
     return convertUser(employee)
@@ -108,21 +108,21 @@ export const getManagersEmployees = async (id: string, inactive?: "true") => {
         where: {
             AND: [
                 {
-                    supervisorId: id
+                    supervisorId: id,
                 },
                 {
-                    ...(inactive !== "true" ? { terminationDate: null } : {})
-                }
-            ]
+                    ...(inactive !== "true" ? { terminationDate: null } : {}),
+                },
+            ],
         },
         orderBy: [
             {
-                firstName: "asc"
+                firstName: "asc",
             },
             {
-                lastName: "asc"
-            }
-        ]
+                lastName: "asc",
+            },
+        ],
     })
 
     // Convert to correct type
@@ -137,8 +137,8 @@ export const getManagersEmployees = async (id: string, inactive?: "true") => {
 export const getEmployeesDirector = async (directorId: string) => {
     const employee = await prisma.user.findUnique({
         where: {
-            id: directorId
-        }
+            id: directorId,
+        },
     })
 
     return convertUser(employee)
@@ -150,29 +150,28 @@ export const getDirectorsEmployees = async (id: string, inactive?: "true") => {
         where: {
             AND: [
                 {
-                    OR:
-                        [
-                            {
-                                supervisorId: id
-                            },
-                            {
-                                managerId: id
-                            }
-                        ]
+                    OR: [
+                        {
+                            supervisorId: id,
+                        },
+                        {
+                            managerId: id,
+                        },
+                    ],
                 },
                 {
-                    ...(inactive !== "true" ? { terminationDate: null } : {})
-                }
-            ]
+                    ...(inactive !== "true" ? { terminationDate: null } : {}),
+                },
+            ],
         },
         orderBy: [
             {
-                firstName: "asc"
+                firstName: "asc",
             },
             {
-                lastName: "asc"
-            }
-        ]
+                lastName: "asc",
+            },
+        ],
     })
 
     // Convert to correct type
@@ -190,8 +189,9 @@ export const getRegionalSupplyChain = async (region: string) => {
     // Filter out test accounts
     allEmployees = allEmployees.filter((employee) => employee.firstName !== "Test")
 
-    const scEmployees = allEmployees.filter((employee) =>
-        employee.region.includes(region) && (SUPPLY_CHAIN_TITLES.includes(employee.jobTitle) && employee.jobTitle !== "Parts Runner - Supply Chain")
+    const scEmployees = allEmployees.filter(
+        (employee) =>
+            employee.region.includes(region) && SUPPLY_CHAIN_TITLES.includes(employee.jobTitle) && employee.jobTitle !== "Parts Runner - Supply Chain"
     )
 
     return scEmployees
@@ -202,9 +202,9 @@ export const getSupplyChainManagement = async () => {
     let employees = await prisma.user.findMany({
         where: {
             jobTitle: {
-                in: SC_MANAGEMENT_TITLES
-            }
-        }
+                in: SC_MANAGEMENT_TITLES,
+            },
+        },
     })
 
     // Filter out test accounts
@@ -222,9 +222,7 @@ export const getSupplyChainManagement = async () => {
 export const getRegionalPartsRunners = async (region: string) => {
     const allEmployees = await getAllEmployees()
 
-    const partsRunners = allEmployees.filter((employee) =>
-        employee.region.includes(region) && employee.jobTitle === "Parts Runner - Supply Chain"
-    )
+    const partsRunners = allEmployees.filter((employee) => employee.region.includes(region) && employee.jobTitle === "Parts Runner - Supply Chain")
 
     return partsRunners
 }

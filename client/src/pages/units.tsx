@@ -10,9 +10,7 @@ export default function Units() {
 
     return (
         <div className="page-container">
-            <UnitStatus
-                parameters={unitStatuses}
-            />
+            <UnitStatus parameters={unitStatuses} />
         </div>
     )
 }

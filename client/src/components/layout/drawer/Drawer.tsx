@@ -2,11 +2,11 @@ import { styled } from "@mui/material/styles"
 
 import { useUIState } from "../../../hooks/utils"
 
-import HomeIcon from '@mui/icons-material/Home'
-import SensorsIcon from '@mui/icons-material/Sensors'
-import AssignmentOutlinedIcon from '@mui/icons-material/AssignmentOutlined'
-import MoveUpIcon from '@mui/icons-material/MoveUp'
-import PlaceIcon from '@mui/icons-material/Place'
+import HomeIcon from "@mui/icons-material/Home"
+import SensorsIcon from "@mui/icons-material/Sensors"
+import AssignmentOutlinedIcon from "@mui/icons-material/AssignmentOutlined"
+import MoveUpIcon from "@mui/icons-material/MoveUp"
+import PlaceIcon from "@mui/icons-material/Place"
 import { Drawer as MuiDrawer } from "@mui/material"
 import PageList from "./PageList"
 
@@ -38,17 +38,15 @@ export default function Drawer() {
                 flexShrink: 0,
                 "& .MuiDrawer-paper": {
                     width: drawerWidth,
-                    boxSizing: "border-box"
-                }
+                    boxSizing: "border-box",
+                },
             }}
             variant="persistent"
             anchor="left"
             open={state.isDrawerOpen}
         >
             <DrawerHeader />
-            <PageList
-                pages={pages}
-            />
+            <PageList pages={pages} />
         </MuiDrawer>
     )
 }

@@ -29,47 +29,59 @@ import { Truck } from "../../types/netsuite/truck"
 import { Location } from "../../types/netsuite/location"
 import { Vendor } from "../../types/netsuite/vendor"
 
-import { styled } from '@mui/material/styles'
-import Paper from '@mui/material/Paper'
-import Grid from '@mui/material/Unstable_Grid2'
-import Box from '@mui/material/Box'
-import Divider from '@mui/material/Divider'
-import Autocomplete, { createFilterOptions } from '@mui/material/Autocomplete'
-import Button from '@mui/material/Button'
-import IconButton from '@mui/material/IconButton'
-import Radio from '@mui/material/Radio'
-import RadioGroup from '@mui/material/RadioGroup'
-import FormControl from '@mui/material/FormControl'
-import FormControlLabel from '@mui/material/FormControlLabel'
-import Table from '@mui/material/Table'
-import TableBody from '@mui/material/TableBody'
-import TableCell from '@mui/material/TableCell'
-import TableHead from '@mui/material/TableHead'
-import TableRow from '@mui/material/TableRow'
-import AddIcon from '@mui/icons-material/Add'
-import DeleteIcon from '@mui/icons-material/Delete'
+import { styled } from "@mui/material/styles"
+import Paper from "@mui/material/Paper"
+import Grid from "@mui/material/Unstable_Grid2"
+import Box from "@mui/material/Box"
+import Divider from "@mui/material/Divider"
+import Autocomplete, { createFilterOptions } from "@mui/material/Autocomplete"
+import Button from "@mui/material/Button"
+import IconButton from "@mui/material/IconButton"
+import Radio from "@mui/material/Radio"
+import RadioGroup from "@mui/material/RadioGroup"
+import FormControl from "@mui/material/FormControl"
+import FormControlLabel from "@mui/material/FormControlLabel"
+import Table from "@mui/material/Table"
+import TableBody from "@mui/material/TableBody"
+import TableCell from "@mui/material/TableCell"
+import TableHead from "@mui/material/TableHead"
+import TableRow from "@mui/material/TableRow"
+import AddIcon from "@mui/icons-material/Add"
+import DeleteIcon from "@mui/icons-material/Delete"
 import { StyledTextField } from "../common/TextField"
-import InputAdornment from '@mui/material/InputAdornment'
-import parse from 'autosuggest-highlight/parse'
-import match from 'autosuggest-highlight/match'
+import InputAdornment from "@mui/material/InputAdornment"
+import parse from "autosuggest-highlight/parse"
+import match from "autosuggest-highlight/match"
 import theme from "../../css/theme"
-import Popper, { PopperProps } from '@mui/material/Popper'
+import Popper, { PopperProps } from "@mui/material/Popper"
 import Files from "./Files"
 import AddFileButton from "./AddFileButton"
-import Skeleton from '@mui/material/Skeleton'
-import Checkbox from '@mui/material/Checkbox'
-import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline'
-import Tooltip from '@mui/material/Tooltip'
-import Typography from '@mui/material/Typography'
-import Menu from '@mui/material/Menu'
-import MenuItem from '@mui/material/MenuItem'
-import CloseIcon from '@mui/icons-material/Close'
-import TextSnippetIcon from '@mui/icons-material/TextSnippet'
+import Skeleton from "@mui/material/Skeleton"
+import Checkbox from "@mui/material/Checkbox"
+import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline"
+import Tooltip from "@mui/material/Tooltip"
+import Typography from "@mui/material/Typography"
+import Menu from "@mui/material/Menu"
+import MenuItem from "@mui/material/MenuItem"
+import CloseIcon from "@mui/icons-material/Close"
+import TextSnippetIcon from "@mui/icons-material/TextSnippet"
 
 const PERMIAN_REGIONS = ["North Permian", "South Permian", "Pecos", "Carlsbad"]
 
-const URGENCY = [{ urgency: "LMC Safety Shutdown", regions: PERMIAN_REGIONS.concat("Corporate") }, { urgency: "Unit Down" }, { urgency: "Unit Set" }, { urgency: "Rush" }, { urgency: "Standard" }]
-const ORDER_TYPE = [{ type: "Rental" }, { type: "Third-Party" }, { type: "Shop Supplies" }, { type: "Truck Supplies" }, { type: "Stock", titles: ["Supply Chain", "Software"] }]
+const URGENCY = [
+    { urgency: "LMC Safety Shutdown", regions: PERMIAN_REGIONS.concat("Corporate") },
+    { urgency: "Unit Down" },
+    { urgency: "Unit Set" },
+    { urgency: "Rush" },
+    { urgency: "Standard" },
+]
+const ORDER_TYPE = [
+    { type: "Rental" },
+    { type: "Third-Party" },
+    { type: "Shop Supplies" },
+    { type: "Truck Supplies" },
+    { type: "Stock", titles: ["Supply Chain", "Software"] },
+]
 const REGION = ["East Texas", "South Texas", "Midcon", "North Permian", "South Permian", "Pecos", "Carlsbad"]
 const STATUS = [
     "Pending Approval",
@@ -90,35 +102,39 @@ const STATUS = [
     "Closed - Partially Received",
     "Closed - Parts in Hand",
     "Closed - Order Canceled",
-    "Rejected - Closed"
+    "Rejected - Closed",
 ]
 
-const FIELD_SHOP_SERVICE_TITLES = TITLES.filter(item => item.group === "Field Service" || item.group === "Shop Service").map(group => group.titles).flat()
-const OPS_SHOP_MANAGER_TITLES = TITLES.filter(item => item.group === "Ops Manager" || item.group === "Shop Supervisor").map(group => group.titles).flat()
-const OPS_SHOP_DIRECTOR_TITLES = TITLES.filter(item => item.group === "Ops Director" || item.group === "Shop Director").map(group => group.titles).flat()
-const OPS_VP_TITLES = TITLES.find(item => item.group === "Ops Vice President")?.titles ?? []
-const SHOP_TITLES = TITLES.filter(item => item.group.includes("Shop")).map((group) => group.titles).flat()
-const EMISSIONS_MANAGER_TITLES = TITLES.find(item => item.group === "Emissions Manager")?.titles ?? []
-const SUPPLY_CHAIN_TITLES = TITLES.find(item => item.group === "Supply Chain")?.titles ?? []
-const SC_MANAGEMENT_TITLES = TITLES.find(item => item.group === "Supply Chain Management")?.titles ?? []
-const EXEC_TITLES = TITLES.find(item => item.group === "Executive Management")?.titles ?? []
-const IT_TITLES = TITLES.find(item => item.group === "IT")?.titles ?? []
+const FIELD_SHOP_SERVICE_TITLES = TITLES.filter((item) => item.group === "Field Service" || item.group === "Shop Service")
+    .map((group) => group.titles)
+    .flat()
+const OPS_SHOP_MANAGER_TITLES = TITLES.filter((item) => item.group === "Ops Manager" || item.group === "Shop Supervisor")
+    .map((group) => group.titles)
+    .flat()
+const OPS_SHOP_DIRECTOR_TITLES = TITLES.filter((item) => item.group === "Ops Director" || item.group === "Shop Director")
+    .map((group) => group.titles)
+    .flat()
+const OPS_VP_TITLES = TITLES.find((item) => item.group === "Ops Vice President")?.titles ?? []
+const SHOP_TITLES = TITLES.filter((item) => item.group.includes("Shop"))
+    .map((group) => group.titles)
+    .flat()
+const EMISSIONS_MANAGER_TITLES = TITLES.find((item) => item.group === "Emissions Manager")?.titles ?? []
+const SUPPLY_CHAIN_TITLES = TITLES.find((item) => item.group === "Supply Chain")?.titles ?? []
+const SC_MANAGEMENT_TITLES = TITLES.find((item) => item.group === "Supply Chain Management")?.titles ?? []
+const EXEC_TITLES = TITLES.find((item) => item.group === "Executive Management")?.titles ?? []
+const IT_TITLES = TITLES.find((item) => item.group === "IT")?.titles ?? []
 
 const Item = styled(Paper)(({ theme }) => ({
     backgroundColor: "#242424",
     ...theme.typography.body2,
     padding: theme.spacing(1),
     textAlign: "left",
-    color: "white"
+    color: "white",
 }))
 
 function CustomPopper(props: PopperProps) {
     return (
-        <Popper
-            {...props}
-            placement="top-start"
-            style={{ width: "75vw" }}
-        >
+        <Popper {...props} placement="top-start" style={{ width: "75vw" }}>
             {props.children as React.ReactNode}
         </Popper>
     )
@@ -131,29 +147,15 @@ function getAvailableStatus(user: NovaUser | undefined, prStatus: string) {
         }
 
         if (prStatus === "Pending Approval") {
-            return [
-                "Rejected - Adjustments Required",
-                "Rejected - Closed",
-                "Approved - On Hold",
-                "Approved",
-                "Pending Quote"
-            ]
+            return ["Rejected - Adjustments Required", "Rejected - Closed", "Approved - On Hold", "Approved", "Pending Quote"]
         }
 
         if (prStatus === "Pending Quote") {
-            return [
-                "Quote Provided - Pending Approval",
-                "Sourcing - Request to Cancel"
-            ]
+            return ["Quote Provided - Pending Approval", "Sourcing - Request to Cancel"]
         }
 
         if (prStatus === "Quote Provided - Pending Approval") {
-            return [
-                "Rejected - Adjustments Required",
-                "Rejected - Closed",
-                "Approved - On Hold",
-                "Approved"
-            ]
+            return ["Rejected - Adjustments Required", "Rejected - Closed", "Approved - On Hold", "Approved"]
         }
 
         if (prStatus === "Rejected - Adjustments Required") {
@@ -161,11 +163,7 @@ function getAvailableStatus(user: NovaUser | undefined, prStatus: string) {
         }
 
         if (prStatus === "Approved - On Hold") {
-            return [
-                "Rejected - Adjustments Required",
-                "Rejected - Closed",
-                "Approved"
-            ]
+            return ["Rejected - Adjustments Required", "Rejected - Closed", "Approved"]
         }
 
         if (prStatus === "Approved") {
@@ -174,7 +172,7 @@ function getAvailableStatus(user: NovaUser | undefined, prStatus: string) {
                 "Sourcing - Information Required",
                 "Sourcing - Request to Cancel",
                 "Ordered - Awaiting Parts",
-                "Completed - Parts Staged/Delivered"
+                "Completed - Parts Staged/Delivered",
             ]
         }
 
@@ -183,14 +181,12 @@ function getAvailableStatus(user: NovaUser | undefined, prStatus: string) {
                 "Sourcing - Information Required",
                 "Sourcing - Request to Cancel",
                 "Ordered - Awaiting Parts",
-                "Completed - Parts Staged/Delivered"
+                "Completed - Parts Staged/Delivered",
             ]
         }
 
         if (prStatus === "Sourcing - Information Required") {
-            return [
-                "Sourcing - Information Provided"
-            ]
+            return ["Sourcing - Information Provided"]
         }
 
         if (prStatus === "Sourcing - Information Provided") {
@@ -199,15 +195,12 @@ function getAvailableStatus(user: NovaUser | undefined, prStatus: string) {
                 "Sourcing - Information Required",
                 "Sourcing - Request to Cancel",
                 "Ordered - Awaiting Parts",
-                "Completed - Parts Staged/Delivered"
+                "Completed - Parts Staged/Delivered",
             ]
         }
 
         if (prStatus === "Sourcing - Pending Amex Approval") {
-            return [
-                "Sourcing - Amex Approved",
-                "Sourcing - Amex Rejected"
-            ]
+            return ["Sourcing - Amex Approved", "Sourcing - Amex Rejected"]
         }
 
         if (prStatus === "Sourcing - Amex Approved") {
@@ -216,7 +209,7 @@ function getAvailableStatus(user: NovaUser | undefined, prStatus: string) {
                 "Sourcing - Information Required",
                 "Sourcing - Request to Cancel",
                 "Ordered - Awaiting Parts",
-                "Completed - Parts Staged/Delivered"
+                "Completed - Parts Staged/Delivered",
             ]
         }
 
@@ -226,24 +219,16 @@ function getAvailableStatus(user: NovaUser | undefined, prStatus: string) {
                 "Sourcing - Information Required",
                 "Sourcing - Request to Cancel",
                 "Ordered - Awaiting Parts",
-                "Completed - Parts Staged/Delivered"
+                "Completed - Parts Staged/Delivered",
             ]
         }
 
         if (prStatus === "Sourcing - Request to Cancel") {
-            return [
-                "Closed - Order Canceled",
-                "Sourcing - Information Provided"
-            ]
+            return ["Closed - Order Canceled", "Sourcing - Information Provided"]
         }
 
         if (prStatus === "Ordered - Awaiting Parts") {
-            return [
-                "Sourcing - In Progress",
-                "Sourcing - Information Required",
-                "Sourcing - Request to Cancel",
-                "Completed - Parts Staged/Delivered"
-            ]
+            return ["Sourcing - In Progress", "Sourcing - Information Required", "Sourcing - Request to Cancel", "Completed - Parts Staged/Delivered"]
         }
 
         if (prStatus === "Completed - Parts Staged/Delivered") {
@@ -273,12 +258,12 @@ function getAvailableStatus(user: NovaUser | undefined, prStatus: string) {
 }
 
 interface Props {
-    partsReq: PartsReq,
-    save: boolean,
-    setSave: React.Dispatch<React.SetStateAction<boolean>>,
-    setSaveDisabled: React.Dispatch<React.SetStateAction<boolean>>,
-    edit: boolean,
-    reset: boolean,
+    partsReq: PartsReq
+    save: boolean
+    setSave: React.Dispatch<React.SetStateAction<boolean>>
+    setSaveDisabled: React.Dispatch<React.SetStateAction<boolean>>
+    edit: boolean
+    reset: boolean
     setReset: React.Dispatch<React.SetStateAction<boolean>>
 }
 
@@ -341,17 +326,25 @@ export default function EditPartsReqForm(props: Props) {
 
     const afeFilter = createFilterOptions<AFE>({
         matchFrom: "any",
-        stringify: (option) => option.number + option.unit.unitNumber + (option.unit.location ?? "")
+        stringify: (option) => option.number + option.unit.unitNumber + (option.unit.location ?? ""),
     })
 
     const partsFilter = createFilterOptions<PartOption>({
         matchFrom: "any",
-        limit: 500
+        limit: 500,
     })
 
     React.useEffect(() => {
-        if (!requester || !orderDate || !urgency || !orderType || !(rows.length > 0) || needsComment ||
-            ((!unit && !truck && !salesOrder) && orderType !== "Shop Supplies") || amex && prVendors.length === 0) {
+        if (
+            !requester ||
+            !orderDate ||
+            !urgency ||
+            !orderType ||
+            !(rows.length > 0) ||
+            needsComment ||
+            (!unit && !truck && !salesOrder && orderType !== "Shop Supplies") ||
+            (amex && prVendors.length === 0)
+        ) {
             setSaveDisabled(true)
         } else {
             if (!rows[0].itemNumber) {
@@ -383,7 +376,7 @@ export default function EditPartsReqForm(props: Props) {
             (status === "Sourcing - Information Provided" && partsReq.status === "Sourcing - Request to Cancel") ||
             (status === "Sourcing - Amex Rejected" && partsReq.status === "Sourcing - Pending Amex Approval")
         ) {
-            const newComments = (comments as Array<Comment>).filter(comment => !comment.id)
+            const newComments = (comments as Array<Comment>).filter((comment) => !comment.id)
             if (newComments.length === 0) {
                 setNeedsComment(true)
             } else {
@@ -450,23 +443,25 @@ export default function EditPartsReqForm(props: Props) {
                     newFiles: newFiles.map((file) => file.name),
                     delFiles: deleteFiles,
                     status: status,
-                    delRows: delRows
-                } as UpdatePartsReq
+                    delRows: delRows,
+                } as UpdatePartsReq,
             }
 
-            await updatePartsReq(updateReq).then(async (res) => {
-                for (let i = 0; i < newFiles.length; i++) {
-                    const formData = new FormData()
-                    formData.append("bucket", import.meta.env.VITE_BUCKET)
-                    formData.append("folder", "parts-req")
-                    formData.append("file", newFiles[i], `${res.files[i].id}.${res.files[i].name.split(".").pop()}`)
+            await updatePartsReq(updateReq)
+                .then(async (res) => {
+                    for (let i = 0; i < newFiles.length; i++) {
+                        const formData = new FormData()
+                        formData.append("bucket", import.meta.env.VITE_BUCKET)
+                        formData.append("folder", "parts-req")
+                        formData.append("file", newFiles[i], `${res.files[i].id}.${res.files[i].name.split(".").pop()}`)
 
-                    await uploadFiles({ token, formData })
-                }
-            }).then(() => {
-                navigate("../")
-                setSave(false)
-            })
+                        await uploadFiles({ token, formData })
+                    }
+                })
+                .then(() => {
+                    navigate("../")
+                    setSave(false)
+                })
         }
 
         if (save) {
@@ -478,8 +473,10 @@ export default function EditPartsReqForm(props: Props) {
     const onStatusChange = (_e: React.SyntheticEvent, value: string | null) => {
         setStatus(value ?? "")
 
-        if (["Sourcing - Information Required", "Ordered - Awaiting Parts", "Completed - Parts Staged/Delivered"]
-            .includes(value ?? "") && !partsReq.contact) {
+        if (
+            ["Sourcing - Information Required", "Ordered - Awaiting Parts", "Completed - Parts Staged/Delivered"].includes(value ?? "") &&
+            !partsReq.contact
+        ) {
             setContact(novaUser ?? null)
         }
     }
@@ -490,7 +487,7 @@ export default function EditPartsReqForm(props: Props) {
         console.log(value)
 
         if (value) {
-            const unit = unitNumbers ? unitNumbers.find(obj => obj.unitNumber === value.unit.unitNumber) : undefined
+            const unit = unitNumbers ? unitNumbers.find((obj) => obj.unitNumber === value.unit.unitNumber) : undefined
             onUnitNumberChange(undefined, unit ?? null)
             onTruckChange(undefined, null)
         } else {
@@ -500,7 +497,7 @@ export default function EditPartsReqForm(props: Props) {
     const onSalesOrderChange = (_e: React.SyntheticEvent, value: SalesOrder | null) => {
         setSalesOrder(value)
 
-        setOrderType(value ? billable ? "Rental" : "Third-Party" : null)
+        setOrderType(value ? (billable ? "Rental" : "Third-Party") : null)
     }
     const onUnitNumberChange = (_e: React.SyntheticEvent | undefined, value: Unit | null) => {
         setUnit(value)
@@ -511,15 +508,15 @@ export default function EditPartsReqForm(props: Props) {
 
         setOrderType(value ? "Rental" : salesOrder ? "Third-Party" : null)
         setRegion(
-            value ?
-                SHOP_TITLES.includes(novaUser!.jobTitle) ?
-                    novaUser!.region[0] :
-                    value.operationalRegion ?
-                        toTitleCase(value.operationalRegion) :
-                        novaUser ?
-                            novaUser.region[0] :
-                            null :
-                null
+            value
+                ? SHOP_TITLES.includes(novaUser!.jobTitle)
+                    ? novaUser!.region[0]
+                    : value.operationalRegion
+                    ? toTitleCase(value.operationalRegion)
+                    : novaUser
+                    ? novaUser.region[0]
+                    : null
+                : null
         )
     }
     const onTruckChange = (_e: React.SyntheticEvent | undefined, value: Truck | null) => {
@@ -534,14 +531,10 @@ export default function EditPartsReqForm(props: Props) {
 
     const onExportCSV = () => {
         // Generate CSV content
-        const csvRows = rows.map((row) =>
-            [
-                `${row.qty},` +
-                '"' + `${row.itemNumber.replace(/"/g, '""')}` + '"' + ',' +
-                '"' + `${row.description?.replace(/"/g, '""')}` + '"'
-            ]
-        )
-        const csvContent = "data:text/csv;charset=utf-8," + csvRows.map(e => e.join(",")).join("\n")
+        const csvRows = rows.map((row) => [
+            `${row.qty},` + '"' + `${row.itemNumber.replace(/"/g, '""')}` + '"' + "," + '"' + `${row.description?.replace(/"/g, '""')}` + '"',
+        ])
+        const csvContent = "data:text/csv;charset=utf-8," + csvRows.map((e) => e.join(",")).join("\n")
         // Encode content
         const encodedURI = encodeURI(csvContent)
         const csvLink = document.createElement("a")
@@ -653,8 +646,8 @@ export default function EditPartsReqForm(props: Props) {
             {
                 comment: comment,
                 name: novaUser ? `${novaUser.firstName} ${novaUser.lastName}` : "",
-                timestamp: new Date()
-            }
+                timestamp: new Date(),
+            },
         ])
 
         setComment("")
@@ -985,14 +978,18 @@ export default function EditPartsReqForm(props: Props) {
 
     if (isFetched) {
         return (
-            <Box sx={{
-                bgcolor: "background.paper", margin: "15px", padding: "10px", borderRadius: "0.5rem",
-                overflow: "auto", border: "5px solid", borderColor: "background.paper"
-            }}>
-                <form
-                    onKeyDown={handleKeyDown}
-                    style={{ display: "flex", flexDirection: "column", alignItems: "center" }}
-                >
+            <Box
+                sx={{
+                    bgcolor: "background.paper",
+                    margin: "15px",
+                    padding: "10px",
+                    borderRadius: "0.5rem",
+                    overflow: "auto",
+                    border: "5px solid",
+                    borderColor: "background.paper",
+                }}
+            >
+                <form onKeyDown={handleKeyDown} style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
                     <Grid container spacing={2} sx={{ width: "100%" }}>
                         <Grid xs={12} sm={4}>
                             <Item sx={{ marginBottom: "15px" }}>
@@ -1003,41 +1000,37 @@ export default function EditPartsReqForm(props: Props) {
                                         value={status}
                                         getOptionDisabled={getOptionDisabled}
                                         disableClearable
-                                        renderInput={(params) => <StyledTextField
-                                            {...params}
-                                            variant="standard"
-                                            label="Status"
-                                        />}
+                                        renderInput={(params) => <StyledTextField {...params} variant="standard" label="Status" />}
                                         //isOptionEqualToValue={(option, value) => option.status === value.status}
                                         renderOption={(props, option, { inputValue }) => {
-                                            const matches = match(option, inputValue, { insideWords: true, requireMatchAll: true });
-                                            const parts = parse(option, matches);
+                                            const matches = match(option, inputValue, {
+                                                insideWords: true,
+                                                requireMatchAll: true,
+                                            })
+                                            const parts = parse(option, matches)
 
-                                            return (
-                                                noRate(rows) &&
-                                                    (
-                                                        option === "Ordered - Awaiting Parts" || option === "Completed - Parts Staged/Delivered" ||
-                                                        option === "Quote Provided - Pending Approval"
-                                                    ) ?
-                                                    <li {...props}>
-                                                        {option}
-                                                    </li> :
-                                                    <li {...props}>
-                                                        <div>
-                                                            {parts.map((part, index) => (
-                                                                <span
-                                                                    key={index}
-                                                                    style={{
-                                                                        fontWeight: part.highlight ? 700 : 400,
-                                                                        color: part.highlight ? "#23aee5" : "#fff"
-                                                                    }}
-                                                                >
-                                                                    {part.text}
-                                                                </span>
-                                                            ))}
-                                                        </div>
-                                                    </li>
-                                            );
+                                            return noRate(rows) &&
+                                                (option === "Ordered - Awaiting Parts" ||
+                                                    option === "Completed - Parts Staged/Delivered" ||
+                                                    option === "Quote Provided - Pending Approval") ? (
+                                                <li {...props}>{option}</li>
+                                            ) : (
+                                                <li {...props}>
+                                                    <div>
+                                                        {parts.map((part, index) => (
+                                                            <span
+                                                                key={index}
+                                                                style={{
+                                                                    fontWeight: part.highlight ? 700 : 400,
+                                                                    color: part.highlight ? "#23aee5" : "#fff",
+                                                                }}
+                                                            >
+                                                                {part.text}
+                                                            </span>
+                                                        ))}
+                                                    </div>
+                                                </li>
+                                            )
                                         }}
                                         readOnly={denyAccess(novaUser!.jobTitle, "Status")}
                                     />
@@ -1045,7 +1038,9 @@ export default function EditPartsReqForm(props: Props) {
                             </Item>
                             <Item>
                                 <Box>
-                                    <b><p style={{ margin: 0 }}>Complete All Applicable Fields:</p></b>
+                                    <b>
+                                        <p style={{ margin: 0 }}>Complete All Applicable Fields:</p>
+                                    </b>
                                     <Divider />
                                     <StyledTextField
                                         variant="standard"
@@ -1055,18 +1050,15 @@ export default function EditPartsReqForm(props: Props) {
                                     />
                                     <div>
                                         <i>
-                                            <Typography variant="caption">
-                                                {requester?.jobTitle}
-                                            </Typography>
+                                            <Typography variant="caption">{requester?.jobTitle}</Typography>
                                         </i>
-                                        {requester?.cellPhone && <i>
-                                            <Typography variant="caption">
-                                                {` | ${requester?.cellPhone}`}
-                                            </Typography>
-                                        </i>
-                                        }
+                                        {requester?.cellPhone && (
+                                            <i>
+                                                <Typography variant="caption">{` | ${requester?.cellPhone}`}</Typography>
+                                            </i>
+                                        )}
                                     </div>
-                                    {contact &&
+                                    {contact && (
                                         <>
                                             <StyledTextField
                                                 variant="standard"
@@ -1076,19 +1068,16 @@ export default function EditPartsReqForm(props: Props) {
                                             />
                                             <div>
                                                 <i>
-                                                    <Typography variant="caption">
-                                                        {contact?.jobTitle}
-                                                    </Typography>
+                                                    <Typography variant="caption">{contact?.jobTitle}</Typography>
                                                 </i>
-                                                {contact?.cellPhone && <i>
-                                                    <Typography variant="caption">
-                                                        {` | ${contact?.cellPhone}`}
-                                                    </Typography>
-                                                </i>
-                                                }
+                                                {contact?.cellPhone && (
+                                                    <i>
+                                                        <Typography variant="caption">{` | ${contact?.cellPhone}`}</Typography>
+                                                    </i>
+                                                )}
                                             </div>
                                         </>
-                                    }
+                                    )}
                                     <StyledTextField
                                         variant="standard"
                                         label="Order Date"
@@ -1096,23 +1085,20 @@ export default function EditPartsReqForm(props: Props) {
                                         InputProps={{ readOnly: true }}
                                     />
                                     <div style={{ display: "flex", alignItems: "center" }}>
-                                        <Checkbox
-                                            checked={billable}
-                                            disableRipple
-                                            readOnly
-                                            sx={{ paddingLeft: 0 }}
-                                        />
-                                        <b><p style={{ margin: 0 }}>Billable to customer for Nova unit?</p></b>
+                                        <Checkbox checked={billable} disableRipple readOnly sx={{ paddingLeft: 0 }} />
+                                        <b>
+                                            <p style={{ margin: 0 }}>Billable to customer for Nova unit?</p>
+                                        </b>
                                     </div>
                                     <div style={{ display: "flex", alignItems: "center" }}>
-                                        <Checkbox
-                                            checked={warrantyJob}
-                                            disableRipple
-                                            sx={{ paddingLeft: 0 }}
-                                        />
-                                        <b><p style={{ margin: 0 }}>Is this related to a potential warranty from the vendor?</p></b>
+                                        <Checkbox checked={warrantyJob} disableRipple sx={{ paddingLeft: 0 }} />
+                                        <b>
+                                            <p style={{ margin: 0 }}>Is this related to a potential warranty from the vendor?</p>
+                                        </b>
                                     </div>
-                                    <b><p style={{ margin: "20px 0px 0px 0px" }}>Class:</p></b>
+                                    <b>
+                                        <p style={{ margin: "20px 0px 0px 0px" }}>Class:</p>
+                                    </b>
                                     <Divider />
                                     <Autocomplete
                                         options={afes ? afes : []}
@@ -1120,38 +1106,47 @@ export default function EditPartsReqForm(props: Props) {
                                         onChange={onAfeChange}
                                         loading={afeFetching}
                                         value={afe}
-                                        renderInput={(params) => <StyledTextField
-                                            {...params}
-                                            variant="standard"
-                                            label="AFE #"
-                                        />}
+                                        renderInput={(params) => <StyledTextField {...params} variant="standard" label="AFE #" />}
                                         disabled={!!salesOrder}
                                         filterOptions={afeFilter}
                                         renderOption={(props, option, { inputValue }) => {
                                             // Get matches in AFE number
-                                            const afeNumberMatches = match(option.number, inputValue, { insideWords: true })
+                                            const afeNumberMatches = match(option.number, inputValue, {
+                                                insideWords: true,
+                                            })
                                             // Get parts from AFE number matches
                                             const afeNumberParts = parse(option.number, afeNumberMatches)
 
                                             // Get matches in unit number
-                                            const unitNumberMatches = match(option.unit.unitNumber, inputValue, { insideWords: true })
+                                            const unitNumberMatches = match(option.unit.unitNumber, inputValue, {
+                                                insideWords: true,
+                                            })
                                             // Get parts from unit number matches
                                             const unitNumberParts = parse(option.unit.unitNumber, unitNumberMatches)
 
                                             // Get matches in location
-                                            const locationMatches = match(option.unit.location ?? "", inputValue, { insideWords: true })
+                                            const locationMatches = match(option.unit.location ?? "", inputValue, {
+                                                insideWords: true,
+                                            })
                                             // Get parts from location matches
                                             const locationParts = parse(option.unit.location ?? "", locationMatches)
 
                                             return (
-                                                <li {...props} style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+                                                <li
+                                                    {...props}
+                                                    style={{
+                                                        display: "flex",
+                                                        justifyContent: "space-between",
+                                                        alignItems: "flex-start",
+                                                    }}
+                                                >
                                                     <div style={{ width: "20%", marginRight: "5px" }}>
                                                         {afeNumberParts.map((part, index) => (
                                                             <span
                                                                 key={index}
                                                                 style={{
                                                                     fontWeight: part.highlight ? 700 : 400,
-                                                                    color: part.highlight ? "#23aee5" : "#fff"
+                                                                    color: part.highlight ? "#23aee5" : "#fff",
                                                                 }}
                                                             >
                                                                 {part.text}
@@ -1164,7 +1159,7 @@ export default function EditPartsReqForm(props: Props) {
                                                                 key={index}
                                                                 style={{
                                                                     fontWeight: part.highlight ? 700 : 400,
-                                                                    color: part.highlight ? "#23aee5" : "#fff"
+                                                                    color: part.highlight ? "#23aee5" : "#fff",
                                                                 }}
                                                             >
                                                                 {part.text}
@@ -1177,7 +1172,7 @@ export default function EditPartsReqForm(props: Props) {
                                                                 key={index}
                                                                 style={{
                                                                     fontWeight: part.highlight ? 700 : 400,
-                                                                    color: part.highlight ? "#23aee5" : "#fff"
+                                                                    color: part.highlight ? "#23aee5" : "#fff",
                                                                 }}
                                                             >
                                                                 {part.text}
@@ -1195,15 +1190,14 @@ export default function EditPartsReqForm(props: Props) {
                                         onChange={onSalesOrderChange}
                                         loading={salesOrdersFetching}
                                         value={salesOrder}
-                                        renderInput={(params) => <StyledTextField
-                                            {...params}
-                                            variant="standard"
-                                            label="SO #"
-                                        />}
+                                        renderInput={(params) => <StyledTextField {...params} variant="standard" label="SO #" />}
                                         disabled={!!afe}
                                         renderOption={(props, option, { inputValue }) => {
-                                            const matches = match(option.number, inputValue, { insideWords: true, requireMatchAll: true });
-                                            const parts = parse(option.number, matches);
+                                            const matches = match(option.number, inputValue, {
+                                                insideWords: true,
+                                                requireMatchAll: true,
+                                            })
+                                            const parts = parse(option.number, matches)
 
                                             return (
                                                 <li {...props}>
@@ -1213,7 +1207,7 @@ export default function EditPartsReqForm(props: Props) {
                                                                 key={index}
                                                                 style={{
                                                                     fontWeight: part.highlight ? 700 : 400,
-                                                                    color: part.highlight ? "#23aee5" : "#fff"
+                                                                    color: part.highlight ? "#23aee5" : "#fff",
                                                                 }}
                                                             >
                                                                 {part.text}
@@ -1221,11 +1215,13 @@ export default function EditPartsReqForm(props: Props) {
                                                         ))}
                                                     </div>
                                                 </li>
-                                            );
+                                            )
                                         }}
                                         readOnly={denyAccess(novaUser!.jobTitle, status)}
                                     />
-                                    <b><p style={{ margin: "20px 0px 0px 0px" }}>Related Asset:</p></b>
+                                    <b>
+                                        <p style={{ margin: "20px 0px 0px 0px" }}>Related Asset:</p>
+                                    </b>
                                     <Divider />
                                     <Autocomplete
                                         options={unitNumbers ? unitNumbers : []}
@@ -1234,15 +1230,14 @@ export default function EditPartsReqForm(props: Props) {
                                         loading={unitsFetching}
                                         value={unit}
                                         isOptionEqualToValue={(option, value) => option.unitNumber === value.unitNumber}
-                                        renderInput={(params) => <StyledTextField
-                                            {...params}
-                                            variant="standard"
-                                            label="Unit #"
-                                        />}
+                                        renderInput={(params) => <StyledTextField {...params} variant="standard" label="Unit #" />}
                                         disabled={!!truck || !!afe}
                                         renderOption={(props, option, { inputValue }) => {
-                                            const matches = match(option.unitNumber, inputValue, { insideWords: true, requireMatchAll: true });
-                                            const parts = parse(option.unitNumber, matches);
+                                            const matches = match(option.unitNumber, inputValue, {
+                                                insideWords: true,
+                                                requireMatchAll: true,
+                                            })
+                                            const parts = parse(option.unitNumber, matches)
 
                                             return (
                                                 <li {...props}>
@@ -1252,7 +1247,7 @@ export default function EditPartsReqForm(props: Props) {
                                                                 key={index}
                                                                 style={{
                                                                     fontWeight: part.highlight ? 700 : 400,
-                                                                    color: part.highlight ? "#23aee5" : "#fff"
+                                                                    color: part.highlight ? "#23aee5" : "#fff",
                                                                 }}
                                                             >
                                                                 {part.text}
@@ -1260,44 +1255,39 @@ export default function EditPartsReqForm(props: Props) {
                                                         ))}
                                                     </div>
                                                 </li>
-                                            );
+                                            )
                                         }}
                                         readOnly={denyAccess(novaUser!.jobTitle, status)}
                                     />
                                     <div style={{ display: "flex", flexDirection: "row", width: "100%" }}>
                                         <p style={{ marginTop: "10px", marginRight: "10px" }}>Location:</p>
-                                        {unit ?
-                                            <p style={{ marginTop: "10px" }}>{unit.location}</p> : null
-                                        }
+                                        {unit ? <p style={{ marginTop: "10px" }}>{unit.location}</p> : null}
                                     </div>
                                     <div style={{ display: "flex", flexDirection: "row", width: "100%" }}>
                                         <p style={{ marginTop: "5px", marginRight: "10px" }}>Customer:</p>
-                                        {unit ?
-                                            <p style={{ marginTop: "5px" }}>{unit.customer}</p> : null
-                                        }
+                                        {unit ? <p style={{ marginTop: "5px" }}>{unit.customer}</p> : null}
                                     </div>
                                     <div style={{ display: "flex", flexDirection: "row", width: "100%" }}>
                                         <p style={{ marginTop: "5px", marginRight: "10px" }}>Status:</p>
-                                        {unit ?
-                                            <p style={{ marginTop: "5px" }}>{unit.status}</p> : null
-                                        }
+                                        {unit ? <p style={{ marginTop: "5px" }}>{unit.status}</p> : null}
                                     </div>
-                                    <b><p style={{ margin: "5px 0px 0px 0px" }}>OR:</p></b>
+                                    <b>
+                                        <p style={{ margin: "5px 0px 0px 0px" }}>OR:</p>
+                                    </b>
                                     <Autocomplete
                                         options={trucks ? trucks : []}
                                         getOptionLabel={(option) => option.name}
                                         onChange={onTruckChange}
                                         loading={trucksFetching}
                                         value={truck}
-                                        renderInput={(params) => <StyledTextField
-                                            {...params}
-                                            variant="standard"
-                                            label="Truck #"
-                                        />}
+                                        renderInput={(params) => <StyledTextField {...params} variant="standard" label="Truck #" />}
                                         disabled={!!unit}
                                         renderOption={(props, option, { inputValue }) => {
-                                            const matches = match(option.name, inputValue, { insideWords: true, requireMatchAll: true });
-                                            const parts = parse(option.name, matches);
+                                            const matches = match(option.name, inputValue, {
+                                                insideWords: true,
+                                                requireMatchAll: true,
+                                            })
+                                            const parts = parse(option.name, matches)
 
                                             return (
                                                 <li {...props}>
@@ -1307,7 +1297,7 @@ export default function EditPartsReqForm(props: Props) {
                                                                 key={index}
                                                                 style={{
                                                                     fontWeight: part.highlight ? 700 : 400,
-                                                                    color: part.highlight ? "#23aee5" : "#fff"
+                                                                    color: part.highlight ? "#23aee5" : "#fff",
                                                                 }}
                                                             >
                                                                 {part.text}
@@ -1315,7 +1305,7 @@ export default function EditPartsReqForm(props: Props) {
                                                         ))}
                                                     </div>
                                                 </li>
-                                            );
+                                            )
                                         }}
                                         readOnly={denyAccess(novaUser!.jobTitle, status)}
                                     />
@@ -1323,8 +1313,9 @@ export default function EditPartsReqForm(props: Props) {
                             </Item>
                         </Grid>
                         <Grid xs={12} sm={4}>
-                            {(status === "Completed - Parts Staged/Delivered" || status === "Closed - Partially Received" ||
-                                status === "Closed - Parts in Hand") &&
+                            {(status === "Completed - Parts Staged/Delivered" ||
+                                status === "Closed - Partially Received" ||
+                                status === "Closed - Parts in Hand") && (
                                 <Item sx={{ marginBottom: "15px" }}>
                                     <Box>
                                         <Autocomplete
@@ -1333,14 +1324,13 @@ export default function EditPartsReqForm(props: Props) {
                                             onChange={onPickupChange}
                                             loading={locationsFetching}
                                             value={pickup}
-                                            renderInput={(params) => <StyledTextField
-                                                {...params}
-                                                variant="standard"
-                                                label="Pick Up Location"
-                                            />}
+                                            renderInput={(params) => <StyledTextField {...params} variant="standard" label="Pick Up Location" />}
                                             renderOption={(props, option, { inputValue }) => {
-                                                const matches = match(option.name, inputValue, { insideWords: true, requireMatchAll: true });
-                                                const parts = parse(option.name, matches);
+                                                const matches = match(option.name, inputValue, {
+                                                    insideWords: true,
+                                                    requireMatchAll: true,
+                                                })
+                                                const parts = parse(option.name, matches)
 
                                                 return (
                                                     <li {...props}>
@@ -1350,7 +1340,7 @@ export default function EditPartsReqForm(props: Props) {
                                                                     key={index}
                                                                     style={{
                                                                         fontWeight: part.highlight ? 700 : 400,
-                                                                        color: part.highlight ? "#23aee5" : "#fff"
+                                                                        color: part.highlight ? "#23aee5" : "#fff",
                                                                     }}
                                                                 >
                                                                     {part.text}
@@ -1358,13 +1348,13 @@ export default function EditPartsReqForm(props: Props) {
                                                             ))}
                                                         </div>
                                                     </li>
-                                                );
+                                                )
                                             }}
                                             readOnly={denyAccess(novaUser!.jobTitle, "Pickup")}
                                         />
                                     </Box>
                                 </Item>
-                            }
+                            )}
                             <Item sx={{ marginBottom: "10px" }}>
                                 <div style={{ display: "flex", alignItems: "center" }}>
                                     <Checkbox
@@ -1373,26 +1363,35 @@ export default function EditPartsReqForm(props: Props) {
                                         disableRipple
                                         disabled={denyAccess(novaUser!.jobTitle, "Conex")}
                                     />
-                                    <b><p style={{ margin: 0 }}>Were all these parts taken from a Conex?</p></b>
+                                    <b>
+                                        <p style={{ margin: 0 }}>Were all these parts taken from a Conex?</p>
+                                    </b>
                                 </div>
-                                {conex &&
+                                {conex && (
                                     <Autocomplete
                                         disabled={!conex || denyAccess(novaUser!.jobTitle, "Conex")}
-                                        options={locations ? locations.filter((location) => location.name.includes("CONEX") || location.name.includes("STORAGE")
-                                            || (location.name.includes("TRUCK") && EMISSIONS_MANAGER_TITLES.includes(novaUser!.jobTitle))) : []}
+                                        options={
+                                            locations
+                                                ? locations.filter(
+                                                      (location) =>
+                                                          location.name.includes("CONEX") ||
+                                                          location.name.includes("STORAGE") ||
+                                                          (location.name.includes("TRUCK") && EMISSIONS_MANAGER_TITLES.includes(novaUser!.jobTitle))
+                                                  )
+                                                : []
+                                        }
                                         getOptionLabel={(option) => option.name}
                                         loading={locationsFetching}
                                         onChange={onConexNameChange}
                                         value={conexName}
-                                        renderInput={(params) => <StyledTextField
-                                            {...params}
-                                            variant="standard"
-                                            label="Conex"
-                                        />}
+                                        renderInput={(params) => <StyledTextField {...params} variant="standard" label="Conex" />}
                                         sx={{ width: "100%" }}
                                         renderOption={(props, option, { inputValue }) => {
-                                            const matches = match(option.name, inputValue, { insideWords: true, requireMatchAll: true });
-                                            const parts = parse(option.name, matches);
+                                            const matches = match(option.name, inputValue, {
+                                                insideWords: true,
+                                                requireMatchAll: true,
+                                            })
+                                            const parts = parse(option.name, matches)
 
                                             return (
                                                 <li {...props}>
@@ -1402,7 +1401,7 @@ export default function EditPartsReqForm(props: Props) {
                                                                 key={index}
                                                                 style={{
                                                                     fontWeight: part.highlight ? 700 : 400,
-                                                                    color: part.highlight ? "#23aee5" : "#fff"
+                                                                    color: part.highlight ? "#23aee5" : "#fff",
                                                                 }}
                                                             >
                                                                 {part.text}
@@ -1410,46 +1409,57 @@ export default function EditPartsReqForm(props: Props) {
                                                         ))}
                                                     </div>
                                                 </li>
-                                            );
+                                            )
                                         }}
                                     />
-                                }
+                                )}
                             </Item>
                             <Item>
                                 <Box>
-                                    <b><p style={{ margin: 0 }}>Urgency:</p></b>
+                                    <b>
+                                        <p style={{ margin: 0 }}>Urgency:</p>
+                                    </b>
                                     <Divider />
                                     <FormControl>
                                         <RadioGroup row>
                                             {URGENCY.map((val) => {
-                                                const canAccess = val.regions ? (val.regions.findIndex(el => novaUser!.region.includes(el)) !== -1) : true
+                                                const canAccess = val.regions
+                                                    ? val.regions.findIndex((el) => novaUser!.region.includes(el)) !== -1
+                                                    : true
 
                                                 return canAccess ? (
                                                     <FormControlLabel
                                                         value={urgency}
                                                         onChange={() => setUrgency(val.urgency)}
-                                                        control={<Radio disableRipple sx={{ paddingRight: "2px" }} checked={urgency === val.urgency} />}
+                                                        control={
+                                                            <Radio disableRipple sx={{ paddingRight: "2px" }} checked={urgency === val.urgency} />
+                                                        }
                                                         label={val.urgency}
                                                         defaultChecked={false}
                                                         key={val.urgency}
                                                     />
                                                 ) : null
-
                                             })}
                                         </RadioGroup>
                                     </FormControl>
-                                    <b><p style={{ margin: "20px 0px 0px 0px" }}>Order Type:</p></b>
+                                    <b>
+                                        <p style={{ margin: "20px 0px 0px 0px" }}>Order Type:</p>
+                                    </b>
                                     <Divider />
-                                    <FormControl disabled={(!!unit || !!salesOrder) || denyAccess(novaUser!.jobTitle, status)}>
+                                    <FormControl disabled={!!unit || !!salesOrder || denyAccess(novaUser!.jobTitle, status)}>
                                         <RadioGroup row>
                                             {ORDER_TYPE.map((val) => {
-                                                const canAccess = val.titles ? (val.titles.findIndex(el => novaUser!.jobTitle.includes(el)) !== -1) : true
+                                                const canAccess = val.titles
+                                                    ? val.titles.findIndex((el) => novaUser!.jobTitle.includes(el)) !== -1
+                                                    : true
 
                                                 return canAccess ? (
                                                     <FormControlLabel
                                                         value={orderType}
                                                         onChange={() => setOrderType(val.type)}
-                                                        control={<Radio disableRipple sx={{ paddingRight: "2px" }} checked={orderType === val.type} />}
+                                                        control={
+                                                            <Radio disableRipple sx={{ paddingRight: "2px" }} checked={orderType === val.type} />
+                                                        }
                                                         label={val.type}
                                                         defaultChecked={false}
                                                         key={val.type}
@@ -1458,7 +1468,9 @@ export default function EditPartsReqForm(props: Props) {
                                             })}
                                         </RadioGroup>
                                     </FormControl>
-                                    <b><p style={{ margin: "20px 0px 0px 0px" }}>Operational Region:</p></b>
+                                    <b>
+                                        <p style={{ margin: "20px 0px 0px 0px" }}>Operational Region:</p>
+                                    </b>
                                     <Divider />
                                     <FormControl disabled={!!unit || denyAccess(novaUser!.jobTitle, status)}>
                                         <RadioGroup row>
@@ -1478,95 +1490,115 @@ export default function EditPartsReqForm(props: Props) {
                                     </FormControl>
                                 </Box>
                             </Item>
-                            <Item sx={{
-                                marginTop: "15px", border: unit ? opsVpApprovalRequired(unit, rows as Array<OrderRow>) ?
-                                    "3px solid red" :
-                                    "3px solid transparent" :
-                                    "3px solid transparent"
-                            }} >
+                            <Item
+                                sx={{
+                                    marginTop: "15px",
+                                    border: unit
+                                        ? opsVpApprovalRequired(unit, rows as Array<OrderRow>)
+                                            ? "3px solid red"
+                                            : "3px solid transparent"
+                                        : "3px solid transparent",
+                                }}
+                            >
                                 <Box>
-                                    <b><p style={{ margin: 0 }}>Unit Planning Approval Status:</p></b>
+                                    <b>
+                                        <p style={{ margin: 0 }}>Unit Planning Approval Status:</p>
+                                    </b>
                                     <Divider />
-                                    {unit ?
-                                        opsVpApprovalRequired(unit, rows as Array<OrderRow>) ?
-                                            <b><p style={{ marginTop: "5px", color: "red" }}>
-                                                {PERMIAN_REGIONS.includes(partsReq.region) ?
-                                                    "Sean Stewart must approve non-PM parts" :
-                                                    "Travis Yount must approve non-PM parts"
-                                                }
-                                            </p></b> :
-                                            <p style={{ marginTop: "5px" }}>No additional approval needed</p> :
+                                    {unit ? (
+                                        opsVpApprovalRequired(unit, rows as Array<OrderRow>) ? (
+                                            <b>
+                                                <p style={{ marginTop: "5px", color: "red" }}>
+                                                    {PERMIAN_REGIONS.includes(partsReq.region)
+                                                        ? "Sean Stewart must approve non-PM parts"
+                                                        : "Travis Yount must approve non-PM parts"}
+                                                </p>
+                                            </b>
+                                        ) : (
+                                            <p style={{ marginTop: "5px" }}>No additional approval needed</p>
+                                        )
+                                    ) : (
                                         <p style={{ marginTop: "5px" }}>No additional approval needed</p>
-                                    }
-                                    <b><p style={{ margin: "20px 0px 0px 0px" }}>Engine:</p></b>
+                                    )}
+                                    <b>
+                                        <p style={{ margin: "20px 0px 0px 0px" }}>Engine:</p>
+                                    </b>
                                     <Divider />
                                     <div style={{ display: "flex", flexDirection: "row", width: "100%" }}>
                                         <p style={{ marginTop: "5px", marginRight: "10px" }}>Make & Model:</p>
-                                        {unit ?
-                                            <p style={{ marginTop: "5px" }}>{unit.engine}</p> : null
-                                        }
+                                        {unit ? <p style={{ marginTop: "5px" }}>{unit.engine}</p> : null}
                                     </div>
                                     <div style={{ display: "flex", flexDirection: "row", width: "100%" }}>
                                         <p style={{ marginRight: "10px", marginTop: 0 }}>S/N:</p>
-                                        {unit ?
-                                            <p style={{ margin: 0 }}>{unit.engineSerialNum}</p> : null
-                                        }
+                                        {unit ? <p style={{ margin: 0 }}>{unit.engineSerialNum}</p> : null}
                                     </div>
-                                    <b><p style={{ margin: "10px 0px 0px 0px" }}>Compressor Frame:</p></b>
+                                    <b>
+                                        <p style={{ margin: "10px 0px 0px 0px" }}>Compressor Frame:</p>
+                                    </b>
                                     <Divider />
                                     <div style={{ display: "flex", flexDirection: "row", width: "100%" }}>
                                         <p style={{ marginTop: "5px", marginRight: "10px" }}>Make:</p>
-                                        {unit ?
-                                            <p style={{ marginTop: "5px" }}>{unit.compressorFrame}</p> : null
-                                        }
+                                        {unit ? <p style={{ marginTop: "5px" }}>{unit.compressorFrame}</p> : null}
                                     </div>
                                     <div style={{ display: "flex", flexDirection: "row", width: "100%" }}>
                                         <p style={{ marginRight: "10px", marginTop: 0 }}>Model:</p>
-                                        {unit ?
-                                            <p style={{ margin: 0 }}>{unit.compressorFrameFamily}</p> : null
-                                        }
+                                        {unit ? <p style={{ margin: 0 }}>{unit.compressorFrameFamily}</p> : null}
                                     </div>
                                     <div style={{ display: "flex", flexDirection: "row", width: "100%" }}>
                                         <p style={{ marginRight: "10px", marginTop: 0 }}>S/N:</p>
-                                        {unit ?
-                                            <p style={{ margin: 0 }}>{unit.compressorFrameSN}</p> : null
-                                        }
+                                        {unit ? <p style={{ margin: 0 }}>{unit.compressorFrameSN}</p> : null}
                                     </div>
                                     <div style={{ display: "flex", flexDirection: "row", width: "100%" }}>
                                         <p style={{ marginRight: "10px", marginTop: 0 }}>Stages:</p>
-                                        {unit ?
-                                            <p style={{ margin: 0 }}>{unit.stages}</p> : null
-                                        }
+                                        {unit ? <p style={{ margin: 0 }}>{unit.stages}</p> : null}
                                     </div>
                                     <div style={{ display: "flex", flexDirection: "row", width: "100%" }}>
                                         <p style={{ marginRight: "10px", marginTop: 0, marginBottom: 0 }}>Cylinder Size:</p>
-                                        {unit ?
-                                            <p style={{ margin: 0 }}>{unit.cylinderSize}</p> : null
-                                        }
+                                        {unit ? <p style={{ margin: 0 }}>{unit.cylinderSize}</p> : null}
                                     </div>
                                 </Box>
                             </Item>
                         </Grid>
                         <Grid xs={12} sm={4}>
-                            <Item sx={{
-                                marginBottom: "10px", border: [
-                                    "Pending Approval", "Pending Quote", "Quote Provided - Pending Approval", "Rejected - Adjustments Required",
-                                    "Sourcing - Information Required"
-                                ].includes(status) &&
-                                    prExceedsAfe ? "3px solid red" : "3px solid transparent"
-                            }}>
-                                <p style={{ margin: 0 }}><b>Estimated Total Cost: </b>${calcCost(rows as Array<OrderRow>).toFixed(2)}</p>
+                            <Item
+                                sx={{
+                                    marginBottom: "10px",
+                                    border:
+                                        [
+                                            "Pending Approval",
+                                            "Pending Quote",
+                                            "Quote Provided - Pending Approval",
+                                            "Rejected - Adjustments Required",
+                                            "Sourcing - Information Required",
+                                        ].includes(status) && prExceedsAfe
+                                            ? "3px solid red"
+                                            : "3px solid transparent",
+                                }}
+                            >
+                                <p style={{ margin: 0 }}>
+                                    <b>Estimated Total Cost: </b>${calcCost(rows as Array<OrderRow>).toFixed(2)}
+                                </p>
                                 {[
-                                    "Pending Approval", "Pending Quote", "Quote Provided - Pending Approval", "Rejected - Adjustments Required",
-                                    "Sourcing - Information Required"
+                                    "Pending Approval",
+                                    "Pending Quote",
+                                    "Quote Provided - Pending Approval",
+                                    "Rejected - Adjustments Required",
+                                    "Sourcing - Information Required",
                                 ].includes(status) &&
-                                    prExceedsAfe &&
-                                    <b><p style={{ margin: "5px 0px 0px", color: "red" }}>Estimated Cost Exceeds Available AFE Amount</p></b>
-                                }
+                                    prExceedsAfe && (
+                                        <b>
+                                            <p style={{ margin: "5px 0px 0px", color: "red" }}>Estimated Cost Exceeds Available AFE Amount</p>
+                                        </b>
+                                    )}
                             </Item>
-                            {!["Pending Approval", "Pending Quote", "Quote Provided - Pending Approval", "Rejected - Adjustments Required",
-                                "Approved - On Hold", "Rejected - Closed"
-                            ].includes(status) &&
+                            {![
+                                "Pending Approval",
+                                "Pending Quote",
+                                "Quote Provided - Pending Approval",
+                                "Rejected - Adjustments Required",
+                                "Approved - On Hold",
+                                "Rejected - Closed",
+                            ].includes(status) && (
                                 <Item sx={{ marginBottom: "10px" }}>
                                     <div style={{ display: "flex", alignItems: "center" }}>
                                         <Checkbox
@@ -1575,61 +1607,71 @@ export default function EditPartsReqForm(props: Props) {
                                             disableRipple
                                             disabled={denyAccess(novaUser!.jobTitle, "Amex") || noRate(rows)}
                                         />
-                                        <b><p style={{ margin: 0 }}>Is this an Amex request?</p></b>
+                                        <b>
+                                            <p style={{ margin: 0 }}>Is this an Amex request?</p>
+                                        </b>
                                     </div>
-                                    {amex && <React.Fragment>
-                                        <Autocomplete
-                                            multiple
-                                            filterSelectedOptions
-                                            limitTags={3}
-                                            size="small"
-                                            disabled={!amex || denyAccess(novaUser!.jobTitle, "Amex")}
-                                            options={vendors ? vendors : []}
-                                            getOptionLabel={(option) => option.name}
-                                            loading={vendorsFetching}
-                                            onChange={onVendorChange}
-                                            value={prVendors}
-                                            renderInput={(params) => <StyledTextField
-                                                {...params}
-                                                variant="standard"
-                                                label="Vendor(s)"
-                                                error={amex && prVendors.length === 0}
-                                                helperText={(amex && prVendors.length === 0) && "Please select a vendor"}
-                                            />}
-                                            sx={{ width: "100%" }}
-                                            renderOption={(props, option, { inputValue }) => {
-                                                const matches = match(option.name, inputValue, { insideWords: true, requireMatchAll: true });
-                                                const parts = parse(option.name, matches);
+                                    {amex && (
+                                        <React.Fragment>
+                                            <Autocomplete
+                                                multiple
+                                                filterSelectedOptions
+                                                limitTags={3}
+                                                size="small"
+                                                disabled={!amex || denyAccess(novaUser!.jobTitle, "Amex")}
+                                                options={vendors ? vendors : []}
+                                                getOptionLabel={(option) => option.name}
+                                                loading={vendorsFetching}
+                                                onChange={onVendorChange}
+                                                value={prVendors}
+                                                renderInput={(params) => (
+                                                    <StyledTextField
+                                                        {...params}
+                                                        variant="standard"
+                                                        label="Vendor(s)"
+                                                        error={amex && prVendors.length === 0}
+                                                        helperText={amex && prVendors.length === 0 && "Please select a vendor"}
+                                                    />
+                                                )}
+                                                sx={{ width: "100%" }}
+                                                renderOption={(props, option, { inputValue }) => {
+                                                    const matches = match(option.name, inputValue, {
+                                                        insideWords: true,
+                                                        requireMatchAll: true,
+                                                    })
+                                                    const parts = parse(option.name, matches)
 
-                                                return (
-                                                    <li {...props}>
-                                                        <div>
-                                                            {parts.map((part, index) => (
-                                                                <span
-                                                                    key={index}
-                                                                    style={{
-                                                                        fontWeight: part.highlight ? 700 : 400,
-                                                                        color: part.highlight ? "#23aee5" : "#fff"
-                                                                    }}
-                                                                >
-                                                                    {part.text}
-                                                                </span>
-                                                            ))}
-                                                        </div>
-                                                    </li>
-                                                );
-                                            }}
-                                        />
-                                        {/*<StyledTextField
+                                                    return (
+                                                        <li {...props}>
+                                                            <div>
+                                                                {parts.map((part, index) => (
+                                                                    <span
+                                                                        key={index}
+                                                                        style={{
+                                                                            fontWeight: part.highlight ? 700 : 400,
+                                                                            color: part.highlight ? "#23aee5" : "#fff",
+                                                                        }}
+                                                                    >
+                                                                        {part.text}
+                                                                    </span>
+                                                                ))}
+                                                            </div>
+                                                        </li>
+                                                    )
+                                                }}
+                                            />
+                                            {/*<StyledTextField
                                             variant="standard"
                                             label="NetSuite PO #"
                                         />*/}
-                                    </React.Fragment>
-                                    }
+                                        </React.Fragment>
+                                    )}
                                 </Item>
-                            }
+                            )}
                             <Item style={{ overflow: "auto" }}>
-                                <b><p style={{ margin: 0 }}>Comments:</p></b>
+                                <b>
+                                    <p style={{ margin: 0 }}>Comments:</p>
+                                </b>
                                 <Divider />
                                 <div style={{ display: "flex", alignItems: "flex-end", padding: "5px" }}>
                                     <StyledTextField
@@ -1642,27 +1684,31 @@ export default function EditPartsReqForm(props: Props) {
                                         error={needsComment}
                                         helperText={needsComment && "Please enter a reason for status change"}
                                     />
-                                    <IconButton
-                                        onClick={onAddComment}
-                                        disabled={!comment || denyAccess(novaUser!.jobTitle, "Comment")}
-                                    >
+                                    <IconButton onClick={onAddComment} disabled={!comment || denyAccess(novaUser!.jobTitle, "Comment")}>
                                         <AddIcon />
                                     </IconButton>
                                 </div>
-                                <Box
-                                    style={{ maxHeight: "250px", overflow: "auto", padding: "5px 0px 0px 0px" }}
-                                >
-                                    {comments.sort((x, y) => { return x.timestamp < y.timestamp ? 1 : -1 }) // Sort comments chronologically
+                                <Box style={{ maxHeight: "250px", overflow: "auto", padding: "5px 0px 0px 0px" }}>
+                                    {comments
+                                        .sort((x, y) => {
+                                            return x.timestamp < y.timestamp ? 1 : -1
+                                        }) // Sort comments chronologically
                                         .map((comment: Omit<Comment, "id">, index: number) => {
                                             return (
                                                 <Box
                                                     key={index}
-                                                    sx={{ padding: "5px", marginBottom: "5px", borderRadius: "0.25rem", backgroundColor: "background.paper" }}
+                                                    sx={{
+                                                        padding: "5px",
+                                                        marginBottom: "5px",
+                                                        borderRadius: "0.25rem",
+                                                        backgroundColor: "background.paper",
+                                                    }}
                                                 >
                                                     <div style={{ display: "flex", flexDirection: "column" }}>
                                                         <p style={{ margin: "0px" }}>{comment.comment}</p>
                                                         <i style={{ color: "#838385" }}>
-                                                            {comment.name} - {new Date(comment.timestamp).toLocaleDateString()} {new Date(comment.timestamp).toLocaleTimeString()}
+                                                            {comment.name} - {new Date(comment.timestamp).toLocaleDateString()}{" "}
+                                                            {new Date(comment.timestamp).toLocaleTimeString()}
                                                         </i>
                                                     </div>
                                                 </Box>
@@ -1670,20 +1716,13 @@ export default function EditPartsReqForm(props: Props) {
                                         })}
                                 </Box>
                             </Item>
-                            <Item
-                                sx={{ marginTop: "15px" }}
-                            >
-                                <b><p style={{ margin: 0 }}>Documents:</p></b>
-                                <Divider
-                                    sx={{ marginBottom: "10px" }}
-                                />
-                                <AddFileButton
-                                    setNewFiles={setNewFiles}
-                                    disabled={denyAccess(novaUser!.jobTitle, "Document")}
-                                />
-                                <Box
-                                    sx={{ maxHeight: "250px", overflow: "auto" }}
-                                >
+                            <Item sx={{ marginTop: "15px" }}>
+                                <b>
+                                    <p style={{ margin: 0 }}>Documents:</p>
+                                </b>
+                                <Divider sx={{ marginBottom: "10px" }} />
+                                <AddFileButton setNewFiles={setNewFiles} disabled={denyAccess(novaUser!.jobTitle, "Document")} />
+                                <Box sx={{ maxHeight: "250px", overflow: "auto" }}>
                                     <Files
                                         newFiles={newFiles}
                                         setNewFiles={setNewFiles}
@@ -1702,9 +1741,9 @@ export default function EditPartsReqForm(props: Props) {
                                     <TableHead>
                                         <TableRow>
                                             {partsReq.status === "Completed - Parts Staged/Delivered" ||
-                                                partsReq.status === "Closed - Partially Received" ?
-                                                <TableCell width={"7%"}>Qty Received</TableCell> : null
-                                            }
+                                            partsReq.status === "Closed - Partially Received" ? (
+                                                <TableCell width={"7%"}>Qty Received</TableCell>
+                                            ) : null}
                                             <TableCell width={"7%"}>Qty Needed</TableCell>
                                             <TableCell width={"25%"}>Part #</TableCell>
                                             <TableCell>Description</TableCell>
@@ -1716,54 +1755,33 @@ export default function EditPartsReqForm(props: Props) {
                                     <TableBody>
                                         {rows.map((row, index) => {
                                             return partsFetching ? (
-                                                <TableRow
-                                                    key={index}
-                                                >
+                                                <TableRow key={index}>
                                                     {partsReq.status === "Completed - Parts Staged/Delivered" ||
-                                                        partsReq.status === "Closed - Partially Received" ?
+                                                    partsReq.status === "Closed - Partially Received" ? (
                                                         <TableCell>
-                                                            <Skeleton
-                                                                animation={"wave"}
-                                                                sx={{ width: "100%" }}
-                                                            />
-                                                        </TableCell> : null}
+                                                            <Skeleton animation={"wave"} sx={{ width: "100%" }} />
+                                                        </TableCell>
+                                                    ) : null}
                                                     <TableCell>
-                                                        <Skeleton
-                                                            animation={"wave"}
-                                                            sx={{ width: "100%" }}
-                                                        />
+                                                        <Skeleton animation={"wave"} sx={{ width: "100%" }} />
                                                     </TableCell>
                                                     <TableCell>
-                                                        <Skeleton
-                                                            animation={"wave"}
-                                                            sx={{ width: "100%" }}
-                                                        />
+                                                        <Skeleton animation={"wave"} sx={{ width: "100%" }} />
                                                     </TableCell>
                                                     <TableCell>
-                                                        <Skeleton
-                                                            animation={"wave"}
-                                                            sx={{ width: "100%" }}
-                                                        />
+                                                        <Skeleton animation={"wave"} sx={{ width: "100%" }} />
                                                     </TableCell>
                                                     <TableCell>
-                                                        <Skeleton
-                                                            animation={"wave"}
-                                                            sx={{ width: "100%" }}
-                                                        />
+                                                        <Skeleton animation={"wave"} sx={{ width: "100%" }} />
                                                     </TableCell>
                                                     <TableCell>
-                                                        <Skeleton
-                                                            animation={"wave"}
-                                                            sx={{ width: "100%" }}
-                                                        />
+                                                        <Skeleton animation={"wave"} sx={{ width: "100%" }} />
                                                     </TableCell>
                                                 </TableRow>
                                             ) : (
-                                                <TableRow
-                                                    key={index}
-                                                >
+                                                <TableRow key={index}>
                                                     {partsReq.status === "Completed - Parts Staged/Delivered" ||
-                                                        partsReq.status === "Closed - Partially Received" ?
+                                                    partsReq.status === "Closed - Partially Received" ? (
                                                         <TableCell>
                                                             <StyledTextField
                                                                 type="number"
@@ -1771,14 +1789,17 @@ export default function EditPartsReqForm(props: Props) {
                                                                 value={row.received}
                                                                 onChange={onReceivedChange(index)}
                                                                 InputProps={{
-                                                                    inputProps: { min: partsReq.parts[index].received, max: row.qty },
-                                                                    readOnly: denyAccess(novaUser!.jobTitle, "Received")
+                                                                    inputProps: {
+                                                                        min: partsReq.parts[index].received,
+                                                                        max: row.qty,
+                                                                    },
+                                                                    readOnly: denyAccess(novaUser!.jobTitle, "Received"),
                                                                 }}
                                                                 sx={{ width: "100%" }}
                                                                 helperText={!rows[index].itemNumber && " "}
                                                             />
-                                                        </TableCell> : null
-                                                    }
+                                                        </TableCell>
+                                                    ) : null}
                                                     <TableCell>
                                                         <StyledTextField
                                                             type="number"
@@ -1787,7 +1808,7 @@ export default function EditPartsReqForm(props: Props) {
                                                             onChange={onQtyChange(index)}
                                                             InputProps={{
                                                                 inputProps: { min: 1 },
-                                                                readOnly: denyAccess(novaUser!.jobTitle, "Needed")
+                                                                readOnly: denyAccess(novaUser!.jobTitle, "Needed"),
                                                             }}
                                                             sx={{ width: "100%" }}
                                                             helperText={!rows[index].itemNumber && " "}
@@ -1795,7 +1816,7 @@ export default function EditPartsReqForm(props: Props) {
                                                     </TableCell>
                                                     <TableCell>
                                                         <Autocomplete
-                                                            options={parts ? parts as Array<PartOption> : []}
+                                                            options={parts ? (parts as Array<PartOption>) : []}
                                                             freeSolo
                                                             clearOnBlur
                                                             selectOnFocus
@@ -1806,9 +1827,7 @@ export default function EditPartsReqForm(props: Props) {
                                                                 if (option.inputValue) {
                                                                     return option.inputValue
                                                                 }
-                                                                return `${option.itemNumber}` + (option.description ?
-                                                                    ` - ${option.description}` :
-                                                                    "")
+                                                                return `${option.itemNumber}` + (option.description ? ` - ${option.description}` : "")
                                                             }}
                                                             value={rows[index].itemNumber}
                                                             onChange={onPartChange(index)}
@@ -1818,11 +1837,11 @@ export default function EditPartsReqForm(props: Props) {
 
                                                                 const { inputValue } = params
                                                                 // Suggest creation of new value if nothing exists
-                                                                const isItemNumberExisting = options.some((option) =>
-                                                                    inputValue.toUpperCase() === option.itemNumber.toUpperCase()
+                                                                const isItemNumberExisting = options.some(
+                                                                    (option) => inputValue.toUpperCase() === option.itemNumber.toUpperCase()
                                                                 )
-                                                                const isDescriptionExisting = options.some((option) =>
-                                                                    inputValue.toUpperCase() === option.description?.toUpperCase()
+                                                                const isDescriptionExisting = options.some(
+                                                                    (option) => inputValue.toUpperCase() === option.description?.toUpperCase()
                                                                 )
 
                                                                 const isExisting = isItemNumberExisting || isDescriptionExisting
@@ -1836,38 +1855,53 @@ export default function EditPartsReqForm(props: Props) {
                                                                         cost: null,
                                                                         mode: null,
                                                                         type: "",
-                                                                        active: true
+                                                                        active: true,
                                                                     })
                                                                 }
 
                                                                 return filtered
                                                             }}
-                                                            renderInput={(params) => <StyledTextField
-                                                                {...params}
-                                                                variant="standard"
-                                                                error={!rows[index].itemNumber}
-                                                                helperText={rows[index].itemNumber ? "" : "Press 'Enter' to save custom part"}
-                                                            />}
+                                                            renderInput={(params) => (
+                                                                <StyledTextField
+                                                                    {...params}
+                                                                    variant="standard"
+                                                                    error={!rows[index].itemNumber}
+                                                                    helperText={rows[index].itemNumber ? "" : "Press 'Enter' to save custom part"}
+                                                                />
+                                                            )}
                                                             renderOption={(props, option, { inputValue }) => {
                                                                 // Get matches in item number
-                                                                const itemNumberMatches = match(option.itemNumber, inputValue, { insideWords: true, requireMatchAll: true })
+                                                                const itemNumberMatches = match(option.itemNumber, inputValue, {
+                                                                    insideWords: true,
+                                                                    requireMatchAll: true,
+                                                                })
                                                                 // Get parts from item number matches
                                                                 const itemNumberParts = parse(option.itemNumber, itemNumberMatches)
 
                                                                 // Get matches in description
-                                                                const descriptionMatches = match(option.description ?? "", inputValue, { insideWords: true, requireMatchAll: true })
+                                                                const descriptionMatches = match(option.description ?? "", inputValue, {
+                                                                    insideWords: true,
+                                                                    requireMatchAll: true,
+                                                                })
                                                                 // Get parts from description matches
                                                                 const descriptionParts = parse(option.description ?? "", descriptionMatches)
 
                                                                 return (
-                                                                    <li {...props} style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+                                                                    <li
+                                                                        {...props}
+                                                                        style={{
+                                                                            display: "flex",
+                                                                            justifyContent: "space-between",
+                                                                            alignItems: "flex-start",
+                                                                        }}
+                                                                    >
                                                                         <div style={{ width: "30%", marginRight: "5px" }}>
                                                                             {itemNumberParts.map((part, index) => (
                                                                                 <span
                                                                                     key={index}
                                                                                     style={{
                                                                                         fontWeight: part.highlight ? 700 : 400,
-                                                                                        color: part.highlight ? "#23aee5" : "#fff"
+                                                                                        color: part.highlight ? "#23aee5" : "#fff",
                                                                                     }}
                                                                                 >
                                                                                     {part.text}
@@ -1880,14 +1914,20 @@ export default function EditPartsReqForm(props: Props) {
                                                                                     key={index}
                                                                                     style={{
                                                                                         fontWeight: part.highlight ? 700 : 400,
-                                                                                        color: part.highlight ? "#23aee5" : "#fff"
+                                                                                        color: part.highlight ? "#23aee5" : "#fff",
                                                                                     }}
                                                                                 >
                                                                                     {part.text}
                                                                                 </span>
                                                                             ))}
                                                                         </div>
-                                                                        <span style={{ width: "15%", display: "flex", justifyContent: "flex-end" }}>
+                                                                        <span
+                                                                            style={{
+                                                                                width: "15%",
+                                                                                display: "flex",
+                                                                                justifyContent: "flex-end",
+                                                                            }}
+                                                                        >
                                                                             {option.cost ? `$${option.cost}` : ""}
                                                                         </span>
                                                                     </li>
@@ -1903,9 +1943,11 @@ export default function EditPartsReqForm(props: Props) {
                                                             value={row.description}
                                                             onChange={onDescriptionChange(index)}
                                                             helperText={!rows[index].itemNumber && " "}
-                                                            disabled={partExists(rows[index].itemNumber) && partIsInventoryItem(rows[index].itemNumber)}
+                                                            disabled={
+                                                                partExists(rows[index].itemNumber) && partIsInventoryItem(rows[index].itemNumber)
+                                                            }
                                                             InputProps={{
-                                                                readOnly: denyAccess(novaUser!.jobTitle, "Description")
+                                                                readOnly: denyAccess(novaUser!.jobTitle, "Description"),
                                                             }}
                                                         />
                                                     </TableCell>
@@ -1919,38 +1961,44 @@ export default function EditPartsReqForm(props: Props) {
                                                                 startAdornment: <InputAdornment position="start">$</InputAdornment>,
                                                                 inputProps: {
                                                                     step: "0.01",
-                                                                    min: 0
+                                                                    min: 0,
                                                                 },
-                                                                readOnly: denyAccess(novaUser!.jobTitle, "Rate")
+                                                                readOnly: denyAccess(novaUser!.jobTitle, "Rate"),
                                                             }}
                                                             helperText={!rows[index].itemNumber && " "}
                                                             disabled={partExists(rows[index].itemNumber) && denyAccess(novaUser!.jobTitle, "Rate")}
                                                         />
                                                     </TableCell>
-                                                    <TableCell sx={{ paddingBottom: 0 }}>{row.cost ? `$${(Number(row.cost) * row.qty).toFixed(2)}` : ""}</TableCell>
+                                                    <TableCell sx={{ paddingBottom: 0 }}>
+                                                        {row.cost ? `$${(Number(row.cost) * row.qty).toFixed(2)}` : ""}
+                                                    </TableCell>
                                                     <TableCell>
-                                                        <div style={{ display: "flex", flexDirection: "row", justifyContent: "flex-end", alignItems: "center" }}>
-                                                            {unit && opsVpApprovalRequired(unit, rows as Array<OrderRow>) && rows[index].mode !== "PM PARTS" ?
+                                                        <div
+                                                            style={{
+                                                                display: "flex",
+                                                                flexDirection: "row",
+                                                                justifyContent: "flex-end",
+                                                                alignItems: "center",
+                                                            }}
+                                                        >
+                                                            {unit &&
+                                                            opsVpApprovalRequired(unit, rows as Array<OrderRow>) &&
+                                                            rows[index].mode !== "PM PARTS" ? (
                                                                 <Tooltip
                                                                     title={"Non-PM Part"}
                                                                     componentsProps={{
                                                                         tooltip: {
                                                                             sx: {
                                                                                 border: "1px solid white",
-                                                                                bgcolor: "background.paper"
-                                                                            }
-                                                                        }
+                                                                                bgcolor: "background.paper",
+                                                                            },
+                                                                        },
                                                                     }}
                                                                 >
-                                                                    <ErrorOutlineIcon
-                                                                        sx={{ color: "red" }}
-                                                                    />
-                                                                </Tooltip> : null
-                                                            }
-                                                            <IconButton
-                                                                onClick={(e) => handleDeleteRowClick(e, index)}
-                                                                disableRipple
-                                                            >
+                                                                    <ErrorOutlineIcon sx={{ color: "red" }} />
+                                                                </Tooltip>
+                                                            ) : null}
+                                                            <IconButton onClick={(e) => handleDeleteRowClick(e, index)} disableRipple>
                                                                 <DeleteIcon />
                                                             </IconButton>
                                                             <Menu
@@ -1958,19 +2006,16 @@ export default function EditPartsReqForm(props: Props) {
                                                                 open={confirmDeleteRowOpen && menuIndex === index}
                                                                 onClose={handleDeleteRowClose}
                                                                 anchorOrigin={{ vertical: "top", horizontal: "right" }}
-                                                                transformOrigin={{ vertical: "bottom", horizontal: "right" }}
+                                                                transformOrigin={{
+                                                                    vertical: "bottom",
+                                                                    horizontal: "right",
+                                                                }}
                                                             >
-                                                                <MenuItem
-                                                                    onClick={() => removeRow(index)}
-                                                                    disableRipple
-                                                                >
+                                                                <MenuItem onClick={() => removeRow(index)} disableRipple>
                                                                     <DeleteIcon />
                                                                     Remove Part
                                                                 </MenuItem>
-                                                                <MenuItem
-                                                                    onClick={handleDeleteRowClose}
-                                                                    disableRipple
-                                                                >
+                                                                <MenuItem onClick={handleDeleteRowClose} disableRipple>
                                                                     <CloseIcon />
                                                                     Cancel
                                                                 </MenuItem>
@@ -1980,20 +2025,22 @@ export default function EditPartsReqForm(props: Props) {
                                                 </TableRow>
                                             )
                                         })}
-                                        {partsFetching ? null :
+                                        {partsFetching ? null : (
                                             <TableRow>
                                                 {partsReq.status === "Completed - Parts Staged/Delivered" ||
-                                                    partsReq.status === "Closed - Partially Received" ?
-                                                    <TableCell sx={{ border: "none" }} /> : null
-                                                }
+                                                partsReq.status === "Closed - Partially Received" ? (
+                                                    <TableCell sx={{ border: "none" }} />
+                                                ) : null}
                                                 <TableCell sx={{ border: "none" }} />
                                                 <TableCell sx={{ border: "none" }} />
                                                 <TableCell sx={{ border: "none" }} />
                                                 <TableCell sx={{ border: "none" }} />
-                                                <TableCell sx={{ border: "none" }}><b>${calcCost(rows as Array<OrderRow>).toFixed(2)}</b></TableCell>
+                                                <TableCell sx={{ border: "none" }}>
+                                                    <b>${calcCost(rows as Array<OrderRow>).toFixed(2)}</b>
+                                                </TableCell>
                                                 <TableCell sx={{ border: "none" }} />
                                             </TableRow>
-                                        }
+                                        )}
                                     </TableBody>
                                 </Table>
                                 <Button
@@ -2002,10 +2049,11 @@ export default function EditPartsReqForm(props: Props) {
                                     onClick={onCreateRow}
                                     disabled={partsFetching || denyAccess(novaUser!.jobTitle, status)}
                                     sx={{
-                                        marginTop: "5px", backgroundColor: theme.palette.primary.dark,
+                                        marginTop: "5px",
+                                        backgroundColor: theme.palette.primary.dark,
                                         "&.MuiButton-root:hover": {
-                                            backgroundColor: theme.palette.primary.dark
-                                        }
+                                            backgroundColor: theme.palette.primary.dark,
+                                        },
                                     }}
                                 >
                                     Add Item
@@ -2016,10 +2064,12 @@ export default function EditPartsReqForm(props: Props) {
                                     onClick={onExportCSV}
                                     disabled={partsFetching}
                                     sx={{
-                                        marginTop: "5px", marginLeft: "5px", backgroundColor: theme.palette.primary.dark,
+                                        marginTop: "5px",
+                                        marginLeft: "5px",
+                                        backgroundColor: theme.palette.primary.dark,
                                         "&.MuiButton-root:hover": {
-                                            backgroundColor: theme.palette.primary.dark
-                                        }
+                                            backgroundColor: theme.palette.primary.dark,
+                                        },
                                     }}
                                 >
                                     Export CSV
@@ -2028,7 +2078,7 @@ export default function EditPartsReqForm(props: Props) {
                         </Grid>
                     </Grid>
                 </form>
-            </Box >
+            </Box>
         )
     }
 }

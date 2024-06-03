@@ -37,12 +37,15 @@ async function routes(fastify: FastifyInstance) {
     })
 
     // Update a Parts Req form
-    fastify.put("/parts-req/:id", async (req: FastifyRequest<{ Params: { id: string }, Body: { user: NovaUser, updateReq: Partial<UpdatePartsReq> } }>, res) => {
-        const { id } = req.params
-        const { user, updateReq } = req.body
-        const updatedPartsReq = await updatePartsReq(Number(id), user, updateReq)
-        res.status(201).send(updatedPartsReq)
-    })
+    fastify.put(
+        "/parts-req/:id",
+        async (req: FastifyRequest<{ Params: { id: string }; Body: { user: NovaUser; updateReq: Partial<UpdatePartsReq> } }>, res) => {
+            const { id } = req.params
+            const { user, updateReq } = req.body
+            const updatedPartsReq = await updatePartsReq(Number(id), user, updateReq)
+            res.status(201).send(updatedPartsReq)
+        }
+    )
 
     // Get cost sum of PRs with an associated AFE #
     fastify.get("/parts-req/cost/:afeNumber", async (req: FastifyRequest<{ Params: { afeNumber: string } }>, res) => {
@@ -60,7 +63,7 @@ async function routes(fastify: FastifyInstance) {
     })
 
     // Generate a PDF for a Parts Req
-    fastify.get("/parts-req/export/:id", async (req: FastifyRequest<{ Params: { id: string }, Querystring: { pricing?: "true" } }>, res) => {
+    fastify.get("/parts-req/export/:id", async (req: FastifyRequest<{ Params: { id: string }; Querystring: { pricing?: "true" } }>, res) => {
         const { id } = req.params
         const { pricing } = req.query
 

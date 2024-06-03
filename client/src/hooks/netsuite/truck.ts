@@ -5,8 +5,9 @@ import { Truck } from "../../types/netsuite/truck"
 
 // Get all Trucks
 const getAllTrucks = async (token: string) => {
-    const { data } = await axios.get<Array<Truck>>(`${import.meta.env.VITE_API_BASE}/netsuite/trucks`,
-        { headers: { Authorization: `Bearer ${token}` } })
+    const { data } = await axios.get<Array<Truck>>(`${import.meta.env.VITE_API_BASE}/netsuite/trucks`, {
+        headers: { Authorization: `Bearer ${token}` },
+    })
 
     return data
 }

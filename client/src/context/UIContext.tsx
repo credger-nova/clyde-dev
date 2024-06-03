@@ -1,26 +1,26 @@
-import * as React from "react";
+import * as React from "react"
 
-const TOGGLE_DRAWER = "TOGGLE_DRAWER";
+const TOGGLE_DRAWER = "TOGGLE_DRAWER"
 
 interface DrawerAction {
-    type: "TOGGLE_DRAWER";
-    payload: boolean;
+    type: "TOGGLE_DRAWER"
+    payload: boolean
 }
 
-type Action = DrawerAction;
-type Dispatch = (action: Action) => void;
+type Action = DrawerAction
+type Dispatch = (action: Action) => void
 
 interface State {
-    isDrawerOpen: boolean;
+    isDrawerOpen: boolean
 }
 
 interface UIProviderProps {
-    children: React.ReactNode;
+    children: React.ReactNode
 }
 
 const initialState: State = {
     isDrawerOpen: false,
-};
+}
 
 function uiReducer(state: State, action: Action) {
     switch (action.type) {
@@ -28,19 +28,17 @@ function uiReducer(state: State, action: Action) {
             return {
                 ...state,
                 isDrawerOpen: action.payload,
-            };
+            }
         default:
-            throw new Error(`Unhandled action type: ${action.type}`);
+            throw new Error(`Unhandled action type: ${action.type}`)
     }
 }
 
-export const UIContext = React.createContext<
-    { state: State; dispatch: Dispatch } | undefined
->(undefined);
+export const UIContext = React.createContext<{ state: State; dispatch: Dispatch } | undefined>(undefined)
 
 export function UIStateProvider({ children }: UIProviderProps) {
-    const [state, dispatch] = React.useReducer(uiReducer, initialState);
+    const [state, dispatch] = React.useReducer(uiReducer, initialState)
 
-    const value = { state, dispatch };
-    return <UIContext.Provider value={value}>{children}</UIContext.Provider>;
+    const value = { state, dispatch }
+    return <UIContext.Provider value={value}>{children}</UIContext.Provider>
 }

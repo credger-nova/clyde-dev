@@ -1,22 +1,22 @@
-import Autocomplete from '@mui/material/Autocomplete'
-import { GeoJSONFeature } from '../../types/geoJson'
-import TextField from '@mui/material/TextField'
-import parse from 'autosuggest-highlight/parse'
-import match from 'autosuggest-highlight/match'
-import { Map } from 'leaflet'
+import Autocomplete from "@mui/material/Autocomplete"
+import { GeoJSONFeature } from "../../types/geoJson"
+import TextField from "@mui/material/TextField"
+import parse from "autosuggest-highlight/parse"
+import match from "autosuggest-highlight/match"
+import { Map } from "leaflet"
 
 const textFieldStyle = {
     ".MuiInputBase-root": {
         background: "#454545e3",
-        boxShadow: "3px 3px 5px #0000009e"
+        boxShadow: "3px 3px 5px #0000009e",
     },
     ".MuiInputBase-root:hover": {
-        border: "none"
-    }
+        border: "none",
+    },
 }
 
 interface Props {
-    features: Array<GeoJSONFeature>,
+    features: Array<GeoJSONFeature>
     map: Map | null
 }
 
@@ -33,7 +33,7 @@ export default function MapSearch(props: Props) {
 
     const goToFeature = (_e: React.SyntheticEvent<Element, Event>, value: GeoJSONFeature | null) => {
         if (value) {
-            map?.flyTo(getCoords(value), 16, {duration: 0.5})
+            map?.flyTo(getCoords(value), 16, { duration: 0.5 })
         }
     }
 
@@ -41,18 +41,13 @@ export default function MapSearch(props: Props) {
         <Autocomplete
             options={features}
             getOptionLabel={(option) => {
-                return (option.properties.unitNumber)
+                return option.properties.unitNumber
             }}
             onChange={goToFeature}
-            renderInput={(params) => <TextField
-                {...params}
-                variant="outlined"
-                placeholder="Search..."
-                sx={textFieldStyle}
-            />}
+            renderInput={(params) => <TextField {...params} variant="outlined" placeholder="Search..." sx={textFieldStyle} />}
             renderOption={(props, option, { inputValue }) => {
-                const matches = match(option.properties.unitNumber, inputValue, { insideWords: true, requireMatchAll: true  });
-                const parts = parse(option.properties.unitNumber, matches);
+                const matches = match(option.properties.unitNumber, inputValue, { insideWords: true, requireMatchAll: true })
+                const parts = parse(option.properties.unitNumber, matches)
 
                 return (
                     <li {...props}>
@@ -62,7 +57,7 @@ export default function MapSearch(props: Props) {
                                     key={index}
                                     style={{
                                         fontWeight: part.highlight ? 700 : 400,
-                                        color: part.highlight ? "#23aee5" : "#fff"
+                                        color: part.highlight ? "#23aee5" : "#fff",
                                     }}
                                 >
                                     {part.text}
@@ -70,7 +65,7 @@ export default function MapSearch(props: Props) {
                             ))}
                         </div>
                     </li>
-                );
+                )
             }}
             sx={{ position: "absolute", width: "50vw", maxWidth: "400px", padding: "10px" }}
         />

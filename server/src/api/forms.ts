@@ -17,34 +17,100 @@ const PERMIAN_CUSTOMER_SORT = ["APACHE CORPORATION", "CONOCOPHILLIPS CO", "DIAMO
 
 const URGENCY_SORT = ["LMC Safety Shutdown", "Unit Down", "Unit Set", "Rush", "Standard", "Stock"]
 
-const SERVICE_SORT = ["Rejected - Adjustments Required", "Completed - Parts Staged/Delivered", "Closed - Partially Received", "Pending Approval", "Pending Quote",
-    "Quote Provided - Pending Approval", "Approved - On Hold", "Approved", "Sourcing - In Progress", "Sourcing - Information Required", "Sourcing - Information Provided",
-    "Sourcing - Pending Amex Approval", "Sourcing - Amex Approved", "Sourcing - Amex Rejected", "Sourcing - Request to Cancel", "Ordered - Awaiting Parts", "Closed - Parts in Hand", "Rejected - Closed",
-    "Closed - Order Canceled"]
-const MANAGER_STATUS_SORT = ["Pending Approval", "Quote Provided - Pending Approval", "Sourcing - Information Required", "Sourcing - Request to Cancel", "Rejected - Adjustments Required",
-    "Approved - On Hold", "Approved", "Sourcing - In Progress", "Ordered - Awaiting Parts", "Completed - Parts Staged/Delivered", "Sourcing - Information Provided",
-    "Sourcing - Pending Amex Approval", "Sourcing - Amex Approved", "Sourcing - Amex Rejected", "Closed - Partially Received", "Closed - Parts in Hand", "Rejected - Closed", "Closed - Order Canceled"]
+const SERVICE_SORT = [
+    "Rejected - Adjustments Required",
+    "Completed - Parts Staged/Delivered",
+    "Closed - Partially Received",
+    "Pending Approval",
+    "Pending Quote",
+    "Quote Provided - Pending Approval",
+    "Approved - On Hold",
+    "Approved",
+    "Sourcing - In Progress",
+    "Sourcing - Information Required",
+    "Sourcing - Information Provided",
+    "Sourcing - Pending Amex Approval",
+    "Sourcing - Amex Approved",
+    "Sourcing - Amex Rejected",
+    "Sourcing - Request to Cancel",
+    "Ordered - Awaiting Parts",
+    "Closed - Parts in Hand",
+    "Rejected - Closed",
+    "Closed - Order Canceled",
+]
+const MANAGER_STATUS_SORT = [
+    "Pending Approval",
+    "Quote Provided - Pending Approval",
+    "Sourcing - Information Required",
+    "Sourcing - Request to Cancel",
+    "Rejected - Adjustments Required",
+    "Approved - On Hold",
+    "Approved",
+    "Sourcing - In Progress",
+    "Ordered - Awaiting Parts",
+    "Completed - Parts Staged/Delivered",
+    "Sourcing - Information Provided",
+    "Sourcing - Pending Amex Approval",
+    "Sourcing - Amex Approved",
+    "Sourcing - Amex Rejected",
+    "Closed - Partially Received",
+    "Closed - Parts in Hand",
+    "Rejected - Closed",
+    "Closed - Order Canceled",
+]
 
-const ALL_STATUS = ["Pending Approval", "Pending Quote", "Quote Provided - Pending Approval", "Rejected - Adjustments Required", "Approved - On Hold", "Approved",
-    "Sourcing - In Progress", "Sourcing - Information Required", "Sourcing - Information Provided", "Sourcing - Pending Amex Approval", "Sourcing - Amex Approved",
-    "Sourcing - Amex Rejected", "Sourcing - Request to Cancel", "Ordered - Awaiting Parts", "Completed - Parts Staged/Delivered", "Closed - Partially Received", "Closed - Parts in Hand",
-    "Rejected - Closed", "Closed - Order Canceled"]
+const ALL_STATUS = [
+    "Pending Approval",
+    "Pending Quote",
+    "Quote Provided - Pending Approval",
+    "Rejected - Adjustments Required",
+    "Approved - On Hold",
+    "Approved",
+    "Sourcing - In Progress",
+    "Sourcing - Information Required",
+    "Sourcing - Information Provided",
+    "Sourcing - Pending Amex Approval",
+    "Sourcing - Amex Approved",
+    "Sourcing - Amex Rejected",
+    "Sourcing - Request to Cancel",
+    "Ordered - Awaiting Parts",
+    "Completed - Parts Staged/Delivered",
+    "Closed - Partially Received",
+    "Closed - Parts in Hand",
+    "Rejected - Closed",
+    "Closed - Order Canceled",
+]
 const SUPPLY_CHAIN_STATUS = [
-    "Pending Quote", "Approved", "Sourcing - In Progress", "Sourcing - Information Required", "Sourcing - Information Provided", "Sourcing - Pending Amex Approval",
-    "Sourcing - Amex Approved", "Sourcing - Amex Rejected", "Sourcing - Request to Cancel", "Ordered - Awaiting Parts", "Completed - Parts Staged/Delivered"
+    "Pending Quote",
+    "Approved",
+    "Sourcing - In Progress",
+    "Sourcing - Information Required",
+    "Sourcing - Information Provided",
+    "Sourcing - Pending Amex Approval",
+    "Sourcing - Amex Approved",
+    "Sourcing - Amex Rejected",
+    "Sourcing - Request to Cancel",
+    "Ordered - Awaiting Parts",
+    "Completed - Parts Staged/Delivered",
 ]
 const SVP_STATUS = ["Pending Approval", "Quote Provided - Pending Approval"]
 
-const FIELD_SHOP_SERVICE_TITLES = TITLES.filter(item => item.group === "Field Service" || item.group === "Shop Service").map(group => group.titles).flat()
-const OPS_SHOP_MANAGER_TITLES = TITLES.filter(item => item.group === "Ops Manager" || item.group === "Shop Supervisor").map(group => group.titles).flat()
-const OPS_SHOP_DIRECTOR_TITLES = TITLES.filter(item => item.group === "Ops Director" || item.group === "Shop Director").map(group => group.titles).flat()
-const OPS_VP_TITLES = TITLES.find(item => item.group === "Ops Vice President")?.titles ?? []
-const EMISSIONS_MANAGER_TITLES = TITLES.find(item => item.group === "Emissions Manager")?.titles ?? []
-const SUPPLY_CHAIN_TITLES = TITLES.find(item => item.group === "Supply Chain")?.titles ?? []
-const SC_MANAGEMENT_TITLES = TITLES.find(item => item.group === "Supply Chain Management")?.titles ?? []
-const ADMIN_TITLES = TITLES.find(item => item.group === "Admin")?.titles ?? []
-const EXEC_TITLES = TITLES.find(item => item.group === "Executive Management")?.titles ?? []
-const IT_TITLES = TITLES.find(item => item.group === "IT")?.titles ?? []
+const FIELD_SHOP_SERVICE_TITLES = TITLES.filter((item) => item.group === "Field Service" || item.group === "Shop Service")
+    .map((group) => group.titles)
+    .flat()
+const OPS_SHOP_MANAGER_TITLES = TITLES.filter((item) => item.group === "Ops Manager" || item.group === "Shop Supervisor")
+    .map((group) => group.titles)
+    .flat()
+const OPS_SHOP_DIRECTOR_TITLES = TITLES.filter((item) => item.group === "Ops Director" || item.group === "Shop Director")
+    .map((group) => group.titles)
+    .flat()
+const OPS_VP_TITLES = TITLES.find((item) => item.group === "Ops Vice President")?.titles ?? []
+const EMISSIONS_MANAGER_TITLES = TITLES.find((item) => item.group === "Emissions Manager")?.titles ?? []
+const SUPPLY_CHAIN_TITLES = TITLES.find((item) => item.group === "Supply Chain")?.titles ?? []
+const SC_MANAGEMENT_TITLES = TITLES.find((item) => item.group === "Supply Chain Management")?.titles ?? []
+const ADMIN_TITLES = TITLES.find((item) => item.group === "Admin")?.titles ?? []
+const EXEC_TITLES = TITLES.find((item) => item.group === "Executive Management")?.titles ?? []
+const IT_TITLES = TITLES.find((item) => item.group === "IT")?.titles ?? []
 
 // Function to cast to prisma PR to FE usable typing
 async function convertPartsReq(partsReq: any) {
@@ -56,12 +122,14 @@ async function convertPartsReq(partsReq: any) {
         billable: partsReq.billable,
         quoteOnly: partsReq.quoteOnly,
         warrantyJob: partsReq.warrantyJob,
-        afe: partsReq.afe ? {
-            id: partsReq.afe.id,
-            number: partsReq.afe.number,
-            amount: partsReq.afe.amount,
-            unit: partsReq.afe.unit
-        } as AFE : undefined,
+        afe: partsReq.afe
+            ? ({
+                  id: partsReq.afe.id,
+                  number: partsReq.afe.number,
+                  amount: partsReq.afe.amount,
+                  unit: partsReq.afe.unit,
+              } as AFE)
+            : undefined,
         salesOrder: partsReq.salesOrder,
         unit: partsReq.unit,
         truck: partsReq.truck,
@@ -74,18 +142,20 @@ async function convertPartsReq(partsReq: any) {
         files: partsReq.files,
         status: partsReq.status,
         amex: partsReq.amex,
-        vendors: await Promise.all(partsReq.vendors.map(async (vendorOnPr: any) => {
-            const vendor = await prisma.vendor.findUnique({
-                where: {
-                    id: vendorOnPr.vendorId
-                }
-            })
+        vendors: await Promise.all(
+            partsReq.vendors.map(async (vendorOnPr: any) => {
+                const vendor = await prisma.vendor.findUnique({
+                    where: {
+                        id: vendorOnPr.vendorId,
+                    },
+                })
 
-            return vendor as Vendor
-        })),
+                return vendor as Vendor
+            })
+        ),
         conex: partsReq.conex,
         conexName: partsReq.conexName,
-        updated: partsReq.updated
+        updated: partsReq.updated,
     } as PartsReq
 
     return typedPR
@@ -96,8 +166,8 @@ async function allowedRequester(user: NovaUser | undefined | null) {
     if (user) {
         if (FIELD_SHOP_SERVICE_TITLES.includes(user.jobTitle)) {
             if (user.jobTitle.includes("Lead")) {
-                const mechanics = LEAD_MECHANICS.find(group => group.leads.includes(user.id))?.mechanics
-                return [user.id].concat(mechanics?.map(mechanic => mechanic.id) ?? [])
+                const mechanics = LEAD_MECHANICS.find((group) => group.leads.includes(user.id))?.mechanics
+                return [user.id].concat(mechanics?.map((mechanic) => mechanic.id) ?? [])
             } else {
                 return [user.id]
             }
@@ -176,13 +246,13 @@ async function genSystemComment(message: string, user: NovaUser, id: number) {
             comment: message,
             name: `${user.firstName} ${user.lastName}`,
             timestamp: new Date().toISOString(),
-            partsReqId: id
-        }
+            partsReqId: id,
+        },
     })
 }
 
 function determineReceived(parts: Array<OrderRow> | undefined) {
-    if (parts && Math.max(...parts.map(part => part.received)) > 0) {
+    if (parts && Math.max(...parts.map((part) => part.received)) > 0) {
         let closed = true
         for (const part of parts) {
             if (part.received !== part.qty) {
@@ -228,11 +298,7 @@ export function getNonPM(rows: Array<OrderRow>) {
 }
 
 function opsVpApprovalRequired(unitNumber: string, hp: number, rows: Array<OrderRow>) {
-    if (
-        UNIT_PLANNING.includes(unitNumber) &&
-        getThreshold(hp) <= calcCost(rows) &&
-        getNonPM(rows)
-    ) {
+    if (UNIT_PLANNING.includes(unitNumber) && getThreshold(hp) <= calcCost(rows) && getNonPM(rows)) {
         return true
     } else {
         return false
@@ -243,7 +309,7 @@ async function autoApprove(afe: AFE | undefined, prCost: number, title: string) 
     if (afe) {
         const existingCost = await sumPrWithAfe(afe)
 
-        if (afe.amount && (prCost <= (Number(afe.amount) - existingCost))) {
+        if (afe.amount && prCost <= Number(afe.amount) - existingCost) {
             return true
         }
     } else if (OPS_SHOP_DIRECTOR_TITLES.includes(title) && prCost < 10000) {
@@ -260,11 +326,19 @@ export const sumPrWithAfe = async (afe: AFE) => {
     const partsReqs = await prisma.partsReq.findMany({
         where: {
             afe: { id: afe.id },
-            status: { notIn: ["Pending Approval", "Pending Quote", "Quote Provided - Pending Approval", "Rejected - Adjustments Required", "Rejected - Closed"] }
+            status: {
+                notIn: [
+                    "Pending Approval",
+                    "Pending Quote",
+                    "Quote Provided - Pending Approval",
+                    "Rejected - Adjustments Required",
+                    "Rejected - Closed",
+                ],
+            },
         },
         include: {
-            parts: true
-        }
+            parts: true,
+        },
     })
 
     for (const partsReq of partsReqs) {
@@ -285,62 +359,74 @@ function noRate(rows: Array<Omit<OrderRow, "id">>) {
 
 function sortPartsReqs(partsReqs: Array<PartsReq>, title?: string, region?: Array<string>) {
     // Permian sorting (status > date > customer > urgency)
-    if (region && PERMIAN_REGIONS.filter(value => region.includes(value)).length > 0) {
+    if (region && PERMIAN_REGIONS.filter((value) => region.includes(value)).length > 0) {
         // Supply Chain sorting
         if (SUPPLY_CHAIN_TITLES.includes(title ?? "")) {
-            partsReqs.sort((a, b) =>
-                SUPPLY_CHAIN_STATUS.indexOf(a.status) - SUPPLY_CHAIN_STATUS.indexOf(b.status) ||
-                URGENCY_SORT.indexOf(a.urgency) - URGENCY_SORT.indexOf(b.urgency) ||
-                PERMIAN_CUSTOMER_SORT.indexOf(b.unit && b.unit.customer ? b.unit.customer : "") - PERMIAN_CUSTOMER_SORT.indexOf(a.unit && a.unit.customer ? a.unit.customer : "") ||
-                a.date.getTime() - b.date.getTime()
+            partsReqs.sort(
+                (a, b) =>
+                    SUPPLY_CHAIN_STATUS.indexOf(a.status) - SUPPLY_CHAIN_STATUS.indexOf(b.status) ||
+                    URGENCY_SORT.indexOf(a.urgency) - URGENCY_SORT.indexOf(b.urgency) ||
+                    PERMIAN_CUSTOMER_SORT.indexOf(b.unit && b.unit.customer ? b.unit.customer : "") -
+                        PERMIAN_CUSTOMER_SORT.indexOf(a.unit && a.unit.customer ? a.unit.customer : "") ||
+                    a.date.getTime() - b.date.getTime()
             )
         } else if (FIELD_SHOP_SERVICE_TITLES.includes(title ?? "")) {
-            partsReqs.sort((a, b) =>
-                SERVICE_SORT.indexOf(a.status) - SERVICE_SORT.indexOf(b.status) ||
-                URGENCY_SORT.indexOf(a.urgency) - URGENCY_SORT.indexOf(b.urgency) ||
-                PERMIAN_CUSTOMER_SORT.indexOf(b.unit && b.unit.customer ? b.unit.customer : "") - PERMIAN_CUSTOMER_SORT.indexOf(a.unit && a.unit.customer ? a.unit.customer : "") ||
-                a.date.getTime() - b.date.getTime()
+            partsReqs.sort(
+                (a, b) =>
+                    SERVICE_SORT.indexOf(a.status) - SERVICE_SORT.indexOf(b.status) ||
+                    URGENCY_SORT.indexOf(a.urgency) - URGENCY_SORT.indexOf(b.urgency) ||
+                    PERMIAN_CUSTOMER_SORT.indexOf(b.unit && b.unit.customer ? b.unit.customer : "") -
+                        PERMIAN_CUSTOMER_SORT.indexOf(a.unit && a.unit.customer ? a.unit.customer : "") ||
+                    a.date.getTime() - b.date.getTime()
             )
         } else if (OPS_SHOP_MANAGER_TITLES.includes(title ?? "") || OPS_SHOP_DIRECTOR_TITLES.includes(title ?? "")) {
-            partsReqs.sort((a, b) =>
-                MANAGER_STATUS_SORT.indexOf(a.status) - MANAGER_STATUS_SORT.indexOf(b.status) ||
-                URGENCY_SORT.indexOf(a.urgency) - URGENCY_SORT.indexOf(b.urgency) ||
-                PERMIAN_CUSTOMER_SORT.indexOf(b.unit && b.unit.customer ? b.unit.customer : "") - PERMIAN_CUSTOMER_SORT.indexOf(a.unit && a.unit.customer ? a.unit.customer : "") ||
-                a.date.getTime() - b.date.getTime()
+            partsReqs.sort(
+                (a, b) =>
+                    MANAGER_STATUS_SORT.indexOf(a.status) - MANAGER_STATUS_SORT.indexOf(b.status) ||
+                    URGENCY_SORT.indexOf(a.urgency) - URGENCY_SORT.indexOf(b.urgency) ||
+                    PERMIAN_CUSTOMER_SORT.indexOf(b.unit && b.unit.customer ? b.unit.customer : "") -
+                        PERMIAN_CUSTOMER_SORT.indexOf(a.unit && a.unit.customer ? a.unit.customer : "") ||
+                    a.date.getTime() - b.date.getTime()
             )
         } else {
-            partsReqs.sort((a, b) =>
-                ALL_STATUS.indexOf(a.status) - ALL_STATUS.indexOf(b.status) ||
-                URGENCY_SORT.indexOf(a.urgency) - URGENCY_SORT.indexOf(b.urgency) ||
-                PERMIAN_CUSTOMER_SORT.indexOf(b.unit && b.unit.customer ? b.unit.customer : "") - PERMIAN_CUSTOMER_SORT.indexOf(a.unit && a.unit.customer ? a.unit.customer : "") ||
-                a.date.getTime() - b.date.getTime()
+            partsReqs.sort(
+                (a, b) =>
+                    ALL_STATUS.indexOf(a.status) - ALL_STATUS.indexOf(b.status) ||
+                    URGENCY_SORT.indexOf(a.urgency) - URGENCY_SORT.indexOf(b.urgency) ||
+                    PERMIAN_CUSTOMER_SORT.indexOf(b.unit && b.unit.customer ? b.unit.customer : "") -
+                        PERMIAN_CUSTOMER_SORT.indexOf(a.unit && a.unit.customer ? a.unit.customer : "") ||
+                    a.date.getTime() - b.date.getTime()
             )
         }
     } else {
         // Default sorting (status > urgency > date)
         if (title && FIELD_SHOP_SERVICE_TITLES.includes(title)) {
-            partsReqs.sort((a, b) =>
-                SERVICE_SORT.indexOf(a.status) - ALL_STATUS.indexOf(b.status) ||
-                URGENCY_SORT.indexOf(a.urgency) - URGENCY_SORT.indexOf(b.urgency) ||
-                a.date.getTime() - b.date.getTime()
+            partsReqs.sort(
+                (a, b) =>
+                    SERVICE_SORT.indexOf(a.status) - ALL_STATUS.indexOf(b.status) ||
+                    URGENCY_SORT.indexOf(a.urgency) - URGENCY_SORT.indexOf(b.urgency) ||
+                    a.date.getTime() - b.date.getTime()
             )
         } else if (title && (OPS_SHOP_MANAGER_TITLES.includes(title) || OPS_SHOP_DIRECTOR_TITLES.includes(title))) {
-            partsReqs.sort((a, b) =>
-                MANAGER_STATUS_SORT.indexOf(a.status) - ALL_STATUS.indexOf(b.status) ||
-                URGENCY_SORT.indexOf(a.urgency) - URGENCY_SORT.indexOf(b.urgency) ||
-                a.date.getTime() - b.date.getTime()
+            partsReqs.sort(
+                (a, b) =>
+                    MANAGER_STATUS_SORT.indexOf(a.status) - ALL_STATUS.indexOf(b.status) ||
+                    URGENCY_SORT.indexOf(a.urgency) - URGENCY_SORT.indexOf(b.urgency) ||
+                    a.date.getTime() - b.date.getTime()
             )
         } else if (title && SUPPLY_CHAIN_TITLES.includes(title)) {
-            partsReqs.sort((a, b) =>
-                SUPPLY_CHAIN_STATUS.indexOf(a.status) - ALL_STATUS.indexOf(b.status) ||
-                URGENCY_SORT.indexOf(a.urgency) - URGENCY_SORT.indexOf(b.urgency) ||
-                a.date.getTime() - b.date.getTime()
+            partsReqs.sort(
+                (a, b) =>
+                    SUPPLY_CHAIN_STATUS.indexOf(a.status) - ALL_STATUS.indexOf(b.status) ||
+                    URGENCY_SORT.indexOf(a.urgency) - URGENCY_SORT.indexOf(b.urgency) ||
+                    a.date.getTime() - b.date.getTime()
             )
         } else {
-            partsReqs.sort((a, b) =>
-                ALL_STATUS.indexOf(a.status) - ALL_STATUS.indexOf(b.status) ||
-                URGENCY_SORT.indexOf(a.urgency) - URGENCY_SORT.indexOf(b.urgency) ||
-                a.date.getTime() - b.date.getTime()
+            partsReqs.sort(
+                (a, b) =>
+                    ALL_STATUS.indexOf(a.status) - ALL_STATUS.indexOf(b.status) ||
+                    URGENCY_SORT.indexOf(a.urgency) - URGENCY_SORT.indexOf(b.urgency) ||
+                    a.date.getTime() - b.date.getTime()
             )
         }
     }
@@ -356,12 +442,12 @@ export const getPartsReqs = async (query: PartsReqQuery) => {
                 {
                     requester: {
                         id: {
-                            in: await allowedRequester(query.user)
-                        }
+                            in: await allowedRequester(query.user),
+                        },
                     },
                     status: {
-                        in: allowedStatus(query.user ? query.user.jobTitle : "", query.scAll ?? false)
-                    }
+                        in: allowedStatus(query.user ? query.user.jobTitle : "", query.scAll ?? false),
+                    },
                 },
                 {
                     AND: [
@@ -375,8 +461,8 @@ export const getPartsReqs = async (query: PartsReqQuery) => {
                         query.location && query.location.length > 0 ? { unit: { location: { in: query.location } } } : {},
                         query.region && query.region.length > 0 ? { region: { in: query.region, mode: "insensitive" } } : {},
                         query.urgency && query.urgency.length > 0 ? { urgency: { in: query.urgency } } : {},
-                        query.status && query.status.length > 0 ? { status: { in: query.status } } : {}
-                    ]
+                        query.status && query.status.length > 0 ? { status: { in: query.status } } : {},
+                    ],
                 },
                 {
                     OR: [
@@ -389,23 +475,23 @@ export const getPartsReqs = async (query: PartsReqQuery) => {
                             requester: {
                                 OR: [
                                     { firstName: { contains: query.searchString ?? "", mode: "insensitive" } },
-                                    { lastName: { contains: query.searchString ?? "", mode: "insensitive" } }
-                                ]
-                            }
+                                    { lastName: { contains: query.searchString ?? "", mode: "insensitive" } },
+                                ],
+                            },
                         },
                         { unit: { customer: { contains: query.searchString ?? "", mode: "insensitive" } } },
                         { unit: { location: { contains: query.searchString ?? "", mode: "insensitive" } } },
-                        { region: { contains: query.searchString ?? "", mode: "insensitive" } }
-                    ]
-                }
-            ]
+                        { region: { contains: query.searchString ?? "", mode: "insensitive" } },
+                    ],
+                },
+            ],
         },
         include: {
             requester: true,
             contact: true,
             unit: true,
             afe: {
-                include: { unit: true }
+                include: { unit: true },
             },
             salesOrder: true,
             truck: true,
@@ -414,16 +500,18 @@ export const getPartsReqs = async (query: PartsReqQuery) => {
             vendors: true,
             parts: true,
             comments: true,
-            files: true
-        }
+            files: true,
+        },
     })
 
     let partsReqs = await Promise.all(result.map(async (partsReq) => await convertPartsReq(partsReq)))
 
     // Filter Ops Vice President results to only units that require Ops Vice President privileges if vp toggle is on
     if (query.vpApproval) {
-        partsReqs = partsReqs.filter((partsReq) => partsReq.unit && (calcCost(partsReq.parts) > 10000 ||
-            opsVpApprovalRequired(partsReq.unit.unitNumber, Number(partsReq.unit.oemHP), partsReq.parts))
+        partsReqs = partsReqs.filter(
+            (partsReq) =>
+                partsReq.unit &&
+                (calcCost(partsReq.parts) > 10000 || opsVpApprovalRequired(partsReq.unit.unitNumber, Number(partsReq.unit.oemHP), partsReq.parts))
         )
     }
 
@@ -436,14 +524,14 @@ export const getPartsReqs = async (query: PartsReqQuery) => {
 export const getPartsReq = async (id: number) => {
     const partsReq = await prisma.partsReq.findUnique({
         where: {
-            id: id
+            id: id,
         },
         include: {
             requester: true,
             contact: true,
             unit: true,
             afe: {
-                include: { unit: true }
+                include: { unit: true },
             },
             salesOrder: true,
             truck: true,
@@ -452,8 +540,8 @@ export const getPartsReq = async (id: number) => {
             vendors: true,
             parts: true,
             comments: true,
-            files: true
-        }
+            files: true,
+        },
     })
 
     if (partsReq) {
@@ -466,10 +554,13 @@ export const getPartsReq = async (id: number) => {
 // Create a Parts Req form
 export const createPartsReq = async (partsReq: CreatePartsReq) => {
     // Ensure no invalid rows are created
-    partsReq.parts = partsReq.parts.filter(row => row.itemNumber !== "")
+    partsReq.parts = partsReq.parts.filter((row) => row.itemNumber !== "")
 
-    const status = partsReq.quoteOnly ? "Pending Quote" : await autoApprove(partsReq.afe, calcCost(partsReq.parts as Array<OrderRow>), partsReq.requester.jobTitle) ?
-        "Approved" : "Pending Approval"
+    const status = partsReq.quoteOnly
+        ? "Pending Quote"
+        : (await autoApprove(partsReq.afe, calcCost(partsReq.parts as Array<OrderRow>), partsReq.requester.jobTitle))
+        ? "Approved"
+        : "Pending Approval"
 
     const newPartsReq = await prisma.partsReq.create({
         data: {
@@ -490,47 +581,47 @@ export const createPartsReq = async (partsReq: CreatePartsReq) => {
             conexId: partsReq.conexName ? partsReq.conexName.id : null,
             parts: {
                 createMany: {
-                    data: partsReq.parts
-                }
+                    data: partsReq.parts,
+                },
             },
             comments: {
                 createMany: {
-                    data: partsReq.comments
-                }
+                    data: partsReq.comments,
+                },
             },
             files: {
                 createMany: {
                     data: partsReq.files.map((file) => {
-                        return ({
-                            name: file
-                        })
-                    })
-                }
+                        return {
+                            name: file,
+                        }
+                    }),
+                },
             },
             status: status,
-            updated: partsReq.updated
-        }
+            updated: partsReq.updated,
+        },
     })
 
     const createdPartsReq = await prisma.partsReq.findUnique({
         where: {
-            id: newPartsReq.id
+            id: newPartsReq.id,
         },
         include: {
-            files: true
-        }
+            files: true,
+        },
     })
 
     const emailPR = await prisma.partsReq.findUnique({
         where: {
-            id: newPartsReq.id
+            id: newPartsReq.id,
         },
         include: {
             requester: true,
             contact: true,
             unit: true,
             afe: {
-                include: { unit: true }
+                include: { unit: true },
             },
             salesOrder: true,
             truck: true,
@@ -539,14 +630,14 @@ export const createPartsReq = async (partsReq: CreatePartsReq) => {
             vendors: true,
             parts: true,
             comments: true,
-            files: true
-        }
+            files: true,
+        },
     })
 
     // Send email notification
     sendPrEmail(
         {
-            partsReq: await convertPartsReq(emailPR)
+            partsReq: await convertPartsReq(emailPR),
         },
         true
     )
@@ -562,14 +653,14 @@ export const updatePartsReq = async (id: number, user: NovaUser, updateReq: Part
     // Get existing version of the Parts Req for comment generation
     const oldPartsReq = await prisma.partsReq.findUnique({
         where: {
-            id: id
+            id: id,
         },
         include: {
             requester: true,
             contact: true,
             unit: true,
             afe: {
-                include: { unit: true }
+                include: { unit: true },
             },
             salesOrder: true,
             truck: true,
@@ -578,31 +669,36 @@ export const updatePartsReq = async (id: number, user: NovaUser, updateReq: Part
             vendors: true,
             parts: true,
             comments: true,
-            files: true
-        }
+            files: true,
+        },
     })
 
     // Ensure no invalid rows are created
-    const existingParts = updateReq.parts ? updateReq.parts.filter(row => (row.itemNumber !== "" && row.id)) : []
-    const newParts = updateReq.parts ? updateReq.parts.filter(row => (row.itemNumber !== "" && !row.id)) : []
+    const existingParts = updateReq.parts ? updateReq.parts.filter((row) => row.itemNumber !== "" && row.id) : []
+    const newParts = updateReq.parts ? updateReq.parts.filter((row) => row.itemNumber !== "" && !row.id) : []
 
     // Check if any existing parts were updated, update where necessary
     let partsUpdated: boolean = newParts.length > 0 ? true : false
     for (const part of existingParts) {
         const oldPart = await prisma.partsReqRow.findUnique({
             where: {
-                id: part.id
-            }
+                id: part.id,
+            },
         })
 
-        if (oldPart?.qty !== part.qty || oldPart.itemNumber !== part.itemNumber || oldPart.description !== part.description ||
-            oldPart.cost !== part.cost || oldPart.received !== part.received) {
+        if (
+            oldPart?.qty !== part.qty ||
+            oldPart.itemNumber !== part.itemNumber ||
+            oldPart.description !== part.description ||
+            oldPart.cost !== part.cost ||
+            oldPart.received !== part.received
+        ) {
             partsUpdated = true
 
             // Update part
             await prisma.partsReqRow.update({
                 where: {
-                    id: part.id
+                    id: part.id,
                 },
                 data: {
                     qty: part.qty,
@@ -610,16 +706,20 @@ export const updatePartsReq = async (id: number, user: NovaUser, updateReq: Part
                     description: part.description,
                     cost: part.cost,
                     received: part.received,
-                    mode: part.mode
-                }
+                    mode: part.mode,
+                },
             })
         }
     }
 
     // Determine status of updated Parts Req
-    let status = partsUpdated && ((calcCost(updateReq.parts ?? []) > 5000) ||
-        (oldPartsReq?.status === "Rejected - Adjustments Required" || updateReq.status === "Rejected - Adjustments Required")) ?
-        "Pending Approval" : updateReq.status
+    let status =
+        partsUpdated &&
+        (calcCost(updateReq.parts ?? []) > 5000 ||
+            oldPartsReq?.status === "Rejected - Adjustments Required" ||
+            updateReq.status === "Rejected - Adjustments Required")
+            ? "Pending Approval"
+            : updateReq.status
 
     if (partsUpdated && (oldPartsReq?.status === "Approved" || oldPartsReq?.status === "Sourcing - Information Provided")) {
         status = "Pending Approval"
@@ -648,8 +748,8 @@ export const updatePartsReq = async (id: number, user: NovaUser, updateReq: Part
                 description: part.description,
                 cost: part.cost,
                 mode: part.mode,
-                partsReqId: id
-            }
+                partsReqId: id,
+            },
         })
 
         // Add system comments
@@ -664,8 +764,8 @@ export const updatePartsReq = async (id: number, user: NovaUser, updateReq: Part
         for (const row of updateReq.delRows) {
             await prisma.partsReqRow.delete({
                 where: {
-                    id: row.id
-                }
+                    id: row.id,
+                },
             })
 
             // Add system comments
@@ -680,11 +780,11 @@ export const updatePartsReq = async (id: number, user: NovaUser, updateReq: Part
         updated = true
         const delFile = await prisma.file.update({
             where: {
-                id: file
+                id: file,
             },
             data: {
-                isDeleted: true
-            }
+                isDeleted: true,
+            },
         })
 
         // Add system comments
@@ -701,8 +801,8 @@ export const updatePartsReq = async (id: number, user: NovaUser, updateReq: Part
             data: {
                 name: file,
                 partsReqId: id,
-                isDeleted: false
-            }
+                isDeleted: false,
+            },
         })
         newFileIds.push(newFile.id)
 
@@ -715,8 +815,8 @@ export const updatePartsReq = async (id: number, user: NovaUser, updateReq: Part
     // Get changes in vendors
     const existingVendorOnPR = await prisma.vendorOnPartsReq.findMany({
         where: {
-            partsReqId: id
-        }
+            partsReqId: id,
+        },
     })
 
     // New vendors to be added to relation table
@@ -727,7 +827,7 @@ export const updatePartsReq = async (id: number, user: NovaUser, updateReq: Part
     })
 
     // Vendors to remove from relation table
-    const removeVendors = (existingVendorOnPR).filter((existingVendor) => {
+    const removeVendors = existingVendorOnPR.filter((existingVendor) => {
         return !(updateReq.vendors ?? []).some((vendor) => {
             return existingVendor.vendorId === vendor.id
         })
@@ -738,8 +838,8 @@ export const updatePartsReq = async (id: number, user: NovaUser, updateReq: Part
         await prisma.vendorOnPartsReq.create({
             data: {
                 partsReqId: id,
-                vendorId: vendor.id
-            }
+                vendorId: vendor.id,
+            },
         })
 
         // Generate system comment
@@ -751,14 +851,14 @@ export const updatePartsReq = async (id: number, user: NovaUser, updateReq: Part
     for (const vendorOnPr of removeVendors) {
         await prisma.vendorOnPartsReq.delete({
             where: {
-                id: vendorOnPr.id
-            }
+                id: vendorOnPr.id,
+            },
         })
 
         const removedVendor = await prisma.vendor.findUnique({
             where: {
-                id: vendorOnPr.vendorId!
-            }
+                id: vendorOnPr.vendorId!,
+            },
         })
 
         // Generate system comment
@@ -839,8 +939,12 @@ export const updatePartsReq = async (id: number, user: NovaUser, updateReq: Part
     // Amex change
     if (oldPartsReq?.amex !== updateReq.amex) {
         updated = true
-        if (updateReq.amex && !noRate(updateReq.parts as Array<Omit<OrderRow, "id">>) && !oldPartsReq?.amex &&
-            calcCost(updateReq.parts ?? []) > 500) {
+        if (
+            updateReq.amex &&
+            !noRate(updateReq.parts as Array<Omit<OrderRow, "id">>) &&
+            !oldPartsReq?.amex &&
+            calcCost(updateReq.parts ?? []) > 500
+        ) {
             status = "Sourcing - Pending Amex Approval"
         }
 
@@ -866,8 +970,8 @@ export const updatePartsReq = async (id: number, user: NovaUser, updateReq: Part
                         comment: comment.comment,
                         name: comment.name,
                         timestamp: comment.timestamp,
-                        partsReqId: id
-                    }
+                        partsReqId: id,
+                    },
                 })
             }
         }
@@ -881,7 +985,7 @@ export const updatePartsReq = async (id: number, user: NovaUser, updateReq: Part
     // Update parts req fields
     await prisma.partsReq.update({
         where: {
-            id: id
+            id: id,
         },
         data: {
             contactId: updateReq.contact ? updateReq.contact.id : null,
@@ -898,33 +1002,33 @@ export const updatePartsReq = async (id: number, user: NovaUser, updateReq: Part
             conex: updateReq.conex,
             conexId: updateReq.conexName ? updateReq.conexName.id : null,
             status: status,
-            updated: new Date().toISOString()
-        }
+            updated: new Date().toISOString(),
+        },
     })
 
     const updatedPartsReq = await prisma.partsReq.findUnique({
         where: {
-            id: id
+            id: id,
         },
         select: {
             files: {
                 where: {
-                    id: { in: newFileIds }
-                }
-            }
-        }
+                    id: { in: newFileIds },
+                },
+            },
+        },
     })
 
     const emailPR = await prisma.partsReq.findUnique({
         where: {
-            id: id
+            id: id,
         },
         include: {
             requester: true,
             contact: true,
             unit: true,
             afe: {
-                include: { unit: true }
+                include: { unit: true },
             },
             salesOrder: true,
             truck: true,
@@ -933,15 +1037,15 @@ export const updatePartsReq = async (id: number, user: NovaUser, updateReq: Part
             vendors: true,
             parts: true,
             comments: true,
-            files: true
-        }
+            files: true,
+        },
     })
 
     // Send email notification if status has changed
     if (oldPartsReq?.status !== status) {
         await sendPrEmail(
             {
-                partsReq: await convertPartsReq(emailPR)
+                partsReq: await convertPartsReq(emailPR),
             },
             false
         )
@@ -954,11 +1058,11 @@ export const updatePartsReq = async (id: number, user: NovaUser, updateReq: Part
 export const getPartsReqComments = async (id: number) => {
     const comments = await prisma.comment.findMany({
         where: {
-            partsReqId: id
+            partsReqId: id,
         },
         orderBy: {
-            timestamp: "desc"
-        }
+            timestamp: "desc",
+        },
     })
 
     return comments as Array<Comment>

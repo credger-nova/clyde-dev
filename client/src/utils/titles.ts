@@ -63,6 +63,6 @@ export const TITLES: Array<{ group: string; titles: Array<string> }> = [
     },
     {
         group: "IT",
-        titles: ["Software Developer", "Manager - IT"],
+        titles: ["Software Developer", "Manager - IT", "Contract - Junior Software Developer"],
     },
 ]

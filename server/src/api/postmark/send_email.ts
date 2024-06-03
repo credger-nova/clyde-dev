@@ -38,14 +38,7 @@ export async function sendPrEmail(emailParams: PrEmailParams, newPR: boolean) {
     let emailTag: string = ""
 
     // Determine recipient(s)
-    const { recipients, cc } =
-        process.env.NODE_ENV === "production" ? await determineRecipients(partsReq, newPR) : { recipients: ["cdennis@nova-compression.com"], cc: [] }
-
-    if (process.env.NODE_ENV !== "production") {
-        const testRecipients = await determineRecipients(partsReq, newPR)
-
-        console.log(testRecipients)
-    }
+    const { recipients, cc } = await determineRecipients(partsReq, newPR)
 
     // Determine email tag
     if (newPR) {

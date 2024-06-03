@@ -1,16 +1,19 @@
 import { TITLES } from "../utils/titles"
 import { LEAD_MECHANICS } from "../utils/lead-mechanics"
 import { UNIT_PLANNING } from "../utils/unitPlanning"
+import { prisma } from "../utils/prisma-client"
+
+import { Comment } from "../models/comment"
+import { Vendor } from "../models/netsuite/vendor"
 import { PartsReq, PartsReqQuery, CreatePartsReq, UpdatePartsReq, OrderRow } from "../models/partsReq"
 import { AFE } from "../models/kpa/afe"
 import { NovaUser } from "../models/kpa/novaUser"
+
+import dotenv from "dotenv"
 import { sendPrEmail } from "./postmark/send_email"
-import { Comment } from "../models/comment"
-import { Vendor } from "../models/netsuite/vendor"
-
-import { prisma } from "../utils/prisma-client"
-
 import { convertUser, getManagersEmployees, getDirectorsEmployees, getAllEmployees } from "./kpa/employee"
+
+dotenv.config()
 
 const PERMIAN_REGIONS = ["Pecos", "Carlsbad", "North Permian", "South Permian"]
 const PERMIAN_CUSTOMER_SORT = ["APACHE CORPORATION", "CONOCOPHILLIPS CO", "DIAMONDBACK ENERGY", "MATADOR PRODUCTION COMPANY", "VITAL ENERGY INC"]
@@ -635,12 +638,14 @@ export const createPartsReq = async (partsReq: CreatePartsReq) => {
     })
 
     // Send email notification
-    sendPrEmail(
-        {
-            partsReq: await convertPartsReq(emailPR),
-        },
-        true
-    )
+    if (process.env.NODE_ENV === "production" || process.env.NODE_ENV === "test") {
+        sendPrEmail(
+            {
+                partsReq: await convertPartsReq(emailPR),
+            },
+            true
+        )
+    }
 
     return createdPartsReq
 }
@@ -1043,12 +1048,14 @@ export const updatePartsReq = async (id: number, user: NovaUser, updateReq: Part
 
     // Send email notification if status has changed
     if (oldPartsReq?.status !== status) {
-        await sendPrEmail(
-            {
-                partsReq: await convertPartsReq(emailPR),
-            },
-            false
-        )
+        if (process.env.NODE_ENV === "production" || process.env.NODE_ENV === "test") {
+            await sendPrEmail(
+                {
+                    partsReq: await convertPartsReq(emailPR),
+                },
+                false
+            )
+        }
     }
 
     return updatedPartsReq

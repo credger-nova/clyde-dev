@@ -30,9 +30,10 @@ const DATE_COLS = [
     "unitProfileUpdateDate",
     "timestamp",
     "terminationDate",
+    "hireDate",
 ]
 
-const BOOLEAN_COLS = ["active"]
+const BOOLEAN_COLS = ["active", "rotator"]
 
 const seedAfe = async () => {
     console.log("Seeding AFE Table")
@@ -224,7 +225,20 @@ const seedTruck = async () => {
 const seedUser = async () => {
     console.log("Seeding User Table")
 
-    const headers = ["id", "firstName", "lastName", "email", "cellPhone", "jobTitle", "region", "managerId", "supervisorId", "terminationDate"]
+    const headers = [
+        "id",
+        "firstName",
+        "lastName",
+        "email",
+        "cellPhone",
+        "jobTitle",
+        "region",
+        "managerId",
+        "supervisorId",
+        "terminationDate",
+        "hireDate",
+        "rotator",
+    ]
 
     const parser = fs.createReadStream(`${__dirname}/seeds/user.csv`).pipe(
         parse({
@@ -237,6 +251,8 @@ const seedUser = async () => {
                         return Number(value)
                     } else if (DATE_COLS.includes(context.column as string)) {
                         return new Date(value)
+                    } else if (BOOLEAN_COLS.includes(context.column as string)) {
+                        return value === "True" ? true : false
                     } else {
                         return value
                     }
@@ -259,7 +275,9 @@ const seedUser = async () => {
                 cellPhone: user.cellPhone,
                 jobTitle: user.jobTitle,
                 region: user.region,
+                hireDate: user.hireDate,
                 terminationDate: user.terminationDate,
+                rotator: user.rotator,
             },
             create: {
                 id: user.id,
@@ -269,7 +287,9 @@ const seedUser = async () => {
                 cellPhone: user.cellPhone,
                 jobTitle: user.jobTitle,
                 region: user.region,
+                hireDate: user.hireDate,
                 terminationDate: user.terminationDate,
+                rotator: user.rotator,
             },
         })
     }

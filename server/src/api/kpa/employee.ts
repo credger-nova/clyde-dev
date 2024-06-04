@@ -15,9 +15,11 @@ export function convertUser(user: any) {
         lastName: user.lastName,
         email: user.email,
         cellPhone: user.cellPhone,
+        hireDate: user.hireDate ?? undefined,
         terminationDate: user.terminationDate ?? undefined,
         jobTitle: user.jobTitle,
         region: user.region.split(","),
+        rotator: user.rotator,
         supervisorId: user.supervisorId,
         managerId: user.managerId,
     } as NovaUser

@@ -1,261 +1,263 @@
 generator client {
-  provider = "prisma-client-js"
+    provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
 }
 
 model Unit {
-  status                 String?
-  unitNumber             String           @id @map("unit_number")
-  customer               String?
-  location               String?
-  county                 String?
-  state                  String?
-  engine                 String?
-  engineFamily           String?          @map("engine_family")
-  engineSerialNum        String?          @map("engine_serial_num")
-  afr                    String?
-  catalyst               String?
-  catalystMM             String?          @map("catalyst_mm")
-  oemHP                  Float?           @map("oem_hp")
-  novaHP                 Float?           @map("nova_hp")
-  engineRPM              Float?           @map("engine_rpm")
-  frameRPM               Float?           @map("frame_rpm")
-  compressorFrame        String?          @map("compressor_frame")
-  compressorFrameFamily  String?          @map("compressor_frame_family")
-  compressorFrameSN      String?          @map("compressor_frame_sn")
-  stages                 String?
-  cylinderSize           String?          @map("cylinder_size")
-  packageMfgDate         DateTime?        @map("package_mfg_date") @db.Timestamp(6)
-  engineMfgDate          DateTime?        @map("engine_mfg_date") @db.Timestamp(6)
-  zeroHourDate           DateTime?        @map("zero_hour_date") @db.Timestamp(6)
-  compressorFrameRebuild DateTime?        @map("compressor_frame_rebuild") @db.Timestamp(6)
-  topEnd                 DateTime?        @map("top_end") @db.Timestamp(6)
-  oilProvider            String?          @map("oil_provider")
-  telemetry              String?
-  coordinates            String?
-  trailerUnit            String?          @map("trailer_unit")
-  unitSetDate            DateTime?        @map("unit_set_date") @db.Timestamp(6)
-  billingStartDate       DateTime?        @map("billing_start_date") @db.Timestamp(6)
-  billingEndDate         DateTime?        @map("billing_end_date") @db.Timestamp(6)
-  lastBillingDate        DateTime?        @map("last_billing_date") @db.Timestamp(6)
-  onOffContract          String?          @map("on_off_contract")
-  mtmLastPriceIncrease   String?          @map("mtm_last_price_increase")
-  salesperson            String?
-  contractTypeTax        String?          @map("contract_type_tax")
-  contractTypeOil        String?          @map("contract_type_oil")
-  monthlyRate            Float?           @map("monthly_rate")
-  recurringDiscount      Float?           @map("recurring_discount")
-  salesTax               Float?           @map("sales_tax")
-  adValoremHeit          Float?           @map("ad_valorem_heit")
-  netRevenue             Float?           @map("net_revenue")
-  dayRate                String?          @map("day_rate")
-  origin                 String?
-  acqEffDate             DateTime?        @map("acq_eff_date") @db.Timestamp(6)
-  ownedLeased            String?          @map("owned_leased")
-  operationalRegion      String?          @map("operational_region")
-  financeRegion          String?          @map("finance_region")
-  unitProfileUpdateDate  DateTime?        @map("unit_profile_update_date") @db.Timestamp(6)
-  financialSku           String?          @map("financial_sku")
-  oemHPTranche           String?          @map("oem_hp_tranche")
-  bdComments             String?          @map("bd_comments")
-  opsComments            String?          @map("ops_comments")
-  setWeek                String?          @map("set_week")
-  releaseWeek            String?          @map("release_week")
-  assignedTechnician     String?          @map("assigned_technician")
-  assignedManager        String?          @map("assigned_manager")
-  assignedDirector       String?          @map("assigned_director")
-  parameters             Parameter[]
-  weeklyDowntimes        WeeklyDowntime[]
-  partsReqs              PartsReq[]
-  afes                   AFE[]
+    status                 String?
+    unitNumber             String           @id @map("unit_number")
+    customer               String?
+    location               String?
+    county                 String?
+    state                  String?
+    engine                 String?
+    engineFamily           String?          @map("engine_family")
+    engineSerialNum        String?          @map("engine_serial_num")
+    afr                    String?
+    catalyst               String?
+    catalystMM             String?          @map("catalyst_mm")
+    oemHP                  Float?           @map("oem_hp")
+    novaHP                 Float?           @map("nova_hp")
+    engineRPM              Float?           @map("engine_rpm")
+    frameRPM               Float?           @map("frame_rpm")
+    compressorFrame        String?          @map("compressor_frame")
+    compressorFrameFamily  String?          @map("compressor_frame_family")
+    compressorFrameSN      String?          @map("compressor_frame_sn")
+    stages                 String?
+    cylinderSize           String?          @map("cylinder_size")
+    packageMfgDate         DateTime?        @map("package_mfg_date") @db.Timestamp(6)
+    engineMfgDate          DateTime?        @map("engine_mfg_date") @db.Timestamp(6)
+    zeroHourDate           DateTime?        @map("zero_hour_date") @db.Timestamp(6)
+    compressorFrameRebuild DateTime?        @map("compressor_frame_rebuild") @db.Timestamp(6)
+    topEnd                 DateTime?        @map("top_end") @db.Timestamp(6)
+    oilProvider            String?          @map("oil_provider")
+    telemetry              String?
+    coordinates            String?
+    trailerUnit            String?          @map("trailer_unit")
+    unitSetDate            DateTime?        @map("unit_set_date") @db.Timestamp(6)
+    billingStartDate       DateTime?        @map("billing_start_date") @db.Timestamp(6)
+    billingEndDate         DateTime?        @map("billing_end_date") @db.Timestamp(6)
+    lastBillingDate        DateTime?        @map("last_billing_date") @db.Timestamp(6)
+    onOffContract          String?          @map("on_off_contract")
+    mtmLastPriceIncrease   String?          @map("mtm_last_price_increase")
+    salesperson            String?
+    contractTypeTax        String?          @map("contract_type_tax")
+    contractTypeOil        String?          @map("contract_type_oil")
+    monthlyRate            Float?           @map("monthly_rate")
+    recurringDiscount      Float?           @map("recurring_discount")
+    salesTax               Float?           @map("sales_tax")
+    adValoremHeit          Float?           @map("ad_valorem_heit")
+    netRevenue             Float?           @map("net_revenue")
+    dayRate                String?          @map("day_rate")
+    origin                 String?
+    acqEffDate             DateTime?        @map("acq_eff_date") @db.Timestamp(6)
+    ownedLeased            String?          @map("owned_leased")
+    operationalRegion      String?          @map("operational_region")
+    financeRegion          String?          @map("finance_region")
+    unitProfileUpdateDate  DateTime?        @map("unit_profile_update_date") @db.Timestamp(6)
+    financialSku           String?          @map("financial_sku")
+    oemHPTranche           String?          @map("oem_hp_tranche")
+    bdComments             String?          @map("bd_comments")
+    opsComments            String?          @map("ops_comments")
+    setWeek                String?          @map("set_week")
+    releaseWeek            String?          @map("release_week")
+    assignedTechnician     String?          @map("assigned_technician")
+    assignedManager        String?          @map("assigned_manager")
+    assignedDirector       String?          @map("assigned_director")
+    parameters             Parameter[]
+    weeklyDowntimes        WeeklyDowntime[]
+    partsReqs              PartsReq[]
+    afes                   AFE[]
 
-  @@map("unit")
+    @@map("unit")
 }
 
 model Parameter {
-  unitNumber String    @map("unit_number")
-  name       String
-  value      String?
-  timestamp  DateTime? @db.Timestamptz(6)
-  unit       Unit?     @relation(fields: [unitNumber], references: [unitNumber], onDelete: Cascade)
+    unitNumber String    @map("unit_number")
+    name       String
+    value      String?
+    timestamp  DateTime? @db.Timestamptz(6)
+    unit       Unit?     @relation(fields: [unitNumber], references: [unitNumber], onDelete: Cascade)
 
-  @@id([unitNumber, name])
-  @@map("parameter")
+    @@id([unitNumber, name])
+    @@map("parameter")
 }
 
 model WeeklyDowntime {
-  unitNumber String @map("unit_number")
-  week       String
-  ma         Float
-  dtHours    Float  @map("dt_hours")
-  unit       Unit?  @relation(fields: [unitNumber], references: [unitNumber], onDelete: Cascade)
+    unitNumber String @map("unit_number")
+    week       String
+    ma         Float
+    dtHours    Float  @map("dt_hours")
+    unit       Unit?  @relation(fields: [unitNumber], references: [unitNumber], onDelete: Cascade)
 
-  @@id([unitNumber, week])
-  @@map("weekly_downtime")
+    @@id([unitNumber, week])
+    @@map("weekly_downtime")
 }
 
 model PartsReqRow {
-  id          String    @id @default(uuid())
-  qty         Int
-  itemNumber  String    @map("item_number")
-  description String?
-  cost        Float?
-  received    Int       @default(0)
-  mode        String?   @default("")
-  partsReq    PartsReq? @relation(fields: [partsReqId], references: [id], onDelete: Cascade)
-  partsReqId  Int?      @map("parts_req_id")
+    id          String    @id @default(uuid())
+    qty         Int
+    itemNumber  String    @map("item_number")
+    description String?
+    cost        Float?
+    received    Int       @default(0)
+    mode        String?   @default("")
+    partsReq    PartsReq? @relation(fields: [partsReqId], references: [id], onDelete: Cascade)
+    partsReqId  Int?      @map("parts_req_id")
 
-  @@map("parts_req_row")
+    @@map("parts_req_row")
 }
 
 model PartsReq {
-  id           Int                @id @default(autoincrement())
-  requesterId  String             @default("") @map("requester_id")
-  contactId    String?            @map("contact_id")
-  date         DateTime           @db.Timestamptz(6)
-  billable     Boolean            @default(false)
-  quoteOnly    Boolean            @default(false) @map("quote_only")
-  warrantyJob  Boolean            @default(false) @map("warranty_job")
-  afeId        String?            @map("afe_id")
-  salesOrderId String?            @map("sales_order_id")
-  unitNumber   String?            @map("unit_number")
-  truckId      String?            @map("truck_id")
-  urgency      String
-  orderType    String             @map("order_type")
-  pickupId     String?            @map("pickup_id")
-  region       String
-  amex         Boolean            @default(false)
-  vendors      VendorOnPartsReq[]
-  conex        Boolean            @default(false)
-  conexId      String?            @map("conex_id")
-  parts        PartsReqRow[]
-  comments     Comment[]
-  status       String
-  updated      DateTime           @db.Timestamptz(6)
-  files        File[]
-  unit         Unit?              @relation(fields: [unitNumber], references: [unitNumber], onDelete: Cascade)
-  afe          AFE?               @relation(fields: [afeId], references: [id], onDelete: Cascade)
-  salesOrder   SalesOrder?        @relation(fields: [salesOrderId], references: [id], onDelete: Cascade)
-  truck        Truck?             @relation(fields: [truckId], references: [id], onDelete: Cascade)
-  pickup       Location?          @relation("Pickup", fields: [pickupId], references: [id], onDelete: Cascade)
-  conexName    Location?          @relation("ConexName", fields: [conexId], references: [id], onDelete: Cascade)
-  requester    User?              @relation("Requester", fields: [requesterId], references: [id], onDelete: Cascade)
-  contact      User?              @relation("Contact", fields: [contactId], references: [id], onDelete: Cascade)
+    id           Int                @id @default(autoincrement())
+    requesterId  String             @default("") @map("requester_id")
+    contactId    String?            @map("contact_id")
+    date         DateTime           @db.Timestamptz(6)
+    billable     Boolean            @default(false)
+    quoteOnly    Boolean            @default(false) @map("quote_only")
+    warrantyJob  Boolean            @default(false) @map("warranty_job")
+    afeId        String?            @map("afe_id")
+    salesOrderId String?            @map("sales_order_id")
+    unitNumber   String?            @map("unit_number")
+    truckId      String?            @map("truck_id")
+    urgency      String
+    orderType    String             @map("order_type")
+    pickupId     String?            @map("pickup_id")
+    region       String
+    amex         Boolean            @default(false)
+    vendors      VendorOnPartsReq[]
+    conex        Boolean            @default(false)
+    conexId      String?            @map("conex_id")
+    parts        PartsReqRow[]
+    comments     Comment[]
+    status       String
+    updated      DateTime           @db.Timestamptz(6)
+    files        File[]
+    unit         Unit?              @relation(fields: [unitNumber], references: [unitNumber], onDelete: Cascade)
+    afe          AFE?               @relation(fields: [afeId], references: [id], onDelete: Cascade)
+    salesOrder   SalesOrder?        @relation(fields: [salesOrderId], references: [id], onDelete: Cascade)
+    truck        Truck?             @relation(fields: [truckId], references: [id], onDelete: Cascade)
+    pickup       Location?          @relation("Pickup", fields: [pickupId], references: [id], onDelete: Cascade)
+    conexName    Location?          @relation("ConexName", fields: [conexId], references: [id], onDelete: Cascade)
+    requester    User?              @relation("Requester", fields: [requesterId], references: [id], onDelete: Cascade)
+    contact      User?              @relation("Contact", fields: [contactId], references: [id], onDelete: Cascade)
 
-  @@map("parts_req")
+    @@map("parts_req")
 }
 
 model Comment {
-  id         String    @id @default(uuid())
-  comment    String
-  name       String
-  timestamp  DateTime  @db.Timestamptz(6)
-  partsReq   PartsReq? @relation(fields: [partsReqId], references: [id], onDelete: Cascade)
-  partsReqId Int?      @map("parts_req_id")
+    id         String    @id @default(uuid())
+    comment    String
+    name       String
+    timestamp  DateTime  @db.Timestamptz(6)
+    partsReq   PartsReq? @relation(fields: [partsReqId], references: [id], onDelete: Cascade)
+    partsReqId Int?      @map("parts_req_id")
 
-  @@map("comment")
+    @@map("comment")
 }
 
 model File {
-  id         String    @id @default(uuid())
-  name       String
-  isDeleted  Boolean   @default(false) @map("is_deleted")
-  partsReq   PartsReq? @relation(fields: [partsReqId], references: [id], onDelete: Cascade)
-  partsReqId Int?      @map("parts_req_id")
+    id         String    @id @default(uuid())
+    name       String
+    isDeleted  Boolean   @default(false) @map("is_deleted")
+    partsReq   PartsReq? @relation(fields: [partsReqId], references: [id], onDelete: Cascade)
+    partsReqId Int?      @map("parts_req_id")
 
-  @@map("file")
+    @@map("file")
 }
 
 model AFE {
-  id         String     @id @default(uuid())
-  number     String
-  unitNumber String     @map("unit_number")
-  amount     String
-  unit       Unit?      @relation(fields: [unitNumber], references: [unitNumber], onDelete: Cascade)
-  partsReqs  PartsReq[]
+    id         String     @id @default(uuid())
+    number     String
+    unitNumber String     @map("unit_number")
+    amount     String
+    unit       Unit?      @relation(fields: [unitNumber], references: [unitNumber], onDelete: Cascade)
+    partsReqs  PartsReq[]
 
-  @@map("afe")
+    @@map("afe")
 }
 
 model User {
-  id                 String     @id @default(uuid())
-  firstName          String     @map("first_name")
-  lastName           String     @map("last_name")
-  email              String
-  cellPhone          String     @map("cell_phone")
-  terminationDate    DateTime?  @map("termination_date")
-  jobTitle           String     @map("job_title")
-  region             String
-  managerId          String?    @map("manager_id")
-  manager            User?      @relation("Manager", fields: [managerId], references: [id])
-  managers           User[]     @relation("Manager")
-  supervisorId       String?    @map("supervisor_id")
-  supervisor         User?      @relation("Supervisor", fields: [supervisorId], references: [id])
-  supervisors        User[]     @relation("Supervisor")
-  partsReqsRequester PartsReq[] @relation("Requester")
-  partsReqsContact   PartsReq[] @relation("Contact")
+    id                 String     @id @default(uuid())
+    firstName          String     @map("first_name")
+    lastName           String     @map("last_name")
+    email              String
+    cellPhone          String     @map("cell_phone")
+    hireDate           DateTime?  @map("hire_date")
+    terminationDate    DateTime?  @map("termination_date")
+    jobTitle           String     @map("job_title")
+    region             String
+    rotator            Boolean    @default(false)
+    managerId          String?    @map("manager_id")
+    manager            User?      @relation("Manager", fields: [managerId], references: [id])
+    managers           User[]     @relation("Manager")
+    supervisorId       String?    @map("supervisor_id")
+    supervisor         User?      @relation("Supervisor", fields: [supervisorId], references: [id])
+    supervisors        User[]     @relation("Supervisor")
+    partsReqsRequester PartsReq[] @relation("Requester")
+    partsReqsContact   PartsReq[] @relation("Contact")
 
-  @@map("user")
+    @@map("user")
 }
 
 model Part {
-  id          String  @id @default(uuid())
-  itemNumber  String  @map("item_number")
-  description String?
-  cost        Float?
-  mode        String?
-  type        String
-  active      Boolean
+    id          String  @id @default(uuid())
+    itemNumber  String  @map("item_number")
+    description String?
+    cost        Float?
+    mode        String?
+    type        String
+    active      Boolean
 
-  @@map("part")
+    @@map("part")
 }
 
 model Truck {
-  id        String     @id @default(uuid())
-  name      String
-  altName   String     @map("alt_name")
-  partsReqs PartsReq[]
+    id        String     @id @default(uuid())
+    name      String
+    altName   String     @map("alt_name")
+    partsReqs PartsReq[]
 
-  @@map("truck")
+    @@map("truck")
 }
 
 model SalesOrder {
-  id        String     @id @default(uuid())
-  number    String
-  status    String
-  partsReqs PartsReq[]
+    id        String     @id @default(uuid())
+    number    String
+    status    String
+    partsReqs PartsReq[]
 
-  @@map("sales_order")
+    @@map("sales_order")
 }
 
 model Location {
-  id              String     @id @default(uuid())
-  name            String
-  partsReqsPickup PartsReq[] @relation("Pickup")
-  partsReqsConex  PartsReq[] @relation("ConexName")
+    id              String     @id @default(uuid())
+    name            String
+    partsReqsPickup PartsReq[] @relation("Pickup")
+    partsReqsConex  PartsReq[] @relation("ConexName")
 
-  @@map("location")
+    @@map("location")
 }
 
 model Vendor {
-  id        String             @id @default(uuid())
-  name      String
-  active    Boolean
-  partsReqs VendorOnPartsReq[]
+    id        String             @id @default(uuid())
+    name      String
+    active    Boolean
+    partsReqs VendorOnPartsReq[]
 
-  @@map("vendor")
+    @@map("vendor")
 }
 
 model VendorOnPartsReq {
-  id         String    @id @default(uuid())
-  vendor     Vendor?   @relation(fields: [vendorId], references: [id])
-  vendorId   String?   @map("vendor_id")
-  partsReq   PartsReq? @relation(fields: [partsReqId], references: [id])
-  partsReqId Int?      @map("parts_req_id")
+    id         String    @id @default(uuid())
+    vendor     Vendor?   @relation(fields: [vendorId], references: [id])
+    vendorId   String?   @map("vendor_id")
+    partsReq   PartsReq? @relation(fields: [partsReqId], references: [id])
+    partsReqId Int?      @map("parts_req_id")
 
-  @@map("vendor_on_pr")
+    @@map("vendor_on_pr")
 }

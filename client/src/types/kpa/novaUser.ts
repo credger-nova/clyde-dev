@@ -4,6 +4,7 @@ export interface NovaUser {
     lastName: string
     email: string
     cellPhone: string
+    hireDate?: Date
     terminationDate?: Date
     jobTitle: string
     region: Array<string>

@@ -12,6 +12,8 @@ import SummaryTable from "./SummaryTable"
 import IconButton from "@mui/material/IconButton"
 import RefreshIcon from "@mui/icons-material/Refresh"
 
+import AdminPartsReq from "./admin/AdminPartsReq"
+
 const Item = styled(Paper)(({ theme }) => ({
     backgroundColor: "#242424",
     ...theme.typography.body2,
@@ -76,6 +78,8 @@ export default function PartsReqSummary(props: Props) {
                     >
                         <SummaryTable novaUser={novaUser} group={userType.group} />
                     </Grid>
+                    <AdminPartsReq />
+
                 </Box>
             </Item>
         )

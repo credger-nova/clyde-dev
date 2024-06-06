@@ -8,6 +8,7 @@ export interface NovaUser {
     terminationDate?: Date
     jobTitle: string
     region: Array<string>
+    rotator: boolean
     supervisorId: string
     managerId: string
 }

@@ -72,6 +72,7 @@ model Unit {
     weeklyDowntimes        WeeklyDowntime[]
     partsReqs              PartsReq[]
     afes                   AFE[]
+    serviceReports         ServiceReport[]
 
     @@map("unit")
 }
@@ -182,26 +183,49 @@ model AFE {
 }
 
 model User {
-    id                 String     @id @default(uuid())
-    firstName          String     @map("first_name")
-    lastName           String     @map("last_name")
+    id                 String          @id @default(uuid())
+    firstName          String          @map("first_name")
+    lastName           String          @map("last_name")
     email              String
-    cellPhone          String     @map("cell_phone")
-    hireDate           DateTime?  @map("hire_date")
-    terminationDate    DateTime?  @map("termination_date")
-    jobTitle           String     @map("job_title")
+    cellPhone          String          @map("cell_phone")
+    hireDate           DateTime?       @map("hire_date")
+    terminationDate    DateTime?       @map("termination_date")
+    jobTitle           String          @map("job_title")
     region             String
-    rotator            Boolean    @default(false)
-    managerId          String?    @map("manager_id")
-    manager            User?      @relation("Manager", fields: [managerId], references: [id])
-    managers           User[]     @relation("Manager")
-    supervisorId       String?    @map("supervisor_id")
-    supervisor         User?      @relation("Supervisor", fields: [supervisorId], references: [id])
-    supervisors        User[]     @relation("Supervisor")
-    partsReqsRequester PartsReq[] @relation("Requester")
-    partsReqsContact   PartsReq[] @relation("Contact")
+    rotator            Boolean         @default(false)
+    managerId          String?         @map("manager_id")
+    manager            User?           @relation("Manager", fields: [managerId], references: [id])
+    managers           User[]          @relation("Manager")
+    supervisorId       String?         @map("supervisor_id")
+    supervisor         User?           @relation("Supervisor", fields: [supervisorId], references: [id])
+    supervisors        User[]          @relation("Supervisor")
+    partsReqsRequester PartsReq[]      @relation("Requester")
+    partsReqsContact   PartsReq[]      @relation("Contact")
+    serviceReports     ServiceReport[]
 
     @@map("user")
+}
+
+model ServiceReport {
+    id                       String    @id @default(uuid())
+    date                     DateTime
+    observerId               String    @map("observer_id")
+    observer                 User      @relation(fields: [observerId], references: [id])
+    startWorkTimestamp       DateTime? @map("start_work")
+    stopWorkTimestamp        DateTime? @map("stop_work")
+    operationCodes           String?   @map("operation_codes")
+    shopOperationCodes       String?   @map("shop_operation_codes")
+    operationCodesThirdParty String?   @map("operation_codes_third")
+    unitNumber               String?   @map("unit_number")
+    unit                     Unit?     @relation(fields: [unitNumber], references: [unitNumber])
+    functionPerformed        String?   @map("function_performed")
+    region                   String?
+    whatWasFound             String?   @map("what_was_found")
+    whatWasPerformed         String?   @map("what_was_performed")
+    engineHours              Int?      @map("engine_hours")
+    hoursWorked              Float?    @map("hours_worked")
+
+    @@map("service_report")
 }
 
 model Part {

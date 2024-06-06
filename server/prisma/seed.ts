@@ -15,6 +15,8 @@ const NUM_COLS = [
     "ma",
     "dtHours",
     "cost",
+    "engineHours",
+    "hoursWorked",
 ]
 const DATE_COLS = [
     "packageMfgDate",
@@ -31,9 +33,122 @@ const DATE_COLS = [
     "timestamp",
     "terminationDate",
     "hireDate",
+    "date",
+    "startWorkTimestamp",
+    "stopWorkTimestamp",
 ]
 
 const BOOLEAN_COLS = ["active", "rotator"]
+
+const seedUser = async () => {
+    console.log("Seeding User Table")
+
+    const headers = [
+        "id",
+        "firstName",
+        "lastName",
+        "email",
+        "cellPhone",
+        "jobTitle",
+        "region",
+        "managerId",
+        "supervisorId",
+        "terminationDate",
+        "hireDate",
+        "rotator",
+    ]
+
+    const parser = fs.createReadStream(`${__dirname}/seeds/user.csv`).pipe(
+        parse({
+            delimiter: ",",
+            columns: headers,
+            from: 2,
+            cast: (value, context) => {
+                if (value !== "NULL") {
+                    if (NUM_COLS.includes(context.column as string)) {
+                        return Number(value)
+                    } else if (DATE_COLS.includes(context.column as string)) {
+                        return new Date(value)
+                    } else if (BOOLEAN_COLS.includes(context.column as string)) {
+                        return value === "True" ? true : false
+                    } else {
+                        return value
+                    }
+                } else {
+                    return null
+                }
+            },
+        })
+    )
+
+    // Initial upsert of users (without manager or supervisor id)
+    for await (const user of parser) {
+        await prisma.user.upsert({
+            where: { id: user.id },
+            update: {
+                id: user.id,
+                firstName: user.firstName,
+                lastName: user.lastName,
+                email: user.email,
+                cellPhone: user.cellPhone,
+                jobTitle: user.jobTitle,
+                region: user.region,
+                hireDate: user.hireDate,
+                terminationDate: user.terminationDate,
+                rotator: user.rotator,
+            },
+            create: {
+                id: user.id,
+                firstName: user.firstName,
+                lastName: user.lastName,
+                email: user.email,
+                cellPhone: user.cellPhone,
+                jobTitle: user.jobTitle,
+                region: user.region,
+                hireDate: user.hireDate,
+                terminationDate: user.terminationDate,
+                rotator: user.rotator,
+            },
+        })
+    }
+
+    // Add manager and supervisor IDs
+    const secondParser = fs.createReadStream(`${__dirname}/seeds/user.csv`).pipe(
+        parse({
+            delimiter: ",",
+            columns: headers,
+            from: 2,
+            cast: (value, context) => {
+                if (value !== "NULL") {
+                    if (NUM_COLS.includes(context.column as string)) {
+                        return Number(value)
+                    } else if (DATE_COLS.includes(context.column as string)) {
+                        return new Date(value)
+                    } else if (BOOLEAN_COLS.includes(context.column as string)) {
+                        return value === "True" ? true : false
+                    } else {
+                        return value
+                    }
+                } else {
+                    return null
+                }
+            },
+        })
+    )
+
+    for await (const user of secondParser) {
+        await prisma.user.upsert({
+            where: { id: user.id },
+            update: {
+                managerId: user.managerId,
+                supervisorId: user.supervisorId,
+            },
+            create: user,
+        })
+    }
+
+    console.log("User Table Seeding Complete")
+}
 
 const seedAfe = async () => {
     console.log("Seeding AFE Table")
@@ -70,6 +185,59 @@ const seedAfe = async () => {
     }
 
     console.log("AFE Table Seeding Complete")
+}
+
+const seedServiceReport = async () => {
+    console.log("Seeding Service Report Table")
+
+    const headers = [
+        "id",
+        "date",
+        "observerId",
+        "startWorkTimestamp",
+        "stopWorkTimestamp",
+        "operationCodes",
+        "operationCodesThirdParty",
+        "unitNumber",
+        "functionPerformed",
+        "region",
+        "whatWasFound",
+        "whatWasPerformed",
+        "engineHours",
+        "hoursWorked",
+        "shopOperationCodes",
+    ]
+
+    const parser = fs.createReadStream(`${__dirname}/seeds/service_report.csv`).pipe(
+        parse({
+            delimiter: ",",
+            columns: headers,
+            from: 2,
+            cast: (value, context) => {
+                if (value !== "NULL") {
+                    if (NUM_COLS.includes(context.column as string)) {
+                        return Number(value)
+                    } else if (DATE_COLS.includes(context.column as string)) {
+                        return new Date(value)
+                    } else {
+                        return value
+                    }
+                } else {
+                    return null
+                }
+            },
+        })
+    )
+
+    for await (const serviceReport of parser) {
+        await prisma.serviceReport.upsert({
+            where: { id: serviceReport.id },
+            update: serviceReport,
+            create: serviceReport,
+        })
+    }
+
+    console.log("Service Report Table Seeding Complete")
 }
 
 const seedLocation = async () => {
@@ -220,114 +388,6 @@ const seedTruck = async () => {
     }
 
     console.log("Truck Table Seeding Complete")
-}
-
-const seedUser = async () => {
-    console.log("Seeding User Table")
-
-    const headers = [
-        "id",
-        "firstName",
-        "lastName",
-        "email",
-        "cellPhone",
-        "jobTitle",
-        "region",
-        "managerId",
-        "supervisorId",
-        "terminationDate",
-        "hireDate",
-        "rotator",
-    ]
-
-    const parser = fs.createReadStream(`${__dirname}/seeds/user.csv`).pipe(
-        parse({
-            delimiter: ",",
-            columns: headers,
-            from: 2,
-            cast: (value, context) => {
-                if (value !== "NULL") {
-                    if (NUM_COLS.includes(context.column as string)) {
-                        return Number(value)
-                    } else if (DATE_COLS.includes(context.column as string)) {
-                        return new Date(value)
-                    } else if (BOOLEAN_COLS.includes(context.column as string)) {
-                        return value === "True" ? true : false
-                    } else {
-                        return value
-                    }
-                } else {
-                    return null
-                }
-            },
-        })
-    )
-
-    // Initial upsert of users (without manager or supervisor id)
-    for await (const user of parser) {
-        await prisma.user.upsert({
-            where: { id: user.id },
-            update: {
-                id: user.id,
-                firstName: user.firstName,
-                lastName: user.lastName,
-                email: user.email,
-                cellPhone: user.cellPhone,
-                jobTitle: user.jobTitle,
-                region: user.region,
-                hireDate: user.hireDate,
-                terminationDate: user.terminationDate,
-                rotator: user.rotator,
-            },
-            create: {
-                id: user.id,
-                firstName: user.firstName,
-                lastName: user.lastName,
-                email: user.email,
-                cellPhone: user.cellPhone,
-                jobTitle: user.jobTitle,
-                region: user.region,
-                hireDate: user.hireDate,
-                terminationDate: user.terminationDate,
-                rotator: user.rotator,
-            },
-        })
-    }
-
-    // Add manager and supervisor IDs
-    const secondParser = fs.createReadStream(`${__dirname}/seeds/user.csv`).pipe(
-        parse({
-            delimiter: ",",
-            columns: headers,
-            from: 2,
-            cast: (value, context) => {
-                if (value !== "NULL") {
-                    if (NUM_COLS.includes(context.column as string)) {
-                        return Number(value)
-                    } else if (DATE_COLS.includes(context.column as string)) {
-                        return new Date(value)
-                    } else {
-                        return value
-                    }
-                } else {
-                    return null
-                }
-            },
-        })
-    )
-
-    for await (const user of secondParser) {
-        await prisma.user.upsert({
-            where: { id: user.id },
-            update: {
-                managerId: user.managerId,
-                supervisorId: user.supervisorId,
-            },
-            create: user,
-        })
-    }
-
-    console.log("User Table Seeding Complete")
 }
 
 const seedVendor = async () => {
@@ -554,12 +614,13 @@ const seedWeeklyDowntime = async () => {
 async function main() {
     await seedUnit()
 
+    await seedUser()
     await seedAfe()
+    await seedServiceReport()
     await seedLocation()
     await seedPart()
     await seedSalesOrder()
     await seedTruck()
-    await seedUser()
     await seedVendor()
 
     await seedParameter()

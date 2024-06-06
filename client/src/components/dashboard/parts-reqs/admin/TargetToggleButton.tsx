@@ -6,10 +6,7 @@ export default function TargetToggleButton(props) {
   const target = props.target
   const setTarget = props.setTarget
   const setMenu = props.setMenu
-  const setData = props.setData
   const setItem = props.setItem
-  const dataByRegion = props.dataByRegion
-  const dataByStatus = props.dataByStatus
   const regionList = props.regionList
   const statusList = props.statusList
 
@@ -19,11 +16,9 @@ export default function TargetToggleButton(props) {
   ) => {
     setTarget(newTarget);    
     if(newTarget ==='region'){
-      setData(dataByRegion)
       setMenu(regionList)
       setItem(regionList[0])
     } else{
-        setData(dataByStatus)
         setMenu(statusList)
         setItem(statusList[0])
     }

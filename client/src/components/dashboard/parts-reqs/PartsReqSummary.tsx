@@ -11,8 +11,8 @@ import Grid from "@mui/material/Unstable_Grid2"
 import SummaryTable from "./SummaryTable"
 import IconButton from "@mui/material/IconButton"
 import RefreshIcon from "@mui/icons-material/Refresh"
-
-import AdminPartsReq from "./admin/AdminPartsReq"
+import { Typography } from "@mui/material"
+import { ALLOWED_GROUPS } from "./lookupTables"
 
 const Item = styled(Paper)(({ theme }) => ({
     backgroundColor: "#242424",
@@ -21,22 +21,6 @@ const Item = styled(Paper)(({ theme }) => ({
     textAlign: "left",
     color: "white",
 }))
-
-const ALLOWED_GROUPS = [
-    "Field Service",
-    "Ops Manager",
-    "Ops Director",
-    "Ops Vice President",
-    "Shop Service",
-    "Shop Supervisor",
-    "Shop Director",
-    "Supply Chain",
-    "Supply Chain Management",
-    "Admin",
-    "Business Development",
-    "Executive Management",
-    "IT",
-]
 
 interface Props {
     novaUser: NovaUser
@@ -57,7 +41,7 @@ export default function PartsReqSummary(props: Props) {
             <Item>
                 <Box sx={{ display: "flex", flexDirection: "column" }}>
                     <Box sx={{ display: "flex", flexDirection: "row" }}>
-                        <h3 style={{ margin: "0px 0px 0px 34px", width: "100%", textAlign: "center" }}>Parts Requisitions</h3>
+                        <Typography sx={{ margin: "0px 0px 0px 34px", width: "100%", textAlign: "center", fontSize: 24 }}>Parts Requisitions</Typography>
                         <IconButton onClick={handleRefreshPartsReqs} disableRipple size={"small"} sx={{ padding: "0px 5px" }}>
                             <RefreshIcon />
                         </IconButton>
@@ -78,8 +62,6 @@ export default function PartsReqSummary(props: Props) {
                     >
                         <SummaryTable novaUser={novaUser} group={userType.group} />
                     </Grid>
-                    <AdminPartsReq />
-
                 </Box>
             </Item>
         )

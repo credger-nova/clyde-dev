@@ -1,61 +1,65 @@
 import * as React from 'react';
 import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
 import TargetToggleButton from './TargetToggleButton';
 import PartsPieChart from './PartsPieChart';
 import PartsLegend from './PartsLegend';
 import TargetDropdownMenu from './TargetDropdownMenu';
+import { toTitleCase} from "../../../../utils/helperFunctions"
+import { STATUS_GROUPS } from '../lookupTables';
 
-const regionList = ['Carlsbad', 'East Texas', 'Midcon', 'Pecos', 'North Permian', 'South Permian', 'South Texas']
-const statusList = ['Pending Approval', 'Pending Quote', 'Rejected', 'Approved', 'Sourcing', 'Parts Ordered', 'Parts Staged', 'Closed']
+interface Props {
+    regionsUpperCase: Array<string>;
+    partsByRegion: {[key: string]: {[key: string]: number}};
+    partsByStatus: {[key: string]: {[key: string]: number}};
+}
 
-export default function AdminPartsReq(props){
-    const partsByRegion = props.partsByRegion
-    const partsByStatus = props.partsByStatus
+export interface PieChartSeries {
+    value: number;
+    label: string;
+    color: string;
+}
+
+const colorPallete = ['#04a5e5', '#ea76cb', '#d20f39', '#40a02b', '#df8e1d', '#8839ef', '#dd7878', '#1e66f5']
+
+export default function AdminPartsReq(props: Props){
+    const {regionsUpperCase, partsByRegion, partsByStatus} = props
+    const statusList = STATUS_GROUPS
+    const regionList = regionsUpperCase.map((region: string) => {
+        return toTitleCase(region)
+    })
 
     const [target, setTarget] = React.useState('region')
     const [menu, setMenu] = React.useState(regionList)
     const [item, setItem] = React.useState(regionList[0])
 
-    let data = null
-    if(target === 'region' && partsByRegion && partsByStatus){
-        data = [
-            { value: partsByRegion[item.toUpperCase()]['Pending Approval'], label: 'Pending Approval', color: '#04a5e5' },
-            { value: partsByRegion[item.toUpperCase()]['Pending Quote'], label: 'Pending Quote', color: '#ea76cb' },
-            { value: partsByRegion[item.toUpperCase()]['Rejected'], label: 'Rejected', color: '#d20f39' },
-            { value: partsByRegion[item.toUpperCase()]['Approved'], label: 'Approved', color: '#40a02b' },
-            { value: partsByRegion[item.toUpperCase()]['Sourcing'], label: 'Sourcing', color: '#df8e1d' },
-            { value: partsByRegion[item.toUpperCase()]['Parts Ordered'], label: 'Parts Ordered', color: '#8839ef' },
-            { value: partsByRegion[item.toUpperCase()]['Parts Staged'], label: 'Parts Staged', color: '#dd7878' },
-            { value: partsByRegion[item.toUpperCase()]['Closed'], label: 'Closed', color: '#1e66f5' },
-          ];
+    const data: Array<PieChartSeries> = []
+    if(target === 'region'){
+        statusList.map((status, index) => {
+            const x = {value: partsByRegion[item.toUpperCase()][status], label: status, color: colorPallete[index]}
+            data.push(x)
+    })
     } else if(target === 'status'){
-        data = [
-            { value: partsByStatus[item]['CARLSBAD'], label: 'Carlsbad', color: '#04a5e5' },
-            { value: partsByStatus[item]['EAST TEXAS'], label: 'East Texas', color: '#ea76cb' },
-            { value: partsByStatus[item]['MIDCON'], label: 'Midcon', color: '#d20f39' },
-            { value: partsByStatus[item]['PECOS'], label: 'Pecos', color: '#40a02b' },
-            { value: partsByStatus[item]['NORTH PERMIAN'], label: 'North Permian', color: '#df8e1d' },
-            { value: partsByStatus[item]['SOUTH PERMIAN'], label: 'South Permian', color: '#8839ef' },
-            { value: partsByStatus[item]['SOUTH TEXAS'], label: 'South Texas', color: '#dd7878' },
-        ]
-    } else{
-        data = null
+        regionList.map((region, index) => {
+            const x = {value: partsByStatus[item][region.toUpperCase()], label: region, color: colorPallete[index]}
+            data.push(x)    
+        })
+    } 
+
+    if(!data.length){
+        return undefined
     }
 
-    return( data ?
-        <Box sx={{height: 500, maxWidth: 800, background: '#242424', borderRadius: '16px', padding: '24px', mx: 'auto', my: 32}}>
-            <Typography variant='h2' sx={{fontSize: 20, fontWeight: '500', mb: '16px', textAlign: 'center'}}>Parts Requisitions</Typography>
+    return(
+        <Box sx={{height: 500, maxWidth: 800, background: '#242424', borderRadius: '16px', padding: '24px', mx: 'auto', my: 4}}>
             <Box sx={{display: 'flex', justifyContent: 'space-between'}}>
                 <TargetDropdownMenu target={target} menu={menu} item={item} setItem={setItem}/>
-                <TargetToggleButton target={target} setTarget={setTarget} menu={menu} setMenu={setMenu} regionList={regionList} statusList={statusList} setItem={setItem}/>
+                <TargetToggleButton target={target} setTarget={setTarget} setMenu={setMenu} regionList={regionList} setItem={setItem}/>
             </Box>
             <Box sx={{display: 'flex', justifyContent: 'space-around', alignItems: 'center'}}>
                 <PartsPieChart target={target} item={item} data={data}/>
                 <PartsLegend target={target} data={data} item={item}/>
             </Box>
         </Box>
-        : <Box>Error: Unable to fetch data</Box>
     )
 }
 

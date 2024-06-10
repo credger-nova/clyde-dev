@@ -1,14 +1,23 @@
 import * as React from 'react';
 import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
+import { STATUS_GROUPS } from '../lookupTables';
 
-export default function TargetToggleButton(props) {
+interface Props {
+  target: string;
+  setTarget: React.Dispatch<React.SetStateAction<string>>
+  setMenu: React.Dispatch<React.SetStateAction<string[]>>;
+  setItem: React.Dispatch<React.SetStateAction<string>>
+  regionList: Array<string>
+}
+
+export default function TargetToggleButton(props: Props) {
   const target = props.target
   const setTarget = props.setTarget
   const setMenu = props.setMenu
   const setItem = props.setItem
   const regionList = props.regionList
-  const statusList = props.statusList
+  const statusList = STATUS_GROUPS
 
   const handleChange = (
     _event: React.MouseEvent<HTMLElement>,

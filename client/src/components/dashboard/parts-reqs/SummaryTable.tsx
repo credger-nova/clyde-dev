@@ -1,9 +1,9 @@
 import * as React from "react"
 
 import { NovaUser } from "../../../types/kpa/novaUser"
-import { PartsReq, PartsReqQuery } from "../../../types/partsReq"
+import { PartsReqQuery } from "../../../types/partsReq"
 
-import { calcCost, opsVpApprovalRequired, toTitleCase } from "../../../utils/helperFunctions"
+import {toTitleCase } from "../../../utils/helperFunctions"
 
 import { useLeadsEmployees, useManagersEmployees, useDirectorsEmployees } from "../../../hooks/kpa/user"
 import { usePartsReqs } from "../../../hooks/partsReq"
@@ -25,6 +25,9 @@ import Switch from "@mui/material/Switch"
 import FormControlLabel from "@mui/material/FormControlLabel"
 import AdminPartsReq from "./admin/AdminPartsReq"
 
+import { STATUS_GROUPS, SC_GROUPS, PERSONNEL_GROUPS } from "./lookupTables"
+import { calcStatus, handleClick } from "./dashboardFunctions"
+
 interface Props {
     novaUser: NovaUser
     group: string
@@ -33,24 +36,6 @@ interface Props {
 interface StatusProps {
     statuses: Array<string>
 }
-
-const STATUS_GROUPS = ["Pending Approval", "Pending Quote", "Rejected", "Approved", "Sourcing", "Parts Ordered", "Parts Staged", "Closed"]
-const SC_GROUPS = ["Pending Quote", "Approved", "Sourcing", "Parts Ordered", "Parts Staged"]
-
-const UNIT_DOWN_STATUSES = [
-    "Pending Approval",
-    "Pending Quote",
-    "Quote Provided - Pending Approval",
-    "Rejected - Adjustments Required",
-    "Approved - On Hold",
-    "Approved",
-    "Sourcing - In Progress",
-    "Sourcing - Information Required",
-    "Sourcing - Information Provided",
-    "Sourcing - Pending Amex Approval",
-    "Sourcing - Amex Approved",
-    "Ordered - Awaiting Parts",
-]
 
 const Item = styled(Paper)(({ theme }) => ({
     backgroundColor: "#242424",
@@ -96,8 +81,8 @@ function AccordionSkeleton(props: StatusProps) {
                 .fill(0)
                 .map((_i, index) => {
                     return (
-                        <Grid xs={12} sm={4} padding={"5px"}>
-                            <Accordion key={index} disableGutters>
+                        <Grid key={index} xs={12} sm={4} padding={"5px"}>
+                            <Accordion disableGutters>
                                 <AccordionSummary
                                     expandIcon={<ExpandMoreIcon />}
                                     sx={{
@@ -131,81 +116,12 @@ const StyledSwitch = styled(Switch)(() => ({
     },
 }))
 
-function calcStatus(
-    partsReqs: Array<PartsReq>,
-    statusGroup: string,
-    requester?: NovaUser,
-    requesterGroup?: Array<NovaUser>,
-    region?: string,
-    opsVP?: boolean
-) {
-    let filtered: Array<PartsReq> = []
-
-    if (statusGroup === "Pending Quote") {
-        filtered = partsReqs.filter((partsReq) => partsReq.status === "Pending Quote")
-    } else if (statusGroup === "Pending Approval") {
-        filtered = partsReqs.filter(
-            (partsReq) =>
-                partsReq.status === "Pending Approval" ||
-                partsReq.status === "Quote Provided - Pending Approval" ||
-                partsReq.status === "Sourcing - Request to Cancel"
-        )
-    } else if (statusGroup === "Rejected") {
-        filtered = partsReqs.filter((partsReq) => partsReq.status === "Rejected - Adjustments Required")
-    } else if (statusGroup === "Approved") {
-        filtered = partsReqs.filter((partsReq) => partsReq.status === "Approved" || partsReq.status === "Approved - On Hold")
-    } else if (statusGroup === "Sourcing") {
-        filtered = partsReqs.filter(
-            (partsReq) =>
-                partsReq.status === "Sourcing - In Progress" ||
-                partsReq.status === "Sourcing - Information Required" ||
-                partsReq.status === "Sourcing - Information Provided" ||
-                partsReq.status === "Sourcing - Pending Amex Approval" ||
-                partsReq.status === "Sourcing - Amex Approved"
-        )
-    } else if (statusGroup === "Parts Ordered") {
-        filtered = partsReqs.filter((partsReq) => partsReq.status === "Ordered - Awaiting Parts")
-    } else if (statusGroup === "Parts Staged") {
-        filtered = partsReqs.filter((partsReq) => partsReq.status === "Completed - Parts Staged/Delivered")
-    } else if (statusGroup === "Closed") {
-        filtered = partsReqs.filter(
-            (partsReq) =>
-                partsReq.status === "Closed - Partially Received" ||
-                partsReq.status === "Closed - Parts in Hand" ||
-                partsReq.status === "Rejected - Closed" ||
-                partsReq.status === "Closed - Order Canceled"
-        )
-    }
-
-    if (requester) {
-        filtered = filtered.filter((partsReq) => partsReq.requester.id === requester.id)
-    }
-    if (requesterGroup) {
-        filtered = filtered.filter((partsReq) => requesterGroup.map((user) => user.id).includes(partsReq.requester.id))
-    }
-    if (region) {
-        filtered = filtered.filter((partsReqs) => partsReqs.region === region)
-    }
-    if (opsVP) {
-        filtered = filtered.filter((partsReq) => calcCost(partsReq.parts) > 10000 || opsVpApprovalRequired(partsReq.unit ?? null, partsReq.parts))
-    }
-
-    return filtered.length
-}
-
-function calcUnitDown(partsReqs: Array<PartsReq>, region: string) {
-    const filtered = partsReqs.filter(
-        (partsReq) => partsReq.region === region && partsReq.urgency === "Unit Down" && UNIT_DOWN_STATUSES.includes(partsReq.status)
-    )
-
-    return filtered.length
-}
-
 export default function SummaryTable(props: Props) {
     const { novaUser, group } = props
+    const level = PERSONNEL_GROUPS[group]
 
     const token = useAuth0Token()
-
+  
     const [partsReqQuery, setPartsReqQuery] = React.useState<PartsReqQuery>({ user: novaUser })
     const [managerOnly, setManagerOnly] = React.useState<Array<NovaUser>>([])
 
@@ -215,7 +131,7 @@ export default function SummaryTable(props: Props) {
     const { data: partsReqs, isFetching: partsReqsFetching } = usePartsReqs(token, partsReqQuery)
     const { data: regions, isFetching: regionsFetching } = useRegions(token)
     const navigate = useNavigate()
-
+    
     React.useEffect(() => {
         if (!managersEmployeesFetching && group !== "Supply Chain Management") {
             setPartsReqQuery((prevState) => ({
@@ -225,40 +141,6 @@ export default function SummaryTable(props: Props) {
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [managersEmployeesFetching])
-
-    const handleClick = (statusGroup: string, requesters?: Array<NovaUser>, region?: string, urgency?: string) => {
-        let statuses: Array<string> = []
-        if (statusGroup === "Pending Quote") {
-            statuses = ["Pending Quote"]
-        } else if (statusGroup === "Pending Approval") {
-            statuses = ["Pending Approval", "Quote Provided - Pending Approval", "Sourcing - Request to Cancel"]
-        } else if (statusGroup === "Rejected") {
-            statuses = ["Rejected - Adjustments Required"]
-        } else if (statusGroup === "Approved") {
-            statuses = ["Approved", "Approved - On Hold"]
-        } else if (statusGroup === "Sourcing") {
-            statuses = [
-                "Sourcing - In Progress",
-                "Sourcing - Information Required",
-                "Sourcing - Information Provided",
-                "Sourcing - Pending Amex Approval",
-                "Sourcing - Amex Approved",
-                "Sourcing - Request to Cancel",
-            ]
-        } else if (statusGroup === "Parts Ordered") {
-            statuses = ["Ordered - Awaiting Parts"]
-        } else if (statusGroup === "Parts Staged") {
-            statuses = ["Completed - Parts Staged/Delivered"]
-        } else if (statusGroup === "Closed") {
-            statuses = ["Closed - Partially Received", "Closed - Parts in Hand", "Rejected - Closed", "Closed - Order Canceled"]
-        } else if (statusGroup === "Unit Down") {
-            statuses = UNIT_DOWN_STATUSES
-        }
-
-        navigate("/supply-chain", {
-            state: { statuses: statuses, requesters: requesters, region: region, urgency: urgency },
-        })
-    }
 
     const handleManagerOnlyChange = (event: React.ChangeEvent<HTMLInputElement>, manager: NovaUser) => {
         if (event.target.checked) {
@@ -270,7 +152,7 @@ export default function SummaryTable(props: Props) {
         }
     }
 
-    if (group === "Field Service" || group === "Shop Service") {
+    if (level === "L1") {
         return (
             <>
                 {!partsReqsFetching ? (
@@ -280,7 +162,7 @@ export default function SummaryTable(props: Props) {
                                 return (
                                     <Grid xs={12} sm={4} spacing={2} key={statusGroup}>
                                         <Item
-                                            onClick={() => handleClick(statusGroup, [novaUser])}
+                                            onClick={() => handleClick(navigate, statusGroup, [novaUser])}
                                             sx={{
                                                 margin: "5px",
                                                 display: "flex",
@@ -334,7 +216,7 @@ export default function SummaryTable(props: Props) {
                                             return (
                                                 <Grid xs={12} sm={4} spacing={2} key={statusGroup}>
                                                     <Item
-                                                        onClick={() => handleClick(statusGroup, [employee])}
+                                                        onClick={() => handleClick(navigate, statusGroup, [employee])}
                                                         sx={{
                                                             margin: "5px",
                                                             display: "flex",
@@ -367,7 +249,7 @@ export default function SummaryTable(props: Props) {
                 )}
             </>
         )
-    } else if (group === "Ops Manager" || group === "Shop Supervisor") {
+    } else if (level === "L2") {
         return (
             <>
                 {!partsReqsFetching ? (
@@ -390,7 +272,7 @@ export default function SummaryTable(props: Props) {
                                     <Grid xs={12} sm={4} spacing={2} key={statusGroup}>
                                         <Item
                                             onClick={() =>
-                                                handleClick(
+                                                handleClick(navigate, 
                                                     statusGroup,
                                                     managerOnly.includes(novaUser) ? [novaUser] : [novaUser].concat(managersEmployees!)
                                                 )
@@ -459,7 +341,7 @@ export default function SummaryTable(props: Props) {
                                             return (
                                                 <Grid xs={12} sm={4} spacing={2} key={statusGroup}>
                                                     <Item
-                                                        onClick={() => handleClick(statusGroup, [employee])}
+                                                        onClick={() => handleClick(navigate, statusGroup, [employee])}
                                                         sx={{
                                                             margin: "5px",
                                                             display: "flex",
@@ -492,7 +374,7 @@ export default function SummaryTable(props: Props) {
                 )}
             </>
         )
-    } else if (group === "Ops Director" || group === "Shop Director") {
+    } else if (level === "L3") {
         return novaUser.region.length > 1 ? (
             novaUser.region.map((region) => {
                 return (
@@ -559,7 +441,7 @@ export default function SummaryTable(props: Props) {
                                                                 <Grid xs={12} sm={4} spacing={2} key={statusGroup}>
                                                                     <Item
                                                                         onClick={() =>
-                                                                            handleClick(
+                                                                            handleClick(navigate, 
                                                                                 statusGroup,
                                                                                 managerOnly.includes(employee)
                                                                                     ? [employee]
@@ -636,7 +518,7 @@ export default function SummaryTable(props: Props) {
                                                                             return (
                                                                                 <Grid xs={12} sm={4} spacing={2} key={statusGroup}>
                                                                                     <Item
-                                                                                        onClick={() => handleClick(statusGroup, [user])}
+                                                                                        onClick={() => handleClick(navigate, statusGroup, [user])}
                                                                                         sx={{
                                                                                             margin: "5px",
                                                                                             display: "flex",
@@ -716,7 +598,7 @@ export default function SummaryTable(props: Props) {
                                             <Grid xs={12} sm={4} spacing={2} key={statusGroup}>
                                                 <Item
                                                     onClick={() =>
-                                                        handleClick(
+                                                        handleClick(navigate, 
                                                             statusGroup,
                                                             managerOnly.includes(employee)
                                                                 ? [employee]
@@ -787,7 +669,7 @@ export default function SummaryTable(props: Props) {
                                                         return (
                                                             <Grid xs={12} sm={4} spacing={2} key={statusGroup}>
                                                                 <Item
-                                                                    onClick={() => handleClick(statusGroup, [user])}
+                                                                    onClick={() => handleClick(navigate, statusGroup, [user])}
                                                                     sx={{
                                                                         margin: "5px",
                                                                         display: "flex",
@@ -822,7 +704,7 @@ export default function SummaryTable(props: Props) {
         ) : (
             <AccordionSkeleton statuses={STATUS_GROUPS} />
         )
-    } else if (group === "Ops Vice President") {
+    } else if (level === "L4") {
         return !partsReqsFetching && !regionsFetching ? (
             regions?.map((region) => {
                 region = toTitleCase(region)
@@ -849,7 +731,7 @@ export default function SummaryTable(props: Props) {
                                 <Grid container>
                                     <Grid xs={12} sm={4}>
                                         <Item
-                                            onClick={() => handleClick("Pending Approval", undefined, region)}
+                                            onClick={() => handleClick(navigate, "Pending Approval", undefined, region)}
                                             sx={{
                                                 margin: "5px",
                                                 display: "flex",
@@ -879,7 +761,7 @@ export default function SummaryTable(props: Props) {
         ) : (
             <AccordionSkeleton statuses={["Pending Approval"]} />
         )
-    } else if (group === "Supply Chain") {
+    } else if (level === "L5") {
         return !partsReqsFetching && !regionsFetching ? (
             regions?.map((region) => {
                 region = toTitleCase(region)
@@ -907,7 +789,7 @@ export default function SummaryTable(props: Props) {
                                     return (
                                         <Grid xs={12} sm={4} spacing={2} key={statusGroup}>
                                             <Item
-                                                onClick={() => handleClick(statusGroup, undefined, region)}
+                                                onClick={() => handleClick(navigate, statusGroup, undefined, region)}
                                                 sx={{
                                                     margin: "5px",
                                                     display: "flex",
@@ -938,121 +820,35 @@ export default function SummaryTable(props: Props) {
         ) : (
             <AccordionSkeleton statuses={SC_GROUPS} />
         )
-    } else if (
-        group === "Supply Chain Management" ||
-        group === "Admin" ||
-        group === "Business Development" ||
-        group === "Executive Management" ||
-        group === "IT"
-    ) {
-        
-        let partsByRegion = null
-        let partsByStatus = null
+    } else if (level === "L6") {
 
-        if(partsReqs && regions && STATUS_GROUPS){
-            partsByRegion = {}
-            for(const region of regions){
-                partsByRegion[region] = {}
-                for(const status of STATUS_GROUPS){
-                    const count = calcStatus(partsReqs, status, undefined, undefined, toTitleCase(region))
-                    partsByRegion[region][status] = count
-                }
-            }
+        if(partsReqsFetching || regionsFetching || !regions || !partsReqs){
+            return undefined
+        }
 
-            partsByStatus = {}
+        const partsByRegion: {[key: string]: {[key: string]: number}} = {}
+        const partsByStatus: {[key: string]: {[key: string]: number}} = {}
+
+        for(const region of regions){
+            partsByRegion[region] = {}
             for(const status of STATUS_GROUPS){
-                partsByStatus[status] = {}
-                for (const region of regions ?? []){
-                    const count = calcStatus(partsReqs ?? [], status, undefined, undefined, toTitleCase(region) )
-                    partsByStatus[status][region] = count
-                }
+                const count = calcStatus(partsReqs, status, undefined, undefined, toTitleCase(region))
+                partsByRegion[region][status] = count
             }
         }
-        return !partsReqsFetching && !regionsFetching && partsByRegion && partsByStatus ? (
-            <AdminPartsReq partsByRegion={partsByRegion} partsByStatus={partsByStatus} />
-            // regions?.map((region) => {
-            //     region = toTitleCase(region)
-            //     return (
-            //         <Grid xs={12} sm={6} sx={{ padding: "2px", marginBottom: "5px" }} key={region}>
-            //             <Accordion disableGutters defaultExpanded>
-            //                 <AccordionSummary
-            //                     expandIcon={<ExpandMoreIcon />}
-            //                     sx={{
-            //                         flexDirection: "row-reverse",
-            //                         "& .MuiAccordionSummary-content": {
-            //                             margin: 0,
-            //                         },
-            //                         "&.MuiAccordionSummary-root": {
-            //                             minHeight: 0,
-            //                             margin: 0,
-            //                         },
-            //                     }}
-            //                 >
-            //                     <h4 style={{ margin: 0 }}>{region}</h4>
-            //                 </AccordionSummary>
-            //                 <AccordionDetails sx={{ padding: "8px" }}>
-            //                     <Divider />
-            //                     <Grid container>
-            //                         {STATUS_GROUPS.map((statusGroup) => {
-            //                             return (
-            //                                 <Grid xs={12} sm={4} spacing={2} key={statusGroup}>
-            //                                     <Item
-            //                                         onClick={() => handleClick(statusGroup, undefined, region)}
-            //                                         sx={{
-            //                                             margin: "5px",
-            //                                             display: "flex",
-            //                                             alignItems: "center",
-            //                                             justifyContent: "space-between",
-            //                                             cursor: "pointer",
-            //                                             transition: "transform 0.1s ease-in-out",
-            //                                             "&:hover": {
-            //                                                 transform: "scale3d(1.03, 1.03, 1)",
-            //                                             },
-            //                                         }}
-            //                                     >
-            //                                         <Typography variant="subtitle2" fontWeight="400">
-            //                                             {`${statusGroup}:`}
-            //                                         </Typography>
-            //                                         <Typography variant="subtitle2" fontWeight="400">
-            //                                             {partsReqs ? calcStatus(partsReqs, statusGroup, undefined, undefined, region) : 0}
-            //                                         </Typography>
-            //                                     </Item>
-            //                                 </Grid>
-            //                             )
-            //                         })}
-            //                     </Grid>
-            //                     <Divider />
-            //                     <Grid xs={12} sm={4} spacing={2} key={region}>
-            //                         <Item
-            //                             onClick={() => handleClick("Unit Down", undefined, region, "Unit Down")}
-            //                             sx={{
-            //                                 margin: "5px",
-            //                                 display: "flex",
-            //                                 alignItems: "center",
-            //                                 justifyContent: "space-between",
-            //                                 cursor: "pointer",
-            //                                 transition: "transform 0.1s ease-in-out",
-            //                                 "&:hover": {
-            //                                     transform: "scale3d(1.03, 1.03, 1)",
-            //                                 },
-            //                             }}
-            //                         >
-            //                             <Typography variant="subtitle2" fontWeight="400">
-            //                                 {`Unit Down: `}
-            //                             </Typography>
-            //                             <Typography variant="subtitle2" fontWeight="400">
-            //                                 {partsReqs ? calcUnitDown(partsReqs, region) : 0}
-            //                             </Typography>
-            //                         </Item>
-            //                     </Grid>
-            //                 </AccordionDetails>
-            //             </Accordion>
-            //         </Grid>
-            //     )
-            // })
-        ) : (
-            <AccordionSkeleton statuses={STATUS_GROUPS} />
+
+        for(const status of STATUS_GROUPS){
+            partsByStatus[status] = {}
+            for (const region of regions){
+                const count = calcStatus(partsReqs, status, undefined, undefined, toTitleCase(region) )
+                partsByStatus[status][region] = count
+            }
+        }
+
+        return (
+            <AdminPartsReq regionsUpperCase={regions} partsByRegion={partsByRegion} partsByStatus={partsByStatus} />
         )
+
     } else if (group === "") {
         return !partsReqsFetching ? (
             <Paper sx={{ padding: "5px", minWidth: "fit-content", maxWidth: "100%" }}>
@@ -1061,7 +857,7 @@ export default function SummaryTable(props: Props) {
                         return (
                             <Grid xs={12} sm={4} spacing={2} key={statusGroup}>
                                 <Item
-                                    onClick={() => handleClick(statusGroup)}
+                                    onClick={() => handleClick(navigate, statusGroup)}
                                     sx={{
                                         margin: "5px",
                                         display: "flex",

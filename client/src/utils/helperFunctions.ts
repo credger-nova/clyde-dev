@@ -54,3 +54,7 @@ export function opsVpApprovalRequired(unit: Unit | null, rows: Array<OrderRow>) 
         return false
     }
 }
+
+export function isEmpty(obj: object) {
+    return Object.keys(obj).length === 0 ? true: false
+}

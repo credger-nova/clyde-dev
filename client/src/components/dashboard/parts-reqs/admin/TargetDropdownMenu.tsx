@@ -4,13 +4,16 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 
-export default function TargetDropdownMenu(props) {
-  const target = props.target
-  const menu = props.menu
-  const item = props.item
-  const setItem = props.setItem
+interface Props{
+  target: string;
+  menu: Array<string>;
+  item: string
+  setItem: React.Dispatch<React.SetStateAction<string>>
+}
 
-  const menuItems = menu.map((menuItem) => {
+export default function TargetDropdownMenu(props: Props) {
+  const {target, menu, item, setItem} = props
+  const menuItems = menu.map((menuItem: string) => {
     return <MenuItem key={menuItem} value={menuItem}>{menuItem}</MenuItem>
   })
 

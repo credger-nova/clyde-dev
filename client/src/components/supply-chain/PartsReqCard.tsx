@@ -122,7 +122,7 @@ export default function PartsReqCard(props: Props) {
                             <Typography variant="subtitle2" sx={{ width: "35%" }}>
                                 Location:
                             </Typography>
-                            {partsReq.unit ? (
+                            {partsReq.unit && partsReq.unit.location ? (
                                 partsReq.unit.location.length > 21 ? (
                                     <Tooltip
                                         title={partsReq.unit.location}

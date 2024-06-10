@@ -101,7 +101,7 @@ export default function PartsReqTable(props: Props) {
                             ) : (
                                 <StyledTableCell />
                             )}
-                            {partsReq.unit ? (
+                            {partsReq.unit && partsReq.unit.location ? (
                                 partsReq.unit.location.length > 25 ? (
                                     <Tooltip
                                         title={partsReq.unit.location}

@@ -26,7 +26,7 @@ import FormControlLabel from "@mui/material/FormControlLabel"
 import AdminPartsReq from "./admin/AdminPartsReq"
 
 import { STATUS_GROUPS, SC_GROUPS, PERSONNEL_GROUPS } from "./lookupTables"
-import { calcStatus, handleClick } from "./dashboardFunctions"
+import { calcStatus, calcUnitDown, handleClick } from "./dashboardFunctions"
 
 interface Props {
     novaUser: NovaUser
@@ -846,7 +846,7 @@ export default function SummaryTable(props: Props) {
         }
 
         return (
-            <AdminPartsReq regionsUpperCase={regions} partsByRegion={partsByRegion} partsByStatus={partsByStatus} />
+            <AdminPartsReq regionsUpperCase={regions} partsByRegion={partsByRegion} partsByStatus={partsByStatus} partsReqs={partsReqs} />
         )
 
     } else if (group === "") {

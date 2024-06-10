@@ -5,6 +5,7 @@ import { styled } from '@mui/material/styles';
 import { useNavigate } from "react-router-dom";
 import { navigateToSupplyChain } from '../dashboardFunctions';
 import { PieChartSeries } from './AdminPartsReq';
+import { Link } from '@mui/material';
 
 
 const StyledText = styled('text')(({ theme }) => ({
@@ -65,7 +66,20 @@ export default function PartsPieChart(props: Props) {
         }}
     >
       <PieCenterLabel>
-        Total: {total}
+        <Link 
+          underline="hover"
+          color="inherit"
+          sx={{cursor: 'pointer', color: '#fff'}}
+          onClick={() => {
+            if(target === 'region'){
+              return navigateToSupplyChain(navigate, undefined, undefined, item)
+            } else{
+                return navigateToSupplyChain(navigate, item)
+            }
+          }}
+        >
+            Total: {total}
+        </Link>
       </PieCenterLabel>
     </PieChart>
   );

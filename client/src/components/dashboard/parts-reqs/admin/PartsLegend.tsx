@@ -19,6 +19,7 @@ export default function PartsLegend(props: Props){
                 <Box sx={{height: 16, width: 16, bgcolor: `${listItem.color}` }}></Box>
                 <Link
                     underline="hover"
+                    sx={{cursor: 'pointer'}}
                     onClick={() => {
                         if(target === 'region'){
                             return navigateToSupplyChain(navigate, listItem.label, undefined, item)

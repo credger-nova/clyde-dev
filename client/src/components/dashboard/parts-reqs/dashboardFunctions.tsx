@@ -35,6 +35,20 @@ export function calcStatusV2(
     return count
 }
 
+export function calcUnitDownV2(partsReqs: Array<PartsReq>, region?: string, statusGroup?: string, ){
+    let count = 0
+    for(const partsReq of partsReqs){
+        if(
+            (region ? partsReq.region === region: true) &&
+            (statusGroup ? STATUS_MAP[partsReq.status] === statusGroup: true) &&
+            STATUS_GROUPS_MAP['Unit Down'].includes(partsReq.status)
+        ){count++}
+    }
+
+    return count
+}
+
+//calcUnitDown is deprecated; Use calcUnitDownV2() instead
 export function calcUnitDown(partsReqs: Array<PartsReq>, region: string) {
     const filtered = partsReqs.filter(
         (partsReq) => partsReq.region === region && partsReq.urgency === "Unit Down" && UNIT_DOWN_STATUSES.includes(partsReq.status)

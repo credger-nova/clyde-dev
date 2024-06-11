@@ -3,6 +3,7 @@ import { LEAD_MECHANICS } from "../../utils/lead-mechanics"
 import { TITLES } from "../../utils/titles"
 
 import { prisma } from "../../utils/prisma-client"
+import { User } from "@prisma/client"
 
 const SUPPLY_CHAIN_TITLES = TITLES.find((item) => item.group === "Supply Chain")?.titles ?? []
 const SC_MANAGEMENT_TITLES = TITLES.find((item) => item.group === "Supply Chain Management")?.titles ?? []
@@ -148,18 +149,14 @@ export const getEmployeesDirector = async (directorId: string) => {
 
 // Get employees under a director
 export const getDirectorsEmployees = async (id: string, inactive?: "true") => {
-    const employees = await prisma.user.findMany({
+    let employees: Array<User> = []
+
+    // Get managers
+    const managers = await prisma.user.findMany({
         where: {
             AND: [
                 {
-                    OR: [
-                        {
-                            supervisorId: id,
-                        },
-                        {
-                            managerId: id,
-                        },
-                    ],
+                    supervisorId: id,
                 },
                 {
                     ...(inactive !== "true" ? { terminationDate: null } : {}),
@@ -175,6 +172,25 @@ export const getDirectorsEmployees = async (id: string, inactive?: "true") => {
             },
         ],
     })
+    employees = employees.concat(managers)
+
+    // Get managers employees
+    for (const manager of managers) {
+        const subordinates = await prisma.user.findMany({
+            where: {
+                AND: [{ supervisorId: manager.id }, { ...(inactive !== "true" ? { terminationDate: null } : {}) }],
+            },
+            orderBy: [
+                {
+                    firstName: "asc",
+                },
+                {
+                    lastName: "asc",
+                },
+            ],
+        })
+        employees = employees.concat(subordinates)
+    }
 
     // Convert to correct type
     let novaEmployees = employees.map((employee) => {

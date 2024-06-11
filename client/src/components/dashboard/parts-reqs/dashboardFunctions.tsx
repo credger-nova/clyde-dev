@@ -1,16 +1,21 @@
-import { NavigateFunction } from "react-router-dom";
+import { NavigateFunction } from "react-router-dom"
 import { NovaUser } from "../../../types/kpa/novaUser"
-import { STATUS_GROUPS_MAP, STATUS_MAP, UNIT_DOWN_STATUSES } from "./lookupTables";
+import { STATUS_GROUPS_MAP, STATUS_MAP, UNIT_DOWN_STATUSES } from "./lookupTables"
 import { PartsReq } from "../../../types/partsReq"
-import { calcCost, opsVpApprovalRequired } from "../../../utils/helperFunctions";
+import { calcCost, opsVpApprovalRequired } from "../../../utils/helperFunctions"
 
-export function navigateToSupplyChain(navigate: NavigateFunction, statusGroup?: string, requesters?: Array<NovaUser>, region?: string, urgency?: string) {
-    const statuses = statusGroup ? STATUS_GROUPS_MAP[statusGroup]: []
+export function navigateToSupplyChain(
+    navigate: NavigateFunction,
+    statusGroup?: string,
+    requesters?: Array<NovaUser>,
+    region?: string,
+    urgency?: string
+) {
+    const statuses = statusGroup ? STATUS_GROUPS_MAP[statusGroup] : []
 
     navigate("/supply-chain", {
-        state: { statuses: statuses, requesters: requesters, region: region, urgency: urgency }
+        state: { statuses: statuses, requesters: requesters, region: region, urgency: urgency },
     })
-
 }
 
 export function calcStatusV2(
@@ -20,29 +25,33 @@ export function calcStatusV2(
     requesterGroup?: Array<NovaUser>,
     region?: string,
     opsVP?: boolean
-){
+) {
     let count = 0
-    for(const partsReq of partsReqs){
-        if(
-            (STATUS_MAP[partsReq.status] === statusGroup) &&
-            (requester ? partsReq.requester.id === requester.id: true) &&
-            (requesterGroup ? requesterGroup.map((user) => user.id).includes(partsReq.requester.id): true) &&
-            (region ? partsReq.region === region: true) &&
-            (opsVP ? calcCost(partsReq.parts) > 10000 || opsVpApprovalRequired(partsReq.unit ?? null, partsReq.parts): true)
-        ){count++} 
+    for (const partsReq of partsReqs) {
+        if (
+            STATUS_MAP[partsReq.status] === statusGroup &&
+            (requester ? partsReq.requester.id === requester.id : true) &&
+            (requesterGroup ? requesterGroup.map((user) => user.id).includes(partsReq.requester.id) : true) &&
+            (region ? partsReq.region === region : true) &&
+            (opsVP ? calcCost(partsReq.parts) > 10000 || opsVpApprovalRequired(partsReq.unit ?? null, partsReq.parts) : true)
+        ) {
+            count++
+        }
     }
 
     return count
 }
 
-export function calcUnitDownV2(partsReqs: Array<PartsReq>, region?: string, statusGroup?: string, ){
+export function calcUnitDownV2(partsReqs: Array<PartsReq>, region?: string, statusGroup?: string) {
     let count = 0
-    for(const partsReq of partsReqs){
-        if(
-            (region ? partsReq.region === region: true) &&
-            (statusGroup ? STATUS_MAP[partsReq.status] === statusGroup: true) &&
-            STATUS_GROUPS_MAP['Unit Down'].includes(partsReq.status)
-        ){count++}
+    for (const partsReq of partsReqs) {
+        if (
+            (region ? partsReq.region === region : true) &&
+            (statusGroup ? STATUS_MAP[partsReq.status] === statusGroup : true) &&
+            STATUS_GROUPS_MAP["Unit Down"].includes(partsReq.status)
+        ) {
+            count++
+        }
     }
 
     return count
@@ -145,7 +154,7 @@ export const handleClick = (navigate: NavigateFunction, statusGroup: string, req
     } else if (statusGroup === "Parts Staged") {
         statuses = ["Completed - Parts Staged/Delivered"]
     } else if (statusGroup === "Closed") {
-        statuses = ["Closed - Partially Received", "Closed - Parts in Hand", "Rejected - Closed", "Closed - Order Canceled"]        
+        statuses = ["Closed - Partially Received", "Closed - Parts in Hand", "Rejected - Closed", "Closed - Order Canceled"]
     } else if (statusGroup === "Unit Down") {
         statuses = UNIT_DOWN_STATUSES
     }

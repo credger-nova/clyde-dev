@@ -23,7 +23,7 @@ import Grid from "@mui/material/Unstable_Grid2"
 import Skeleton from "@mui/material/Skeleton"
 import Switch from "@mui/material/Switch"
 import FormControlLabel from "@mui/material/FormControlLabel"
-import AdminPartsReq from "./admin/AdminPartsReq"
+import AdminPartsReq from "./L6/L6PartsReq"
 
 import { STATUS_GROUPS, SC_GROUPS, PERSONNEL_GROUPS } from "./lookupTables"
 import { calcStatus, calcUnitDown, handleClick } from "./dashboardFunctions"
@@ -823,12 +823,12 @@ export default function SummaryTable(props: Props) {
     } else if (level === "L6") {
 
         if(partsReqsFetching || regionsFetching || !regions || !partsReqs){
-            return undefined
+            return null
         }
 
         const partsByRegion: {[key: string]: {[key: string]: number}} = {}
         const partsByStatus: {[key: string]: {[key: string]: number}} = {}
-
+    
         for(const region of regions){
             partsByRegion[region] = {}
             for(const status of STATUS_GROUPS){

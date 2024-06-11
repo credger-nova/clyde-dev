@@ -18,7 +18,7 @@ export const ALLOWED_GROUPS = [
     "IT",
 ]
 
-export const PERSONNEL_GROUPS: {[key: string]: string} = {
+export const PERSONNEL_GROUPS: { [key: string]: string } = {
     "Field Service": "L1",
     "Shop Service": "L1",
     "Ops Manager": "L2",
@@ -28,18 +28,18 @@ export const PERSONNEL_GROUPS: {[key: string]: string} = {
     "Ops Vice Presient": "L4",
     "Supply Chain": "L5",
     "Supply Chain Management": "L6",
-    "Admin": "L6",
+    Admin: "L6",
     "Business Development": "L6",
     "Executive Management": "L6",
-    "IT": "L6"
+    IT: "L6",
 }
 
-export const STATUS_GROUPS_MAP: {[key: string]: Array<string>} = {
+export const STATUS_GROUPS_MAP: { [key: string]: Array<string> } = {
     "Pending Quote": ["Pending Quote"],
     "Pending Approval": ["Pending Approval", "Quote Provided - Pending Approval", "Sourcing - Request to Cancel"],
-    "Rejected": ["Rejected - Adjustments Required"],
-    "Approved": ["Approved", "Approved - On Hold"],
-    "Sourcing": [
+    Rejected: ["Rejected - Adjustments Required"],
+    Approved: ["Approved", "Approved - On Hold"],
+    Sourcing: [
         "Sourcing - In Progress",
         "Sourcing - Information Required",
         "Sourcing - Information Provided",
@@ -49,7 +49,7 @@ export const STATUS_GROUPS_MAP: {[key: string]: Array<string>} = {
     ],
     "Parts Ordered": ["Ordered - Awaiting Parts"],
     "Parts Staged": ["Completed - Parts Staged/Delivered"],
-    "Closed": ["Closed - Partially Received", "Closed - Parts in Hand", "Rejected - Closed", "Closed - Order Canceled"],
+    Closed: ["Closed - Partially Received", "Closed - Parts in Hand", "Rejected - Closed", "Closed - Order Canceled"],
     "Unit Down": [
         "Pending Approval",
         "Pending Quote",
@@ -63,16 +63,16 @@ export const STATUS_GROUPS_MAP: {[key: string]: Array<string>} = {
         "Sourcing - Pending Amex Approval",
         "Sourcing - Amex Approved",
         "Ordered - Awaiting Parts",
-    ]
+    ],
 }
 
-export const STATUS_MAP: {[key: string]: string} = {
+export const STATUS_MAP: { [key: string]: string } = {
     "Pending Quote": "Pending Quote",
     "Pending Approval": "Pending Approval",
     "Quote Provided - Pending Approval": "Pending Approval",
     "Sourcing - Request to Cancel": "Pending Approval",
     "Rejected - Adjustments Required": "Rejected",
-    "Approved": "Approved",
+    Approved: "Approved",
     "Approved - On Hold": "Approved",
     "Sourcing - In Progress": "Sourcing",
     "Sourcing - Information Required": "Sourcing",
@@ -84,7 +84,7 @@ export const STATUS_MAP: {[key: string]: string} = {
     "Closed - Partially Received": "Closed",
     "Closed - Parts in Hand": "Closed",
     "Rejected - Closed": "Closed",
-    "Closed - Order Canceled": "Closed"
+    "Closed - Order Canceled": "Closed",
 }
 
 export const UNIT_DOWN_STATUSES = [

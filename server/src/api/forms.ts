@@ -276,7 +276,7 @@ export function calcCost(parts: Array<OrderRow>) {
     let sum = 0
 
     for (const part of parts) {
-        sum += part.cost ?? 0 * part.qty
+        sum += (part.cost ?? 0) * part.qty
     }
 
     return sum

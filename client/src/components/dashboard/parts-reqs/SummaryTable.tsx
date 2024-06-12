@@ -23,10 +23,11 @@ import Grid from "@mui/material/Unstable_Grid2"
 import Skeleton from "@mui/material/Skeleton"
 import Switch from "@mui/material/Switch"
 import FormControlLabel from "@mui/material/FormControlLabel"
-import AdminPartsReq from "./L6/L6PartsReq"
+import L6PartsReq from "./L6PartsReq"
 
 import { STATUS_GROUPS, SC_GROUPS, PERSONNEL_GROUPS } from "./lookupTables"
-import { calcStatus, calcUnitDown, handleClick } from "./dashboardFunctions"
+import { calcStatus, calcUnitDown, calcUnitDownV2, handleClick } from "./dashboardFunctions"
+import { Box } from "@mui/material"
 
 interface Props {
     novaUser: NovaUser
@@ -827,26 +828,26 @@ export default function SummaryTable(props: Props) {
         }
 
         const partsByRegion: {[key: string]: {[key: string]: number}} = {}
-        const partsByStatus: {[key: string]: {[key: string]: number}} = {}
-    
+
         for(const region of regions){
             partsByRegion[region] = {}
             for(const status of STATUS_GROUPS){
                 const count = calcStatus(partsReqs, status, undefined, undefined, toTitleCase(region))
                 partsByRegion[region][status] = count
             }
+            partsByRegion[region]["Units Down"] = calcUnitDownV2(partsReqs, toTitleCase(region)) 
         }
+        console.log('partsByRegion: ', partsByRegion)
 
-        for(const status of STATUS_GROUPS){
-            partsByStatus[status] = {}
-            for (const region of regions){
-                const count = calcStatus(partsReqs, status, undefined, undefined, toTitleCase(region) )
-                partsByStatus[status][region] = count
-            }
-        }
+        const regionCharts = regions.map((region) => {
+            return <L6PartsReq key={region} target={region} data={partsByRegion[region]} />
+        })
+
 
         return (
-            <AdminPartsReq regionsUpperCase={regions} partsByRegion={partsByRegion} partsByStatus={partsByStatus} partsReqs={partsReqs} />
+                <Box sx={{display: "flex", flexWrap: "wrap", gap: "24px"}}>
+                    {regionCharts}
+                </Box>
         )
 
     } else if (group === "") {

@@ -64,6 +64,23 @@ export const STATUS_GROUPS_MAP: { [key: string]: Array<string> } = {
         "Sourcing - Amex Approved",
         "Ordered - Awaiting Parts",
     ],
+    "Chart Data": [
+        "Pending Quote",
+        "Pending Approval", 
+        "Quote Provided - Pending Approval", 
+        "Sourcing - Request to Cancel",
+        "Rejected - Adjustments Required",
+        "Approved", 
+        "Approved - On Hold",
+        "Sourcing - In Progress",
+        "Sourcing - Information Required",
+        "Sourcing - Information Provided",
+        "Sourcing - Pending Amex Approval",
+        "Sourcing - Amex Approved",
+        "Sourcing - Request to Cancel",
+        "Ordered - Awaiting Parts",
+        "Completed - Parts Staged/Delivered",
+    ]
 }
 
 export const STATUS_MAP: { [key: string]: string } = {

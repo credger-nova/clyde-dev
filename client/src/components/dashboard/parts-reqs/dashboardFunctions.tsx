@@ -1,8 +1,9 @@
 import { NavigateFunction } from "react-router-dom"
 import { NovaUser } from "../../../types/kpa/novaUser"
-import { STATUS_GROUPS_MAP, STATUS_MAP, UNIT_DOWN_STATUSES } from "./lookupTables"
+import { STATUS_GROUPS, STATUS_GROUPS_MAP, STATUS_MAP, UNIT_DOWN_STATUSES } from "./lookupTables"
 import { PartsReq } from "../../../types/partsReq"
 import { calcCost, opsVpApprovalRequired } from "../../../utils/helperFunctions"
+import { tolColorPallete } from "./lookupTables"
 
 export function navigateToSupplyChain(
     navigate: NavigateFunction,
@@ -55,6 +56,72 @@ export function calcUnitDownV2(partsReqs: Array<PartsReq>, region?: string, stat
     }
 
     return count
+}
+
+export function getPartsReqsByUser (user: NovaUser, parts: Array<PartsReq>){
+    const partsByUser: { [key: string]: number }= {}
+    for(const status of STATUS_GROUPS){
+        const count = calcStatusV2(parts, status, user)
+        partsByUser[status] = count
+    }
+    return partsByUser
+}
+
+export function getPartsReqsByUserGroup(users: Array<NovaUser>, parts: Array<PartsReq>){
+    const partsByUserGroup: { [key: string]: number } = {}
+    for(const status of STATUS_GROUPS){
+        partsByUserGroup[status] = calcStatusV2(parts, status, undefined, users)
+    }
+    
+    return partsByUserGroup
+}
+
+
+export interface PieChartSeries {
+    value: number
+    label: string
+    color: string
+}
+
+export function getChartData(data: { [key: string]: number }){
+    const chartData: Array<PieChartSeries> = []
+    let i=0
+    for(const [key, value] of Object.entries(data)){
+        if(key === "Closed" || key === "Units Down"){
+            continue
+        }
+        const x = {value: value, label: key, color: tolColorPallete[i]}
+        chartData.push(x)
+        i++
+    }
+
+    return chartData
+}
+
+
+export function getPieChartDimensions(length: number){
+    const chart: {[key: string]: any} = {}
+    chart.width = length
+    chart.height = length
+    chart.innerRadius = length/2 - 22
+    chart.outerRadius = length/2 - 2
+    chart.innerRadiusHighlighed = length/2 - 22
+    chart.outerRadiusHighlighed = length/2
+    chart.cx = length/2 - 5
+    chart.cy = length/2 - 5
+    chart.centerTextWidth = String(length/2) + "px"
+    chart.centerTextTop = String(length/2 - 20) + "px"
+    chart.centerTextLeft = String(length/4) + "px"
+    
+    return(chart)
+}
+
+export function getTotalPartsReqs(chartData: Array<PieChartSeries>){
+    let sum = 0
+    for(const data of chartData){
+        sum += data.value
+    }
+    return sum
 }
 
 //calcUnitDown is deprecated; Use calcUnitDownV2() instead

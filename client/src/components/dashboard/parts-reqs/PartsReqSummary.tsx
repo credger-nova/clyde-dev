@@ -39,7 +39,7 @@ export default function PartsReqSummary(props: Props) {
         userType &&
         ALLOWED_GROUPS.includes(userType.group) && (
             <Item>
-                <Box sx={{ display: "flex", flexDirection: "column" }}>
+                <Box sx={{ display: "flex", flexDirection: "column"}}>
                     <Box sx={{ display: "flex", flexDirection: "row" }}>
                         <Typography sx={{ margin: "0px 0px 0px 34px", width: "100%", textAlign: "center", fontSize: 24 }}>Parts Requisitions</Typography>
                         <IconButton onClick={handleRefreshPartsReqs} disableRipple size={"small"} sx={{ padding: "0px 5px" }}>
@@ -49,16 +49,17 @@ export default function PartsReqSummary(props: Props) {
                     <Divider sx={{ width: "100%", marginBottom: "10px" }} />
                     <Grid
                         container
-                        direction={
-                            userType.group === "Supply Chain Management" ||
-                            userType.group === "Ops Vice President" ||
-                            userType.group === "Admin" ||
-                            userType.group === "Business Development" ||
-                            userType.group === "Executive Management" ||
-                            userType.group === "IT"
-                                ? "row"
-                                : "column"
-                        }
+                        // direction={
+                        //     userType.group === "Supply Chain Management" ||
+                        //     userType.group === "Ops Vice President" ||
+                        //     userType.group === "Admin" ||
+                        //     userType.group === "Business Development" ||
+                        //     userType.group === "Executive Management" ||
+                        //     userType.group === "IT"
+                        //         ? "row"
+                        //         : "column"
+                        // }
+                        direction="column"
                     >
                         <SummaryTable novaUser={novaUser} group={userType.group} />
                     </Grid>

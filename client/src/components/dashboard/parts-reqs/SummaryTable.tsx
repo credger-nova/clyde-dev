@@ -1,7 +1,7 @@
 import * as React from "react"
 
 import { NovaUser } from "../../../types/kpa/novaUser"
-import { PartsReqQuery } from "../../../types/partsReq"
+import { PartsReq, PartsReqQuery } from "../../../types/partsReq"
 
 import {toTitleCase } from "../../../utils/helperFunctions"
 
@@ -10,6 +10,7 @@ import { usePartsReqs } from "../../../hooks/partsReq"
 import { useRegions } from "../../../hooks/unit"
 import { useNavigate } from "react-router-dom"
 import { useAuth0Token } from "../../../hooks/utils"
+import { TITLES } from "../../../utils/titles"
 
 import { styled } from "@mui/material/styles"
 import Accordion from "@mui/material/Accordion"
@@ -26,8 +27,12 @@ import FormControlLabel from "@mui/material/FormControlLabel"
 import L6PartsReq from "./L6PartsReq"
 
 import { STATUS_GROUPS, SC_GROUPS, PERSONNEL_GROUPS } from "./lookupTables"
-import { calcStatus, calcUnitDown, calcUnitDownV2, handleClick } from "./dashboardFunctions"
+import { calcStatus, calcStatusV2, calcUnitDown, calcUnitDownV2, handleClick, getPartsReqsByUser, getPartsReqsByUserGroup } from "./dashboardFunctions"
 import { Box } from "@mui/material"
+import RegionToggleButton from "./RegionToggleButton"
+import L3 from "./L3"
+import L1 from "./L1"
+import L2 from "./L2"
 
 interface Props {
     novaUser: NovaUser
@@ -120,7 +125,6 @@ const StyledSwitch = styled(Switch)(() => ({
 export default function SummaryTable(props: Props) {
     const { novaUser, group } = props
     const level = PERSONNEL_GROUPS[group]
-
     const token = useAuth0Token()
   
     const [partsReqQuery, setPartsReqQuery] = React.useState<PartsReqQuery>({ user: novaUser })
@@ -153,559 +157,46 @@ export default function SummaryTable(props: Props) {
         }
     }
 
+    function getChartsForSubordinates(leadsEmployees: Array<NovaUser>, partsReqs: Array<PartsReq>){
+        const charts = leadsEmployees.map((employee) => {
+            return <L6PartsReq target='novaUser' data={getPartsReqsByUser(employee, partsReqs)} novaUser={employee} region={undefined} level={level} userGroup={undefined}/>
+        })
+
+        return charts
+    }
+
     if (level === "L1") {
+        if(leadsEmployeesFetching || !partsReqs){
+            return null
+        }
+
         return (
-            <>
-                {!partsReqsFetching ? (
-                    <Paper sx={{ padding: "5px", minWidth: "fit-content", maxWidth: "100%" }}>
-                        <Grid container>
-                            {STATUS_GROUPS.map((statusGroup) => {
-                                return (
-                                    <Grid xs={12} sm={4} spacing={2} key={statusGroup}>
-                                        <Item
-                                            onClick={() => handleClick(navigate, statusGroup, [novaUser])}
-                                            sx={{
-                                                margin: "5px",
-                                                display: "flex",
-                                                alignItems: "center",
-                                                justifyContent: "space-between",
-                                                cursor: "pointer",
-                                                transition: "transform 0.1s ease-in-out",
-                                                "&:hover": {
-                                                    transform: "scale3d(1.03, 1.03, 1)",
-                                                },
-                                            }}
-                                        >
-                                            <Typography variant="subtitle2" fontWeight="400">
-                                                {`${statusGroup}:`}
-                                            </Typography>
-                                            <Typography variant="subtitle2" fontWeight="400">
-                                                {partsReqs ? calcStatus(partsReqs, statusGroup, novaUser) : 0}
-                                            </Typography>
-                                        </Item>
-                                    </Grid>
-                                )
-                            })}
-                        </Grid>
-                    </Paper>
-                ) : (
-                    <StatusSkeleton statuses={STATUS_GROUPS} />
-                )}
-                {!leadsEmployeesFetching && !partsReqsFetching ? (
-                    leadsEmployees?.map((employee) => {
-                        return (
-                            <Accordion key={employee.id} disableGutters>
-                                <AccordionSummary
-                                    expandIcon={<ExpandMoreIcon />}
-                                    sx={{
-                                        flexDirection: "row-reverse",
-                                        "& .MuiAccordionSummary-content": {
-                                            margin: 0,
-                                        },
-                                        "&.MuiAccordionSummary-root": {
-                                            minHeight: 0,
-                                            margin: "5px 0px",
-                                        },
-                                    }}
-                                >
-                                    <div>{`${employee.firstName} ${employee.lastName}`}</div>
-                                </AccordionSummary>
-                                <AccordionDetails>
-                                    <Divider />
-                                    <Grid container>
-                                        {STATUS_GROUPS.map((statusGroup) => {
-                                            return (
-                                                <Grid xs={12} sm={4} spacing={2} key={statusGroup}>
-                                                    <Item
-                                                        onClick={() => handleClick(navigate, statusGroup, [employee])}
-                                                        sx={{
-                                                            margin: "5px",
-                                                            display: "flex",
-                                                            alignItems: "center",
-                                                            justifyContent: "space-between",
-                                                            cursor: "pointer",
-                                                            transition: "transform 0.1s ease-in-out",
-                                                            "&:hover": {
-                                                                transform: "scale3d(1.03, 1.03, 1)",
-                                                            },
-                                                        }}
-                                                    >
-                                                        <Typography variant="subtitle2" fontWeight="400">
-                                                            {`${statusGroup}:`}
-                                                        </Typography>
-                                                        <Typography variant="subtitle2" fontWeight="400">
-                                                            {partsReqs ? calcStatus(partsReqs, statusGroup, employee) : 0}
-                                                        </Typography>
-                                                    </Item>
-                                                </Grid>
-                                            )
-                                        })}
-                                    </Grid>
-                                </AccordionDetails>
-                            </Accordion>
-                        )
-                    })
-                ) : (
-                    <AccordionSkeleton statuses={STATUS_GROUPS} />
-                )}
-            </>
+            <L1 novaUser={novaUser} leadsEmployees={leadsEmployees} partsReqs={partsReqs}/>
         )
-    } else if (level === "L2") {
+
+    }
+    
+    if(level === "L2") {
+        if(!managersEmployees || !partsReqs){
+            return null
+        }
+
+        //return <L2 novaUser={novaUser} level={level} managersEmployees={managersEmployees} partsReqs={partsReqs}/>
+        return <L2 novaUser={novaUser} managersEmployees={managersEmployees} partsReqs={partsReqs}/>
+
+    }
+    
+    if (level === "L3") {
+        if(!partsReqs || !directorsEmployees){
+            return null
+        }
+
         return (
-            <>
-                {!partsReqsFetching ? (
-                    <Paper sx={{ padding: "5px", minWidth: "fit-content", maxWidth: "100%" }}>
-                        <FormControlLabel
-                            control={
-                                <StyledSwitch
-                                    checked={managerOnly.includes(novaUser)}
-                                    onChange={(event) => handleManagerOnlyChange(event, novaUser)}
-                                    size="medium"
-                                    disableRipple
-                                    sx={{ marginLeft: "10px" }}
-                                />
-                            }
-                            label={<Typography variant="body2">Submitted By Me Only</Typography>}
-                        />
-                        <Grid container>
-                            {STATUS_GROUPS.map((statusGroup) => {
-                                return (
-                                    <Grid xs={12} sm={4} spacing={2} key={statusGroup}>
-                                        <Item
-                                            onClick={() =>
-                                                handleClick(navigate, 
-                                                    statusGroup,
-                                                    managerOnly.includes(novaUser) ? [novaUser] : [novaUser].concat(managersEmployees!)
-                                                )
-                                            }
-                                            sx={{
-                                                margin: "5px",
-                                                display: "flex",
-                                                alignItems: "center",
-                                                justifyContent: "space-between",
-                                                cursor: "pointer",
-                                                transition: "transform 0.1s ease-in-out",
-                                                "&:hover": {
-                                                    transform: "scale3d(1.03, 1.03, 1)",
-                                                },
-                                            }}
-                                        >
-                                            <Typography variant="subtitle2" fontWeight="400">
-                                                {`${statusGroup}:`}
-                                            </Typography>
-                                            <Typography variant="subtitle2" fontWeight="400">
-                                                {partsReqs
-                                                    ? calcStatus(
-                                                          partsReqs,
-                                                          statusGroup,
-                                                          undefined,
-                                                          managerOnly.includes(novaUser)
-                                                              ? [novaUser]
-                                                              : managersEmployees
-                                                                    ?.filter((subordinate) => subordinate.supervisorId === novaUser.id)
-                                                                    .concat(novaUser)
-                                                      )
-                                                    : 0}
-                                            </Typography>
-                                        </Item>
-                                    </Grid>
-                                )
-                            })}
-                        </Grid>
-                    </Paper>
-                ) : (
-                    <StatusSkeleton statuses={STATUS_GROUPS} />
-                )}
-                {!managersEmployeesFetching && !partsReqsFetching ? (
-                    managersEmployees?.map((employee) => {
-                        return (
-                            <Accordion key={employee.id} disableGutters>
-                                <AccordionSummary
-                                    expandIcon={<ExpandMoreIcon />}
-                                    sx={{
-                                        flexDirection: "row-reverse",
-                                        "& .MuiAccordionSummary-content": {
-                                            margin: 0,
-                                        },
-                                        "&.MuiAccordionSummary-root": {
-                                            minHeight: 0,
-                                            margin: "5px 0px",
-                                        },
-                                    }}
-                                >
-                                    <div>{`${employee.firstName} ${employee.lastName}`}</div>
-                                </AccordionSummary>
-                                <AccordionDetails>
-                                    <Divider />
-                                    <Grid container>
-                                        {STATUS_GROUPS.map((statusGroup) => {
-                                            return (
-                                                <Grid xs={12} sm={4} spacing={2} key={statusGroup}>
-                                                    <Item
-                                                        onClick={() => handleClick(navigate, statusGroup, [employee])}
-                                                        sx={{
-                                                            margin: "5px",
-                                                            display: "flex",
-                                                            alignItems: "center",
-                                                            justifyContent: "space-between",
-                                                            cursor: "pointer",
-                                                            transition: "transform 0.1s ease-in-out",
-                                                            "&:hover": {
-                                                                transform: "scale3d(1.03, 1.03, 1)",
-                                                            },
-                                                        }}
-                                                    >
-                                                        <Typography variant="subtitle2" fontWeight="400">
-                                                            {`${statusGroup}:`}
-                                                        </Typography>
-                                                        <Typography variant="subtitle2" fontWeight="400">
-                                                            {partsReqs ? calcStatus(partsReqs, statusGroup, employee) : 0}
-                                                        </Typography>
-                                                    </Item>
-                                                </Grid>
-                                            )
-                                        })}
-                                    </Grid>
-                                </AccordionDetails>
-                            </Accordion>
-                        )
-                    })
-                ) : (
-                    <AccordionSkeleton statuses={STATUS_GROUPS} />
-                )}
-            </>
+            <L3 novaUser = {novaUser} directorsEmployees = {directorsEmployees} partsReqs = {partsReqs} token = {token}/>
         )
-    } else if (level === "L3") {
-        return novaUser.region.length > 1 ? (
-            novaUser.region.map((region) => {
-                return (
-                    <Accordion key={region} disableGutters>
-                        <AccordionSummary
-                            expandIcon={<ExpandMoreIcon />}
-                            sx={{
-                                flexDirection: "row-reverse",
-                                "& .MuiAccordionSummary-content": {
-                                    margin: 0,
-                                },
-                                "&.MuiAccordionSummary-root": {
-                                    minHeight: 0,
-                                    margin: "5px 0px",
-                                },
-                            }}
-                        >
-                            <div>
-                                <b>{region}</b>
-                            </div>
-                        </AccordionSummary>
-                        <AccordionDetails>
-                            {!directorsEmployeesFetching && !partsReqsFetching ? (
-                                directorsEmployees?.map((employee) => {
-                                    return (
-                                        (employee.jobTitle.includes("Manager") ||
-                                            employee.jobTitle === "Supervisor - Shop" ||
-                                            employee.email.includes("bourland")) &&
-                                        employee.region.includes(region) && (
-                                            <Accordion key={employee.id} disableGutters>
-                                                <AccordionSummary
-                                                    expandIcon={<ExpandMoreIcon />}
-                                                    sx={{
-                                                        flexDirection: "row-reverse",
-                                                        "& .MuiAccordionSummary-content": {
-                                                            margin: 0,
-                                                        },
-                                                        "&.MuiAccordionSummary-root": {
-                                                            minHeight: 0,
-                                                            margin: "5px 0px",
-                                                        },
-                                                    }}
-                                                >
-                                                    <div>
-                                                        <b>{`${employee.firstName} ${employee.lastName}`}</b>
-                                                    </div>
-                                                </AccordionSummary>
-                                                <AccordionDetails>
-                                                    <FormControlLabel
-                                                        control={
-                                                            <StyledSwitch
-                                                                checked={managerOnly.includes(employee)}
-                                                                onChange={(event) => handleManagerOnlyChange(event, employee)}
-                                                                size="medium"
-                                                                disableRipple
-                                                            />
-                                                        }
-                                                        label={<Typography variant="body2">Submitted By Manager Only</Typography>}
-                                                    />
-                                                    <Divider />
-                                                    <Grid container>
-                                                        {STATUS_GROUPS.map((statusGroup) => {
-                                                            return (
-                                                                <Grid xs={12} sm={4} spacing={2} key={statusGroup}>
-                                                                    <Item
-                                                                        onClick={() =>
-                                                                            handleClick(navigate, 
-                                                                                statusGroup,
-                                                                                managerOnly.includes(employee)
-                                                                                    ? [employee]
-                                                                                    : directorsEmployees
-                                                                                          .filter(
-                                                                                              (subordinate) =>
-                                                                                                  subordinate.supervisorId === employee.id
-                                                                                          )
-                                                                                          .concat(employee)
-                                                                            )
-                                                                        }
-                                                                        sx={{
-                                                                            margin: "5px",
-                                                                            display: "flex",
-                                                                            alignItems: "center",
-                                                                            justifyContent: "space-between",
-                                                                            cursor: "pointer",
-                                                                            transition: "transform 0.1s ease-in-out",
-                                                                            "&:hover": {
-                                                                                transform: "scale3d(1.03, 1.03, 1)",
-                                                                            },
-                                                                        }}
-                                                                    >
-                                                                        <Typography variant="subtitle2" fontWeight="400">
-                                                                            {`${statusGroup}:`}
-                                                                        </Typography>
-                                                                        <Typography variant="subtitle2" fontWeight="400">
-                                                                            {partsReqs
-                                                                                ? calcStatus(
-                                                                                      partsReqs,
-                                                                                      statusGroup,
-                                                                                      undefined,
-                                                                                      managerOnly.includes(employee)
-                                                                                          ? [employee]
-                                                                                          : directorsEmployees
-                                                                                                .filter(
-                                                                                                    (subordinate) =>
-                                                                                                        subordinate.supervisorId === employee.id
-                                                                                                )
-                                                                                                .concat(employee)
-                                                                                  )
-                                                                                : 0}
-                                                                        </Typography>
-                                                                    </Item>
-                                                                </Grid>
-                                                            )
-                                                        })}
-                                                    </Grid>
-                                                </AccordionDetails>
-                                                {directorsEmployees
-                                                    .filter((subordinate) => subordinate.supervisorId === employee.id)
-                                                    .map((user) => {
-                                                        return (
-                                                            <Accordion key={user.id} disableGutters sx={{ marginLeft: "20px" }}>
-                                                                <AccordionSummary
-                                                                    expandIcon={<ExpandMoreIcon />}
-                                                                    sx={{
-                                                                        flexDirection: "row-reverse",
-                                                                        "& .MuiAccordionSummary-content": {
-                                                                            margin: 0,
-                                                                        },
-                                                                        "&.MuiAccordionSummary-root": {
-                                                                            minHeight: 0,
-                                                                            margin: "5px 0px",
-                                                                        },
-                                                                    }}
-                                                                >
-                                                                    <div>{`${user.firstName} ${user.lastName}`}</div>
-                                                                </AccordionSummary>
-                                                                <AccordionDetails>
-                                                                    <Divider />
-                                                                    <Grid container>
-                                                                        {STATUS_GROUPS.map((statusGroup) => {
-                                                                            return (
-                                                                                <Grid xs={12} sm={4} spacing={2} key={statusGroup}>
-                                                                                    <Item
-                                                                                        onClick={() => handleClick(navigate, statusGroup, [user])}
-                                                                                        sx={{
-                                                                                            margin: "5px",
-                                                                                            display: "flex",
-                                                                                            alignItems: "center",
-                                                                                            justifyContent: "space-between",
-                                                                                            cursor: "pointer",
-                                                                                            transition: "transform 0.1s ease-in-out",
-                                                                                            "&:hover": {
-                                                                                                transform: "scale3d(1.03, 1.03, 1)",
-                                                                                            },
-                                                                                        }}
-                                                                                    >
-                                                                                        <Typography variant="subtitle2" fontWeight="400">
-                                                                                            {`${statusGroup}:`}
-                                                                                        </Typography>
-                                                                                        <Typography variant="subtitle2" fontWeight="400">
-                                                                                            {partsReqs ? calcStatus(partsReqs, statusGroup, user) : 0}
-                                                                                        </Typography>
-                                                                                    </Item>
-                                                                                </Grid>
-                                                                            )
-                                                                        })}
-                                                                    </Grid>
-                                                                </AccordionDetails>
-                                                            </Accordion>
-                                                        )
-                                                    })}
-                                            </Accordion>
-                                        )
-                                    )
-                                })
-                            ) : (
-                                <AccordionSkeleton statuses={STATUS_GROUPS} />
-                            )}
-                        </AccordionDetails>
-                    </Accordion>
-                )
-            })
-        ) : !directorsEmployeesFetching && !partsReqsFetching ? (
-            directorsEmployees?.map((employee) => {
-                return (
-                    (employee.jobTitle.includes("Manager") || employee.jobTitle === "Supervisor - Shop" || employee.email.includes("bourland")) && (
-                        <Accordion key={employee.id} disableGutters>
-                            <AccordionSummary
-                                expandIcon={<ExpandMoreIcon />}
-                                sx={{
-                                    flexDirection: "row-reverse",
-                                    "& .MuiAccordionSummary-content": {
-                                        margin: 0,
-                                    },
-                                    "&.MuiAccordionSummary-root": {
-                                        minHeight: 0,
-                                        margin: "5px 0px",
-                                    },
-                                }}
-                            >
-                                <div>
-                                    <b>{`${employee.firstName} ${employee.lastName}`}</b>
-                                </div>
-                            </AccordionSummary>
-                            <AccordionDetails>
-                                <FormControlLabel
-                                    control={
-                                        <StyledSwitch
-                                            checked={managerOnly.includes(employee)}
-                                            onChange={(event) => handleManagerOnlyChange(event, employee)}
-                                            size="medium"
-                                            disableRipple
-                                        />
-                                    }
-                                    label={<Typography variant="body2">Submitted By Manager Only</Typography>}
-                                />
-                                <Divider />
-                                <Grid container>
-                                    {STATUS_GROUPS.map((statusGroup) => {
-                                        return (
-                                            <Grid xs={12} sm={4} spacing={2} key={statusGroup}>
-                                                <Item
-                                                    onClick={() =>
-                                                        handleClick(navigate, 
-                                                            statusGroup,
-                                                            managerOnly.includes(employee)
-                                                                ? [employee]
-                                                                : directorsEmployees
-                                                                      .filter((subordinate) => subordinate.supervisorId === employee.id)
-                                                                      .concat(employee)
-                                                        )
-                                                    }
-                                                    sx={{
-                                                        margin: "5px",
-                                                        display: "flex",
-                                                        alignItems: "center",
-                                                        justifyContent: "space-between",
-                                                        cursor: "pointer",
-                                                        transition: "transform 0.1s ease-in-out",
-                                                        "&:hover": {
-                                                            transform: "scale3d(1.03, 1.03, 1)",
-                                                        },
-                                                    }}
-                                                >
-                                                    <Typography variant="subtitle2" fontWeight="400">
-                                                        {`${statusGroup}:`}
-                                                    </Typography>
-                                                    <Typography variant="subtitle2" fontWeight="400">
-                                                        {partsReqs
-                                                            ? calcStatus(
-                                                                  partsReqs,
-                                                                  statusGroup,
-                                                                  undefined,
-                                                                  managerOnly.includes(employee)
-                                                                      ? [employee]
-                                                                      : directorsEmployees
-                                                                            .filter((subordinate) => subordinate.supervisorId === employee.id)
-                                                                            .concat(employee)
-                                                              )
-                                                            : 0}
-                                                    </Typography>
-                                                </Item>
-                                            </Grid>
-                                        )
-                                    })}
-                                </Grid>
-                            </AccordionDetails>
-                            {directorsEmployees
-                                .filter((subordinate) => subordinate.supervisorId === employee.id)
-                                .map((user) => {
-                                    return (
-                                        <Accordion key={user.id} disableGutters sx={{ marginLeft: "20px" }}>
-                                            <AccordionSummary
-                                                expandIcon={<ExpandMoreIcon />}
-                                                sx={{
-                                                    flexDirection: "row-reverse",
-                                                    "& .MuiAccordionSummary-content": {
-                                                        margin: 0,
-                                                    },
-                                                    "&.MuiAccordionSummary-root": {
-                                                        minHeight: 0,
-                                                        margin: "5px 0px",
-                                                    },
-                                                }}
-                                            >
-                                                <div>{`${user.firstName} ${user.lastName}`}</div>
-                                            </AccordionSummary>
-                                            <AccordionDetails>
-                                                <Divider />
-                                                <Grid container>
-                                                    {STATUS_GROUPS.map((statusGroup) => {
-                                                        return (
-                                                            <Grid xs={12} sm={4} spacing={2} key={statusGroup}>
-                                                                <Item
-                                                                    onClick={() => handleClick(navigate, statusGroup, [user])}
-                                                                    sx={{
-                                                                        margin: "5px",
-                                                                        display: "flex",
-                                                                        alignItems: "center",
-                                                                        justifyContent: "space-between",
-                                                                        cursor: "pointer",
-                                                                        transition: "transform 0.1s ease-in-out",
-                                                                        "&:hover": {
-                                                                            transform: "scale3d(1.03, 1.03, 1)",
-                                                                        },
-                                                                    }}
-                                                                >
-                                                                    <Typography variant="subtitle2" fontWeight="400">
-                                                                        {`${statusGroup}:`}
-                                                                    </Typography>
-                                                                    <Typography variant="subtitle2" fontWeight="400">
-                                                                        {partsReqs ? calcStatus(partsReqs, statusGroup, user) : 0}
-                                                                    </Typography>
-                                                                </Item>
-                                                            </Grid>
-                                                        )
-                                                    })}
-                                                </Grid>
-                                            </AccordionDetails>
-                                        </Accordion>
-                                    )
-                                })}
-                        </Accordion>
-                    )
-                )
-            })
-        ) : (
-            <AccordionSkeleton statuses={STATUS_GROUPS} />
-        )
-    } else if (level === "L4") {
+    } 
+    
+    if (level === "L4") {
         return !partsReqsFetching && !regionsFetching ? (
             regions?.map((region) => {
                 region = toTitleCase(region)
@@ -762,7 +253,9 @@ export default function SummaryTable(props: Props) {
         ) : (
             <AccordionSkeleton statuses={["Pending Approval"]} />
         )
-    } else if (level === "L5") {
+    }
+    
+    if (level === "L5") {
         return !partsReqsFetching && !regionsFetching ? (
             regions?.map((region) => {
                 region = toTitleCase(region)
@@ -821,9 +314,10 @@ export default function SummaryTable(props: Props) {
         ) : (
             <AccordionSkeleton statuses={SC_GROUPS} />
         )
-    } else if (level === "L6") {
-
-        if(partsReqsFetching || regionsFetching || !regions || !partsReqs){
+    }
+    
+    if (level === "L6") {
+        if(!regions || !partsReqs){
             return null
         }
 
@@ -840,7 +334,7 @@ export default function SummaryTable(props: Props) {
         console.log('partsByRegion: ', partsByRegion)
 
         const regionCharts = regions.map((region) => {
-            return <L6PartsReq key={region} target={region} data={partsByRegion[region]} />
+            return <L6PartsReq key={region} target='region' data={partsByRegion[region]} novaUser={novaUser} region={region} level={level} userGroup={undefined}/>
         })
 
 
@@ -850,7 +344,9 @@ export default function SummaryTable(props: Props) {
                 </Box>
         )
 
-    } else if (group === "") {
+    }
+    
+    if (group === "") {
         return !partsReqsFetching ? (
             <Paper sx={{ padding: "5px", minWidth: "fit-content", maxWidth: "100%" }}>
                 <Grid container>
@@ -886,7 +382,8 @@ export default function SummaryTable(props: Props) {
         ) : (
             <StatusSkeleton statuses={STATUS_GROUPS} />
         )
-    } else {
-        return null
-    }
+    } 
+    
+    return null
+
 }

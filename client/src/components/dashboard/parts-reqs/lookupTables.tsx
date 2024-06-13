@@ -25,7 +25,7 @@ export const PERSONNEL_GROUPS: { [key: string]: string } = {
     "Shops Supervisoer": "L2",
     "Ops Director": "L3",
     "Shop Director": "L3",
-    "Ops Vice Presient": "L4",
+    "Ops Vice President": "L4",
     "Supply Chain": "L5",
     "Supply Chain Management": "L6",
     Admin: "L6",
@@ -118,3 +118,26 @@ export const UNIT_DOWN_STATUSES = [
     "Sourcing - Amex Approved",
     "Ordered - Awaiting Parts",
 ]
+
+export const colorPallete = [
+    "#ea76cb",
+    "#8839ef",
+    "#d20f39",
+    "#df8e1d",
+    "#40a02b",
+    "#1e66f5",
+    "#acb0be",
+    "#dc8a78",
+    "#179299",
+    "#7287fd",
+];
+
+export const tolColorPallete = [
+    "#4477aa",
+    "#66ccee",
+    "#228833",
+    "#ccbb44",
+    "#ee6677",
+    "#aa3377",
+    "#bbbbbb",
+];

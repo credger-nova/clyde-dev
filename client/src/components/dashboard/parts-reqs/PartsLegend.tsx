@@ -2,13 +2,17 @@ import { Box, Link, List, ListItem } from "@mui/material"
 import { useNavigate } from "react-router-dom"
 import { PieChartSeries } from "./L6PartsReq"
 import { navigateToSupplyChain } from "./dashboardFunctions"
+import { NovaUser } from "../../../types/kpa/novaUser"
 interface Props {
     target: string
     chartData: Array<PieChartSeries>
+    novaUser: NovaUser
+    region: string | undefined
+    userGroup : Array<NovaUser> | undefined
 }
 
 export default function PartsLegend(props: Props) {
-    const { target, chartData} = props
+    const {target, chartData, novaUser, region, userGroup} = props
     const navigate = useNavigate()
 
     const listItems = chartData.map((listItem) => {
@@ -32,7 +36,17 @@ export default function PartsLegend(props: Props) {
                     underline="hover"
                     sx={{ cursor: "pointer" }}
                     onClick={() => {
-                        return navigateToSupplyChain(navigate, listItem.label, undefined, target)
+                        if(target === 'region'){
+                            return navigateToSupplyChain(navigate, listItem.label, undefined, region)
+                        }
+                        
+                        if(target === 'novaUser'){
+                            return navigateToSupplyChain(navigate, listItem.label, [novaUser])
+                        }
+
+                        if(target === 'userGroup'){
+                            return navigateToSupplyChain(navigate, listItem.label, userGroup )
+                        }
                     }}
                 >
                     {listItem.label}

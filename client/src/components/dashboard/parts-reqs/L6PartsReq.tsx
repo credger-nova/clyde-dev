@@ -1,13 +1,21 @@
-import { Box, Typography, Link } from "@mui/material"
+import { Box, Typography, Switch } from "@mui/material"
 import PartsPieChart from "./PartsPieChart"
 import PartsLegend from "./PartsLegend"
-import { navigateToSupplyChain } from "./dashboardFunctions"
-import { useNavigate } from "react-router-dom"
-
+import { NovaUser } from "../../../types/kpa/novaUser"
+import BottomRow from "./BottomRow"
+import { tolColorPallete } from "./lookupTables"
+import { PartsReq } from "../../../types/partsReq"
+import ManagerSwitch from "./ManagerSwitch"
 interface Props {
-    key: string
     target: string
-    data: { [key: string]: number } 
+    data: { [key: string]: number }
+    novaUser: NovaUser
+    region: string | undefined
+    level: string
+    userGroup: Array<NovaUser> | undefined
+    partsReqs: Array<PartsReq> | undefined
+    managersEmployees: Array<NovaUser> | undefined
+    key?: string | number
 }
 
 export interface PieChartSeries {
@@ -16,23 +24,8 @@ export interface PieChartSeries {
     color: string
 }
 
-const colorPallete = [
-    "#ea76cb",
-    "#8839ef",
-    "#d20f39",
-    "#df8e1d",
-    "#40a02b",
-    "#1e66f5",
-    "#acb0be",
-    "#dc8a78",
-    "#179299",
-    "#7287fd",
-  ];
-
 export default function L6PartsReq(props: Props) {
-    const {target, data} = props
-    const navigate = useNavigate()
-    console.log('data', data)
+    const {target, data, novaUser, region, level, userGroup, partsReqs, managersEmployees} = props
 
     const chartData: Array<PieChartSeries> = []
     let i=0
@@ -40,40 +33,33 @@ export default function L6PartsReq(props: Props) {
         if(key === "Closed" || key === "Units Down"){
             continue
         }
-        const x = {value: value, label: key, color: colorPallete[i]}
+        const x = {value: value, label: key, color: tolColorPallete[i]}
         chartData.push(x)
         i++
     }
-    console.log(chartData)
+
+    let title
+    if(target === 'region'){
+        title = region
+    } else if(target === 'novaUser'){
+        title = novaUser.firstName + ' ' + novaUser.lastName
+    } else if(target === 'novaUser && subordinates'){
+        title = novaUser.firstName + ' ' + novaUser.lastName + '\'s Team'
+    }
 
     return (
-        <Box sx={{ background: "#242424", borderRadius: "16px", padding: "16px", display: "flex", flexDirection: "column", alignItems: "center", gap: "20px"}}>
-            <Typography variant="h2" sx={{fontSize: '20px', fontWeight: "400", width: "208px", textAlign: "center", marginBottom: "8px"}}>{target}</Typography>
+        <Box sx={{ background: "#242424", borderRadius: "16px", padding: "16px", display: "flex", flexDirection: "column", alignItems: "center", gap: "20px", width: "fit-content"}}>
+            <Box>
+                <Typography variant="h2" sx={{fontSize: '20px', fontWeight: "400", width: "208px", textAlign: "center", marginBottom: "8px"}}>{title}</Typography>
+                <ManagerSwitch level={level} novaUser={novaUser}/>
+            </Box>
             <Box sx={{display: "flex", gap: "16px", alignItems: "center"}}>
                 <Box sx={{display: "flex", justifyContent: "center", alignItems: "center" }}>
-                    <PartsPieChart target={target} chartData={chartData}/>
+                    <PartsPieChart target={target} chartData={chartData} novaUser={novaUser} region={region} userGroup={userGroup}/>
                 </Box>
-                <PartsLegend target={target} chartData={chartData} />
+                <PartsLegend target={target} chartData={chartData} novaUser={novaUser} region={region} userGroup={userGroup} />
             </Box>
-            <Box sx={{display: "flex", justifyContent: "space-between", width: "100%"}}>
-                    <Link
-                        underline="hover"
-                        sx={{cursor: "pointer"}}
-                        onClick={() => {
-                            return navigateToSupplyChain(navigate, "Closed", undefined, target)
-                        }}
-                    >
-                        Closed:&ensp;{data["Closed"]}</Link>
-                    <Link 
-                        underline="hover" 
-                        sx={{cursor: "pointer" }}
-                        onClick={() => {
-                            return navigateToSupplyChain(navigate, "Unit Down", undefined, target)
-                        }}
-                    >
-                        Unit Down:&ensp;{data["Units Down"]}
-                    </Link>
-            </Box>
+            <BottomRow data={data} region={region} level={level} novaUser={novaUser} partsReqs={partsReqs} managersEmployees={managersEmployees} />
         </Box>
     )
 }

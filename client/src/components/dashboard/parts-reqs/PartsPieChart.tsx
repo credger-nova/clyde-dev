@@ -1,3 +1,4 @@
+import * as React from "react"
 import { PieChart } from "@mui/x-charts/PieChart"
 import { useNavigate } from "react-router-dom"
 import { navigateToSupplyChain, getPieChartDimensions, getTotalPartsReqs } from "./dashboardFunctions"
@@ -9,7 +10,7 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 interface Props {
     target: string
     chartData: Array<PieChartSeries>
-    novaUser: NovaUser
+    novaUser: NovaUser | undefined
     region: string | undefined
     userGroup: Array<NovaUser> | undefined
 }
@@ -43,17 +44,23 @@ export default function PartsPieChart(props: Props) {
                 ]}
                 slotProps={{ legend: { hidden: true } }}
                 onItemClick={(_event, d) => {
-                    if(target === 'region'){
-                        return navigateToSupplyChain(navigate, chartData[d.dataIndex]["label"], undefined, region)
+                    if(target === 'region' || target === "supplyChain"){
+                        return navigateToSupplyChain(navigate, [chartData[d.dataIndex]["label"]], undefined, region)
                     }
                     
                     if(target === 'novaUser'){
-                        return navigateToSupplyChain(navigate, chartData[d.dataIndex]["label"], [novaUser])
+                        return navigateToSupplyChain(navigate, [chartData[d.dataIndex]["label"]], [novaUser])
                     }
 
                     if(target === 'userGroup'){
-                        return navigateToSupplyChain(navigate, chartData[d.dataIndex]["label"], userGroup) 
+                        return navigateToSupplyChain(navigate, [chartData[d.dataIndex]["label"]], userGroup) 
                     }
+
+                    if(target === 'Pending Approval'){
+                        return navigateToSupplyChain(navigate, ["Pending Approval"], undefined, chartData[d.dataIndex]["label"])
+                    }
+
+
                 }}
             >
             </PieChart>
@@ -69,15 +76,23 @@ export default function PartsPieChart(props: Props) {
                 }}
                 onClick={() => {
                     if(target === 'region'){
-                        return navigateToSupplyChain(navigate, "Chart Data", undefined, region)
+                        return navigateToSupplyChain(navigate, ["Chart Data"], undefined, region)
                     }
                     
                     if(target === 'novaUser'){
-                        return navigateToSupplyChain(navigate, "Chart Data", [novaUser])
+                        return navigateToSupplyChain(navigate, ["Chart Data"], [novaUser])
                     }
                     
                     if(target === 'userGroup'){
-                        return navigateToSupplyChain(navigate, "Chart Data", userGroup)
+                        return navigateToSupplyChain(navigate, ["Chart Data"], userGroup)
+                    }
+
+                    if(target === 'Pending Approval'){
+                        return navigateToSupplyChain(navigate, ["Pending Approval"])
+                    }
+
+                    if(target === "supplyChain"){
+                        return navigateToSupplyChain(navigate,["Pending Quote", "Approved", "Sourcing", "Parts Ordered", "Parts Staged"], undefined, region)
                     }
                     
                 }}

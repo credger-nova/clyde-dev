@@ -3,14 +3,13 @@ import FormGroup from '@mui/material/FormGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Switch from '@mui/material/Switch';
 import { Typography } from '@mui/material';
-import { TITLES } from "../../../utils/titles"
-import { PERSONNEL_GROUPS } from './lookupTables';
 
-export default function ManagerSwitch(props) {
-  // const {novaUser, setChecked} = props
-  // const userType = TITLES.find((item) => item.titles.includes(novaUser.jobTitle))
-  // const group = PERSONNEL_GROUPS[userType.group]
+interface Props{
+  checked: boolean
+  setChecked: React.Dispatch<React.SetStateAction<boolean>>
+}
 
+export default function ManagerSwitch(props: Props) {
   const {checked, setChecked} = props
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {

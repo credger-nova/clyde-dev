@@ -8,29 +8,33 @@ interface Props{
     setRegion: React.Dispatch<React.SetStateAction<string>>
 }
 
-export default function ColorToggleButton(props) {
+export default function RegionToggleButton(props: Props) {
     const {regions, region, setRegion} = props
 
-  const handleChange = (
-    event: React.MouseEvent<HTMLElement>,
-    newRegion: string,
-  ) => {
-    setRegion(newRegion);
-  };
+    if(regions.length === 1){
+      return null
+    }
 
-  const buttons = regions.map((region: string) => {
-    return <ToggleButton key={region} value={region}>{region}</ToggleButton>
-  })
+    const handleChange = (
+      event: React.MouseEvent<HTMLElement>,
+      newRegion: string,
+    ) => {
+      setRegion(newRegion);
+    };
 
-  return (
-    <ToggleButtonGroup
-      color="primary"
-      value={region}
-      exclusive
-      onChange={handleChange}
-      aria-label="Platform"
-    >   
-        {buttons}
-    </ToggleButtonGroup>
-  );
+    const buttons = regions.map((region: string) => {
+      return <ToggleButton disableRipple key={region} value={region}>{region}</ToggleButton>
+    })
+
+    return (
+      <ToggleButtonGroup
+        color="primary"
+        value={region}
+        exclusive
+        onChange={handleChange}
+        aria-label="Platform"
+      >   
+          {buttons}
+      </ToggleButtonGroup>
+    );
 }

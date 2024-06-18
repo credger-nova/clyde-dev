@@ -3,16 +3,9 @@ import { NovaUser } from "../../../types/kpa/novaUser"
 import { TITLES } from "../../../utils/titles"
 import { PERSONNEL_GROUPS } from "./lookupTables"
 import RegionToggleButton from "./RegionToggleButton"
-import { useManagersEmployees } from "../../../hooks/kpa/user"
-import { getPartsReqsByUserGroup, getPartsReqsByUser, navigateToSupplyChain, getChartData} from "./dashboardFunctions"
-import { Box, Typography, Link } from "@mui/material"
+import { Box } from "@mui/material"
 import { PartsReq } from "../../../types/partsReq"
-import PartsPieChart from "./PartsPieChart"
-import PartsLegend from "./PartsLegend"
-import { useNavigate } from "react-router-dom"
-import ManagerSwitch from "./ManagerSwitch"
 import L3Manager from "./L3Manager"
-
 interface Props {
     novaUser: NovaUser
     directorsEmployees: Array<NovaUser>

@@ -9,7 +9,7 @@ import { useNavigate } from "react-router-dom"
 import ManagerSwitch from "./ManagerSwitch"
 import * as React from 'react';
 import L1 from "./L1"
-
+import { chartStyles } from "./lookupTables"
 
 interface Props{
     novaUser: NovaUser
@@ -37,8 +37,8 @@ export default function L2 (props: Props){
         null
 
     return(
-        <>
-            <Box sx={{background: "#242424", display: "flex", flexDirection: "column", alignItems: "center", gap: "20px", width: "fit-content", padding: "16px", borderRadius: "16px"}}>
+        <Box sx={{display: "flex", flexWrap: "wrap", gap: "24px"}}>
+            <Box sx={chartStyles}>
                 <Box sx={{display: "flex", flexDirection: "column", alignItems: "center", gap: "4px"}}>
                     <Typography variant="h2" sx={{fontSize: "20px", fontWeight: "400"}}>{novaUser.firstName} {novaUser.lastName}</Typography>
                     <ManagerSwitch checked={checked} setChecked={setChecked} />
@@ -51,15 +51,14 @@ export default function L2 (props: Props){
                     underline="hover"
                     sx={{cursor: "pointer"}}
                     onClick={() => {
-                        return navigateToSupplyChain(navigate, "Closed", userGroup, undefined)
+                        return navigateToSupplyChain(navigate, ["Closed"], userGroup, undefined)
                     }}
                 >
                     Closed:&ensp;{data["Closed"]}
                 </Link>
             </Box>
             {subordinatesCharts}
-        </>
-
+        </Box>
     )
 
 }

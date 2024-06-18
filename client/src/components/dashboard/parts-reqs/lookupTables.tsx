@@ -18,6 +18,16 @@ export const ALLOWED_GROUPS = [
     "IT",
 ]
 
+export const REGIONS = [
+    "Carlsbad",
+    "Pecos",
+    "North Permian",
+    "South Permian",
+    "East Texas",
+    "South Texas",
+    "Midcon"
+]
+
 export const PERSONNEL_GROUPS: { [key: string]: string } = {
     "Field Service": "L1",
     "Shop Service": "L1",
@@ -45,7 +55,6 @@ export const STATUS_GROUPS_MAP: { [key: string]: Array<string> } = {
         "Sourcing - Information Provided",
         "Sourcing - Pending Amex Approval",
         "Sourcing - Amex Approved",
-        "Sourcing - Request to Cancel",
     ],
     "Parts Ordered": ["Ordered - Awaiting Parts"],
     "Parts Staged": ["Completed - Parts Staged/Delivered"],
@@ -140,4 +149,18 @@ export const tolColorPallete = [
     "#ee6677",
     "#aa3377",
     "#bbbbbb",
+    "#777777"
 ];
+
+export const chartStyles = {
+    background: "#242424",
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    gap: "20px",
+    width: "fit-content",
+    height: "fit-content",
+    padding: "16px",
+    borderRadius: "16px",
+    
+}

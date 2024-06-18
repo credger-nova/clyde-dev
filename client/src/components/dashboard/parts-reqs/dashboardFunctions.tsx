@@ -7,12 +7,18 @@ import { tolColorPallete } from "./lookupTables"
 
 export function navigateToSupplyChain(
     navigate: NavigateFunction,
-    statusGroup?: string,
+    statusGroups?: Array<string>,
     requesters?: Array<NovaUser>,
     region?: string,
     urgency?: string
 ) {
-    const statuses = statusGroup ? STATUS_GROUPS_MAP[statusGroup] : []
+
+    let statuses: Array<string> = []
+    if(statusGroups){
+        for(const statusGroup of statusGroups){
+            statuses = statuses.concat(STATUS_GROUPS_MAP[statusGroup])
+        }
+    }
 
     navigate("/supply-chain", {
         state: { statuses: statuses, requesters: requesters, region: region, urgency: urgency },
@@ -76,7 +82,6 @@ export function getPartsReqsByUserGroup(users: Array<NovaUser>, parts: Array<Par
     return partsByUserGroup
 }
 
-
 export interface PieChartSeries {
     value: number
     label: string
@@ -87,11 +92,11 @@ export function getChartData(data: { [key: string]: number }){
     const chartData: Array<PieChartSeries> = []
     let i=0
     for(const [key, value] of Object.entries(data)){
-        if(key === "Closed" || key === "Units Down"){
+        if(key === "Closed" || key === "Unit Down"){
             continue
         }
-        const x = {value: value, label: key, color: tolColorPallete[i]}
-        chartData.push(x)
+        const series = {value: value, label: key, color: tolColorPallete[i]}
+        chartData.push(series)
         i++
     }
 
@@ -122,6 +127,23 @@ export function getTotalPartsReqs(chartData: Array<PieChartSeries>){
         sum += data.value
     }
     return sum
+}
+
+export function getPartsByRegion(regions: Array<string>, statusGroups: Array<string>, partsReqs: Array<PartsReq>){
+    const partsByRegion: {[key: string]: {[key: string]: number}} = {}
+
+    for(const region of regions){
+        partsByRegion[region] = {}
+        for(const statusGroup of statusGroups){
+            if(statusGroup === "Unit Down"){
+                partsByRegion[region][statusGroup] = calcUnitDownV2(partsReqs, region)
+            } else {
+                const count = calcStatusV2(partsReqs, statusGroup, undefined, undefined, region)
+                partsByRegion[region][statusGroup] = count
+            }
+        }
+    }
+    return partsByRegion
 }
 
 //calcUnitDown is deprecated; Use calcUnitDownV2() instead

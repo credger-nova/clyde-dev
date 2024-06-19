@@ -12,6 +12,7 @@ const Units = React.lazy(() => import("./pages/units"))
 const Map = React.lazy(() => import("./pages/map"))
 const SupplyChain = React.lazy(() => import("./pages/supply-chain"))
 const Forms = React.lazy(() => import("./pages/forms"))
+const Manager = React.lazy(() => import("./components/dashboard/parts-reqs/manager"))
 
 function getTestingSplash() {
     const testSplash = sessionStorage.getItem("showTestingSplash")
@@ -43,6 +44,14 @@ export default function App() {
                         </PrivateRoute>
                     }
                 />
+                    <Route
+                        path="manager"
+                        element={
+                            <PrivateRoute>
+                                <Manager />
+                            </PrivateRoute>
+                        }
+                    />
                 <Route
                     path="units"
                     element={

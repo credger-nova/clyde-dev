@@ -34,3 +34,10 @@
 .leaflet-popup-content p {
     margin: 5px 0px !important;
 }
+
+.scaleOnClick:hover{
+    transform: scale(1.2)
+}
+.scaleOnClick:active{
+    transform: scale(1); 
+}
